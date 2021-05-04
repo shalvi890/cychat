@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cychat.iml" filepath="$PROJECT_DIR$/.idea/modules/cychat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/attachment-viewer/cychat.attachment-viewer.iml" filepath="$PROJECT_DIR$/.idea/modules/attachment-viewer/cychat.attachment-viewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/diff-match-patch/cychat.diff-match-patch.iml" filepath="$PROJECT_DIR$/.idea/modules/diff-match-patch/cychat.diff-match-patch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/matrix-sdk-android/cychat.matrix-sdk-android.iml" filepath="$PROJECT_DIR$/.idea/modules/matrix-sdk-android/cychat.matrix-sdk-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/matrix-sdk-android-rx/cychat.matrix-sdk-android-rx.iml" filepath="$PROJECT_DIR$/.idea/modules/matrix-sdk-android-rx/cychat.matrix-sdk-android-rx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/multipicker/cychat.multipicker.iml" filepath="$PROJECT_DIR$/.idea/modules/multipicker/cychat.multipicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vector/cychat.vector.iml" filepath="$PROJECT_DIR$/.idea/modules/vector/cychat.vector.iml" />
+    </modules>
+  </component>
+</project>
