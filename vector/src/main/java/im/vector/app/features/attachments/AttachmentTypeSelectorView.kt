@@ -60,7 +60,7 @@ class AttachmentTypeSelectorView(context: Context,
         fun onTypeSelected(type: Type)
     }
 
-    private val iconColorGenerator = ColorGenerator.MATERtIAL
+    private val iconColorGenerator = ColorGenerator.MATERIAL
 
     private val views: ViewAttachmentTypeSelectorBinding
 

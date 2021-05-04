@@ -78,6 +78,12 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/src/debug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/src/main/assets" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/src/main/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/third_party_licenses/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/resolved/gplayDebug" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/res/resValues/gplay/debug" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/buildConfig/gplay/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/kapt/gplayDebug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/ap_generated_sources/gplayDebug/out" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../../vector/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../vector/build" />
     </content>
