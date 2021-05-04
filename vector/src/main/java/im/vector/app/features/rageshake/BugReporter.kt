@@ -261,8 +261,8 @@ class BugReporter @Inject constructor(
                             .addFormDataPart("user_agent", Matrix.getInstance(context).getUserAgent())
                             .addFormDataPart("user_id", userId)
                             .addFormDataPart("device_id", deviceId)
-                            .addFormDataPart("version", versionProvider.getVersion(longFormat = true, useBuildNumber = false))
-                            .addFormDataPart("branch_name", context.getString(R.string.git_branch_name))
+//                            .addFormDataPart("version", versionProvider.getVersion(longFormat = true, useBuildNumber = false))
+//                            .addFormDataPart("branch_name", context.getString(R.string.git_branch_name))
                             .addFormDataPart("matrix_sdk_version", Matrix.getSdkVersion())
                             .addFormDataPart("olm_version", olmVersion)
                             .addFormDataPart("device", Build.MODEL.trim())
@@ -276,10 +276,10 @@ class BugReporter @Inject constructor(
                             .addFormDataPart("theme", ThemeUtils.getApplicationTheme(context))
                             .addFormDataPart("server_version", serverVersion)
 
-                    val buildNumber = context.getString(R.string.build_number)
-                    if (buildNumber.isNotEmpty() && buildNumber != "0") {
-                        builder.addFormDataPart("build_number", buildNumber)
-                    }
+//                    val buildNumber = context.getString(R.string.build_number)
+//                    if (buildNumber.isNotEmpty() && buildNumber != "0") {
+//                        builder.addFormDataPart("build_number", buildNumber)
+//                    }
 
                     // add the gzipped files
                     for (file in gzippedFiles) {
@@ -316,7 +316,7 @@ class BugReporter @Inject constructor(
                     // add some github labels
                     builder.addFormDataPart("label", BuildConfig.VERSION_NAME)
                     builder.addFormDataPart("label", BuildConfig.FLAVOR_DESCRIPTION)
-                    builder.addFormDataPart("label", context.getString(R.string.git_branch_name))
+//                    builder.addFormDataPart("label", context.getString(R.string.git_branch_name))
 
                     // Special for RiotX
                     builder.addFormDataPart("label", "[Element]")

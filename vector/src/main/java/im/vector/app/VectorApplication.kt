@@ -88,7 +88,7 @@ class VectorApplication :
     @Inject lateinit var activeSessionHolder: ActiveSessionHolder
     @Inject lateinit var notificationDrawerManager: NotificationDrawerManager
     @Inject lateinit var vectorPreferences: VectorPreferences
-    @Inject lateinit var versionProvider: VersionProvider
+//    @Inject lateinit var versionProvider: VersionProvider
     @Inject lateinit var notificationUtils: NotificationUtils
     @Inject lateinit var appStateHandler: AppStateHandler
     @Inject lateinit var rxConfig: RxConfig
@@ -132,7 +132,7 @@ class VectorApplication :
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
-        logInfo()
+//        logInfo()
         LazyThreeTen.init(this)
 
         EpoxyController.defaultDiffingHandler = EpoxyAsyncUtil.getAsyncBackgroundHandler()
@@ -224,17 +224,17 @@ class VectorApplication :
     }
 
     private fun logInfo() {
-        val appVersion = versionProvider.getVersion(longFormat = true, useBuildNumber = true)
-        val sdkVersion = Matrix.getSdkVersion()
-        val date = SimpleDateFormat("MM-dd HH:mm:ss.SSSZ", Locale.US).format(Date())
-
-        Timber.v("----------------------------------------------------------------")
-        Timber.v("----------------------------------------------------------------")
-        Timber.v(" Application version: $appVersion")
-        Timber.v(" SDK version: $sdkVersion")
-        Timber.v(" Local time: $date")
-        Timber.v("----------------------------------------------------------------")
-        Timber.v("----------------------------------------------------------------\n\n\n\n")
+//        val appVersion = versionProvider.getVersion(longFormat = true, useBuildNumber = true)
+//        val sdkVersion = Matrix.getSdkVersion()
+//        val date = SimpleDateFormat("MM-dd HH:mm:ss.SSSZ", Locale.US).format(Date())
+//
+//        Timber.v("----------------------------------------------------------------")
+//        Timber.v("----------------------------------------------------------------")
+//        Timber.v(" Application version: $appVersion")
+//        Timber.v(" SDK version: $sdkVersion")
+//        Timber.v(" Local time: $date")
+//        Timber.v("----------------------------------------------------------------")
+//        Timber.v("----------------------------------------------------------------\n\n\n\n")
     }
 
     override fun attachBaseContext(base: Context) {

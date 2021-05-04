@@ -22,33 +22,33 @@ import javax.inject.Inject
 
 class VersionProvider @Inject constructor(private val versionCodeProvider: VersionCodeProvider) {
 
-    fun getVersion(longFormat: Boolean, useBuildNumber: Boolean): String {
-        var result = "${BuildConfig.VERSION_NAME} [${versionCodeProvider.getVersionCode()}]"
+//    fun getVersion(longFormat: Boolean, useBuildNumber: Boolean): String {
+//        var result = "${BuildConfig.VERSION_NAME} [${versionCodeProvider.getVersionCode()}]"
+//
+//        var flavor = BuildConfig.SHORT_FLAVOR_DESCRIPTION
+//
+//        if (flavor.isNotBlank()) {
+//            flavor += "-"
+//        }
 
-        var flavor = BuildConfig.SHORT_FLAVOR_DESCRIPTION
+//        var gitVersion = BuildConfig.GIT_REVISION
+//        val gitRevisionDate = BuildConfig.GIT_REVISION_DATE
+//        val buildNumber = BuildConfig.BUILD_NUMBER
 
-        if (flavor.isNotBlank()) {
-            flavor += "-"
-        }
+//        var useLongFormat = longFormat
 
-        var gitVersion = BuildConfig.GIT_REVISION
-        val gitRevisionDate = BuildConfig.GIT_REVISION_DATE
-        val buildNumber = BuildConfig.BUILD_NUMBER
+//        if (useBuildNumber && buildNumber != "0") {
+//            // It's a build from CI
+//            gitVersion = "b$buildNumber"
+//            useLongFormat = false
+//        }
+//
+//        result += if (useLongFormat) {
+//            " ($flavor$gitVersion-$gitRevisionDate)"
+//        } else {
+//            " ($flavor$gitVersion)"
+//        }
 
-        var useLongFormat = longFormat
-
-        if (useBuildNumber && buildNumber != "0") {
-            // It's a build from CI
-            gitVersion = "b$buildNumber"
-            useLongFormat = false
-        }
-
-        result += if (useLongFormat) {
-            " ($flavor$gitVersion-$gitRevisionDate)"
-        } else {
-            " ($flavor$gitVersion)"
-        }
-
-        return result
-    }
+//        return result
+//    }
 }

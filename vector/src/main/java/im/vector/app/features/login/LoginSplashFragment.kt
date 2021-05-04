@@ -41,19 +41,12 @@ class LoginSplashFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupViews()
-    }
-
-    private fun setupViews() {
         views.loginSplashSubmit.setOnClickListener { getStarted() }
 
         if (BuildConfig.DEBUG || vectorPreferences.developerMode()) {
             views.loginSplashVersion.isVisible = true
             @SuppressLint("SetTextI18n")
-            views.loginSplashVersion.text = "Version : ${BuildConfig.VERSION_NAME}\n" +
-                    "Branch: ${BuildConfig.GIT_BRANCH_NAME}\n" +
-                    "Build: ${BuildConfig.BUILD_NUMBER}"
+            views.loginSplashVersion.text = "Version : ${BuildConfig.VERSION_NAME}"
         }
     }
 
@@ -61,7 +54,5 @@ class LoginSplashFragment @Inject constructor(
         loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OpenServerSelection))
     }
 
-    override fun resetViewModel() {
-        // Nothing to do
-    }
+    override fun resetViewModel() {}
 }

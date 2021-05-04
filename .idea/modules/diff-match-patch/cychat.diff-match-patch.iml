@@ -26,5 +26,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="Gradle: cychat.diff-match-patch.diff-match-patch" level="project" />
   </component>
 </module>

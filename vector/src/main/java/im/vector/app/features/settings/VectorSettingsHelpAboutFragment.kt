@@ -31,7 +31,7 @@ import org.matrix.android.sdk.api.Matrix
 import javax.inject.Inject
 
 class VectorSettingsHelpAboutFragment @Inject constructor(
-        private val versionProvider: VersionProvider
+//        private val versionProvider: VersionProvider
 ) : VectorSettingsBaseFragment() {
 
     override var titleRes = R.string.preference_root_help_about
@@ -49,13 +49,13 @@ class VectorSettingsHelpAboutFragment @Inject constructor(
 
         // application version
         findPreference<VectorPreference>(VectorPreferences.SETTINGS_VERSION_PREFERENCE_KEY)!!.let {
-            it.summary = buildString {
-                append(versionProvider.getVersion(longFormat = false, useBuildNumber = true))
-                if (BuildConfig.DEBUG) {
-                    append(" ")
-                    append(BuildConfig.GIT_BRANCH_NAME)
-                }
-            }
+//            it.summary = buildString {
+//                append(versionProvider.getVersion(longFormat = false, useBuildNumber = true))
+//                if (BuildConfig.DEBUG) {
+//                    append(" ")
+//                    append(BuildConfig.GIT_BRANCH_NAME)
+//                }
+//            }
 
             it.setOnPreferenceClickListener { pref ->
                 copyToClipboard(requireContext(), pref.summary)
