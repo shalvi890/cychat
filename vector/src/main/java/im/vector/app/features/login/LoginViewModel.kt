@@ -16,6 +16,7 @@
 
 package im.vector.app.features.login
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
@@ -59,6 +60,7 @@ import java.util.concurrent.CancellationException
 /**
  *
  */
+@SuppressLint("StaticFieldLeak")
 class LoginViewModel @AssistedInject constructor(
         @Assisted initialState: LoginViewState,
         private val applicationContext: Context,
@@ -88,7 +90,7 @@ class LoginViewModel @AssistedInject constructor(
     companion object : MvRxViewModelFactory<LoginViewModel, LoginViewState> {
 
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: LoginViewState): LoginViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: LoginViewState): LoginViewModel {
             return when (val activity: FragmentActivity = (viewModelContext as ActivityViewModelContext).activity()) {
                 is LoginActivity      -> activity.loginViewModelFactory.create(state)
                 is SoftLogoutActivity -> activity.loginViewModelFactory.create(state)
@@ -103,15 +105,13 @@ class LoginViewModel @AssistedInject constructor(
 
     private val matrixOrgUrl = stringProvider.getString(R.string.matrix_org_server_url).ensureTrailingSlash()
 
-    val currentThreePid: String?
-        get() = registrationWizard?.currentThreePid
+    val currentThreePid: String? get() = registrationWizard?.currentThreePid
 
     // True when login and password has been sent with success to the homeserver
     val isRegistrationStarted: Boolean
         get() = authenticationService.isRegistrationStarted
 
-    private val registrationWizard: RegistrationWizard?
-        get() = authenticationService.getRegistrationWizard()
+    private val registrationWizard: RegistrationWizard? get() = authenticationService.getRegistrationWizard()
 
     private val loginWizard: LoginWizard? get() = authenticationService.getLoginWizard()
 
@@ -126,11 +126,11 @@ class LoginViewModel @AssistedInject constructor(
 
     override fun handle(action: LoginAction) {
         when (action) {
-            is LoginAction.UpdateServerType           -> handleUpdateServerType(action)
-            is LoginAction.UpdateSignMode             -> handleUpdateSignMode(action)
+            is LoginAction.UpdateSignMode             -> startAuthenticationFlow()//handleUpdateSignMode(action)
             is LoginAction.InitWith                   -> handleInitWith(action)
             is LoginAction.UpdateHomeServer           -> handleUpdateHomeserver(action).also { lastAction = action }
-            is LoginAction.LoginOrRegister            -> handleLoginOrRegister(action).also { lastAction = action }
+            is LoginAction.LoginOrRegister            -> handleLogin(action).also { lastAction = action }
+            is LoginAction.VerifyOTP                  -> handleVerifyOTP(action)
             is LoginAction.LoginWithToken             -> handleLoginWithToken(action)
             is LoginAction.WebLoginSuccess            -> handleWebLoginSuccess(action)
             is LoginAction.ResetPassword              -> handleResetPassword(action)
@@ -141,7 +141,13 @@ class LoginViewModel @AssistedInject constructor(
             is LoginAction.UserAcceptCertificate      -> handleUserAcceptCertificate(action)
             LoginAction.ClearHomeServerHistory        -> handleClearHomeServerHistory()
             is LoginAction.PostViewEvent              -> _viewEvents.post(action.viewEvent)
+            else                                      -> Unit
+            //This Case Added By Me As we wont be needing all above cases working
         }.exhaustive
+    }
+
+    private fun handleVerifyOTP(action: LoginAction.VerifyOTP) {
+        Timber.d(action.toString())
     }
 
     private fun handleUserAcceptCertificate(action: LoginAction.UserAcceptCertificate) {
@@ -329,16 +335,16 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleRegisterWith(action: LoginAction.LoginOrRegister) {
-        reAuthHelper.data = action.password
-        currentJob = executeRegistrationStep {
-            it.createAccount(
-                    action.username,
-                    action.password,
-                    action.initialDeviceName
-            )
-        }
-    }
+//    private fun handleRegisterWith(action: LoginAction.LoginOrRegister) {
+//        reAuthHelper.data = action.password
+//        currentJob = executeRegistrationStep {
+//            it.createAccount(
+//                    action.username,
+//                    action.password,
+//                    action.initialDeviceName
+//            )
+//        }
+//    }
 
     private fun handleCaptchaDone(action: LoginAction.CaptchaDone) {
         currentJob = executeRegistrationStep {
@@ -405,37 +411,37 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleUpdateSignMode(action: LoginAction.UpdateSignMode) {
-        setState {
-            copy(
-                    signMode = action.signMode
-            )
-        }
+//    private fun handleUpdateSignMode(action: LoginAction.UpdateSignMode) {
+//        setState {
+//            copy(
+//                    signMode = action.signMode
+//            )
+//        }
+//
+//        when (action.signMode) {
+//            SignMode.SignUp             -> startRegistrationFlow()
+//            SignMode.SignIn             -> startAuthenticationFlow()
+//            SignMode.SignInWithMatrixId -> _viewEvents.post(LoginViewEvents.OnSignModeSelected(SignMode.SignInWithMatrixId))
+//            SignMode.Unknown            -> Unit
+//        }
+//    }
 
-        when (action.signMode) {
-            SignMode.SignUp             -> startRegistrationFlow()
-            SignMode.SignIn             -> startAuthenticationFlow()
-            SignMode.SignInWithMatrixId -> _viewEvents.post(LoginViewEvents.OnSignModeSelected(SignMode.SignInWithMatrixId))
-            SignMode.Unknown            -> Unit
-        }
-    }
-
-    private fun handleUpdateServerType(action: LoginAction.UpdateServerType) {
-        setState {
-            copy(
-                    serverType = action.serverType
-            )
-        }
-
-        when (action.serverType) {
-            ServerType.Unknown   -> Unit /* Should not happen */
-            ServerType.MatrixOrg ->
-                // Request login flow here
-                handle(LoginAction.UpdateHomeServer(matrixOrgUrl))
-            ServerType.EMS,
-            ServerType.Other     -> _viewEvents.post(LoginViewEvents.OnServerSelectionDone(action.serverType))
-        }.exhaustive
-    }
+//    private fun handleUpdateServerType(action: LoginAction.UpdateServerType) {
+//        setState {
+//            copy(
+//                    serverType = action.serverType
+//            )
+//        }
+//
+//        when (action.serverType) {
+//            ServerType.Unknown   -> Unit /* Should not happen */
+//            ServerType.MatrixOrg ->
+//                // Request login flow here
+//                handle(LoginAction.UpdateHomeServer(matrixOrgUrl))
+//            ServerType.EMS,
+//            ServerType.Other     -> _viewEvents.post(LoginViewEvents.OnServerSelectionDone(action.serverType))
+//        }.exhaustive
+//    }
 
     private fun handleInitWith(action: LoginAction.InitWith) {
         loginConfig = action.loginConfig
@@ -536,14 +542,14 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLoginOrRegister(action: LoginAction.LoginOrRegister) = withState { state ->
-        when (state.signMode) {
-            SignMode.Unknown            -> error("Developer error, invalid sign mode")
-            SignMode.SignIn             -> handleLogin(action)
-            SignMode.SignUp             -> handleRegisterWith(action)
-            SignMode.SignInWithMatrixId -> handleDirectLogin(action, null)
-        }.exhaustive
-    }
+//    private fun handleLoginOrRegister(action: LoginAction.LoginOrRegister) = withState { state ->
+//        when (state.signMode) {
+//            SignMode.Unknown            -> error("Developer error, invalid sign mode")
+//            SignMode.SignIn             -> handleLogin(action)
+//            SignMode.SignUp             -> handleRegisterWith(action)
+//            SignMode.SignInWithMatrixId -> handleDirectLogin(action, null)
+//        }.exhaustive
+//    }
 
     private fun handleDirectLogin(action: LoginAction.LoginOrRegister, homeServerConnectionConfig: HomeServerConnectionConfig?) {
         setState {
@@ -667,25 +673,22 @@ class LoginViewModel @AssistedInject constructor(
                         )
                     }
                     null
+                }?.let {
+                    reAuthHelper.data = action.password
+                    onSessionCreated(it)
                 }
-                        ?.let {
-                            reAuthHelper.data = action.password
-                            onSessionCreated(it)
-                        }
             }
         }
     }
 
-    private fun startRegistrationFlow() {
-        currentJob = executeRegistrationStep {
-            it.getRegistrationFlow()
-        }
-    }
+//    private fun startRegistrationFlow() {
+//        currentJob = executeRegistrationStep {
+//            it.getRegistrationFlow()
+//        }
+//    }
 
     private fun startAuthenticationFlow() {
         // Ensure Wizard is ready
-        loginWizard
-
         _viewEvents.post(LoginViewEvents.OnSignModeSelected(SignMode.SignIn))
     }
 
@@ -735,12 +738,10 @@ class LoginViewModel @AssistedInject constructor(
 
     private fun handleUpdateHomeserver(action: LoginAction.UpdateHomeServer) {
         val homeServerConnectionConfig = homeServerConnectionConfigFactory.create(action.homeServerUrl)
-        if (homeServerConnectionConfig == null) {
-            // This is invalid
+        if (homeServerConnectionConfig == null)
             _viewEvents.post(LoginViewEvents.Failure(Throwable("Unable to create a HomeServerConnectionConfig")))
-        } else {
+        else
             getLoginFlow(homeServerConnectionConfig)
-        }
     }
 
     private fun getLoginFlow(homeServerConnectionConfig: HomeServerConnectionConfig) {
@@ -795,6 +796,8 @@ class LoginViewModel @AssistedInject constructor(
                             loginModeSupportedTypes = data.supportedLoginTypes.toList()
                     )
                 }
+                _viewEvents.post(LoginViewEvents.OnHomeserverSelection)
+
                 if ((loginMode == LoginMode.Password && !data.isLoginAndRegistrationSupported)
                         || data.isOutdatedHomeserver) {
                     // Notify the UI
@@ -804,9 +807,7 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun getInitialHomeServerUrl(): String? {
-        return loginConfig?.homeServerUrl
-    }
+    fun getInitialHomeServerUrl() = loginConfig?.homeServerUrl
 
     fun getSsoUrl(redirectUrl: String, deviceId: String?, providerId: String?): String? {
         return authenticationService.getSsoUrl(redirectUrl, deviceId, providerId)

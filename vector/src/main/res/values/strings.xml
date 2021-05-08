@@ -581,6 +581,16 @@
 
     <!-- Authentication -->
     <string name="auth_login">Log in</string>
+    <string name="auth_send_otp">Send OTP</string>
+    <string name="auth_resend_email_otp">Resend Email OTP</string>
+    <string name="auth_resend_mobile_otp">Resend Mobile OTP</string>
+    <string name="auth_verify_otp">Verify OTP to Login</string>
+    <string name="auth_resend_email_otp_query">You can resend email OTP in %d secs</string>
+    <string name="auth_resend_mobile_otp_query">You can resend mobile no OTP in %d secs</string>
+    <string name="auth_secs"> secs</string>
+    <string name="auth_enter_email_otp">Enter Email OTP</string>
+    <string name="auth_enter_mobile_otp">Enter Mobile OTP</string>
+
     <string name="auth_login_sso">Sign in with single sign-on</string>
     <string name="auth_register">Create Account</string>
     <string name="auth_submit">Submit</string>
@@ -1794,6 +1804,8 @@
     <string name="deactivate_account_submit">Deactivate Account</string>
 
     <string name="error_empty_field_enter_user_name">Please enter a username.</string>
+    <string name="error_empty_field_enter_email_otp">Please enter valid email OTP.</string>
+    <string name="error_empty_field_enter_mobile_otp">Please enter valid mobile No OTP.</string>
     <string name="error_empty_field_your_password">Please enter your password.</string>
     <string name="room_tombstone_versioned_description">This room has been replaced and is no longer active</string>
     <string name="room_tombstone_continuation_link">The conversation continues here</string>
@@ -2385,6 +2397,7 @@
     <string name="login_signin_to">Sign in to %1$s</string>
     <string name="login_signup">Sign Up</string>
     <string name="login_signin">Sign In</string>
+    <string name="login_signup_signin">Sign Up / Sign In</string>
     <string name="login_signin_sso">Continue with SSO</string>
     <string name="login_clear_homeserver_history">Clear history</string>
 
@@ -2457,6 +2470,7 @@
     <string name="login_signin_username_hint">Username or email</string>
     <string name="login_signup_username_hint">Username</string>
     <string name="login_signup_password_hint">Password</string>
+    <string name="login_signup_mobile_hint">Mobile No</string>
     <string name="login_signup_submit">Next</string>
     <string name="login_signup_error_user_in_use">That username is taken</string>
     <string name="login_signup_cancel_confirmation_title">Warning</string>
@@ -2993,6 +3007,7 @@
 
     <string name="error_empty_field_choose_user_name">Please choose a username.</string>
     <string name="error_empty_field_choose_password">Please choose a password.</string>
+    <string name="error_empty_field_enter_mobile">Please enter valid mobile number.</string>
     <string name="external_link_confirmation_title">Double-check this link</string>
     <string name="external_link_confirmation_message">The link %1$s is taking you to another site: %2$s.\n\nAre you sure you want to continue?</string>
 

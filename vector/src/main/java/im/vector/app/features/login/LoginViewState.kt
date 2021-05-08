@@ -31,10 +31,11 @@ data class LoginViewState(
         val asyncRegistration: Async<Unit> = Uninitialized,
 
         // User choices
+        //        val serverType: ServerType = ServerType.Unknown,
         @PersistState
-        val serverType: ServerType = ServerType.Unknown,
+        val serverType: ServerType = ServerType.Other,
         @PersistState
-        val signMode: SignMode = SignMode.Unknown,
+        val signMode: SignMode = SignMode.SignIn,
         @PersistState
         val resetPasswordEmail: String? = null,
         @PersistState

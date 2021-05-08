@@ -34,6 +34,7 @@ sealed class LoginAction : VectorViewModelAction {
 
     // Login or Register, depending on the signMode
     data class LoginOrRegister(val username: String, val password: String, val initialDeviceName: String) : LoginAction()
+    data class VerifyOTP(val username: String, val otp: String) : LoginAction()
 
     // Register actions
     open class RegisterAction : LoginAction()

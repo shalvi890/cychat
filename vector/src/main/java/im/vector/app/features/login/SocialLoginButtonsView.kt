@@ -60,9 +60,9 @@ class SocialLoginButtonsView @JvmOverloads constructor(context: Context, attrs: 
 
     private fun update() {
         val cachedViews = emptyMap<String, MaterialButton>().toMutableMap()
-        children.filterIsInstance<MaterialButton>().forEach {
-            cachedViews[it.getTag(R.id.loginSignupSigninSocialLoginButtons)?.toString() ?: ""] = it
-        }
+//        children.filterIsInstance<MaterialButton>().forEach {
+//            cachedViews[it.getTag(R.id.loginSignupSigninSocialLoginButtons)?.toString() ?: ""] = it
+//        }
         removeAllViews()
         if (ssoIdentityProviders.isNullOrEmpty()) {
             // Put a default sign in with sso button
@@ -111,7 +111,7 @@ class SocialLoginButtonsView @JvmOverloads constructor(context: Context, attrs: 
                         }
                     }
             button.text = getButtonTitle(identityProvider.name)
-            button.setTag(R.id.loginSignupSigninSocialLoginButtons, identityProvider.id)
+//            button.setTag(R.id.loginSignupSigninSocialLoginButtons, identityProvider.id)
             button.setOnClickListener {
                 listener?.onProviderSelected(identityProvider.id)
             }

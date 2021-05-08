@@ -29,7 +29,7 @@ sealed class LoginViewEvents : VectorViewEvents {
 
     data class RegistrationFlowResult(val flowResult: FlowResult, val isRegistrationStarted: Boolean) : LoginViewEvents()
     object OutdatedHomeserver : LoginViewEvents()
-
+    object OnHomeserverSelection : LoginViewEvents()
     // Navigation event
 
     object OpenServerSelection : LoginViewEvents()
@@ -42,6 +42,8 @@ sealed class LoginViewEvents : VectorViewEvents {
     object OnResetPasswordMailConfirmationSuccessDone : LoginViewEvents()
 
     data class OnSendEmailSuccess(val email: String) : LoginViewEvents()
+    object OnSendOTPs : LoginViewEvents()
+    object OnOTPSendSuccess : LoginViewEvents()
     data class OnSendMsisdnSuccess(val msisdn: String) : LoginViewEvents()
 
     data class OnWebLoginError(val errorCode: Int, val description: String, val failingUrl: String) : LoginViewEvents()

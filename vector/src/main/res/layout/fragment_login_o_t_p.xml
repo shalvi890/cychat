@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?riotx_background">
+
+    <androidx.core.widget.NestedScrollView style="@style/LoginFormScrollView">
+
+        <LinearLayout style="@style/LoginFormContainer">
+
+            <ImageView
+                style="@style/LoginLogo"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/loginTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Vector.Login.Title"
+                tools:text="@string/auth_verify_otp" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/otpEmailFieldTil"
+                style="@style/VectorTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/auth_enter_email_otp"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/otpEmailField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/emailOTPTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Vector.Login.Title.Small"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/auth_resend_email_otp_query" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnResendEmailOTP"
+                style="@style/Style.Vector.Login.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:enabled="false"
+                android:text="@string/auth_resend_email_otp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RelativeOverlap" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/otpMobileFieldTil"
+                style="@style/VectorTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/auth_enter_mobile_otp"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/otpMobileField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/mobileOTPTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.Vector.Login.Title.Small"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/auth_resend_email_otp_query" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnResendMobileOTP"
+                style="@style/Style.Vector.Login.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:enabled="false"
+                android:text="@string/auth_resend_mobile_otp"
+                tools:ignore="RelativeOverlap" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/loginSubmit"
+                style="@style/Style.Vector.Login.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:enabled="false"
+                android:text="@string/auth_login"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RelativeOverlap" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>
+

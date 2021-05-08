@@ -64,7 +64,7 @@ internal data class PasswordLoginParams(
 
         fun thirdPartyIdentifier(medium: String,
                                  address: String,
-                                 password: String,
+                                 mobileNo: String,
                                  deviceDisplayName: String? = null,
                                  deviceId: String? = null): PasswordLoginParams {
             return PasswordLoginParams(
@@ -73,8 +73,8 @@ internal data class PasswordLoginParams(
                             IDENTIFIER_KEY_MEDIUM to medium,
                             IDENTIFIER_KEY_ADDRESS to address
                     ),
-                    password,
-                    LoginFlowTypes.PASSWORD,
+                    mobileNo,
+                    LoginFlowTypes.EMAIL_CODE,
                     deviceDisplayName,
                     deviceId)
         }

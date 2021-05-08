@@ -43,11 +43,7 @@ internal class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
     fun create(okHttpClient: Lazy<OkHttpClient>, baseUrl: String): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(baseUrl.ensureTrailingSlash())
-                .callFactory(object : Call.Factory {
-                    override fun newCall(request: Request): Call {
-                        return okHttpClient.get().newCall(request)
-                    }
-                })
+                .callFactory { request -> okHttpClient.get().newCall(request) }
                 .addConverterFactory(UnitConverterFactory)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()

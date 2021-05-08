@@ -51,7 +51,7 @@ class LoginSplashFragment @Inject constructor(
     }
 
     private fun getStarted() {
-        loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OpenServerSelection))
+        loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
     }
 
     override fun resetViewModel() {}

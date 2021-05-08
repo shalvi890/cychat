@@ -160,8 +160,16 @@ open class LoginActivity : VectorBaseActivity<ActivityLoginBinding>(), ToolbarCo
             is LoginViewEvents.OnSignModeSelected                         -> onSignModeSelected(loginViewEvents)
             is LoginViewEvents.OnLoginFlowRetrieved                       ->
                 addFragmentToBackstack(R.id.loginFragmentContainer,
-                        LoginSignUpSignInSelectionFragment::class.java,
+                        LoginFragment::class.java,
+                        tag = FRAGMENT_LOGIN_TAG,
                         option = commonOption)
+//                addFragmentToBackstack(R.id.loginFragmentContainer,
+//                        LoginSignUpSignInSelectionFragment::class.java,
+//                        option = commonOption)
+            is LoginViewEvents.OnSendOTPs                                 -> addFragmentToBackstack(R.id.loginFragmentContainer,
+                    LoginOTPFragment::class.java,
+                    tag = FRAGMENT_LOGIN_TAG,
+                    option = commonOption)
             is LoginViewEvents.OnWebLoginError                            -> onWebLoginError(loginViewEvents)
             is LoginViewEvents.OnForgetPasswordClicked                    ->
                 addFragmentToBackstack(R.id.loginFragmentContainer,
@@ -195,10 +203,12 @@ open class LoginActivity : VectorBaseActivity<ActivityLoginBinding>(), ToolbarCo
                         LoginGenericTextInputFormFragmentArgument(TextInputFormFragmentMode.ConfirmMsisdn, true, loginViewEvents.msisdn),
                         tag = FRAGMENT_REGISTRATION_STAGE_TAG,
                         option = commonOption)
+            is LoginViewEvents.OnOTPSendSuccess                           -> Unit
             is LoginViewEvents.Failure,
             is LoginViewEvents.Loading                                    ->
                 // This is handled by the Fragments
                 Unit
+            else                                                          -> Unit
         }.exhaustive
     }
 
