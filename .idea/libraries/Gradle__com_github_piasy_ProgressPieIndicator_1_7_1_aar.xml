@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.piasy:ProgressPieIndicator:1.7.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8b1a75fd51a0941d8297f474f6c7772b/transformed/jetified-ProgressPieIndicator-1.7.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8b1a75fd51a0941d8297f474f6c7772b/transformed/jetified-ProgressPieIndicator-1.7.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8b1a75fd51a0941d8297f474f6c7772b/transformed/jetified-ProgressPieIndicator-1.7.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/6ca02a597db00a07402140211fa87639/transformed/jetified-ProgressPieIndicator-1.7.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/6ca02a597db00a07402140211fa87639/transformed/jetified-ProgressPieIndicator-1.7.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/6ca02a597db00a07402140211fa87639/transformed/jetified-ProgressPieIndicator-1.7.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.piasy/ProgressPieIndicator/1.7.1/97ff586681b6ff98210245e444383afdc6e28622/ProgressPieIndicator-1.7.1-javadoc.jar!/" />

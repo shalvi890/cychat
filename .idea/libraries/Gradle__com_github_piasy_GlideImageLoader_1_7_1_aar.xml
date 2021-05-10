@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.piasy:GlideImageLoader:1.7.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/27f45a3f11daafe1876745b09df0e6b8/transformed/jetified-GlideImageLoader-1.7.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/27f45a3f11daafe1876745b09df0e6b8/transformed/jetified-GlideImageLoader-1.7.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/27f45a3f11daafe1876745b09df0e6b8/transformed/jetified-GlideImageLoader-1.7.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/7bca2f2612527d5d1b598f379b7b6f05/transformed/jetified-GlideImageLoader-1.7.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7bca2f2612527d5d1b598f379b7b6f05/transformed/jetified-GlideImageLoader-1.7.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/7bca2f2612527d5d1b598f379b7b6f05/transformed/jetified-GlideImageLoader-1.7.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.piasy/GlideImageLoader/1.7.1/7527de73644d061b93e727a2353aa77d8b603df7/GlideImageLoader-1.7.1-javadoc.jar!/" />

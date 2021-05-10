@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: me.saket:better-link-movement-method:2.2.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/503dc1110b3c55de862c4ac1b8d7bb68/transformed/jetified-better-link-movement-method-2.2.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/503dc1110b3c55de862c4ac1b8d7bb68/transformed/jetified-better-link-movement-method-2.2.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/503dc1110b3c55de862c4ac1b8d7bb68/transformed/jetified-better-link-movement-method-2.2.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f3b1b221aaa83af7f89470d90eed4412/transformed/jetified-better-link-movement-method-2.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f3b1b221aaa83af7f89470d90eed4412/transformed/jetified-better-link-movement-method-2.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f3b1b221aaa83af7f89470d90eed4412/transformed/jetified-better-link-movement-method-2.2.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.saket/better-link-movement-method/2.2.0/3d77f1cb4861755c0979373ce8a7e62c72a7d199/better-link-movement-method-2.2.0-javadoc.jar!/" />

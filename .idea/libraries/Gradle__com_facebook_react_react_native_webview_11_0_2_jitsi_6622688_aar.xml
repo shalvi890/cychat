@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.facebook.react:react-native-webview:11.0.2-jitsi-6622688@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/bb7e0856b769073246335134fc382bd8/transformed/jetified-react-native-webview-11.0.2-jitsi-6622688/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/bb7e0856b769073246335134fc382bd8/transformed/jetified-react-native-webview-11.0.2-jitsi-6622688/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/bb7e0856b769073246335134fc382bd8/transformed/jetified-react-native-webview-11.0.2-jitsi-6622688/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/45641b34e34bb282d80a5dd6ab990548/transformed/jetified-react-native-webview-11.0.2-jitsi-6622688/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/45641b34e34bb282d80a5dd6ab990548/transformed/jetified-react-native-webview-11.0.2-jitsi-6622688/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/45641b34e34bb282d80a5dd6ab990548/transformed/jetified-react-native-webview-11.0.2-jitsi-6622688/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

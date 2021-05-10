@@ -50,11 +50,6 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
             }
             return@setOnEditorActionListener false
         }
-
-        loginViewModel.observeViewEvents {
-            if (it == LoginViewEvents.OnHomeserverSelection)
-                loginViewModel.handle(LoginAction.LoginOrRegister("tejas", "tejas", getString(R.string.login_default_session_public_name)))
-        }
     }
 
     private fun setupEmailOTP() {
@@ -136,7 +131,9 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         }
 
         if (error == 0)
-            loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
+            loginViewModel.handleCyCheckOTP("", mobileOTP, emailOTP)
+
+//        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
     }
 
     private fun cleanupUi() {

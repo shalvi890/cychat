@@ -39,4 +39,8 @@ internal object NetworkConstants {
 
     // Federation
     const val URI_FEDERATION_PATH = "_matrix/federation/v1/"
+
+    // Cy Chat APIs
+    const val USER_LOGIN = "/user-login"
+    const val CHECK_OTP = "/check-otp"
 }

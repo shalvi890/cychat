@@ -39,6 +39,10 @@ import im.vector.app.core.platform.VectorViewModel
 import im.vector.app.core.resources.StringProvider
 import im.vector.app.core.utils.ensureTrailingSlash
 import im.vector.app.features.signout.soft.SoftLogoutActivity
+import io.reactivex.SingleObserver
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.matrix.android.sdk.api.auth.AuthenticationService
@@ -54,6 +58,9 @@ import org.matrix.android.sdk.api.auth.registration.Stage
 import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.session.Session
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 
@@ -117,6 +124,8 @@ class LoginViewModel @AssistedInject constructor(
 
     private var loginConfig: LoginConfig? = null
 
+    private var loginParams: PasswordLoginParams? = null
+
     private var currentJob: Job? = null
         set(value) {
             // Cancel any previous Job
@@ -130,7 +139,6 @@ class LoginViewModel @AssistedInject constructor(
             is LoginAction.InitWith                   -> handleInitWith(action)
             is LoginAction.UpdateHomeServer           -> handleUpdateHomeserver(action).also { lastAction = action }
             is LoginAction.LoginOrRegister            -> handleLogin(action).also { lastAction = action }
-            is LoginAction.VerifyOTP                  -> handleVerifyOTP(action)
             is LoginAction.LoginWithToken             -> handleLoginWithToken(action)
             is LoginAction.WebLoginSuccess            -> handleWebLoginSuccess(action)
             is LoginAction.ResetPassword              -> handleResetPassword(action)
@@ -141,13 +149,66 @@ class LoginViewModel @AssistedInject constructor(
             is LoginAction.UserAcceptCertificate      -> handleUserAcceptCertificate(action)
             LoginAction.ClearHomeServerHistory        -> handleClearHomeServerHistory()
             is LoginAction.PostViewEvent              -> _viewEvents.post(action.viewEvent)
+//            // Cy Related Conditions Start here
+//            is LoginAction.CyLogin                    -> handleCyLogin(action)
+//            is LoginAction.CyCheckOTP                 -> handleCyCheckOTP(action)
             else                                      -> Unit
             //This Case Added By Me As we wont be needing all above cases working
         }.exhaustive
     }
 
-    private fun handleVerifyOTP(action: LoginAction.VerifyOTP) {
-        Timber.d(action.toString())
+    fun handleCyLogin(auth: String, passwordLoginParams: PasswordLoginParams) {
+        loginParams = passwordLoginParams
+        authenticationService.cyLogin(auth, passwordLoginParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getCyLoginObserver())
+    }
+
+    private fun getCyLoginObserver(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok")
+                    _viewEvents.post(LoginViewEvents.OnSendOTPs)
+                else
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                _viewEvents.post(LoginViewEvents.Failure(e))
+            }
+        }
+    }
+
+    fun handleCyCheckOTP(auth: String, emailOTP: String, mobileOTP: String) {
+        loginParams?.let {
+            val checkOTPParams = VerifyOTPParams(it.email, it.mobile, it.imei, emailOTP, mobileOTP)
+            authenticationService.checkOTP(auth, checkOTPParams)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getCyCheckOTPObserver())
+        }
+    }
+
+    private fun getCyCheckOTPObserver(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok") {
+                    LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
+                } else
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                _viewEvents.post(LoginViewEvents.Failure(e))
+            }
+        }
     }
 
     private fun handleUserAcceptCertificate(action: LoginAction.UserAcceptCertificate) {
@@ -796,7 +857,7 @@ class LoginViewModel @AssistedInject constructor(
                             loginModeSupportedTypes = data.supportedLoginTypes.toList()
                     )
                 }
-                _viewEvents.post(LoginViewEvents.OnHomeserverSelection)
+                handle(LoginAction.LoginOrRegister(loginParams!!.email, "tejas", loginParams!!.imei))
 
                 if ((loginMode == LoginMode.Password && !data.isLoginAndRegistrationSupported)
                         || data.isOutdatedHomeserver) {

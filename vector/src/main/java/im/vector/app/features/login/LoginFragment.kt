@@ -17,10 +17,12 @@
 package im.vector.app.features.login
 
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
@@ -32,6 +34,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.failure.MatrixError
+import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import javax.inject.Inject
 
 /**
@@ -44,7 +47,7 @@ import javax.inject.Inject
  */
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>() {
 
-    private var passwordShown = false
+//    private var passwordShown = false
 //    private var isSignupMode = false
 
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
@@ -104,10 +107,6 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             views.loginFieldTil.error = getString(R.string.error_empty_field_enter_user_name)
             error++
         }
-        if (login.isDigitsOnly()) {
-            views.loginFieldTil.error = "The homeserver does not accept username with only digits."
-            error++
-        }
 
         if (mobileNo.isEmpty() && !mobileNo.isDigitsOnly() && mobileNo.length != 10) {
             views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
@@ -115,8 +114,8 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         }
 
         if (error == 0) {
-//            val deviceId = getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnSendOTPs))
+            val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
+            loginViewModel.handleCyLogin("", PasswordLoginParams(login, mobileNo, deviceId, ""))
 //            loginViewModel.handle(LoginAction.LoginOrRegister(login, password, getString(R.string.login_default_session_public_name)))
         }
     }
@@ -247,7 +246,8 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //                && throwable.error.code == MatrixError.M_WEAK_PASSWORD) {
 //            views.passwordFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        } else {
-        views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
+        Toast.makeText(requireContext(),throwable.message,Toast.LENGTH_LONG).show()
+//        views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        }
     }
 
@@ -262,7 +262,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         when (state.asyncLoginAction) {
             is Loading -> {
                 // Ensure password is hidden
-                passwordShown = false
+//                passwordShown = false
 //                renderPasswordField()
             }
             is Fail    -> {
@@ -286,15 +286,15 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             else       -> Unit
         }
 
-        when (state.asyncRegistration) {
-            is Loading -> {
-                // Ensure password is hidden
-                passwordShown = false
-//                renderPasswordField()
-            }
-            // Success is handled by the LoginActivity
-            else       -> Unit
-        }
+//        when (state.asyncRegistration) {
+//            is Loading -> {
+//                // Ensure password is hidden
+//                passwordShown = false
+////                renderPasswordField()
+//            }
+//            // Success is handled by the LoginActivity
+//            else       -> Unit
+//        }
     }
 
     /**

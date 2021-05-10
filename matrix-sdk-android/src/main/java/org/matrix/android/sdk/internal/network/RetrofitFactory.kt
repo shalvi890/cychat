@@ -16,13 +16,15 @@
 
 package org.matrix.android.sdk.internal.network
 
+import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.squareup.moshi.Moshi
 import dagger.Lazy
-import okhttp3.Call
 import okhttp3.OkHttpClient
-import okhttp3.Request
+import org.matrix.android.sdk.BuildConfig
 import org.matrix.android.sdk.internal.util.ensureTrailingSlash
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 
@@ -37,6 +39,16 @@ internal class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
                 .client(okHttpClient)
                 .addConverterFactory(UnitConverterFactory)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build()
+    }
+
+    fun create(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(BuildConfig.CY_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
                 .build()
     }
 

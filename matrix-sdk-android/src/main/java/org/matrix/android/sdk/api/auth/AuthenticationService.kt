@@ -16,6 +16,7 @@
 
 package org.matrix.android.sdk.api.auth
 
+import io.reactivex.Single
 import org.matrix.android.sdk.api.auth.data.Credentials
 import org.matrix.android.sdk.api.auth.data.HomeServerConnectionConfig
 import org.matrix.android.sdk.api.auth.data.LoginFlowResult
@@ -23,6 +24,9 @@ import org.matrix.android.sdk.api.auth.login.LoginWizard
 import org.matrix.android.sdk.api.auth.registration.RegistrationWizard
 import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.session.Session
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 
 /**
  * This interface defines methods to authenticate or to create an account to a matrix server.
@@ -106,4 +110,9 @@ interface AuthenticationService {
                                      matrixId: String,
                                      password: String,
                                      initialDeviceName: String): Session
+
+    fun cyLogin(auth:String, loginParams:PasswordLoginParams): Single<BaseResponse>
+
+    fun checkOTP(auth:String, verifyParams: VerifyOTPParams): Single<BaseResponse>
+
 }

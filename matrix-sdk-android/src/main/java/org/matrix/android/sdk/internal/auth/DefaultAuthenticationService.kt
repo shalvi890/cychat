@@ -18,7 +18,9 @@ package org.matrix.android.sdk.internal.auth
 
 import android.net.Uri
 import dagger.Lazy
+import io.reactivex.Single
 import okhttp3.OkHttpClient
+import org.matrix.android.sdk.BuildConfig
 import org.matrix.android.sdk.api.auth.AuthenticationService
 import org.matrix.android.sdk.api.auth.data.Credentials
 import org.matrix.android.sdk.api.auth.data.HomeServerConnectionConfig
@@ -39,6 +41,10 @@ import org.matrix.android.sdk.internal.auth.registration.DefaultRegistrationWiza
 import org.matrix.android.sdk.internal.auth.version.Versions
 import org.matrix.android.sdk.internal.auth.version.isLoginAndRegistrationSupportedBySdk
 import org.matrix.android.sdk.internal.auth.version.isSupportedBySdk
+import org.matrix.android.sdk.internal.cy_auth.CyAuthAPI
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.di.Unauthenticated
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 import org.matrix.android.sdk.internal.network.executeRequest
@@ -393,9 +399,28 @@ internal class DefaultAuthenticationService @Inject constructor(
         return directLoginTask.execute(DirectLoginTask.Params(homeServerConnectionConfig, matrixId, password, initialDeviceName))
     }
 
+    override fun cyLogin(auth: String, loginParams: PasswordLoginParams): Single<BaseResponse> {
+        return buildCyAuthAPI().login(auth, loginParams)
+    }
+
+    override fun checkOTP(auth: String, verifyParams: VerifyOTPParams): Single<BaseResponse> {
+        return buildCyAuthAPI().checkOTP(auth, verifyParams)
+    }
+
     private fun buildAuthAPI(homeServerConnectionConfig: HomeServerConnectionConfig): AuthAPI {
         val retrofit = retrofitFactory.create(buildClient(homeServerConnectionConfig), homeServerConnectionConfig.homeServerUri.toString())
         return retrofit.create(AuthAPI::class.java)
+    }
+
+    private fun buildCyAuthAPI(): CyAuthAPI {
+        val retrofit = retrofitFactory.create(buildClient())
+        return retrofit.create(CyAuthAPI::class.java)
+    }
+
+    private fun buildClient(): OkHttpClient {
+        return okHttpClient.get()
+                .newBuilder()
+                .build()
     }
 
     private fun buildClient(homeServerConnectionConfig: HomeServerConnectionConfig): OkHttpClient {

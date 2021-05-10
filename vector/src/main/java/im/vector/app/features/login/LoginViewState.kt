@@ -29,7 +29,8 @@ data class LoginViewState(
         val asyncResetPassword: Async<Unit> = Uninitialized,
         val asyncResetMailConfirmed: Async<Unit> = Uninitialized,
         val asyncRegistration: Async<Unit> = Uninitialized,
-
+        val asyncCyLogin: Async<Unit> = Uninitialized,
+        val asyncCyCheckOTP: Async<Unit> = Uninitialized,
         // User choices
         //        val serverType: ServerType = ServerType.Unknown,
         @PersistState
