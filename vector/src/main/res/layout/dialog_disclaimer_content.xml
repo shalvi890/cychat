@@ -43,7 +43,6 @@
         android:id="@+id/disclaimerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/disclaimer_title"
         android:textColor="?riotx_text_primary"
         android:textSize="20sp"
         android:textStyle="bold"

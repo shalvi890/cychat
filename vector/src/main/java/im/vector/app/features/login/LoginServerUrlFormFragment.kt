@@ -82,11 +82,11 @@ class LoginServerUrlFormFragment @Inject constructor() : AbstractLoginFragment<F
         when (state.serverType) {
             ServerType.EMS -> {
                 views.loginServerUrlFormIcon.isVisible = true
-                views.loginServerUrlFormTitle.text = getString(R.string.login_connect_to_modular)
+//                views.loginServerUrlFormTitle.text = getString(R.string.login_connect_to_modular)
                 views.loginServerUrlFormText.text = getString(R.string.login_server_url_form_modular_text)
                 views.loginServerUrlFormLearnMore.isVisible = true
-                views.loginServerUrlFormHomeServerUrlTil.hint = getText(R.string.login_server_url_form_modular_hint)
-                views.loginServerUrlFormNotice.text = getString(R.string.login_server_url_form_modular_notice)
+//                views.loginServerUrlFormHomeServerUrlTil.hint = getText(R.string.login_server_url_form_modular_hint)
+//                views.loginServerUrlFormNotice.text = getString(R.string.login_server_url_form_modular_notice)
             }
             else           -> {
                 views.loginServerUrlFormIcon.isVisible = false
