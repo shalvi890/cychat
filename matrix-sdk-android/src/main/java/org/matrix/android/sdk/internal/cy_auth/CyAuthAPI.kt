@@ -34,7 +34,7 @@ interface CyAuthAPI {
             @Header("Authorization") auth: String,
             @Body loginParams: PasswordLoginParams): Single<BaseResponse>
 
-    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "")
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.CHECK_OTP)
     fun checkOTP(
             @Header("Authorization") auth: String,

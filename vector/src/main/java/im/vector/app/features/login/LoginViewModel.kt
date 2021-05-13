@@ -149,9 +149,6 @@ class LoginViewModel @AssistedInject constructor(
             is LoginAction.UserAcceptCertificate      -> handleUserAcceptCertificate(action)
             LoginAction.ClearHomeServerHistory        -> handleClearHomeServerHistory()
             is LoginAction.PostViewEvent              -> _viewEvents.post(action.viewEvent)
-//            // Cy Related Conditions Start here
-//            is LoginAction.CyLogin                    -> handleCyLogin(action)
-//            is LoginAction.CyCheckOTP                 -> handleCyCheckOTP(action)
             else                                      -> Unit
             //This Case Added By Me As we wont be needing all above cases working
         }.exhaustive
@@ -163,22 +160,37 @@ class LoginViewModel @AssistedInject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getCyLoginObserver())
+        setState {
+            copy(
+                    asyncCyLogin = Loading()
+            )
+        }
     }
 
     private fun getCyLoginObserver(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {
-                if (t.status == "ok")
+                if (t.message == "otp sent")
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                 else
                     _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                setState {
+                    copy(
+                            asyncCyLogin = Success(Unit)
+                    )
+                }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
                 _viewEvents.post(LoginViewEvents.Failure(e))
+                setState {
+                    copy(
+                            asyncCyLogin = Success(Unit)
+                    )
+                }
             }
         }
     }
@@ -191,6 +203,11 @@ class LoginViewModel @AssistedInject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getCyCheckOTPObserver())
         }
+        setState {
+            copy(
+                    asyncCyCheckOTP = Loading()
+            )
+        }
     }
 
     private fun getCyCheckOTPObserver(): SingleObserver<BaseResponse> {
@@ -201,12 +218,22 @@ class LoginViewModel @AssistedInject constructor(
                     LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
                 } else
                     _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                setState {
+                    copy(
+                            asyncCyCheckOTP = Success(Unit)
+                    )
+                }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
                 _viewEvents.post(LoginViewEvents.Failure(e))
+                setState {
+                    copy(
+                            asyncCyCheckOTP = Success(Unit)
+                    )
+                }
             }
         }
     }
@@ -857,7 +884,7 @@ class LoginViewModel @AssistedInject constructor(
                             loginModeSupportedTypes = data.supportedLoginTypes.toList()
                     )
                 }
-                handle(LoginAction.LoginOrRegister(loginParams!!.email, "tejas", loginParams!!.imei))
+                handle(LoginAction.LoginOrRegister("tejas", "tejas", "loginParams!!.imei"))
 
                 if ((loginMode == LoginMode.Password && !data.isLoginAndRegistrationSupported)
                         || data.isOutdatedHomeserver) {

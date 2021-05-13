@@ -131,7 +131,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         }
 
         if (error == 0)
-            loginViewModel.handleCyCheckOTP("", mobileOTP, emailOTP)
+            loginViewModel.handleCyCheckOTP("Bearer Avdhut", mobileOTP, emailOTP)
 
 //        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
     }

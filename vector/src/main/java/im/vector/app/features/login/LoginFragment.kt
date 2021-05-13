@@ -16,6 +16,7 @@
 
 package im.vector.app.features.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -58,7 +59,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+//        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
         setupSubmitButton()
 //        setupForgottenPasswordButton()
 //        setupPasswordReveal()
@@ -95,6 +96,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //        }
 //    }
 
+    @SuppressLint("HardwareIds")
     private fun submit() {
         cleanupUi()
 
@@ -115,7 +117,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin("", PasswordLoginParams(login, mobileNo, deviceId, ""))
+            loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, ""))
 //            loginViewModel.handle(LoginAction.LoginOrRegister(login, password, getString(R.string.login_default_session_public_name)))
         }
     }
