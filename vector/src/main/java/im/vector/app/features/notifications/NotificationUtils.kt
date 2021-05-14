@@ -249,24 +249,6 @@ class NotificationUtils @Inject constructor(private val context: Context,
 
         notification.flags = notification.flags or Notification.FLAG_NO_CLEAR
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            // some devices crash if this field is not set
-            // even if it is deprecated
-
-            // setLatestEventInfo() is deprecated on Android M, so we try to use
-            // reflection at runtime, to avoid compiler error: "Cannot resolve method.."
-            try {
-                val deprecatedMethod = notification.javaClass
-                        .getMethod("setLatestEventInfo",
-                                Context::class.java,
-                                CharSequence::class.java,
-                                CharSequence::class.java,
-                                PendingIntent::class.java)
-                deprecatedMethod.invoke(notification, context, stringProvider.getString(R.string.app_name), stringProvider.getString(subTitleResId), pi)
-            } catch (ex: Exception) {
-                Timber.e(ex, "## buildNotification(): Exception - setLatestEventInfo() Msg=")
-            }
-        }
         return notification
     }
 
@@ -487,7 +469,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
         val accentColor = ContextCompat.getColor(context, R.color.notification_accent_color)
         // Build the pending intent for when the notification is clicked
         val openRoomIntent = buildOpenRoomIntent(roomInfo.roomId)
-        val smallIcon = R.drawable.ic_status_bar
+        val smallIcon = R.drawable.element_logo_green
 
         val channelID = if (roomInfo.shouldBing) NOISY_NOTIFICATION_CHANNEL_ID else SILENT_NOTIFICATION_CHANNEL_ID
         return NotificationCompat.Builder(context, channelID)
@@ -588,7 +570,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                                         matrixId: String): Notification {
         val accentColor = ContextCompat.getColor(context, R.color.notification_accent_color)
         // Build the pending intent for when the notification is clicked
-        val smallIcon = R.drawable.ic_status_bar
+        val smallIcon = R.drawable.element_logo_green
 
         val channelID = if (inviteNotifiableEvent.noisy) NOISY_NOTIFICATION_CHANNEL_ID else SILENT_NOTIFICATION_CHANNEL_ID
 
@@ -651,7 +633,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                                      matrixId: String): Notification {
         val accentColor = ContextCompat.getColor(context, R.color.notification_accent_color)
         // Build the pending intent for when the notification is clicked
-        val smallIcon = R.drawable.ic_status_bar
+        val smallIcon = R.drawable.element_logo_green
 
         val channelID = if (simpleNotifiableEvent.noisy) NOISY_NOTIFICATION_CHANNEL_ID else SILENT_NOTIFICATION_CHANNEL_ID
 
@@ -749,7 +731,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                                      noisy: Boolean,
                                      lastMessageTimestamp: Long): Notification {
         val accentColor = ContextCompat.getColor(context, R.color.notification_accent_color)
-        val smallIcon = R.drawable.ic_status_bar
+        val smallIcon = R.drawable.element_logo_green
 
         return NotificationCompat.Builder(context, if (noisy) NOISY_NOTIFICATION_CHANNEL_ID else SILENT_NOTIFICATION_CHANNEL_ID)
                 // used in compat < N, after summary is built based on child notifications
@@ -833,7 +815,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                 NotificationCompat.Builder(context, NOISY_NOTIFICATION_CHANNEL_ID)
                         .setContentTitle(stringProvider.getString(R.string.app_name))
                         .setContentText(stringProvider.getString(R.string.settings_troubleshoot_test_push_notification_content))
-                        .setSmallIcon(R.drawable.ic_status_bar)
+                        .setSmallIcon(R.drawable.element_logo_green)
                         .setLargeIcon(getBitmap(context, R.drawable.element_logo_green))
                         .setColor(ContextCompat.getColor(context, R.color.notification_accent_color))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -858,9 +840,6 @@ class NotificationUtils @Inject constructor(private val context: Context,
      * Return true it the user has enabled the do not disturb mode
      */
     fun isDoNotDisturbModeOn(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return false
-        }
 
         // We cannot use NotificationManagerCompat here.
         val setting = context.getSystemService<NotificationManager>()!!.currentInterruptionFilter

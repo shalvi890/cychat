@@ -91,11 +91,11 @@ import im.vector.app.core.intent.getMimeTypeFromUri
 import im.vector.app.core.platform.VectorBaseFragment
 import im.vector.app.core.platform.showOptimizedSnackbar
 import im.vector.app.core.resources.ColorProvider
-import im.vector.app.core.ui.views.CurrentCallsView
-import im.vector.app.core.ui.views.KnownCallsViewHolder
 import im.vector.app.core.ui.views.ActiveConferenceView
+import im.vector.app.core.ui.views.CurrentCallsView
 import im.vector.app.core.ui.views.FailedMessagesWarningView
 import im.vector.app.core.ui.views.JumpToReadMarkerView
+import im.vector.app.core.ui.views.KnownCallsViewHolder
 import im.vector.app.core.ui.views.NotificationAreaView
 import im.vector.app.core.utils.Debouncer
 import im.vector.app.core.utils.DimensionConverter
@@ -333,7 +333,7 @@ class RoomDetailFragment @Inject constructor(
         views.roomToolbarContentView.debouncedClicks {
             navigator.openRoomProfile(requireActivity(), roomDetailArgs.roomId)
         }
-
+        roomDetailViewModel.handle(RoomDetailAction.EnterTrackingUnreadMessagesState)
         sharedActionViewModel
                 .observe()
                 .subscribe {
@@ -1025,7 +1025,7 @@ class RoomDetailFragment @Inject constructor(
             it.dispatchTo(stateRestorer)
             it.dispatchTo(scrollOnNewMessageCallback)
             it.dispatchTo(scrollOnHighlightedEventCallback)
-            updateJumpToReadMarkerViewVisibility()
+//            updateJumpToReadMarkerViewVisibility()
             jumpToBottomViewVisibilityManager.maybeShowJumpToBottomViewVisibilityWithDelay()
         }
         timelineEventController.addModelBuildListener(modelBuildListener)
@@ -1073,31 +1073,31 @@ class RoomDetailFragment @Inject constructor(
                 })
     }
 
-    private fun updateJumpToReadMarkerViewVisibility() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            withState(roomDetailViewModel) {
-                val showJumpToUnreadBanner = when (it.unreadState) {
-                    UnreadState.Unknown,
-                    UnreadState.HasNoUnread            -> false
-                    is UnreadState.ReadMarkerNotLoaded -> true
-                    is UnreadState.HasUnread           -> {
-                        if (it.canShowJumpToReadMarker) {
-                            val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                            val positionOfReadMarker = timelineEventController.getPositionOfReadMarker()
-                            if (positionOfReadMarker == null) {
-                                false
-                            } else {
-                                positionOfReadMarker > lastVisibleItem
-                            }
-                        } else {
-                            false
-                        }
-                    }
-                }
-                views.jumpToReadMarkerView.isVisible = showJumpToUnreadBanner
-            }
-        }
-    }
+//    private fun updateJumpToReadMarkerViewVisibility() {
+//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+//            withState(roomDetailViewModel) {
+//                val showJumpToUnreadBanner = when (it.unreadState) {
+//                    UnreadState.Unknown,
+//                    UnreadState.HasNoUnread            -> false
+//                    is UnreadState.ReadMarkerNotLoaded -> true
+//                    is UnreadState.HasUnread           -> {
+//                        if (it.canShowJumpToReadMarker) {
+//                            val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+//                            val positionOfReadMarker = timelineEventController.getPositionOfReadMarker()
+//                            if (positionOfReadMarker == null) {
+//                                false
+//                            } else {
+//                                positionOfReadMarker > lastVisibleItem
+//                            }
+//                        } else {
+//                            false
+//                        }
+//                    }
+//                }
+//                views.jumpToReadMarkerView.isVisible = false
+//            }
+//        }
+//    }
 
     private fun setupComposer() {
         val composerEditText = views.composerLayout.views.composerEditText
@@ -1654,8 +1654,8 @@ class RoomDetailFragment @Inject constructor(
     }
 
     override fun onReadMarkerVisible() {
-        updateJumpToReadMarkerViewVisibility()
-        roomDetailViewModel.handle(RoomDetailAction.EnterTrackingUnreadMessagesState)
+//        updateJumpToReadMarkerViewVisibility()
+//        roomDetailViewModel.handle(RoomDetailAction.EnterTrackingUnreadMessagesState)
     }
 
     override fun onPreviewUrlClicked(url: String) {
