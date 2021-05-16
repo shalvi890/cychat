@@ -35,6 +35,9 @@ abstract class MessageBlockCodeItem : AbsMessageItem<MessageBlockCodeItem.Holder
     override fun bind(holder: Holder) {
         super.bind(holder)
         holder.messageView.text = message
+        if (attributes.informationData.sentByMe) {
+            holder.messageView.text = attributes.informationData.sentByMe.toString()
+        }
         renderSendState(holder.messageView, holder.messageView)
         holder.messageView.setOnClickListener(attributes.itemClickListener)
         holder.messageView.setOnLongClickListener(attributes.itemLongClickListener)

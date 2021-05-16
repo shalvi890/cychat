@@ -22,6 +22,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
@@ -86,6 +88,13 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         holder.fileImageWrapper.setOnClickListener(attributes.itemClickListener)
         holder.fileImageWrapper.setOnLongClickListener(attributes.itemLongClickListener)
         holder.filenameView.paintFlags = (holder.filenameView.paintFlags or Paint.UNDERLINE_TEXT_FLAG)
+
+        if (attributes.informationData.sentByMe) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(holder.fileLayout as ConstraintLayout)
+            constraintSet.setHorizontalBias(holder.clFiles.id, 1f)
+            constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
+        }
     }
 
     override fun unbind(holder: Holder) {
@@ -103,6 +112,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         val fileImageWrapper by bind<ViewGroup>(R.id.messageFileImageView)
         val fileDownloadProgress by bind<ProgressBar>(R.id.messageFileProgressbar)
         val filenameView by bind<TextView>(R.id.messageFilenameView)
+        val clFiles by bind<ConstraintLayout>(R.id.clFiles)
     }
 
     companion object {

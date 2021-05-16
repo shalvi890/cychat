@@ -19,6 +19,8 @@ package im.vector.app.features.home.room.detail.timeline.item
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
@@ -68,6 +70,15 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         holder.mediaContentView.setOnClickListener(attributes.itemClickListener)
         holder.mediaContentView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.playContentView.visibility = if (playable) View.VISIBLE else View.GONE
+
+        if (attributes.informationData.sentByMe) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(holder.clImageVideo)
+            constraintSet.setHorizontalBias(holder.imageView.id, 1f)
+            constraintSet.connect(holder.imageView.id, ConstraintSet.END, holder.clImageVideo.id, ConstraintSet.END, 0)
+            constraintSet.connect(holder.imageView.id, ConstraintSet.TOP, holder.clImageVideo.id, ConstraintSet.TOP, 0)
+            constraintSet.applyTo(holder.clImageVideo)
+        }
     }
 
     override fun unbind(holder: Holder) {
@@ -86,6 +97,7 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         val imageView by bind<ImageView>(R.id.messageThumbnailView)
         val playContentView by bind<ImageView>(R.id.messageMediaPlayView)
         val mediaContentView by bind<ViewGroup>(R.id.messageContentMedia)
+        val clImageVideo by bind<ConstraintLayout>(R.id.clImageVideoView)
     }
 
     companion object {

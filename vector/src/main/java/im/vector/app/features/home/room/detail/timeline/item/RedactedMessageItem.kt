@@ -16,6 +16,10 @@
 
 package im.vector.app.features.home.room.detail.timeline.item
 
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.airbnb.epoxy.EpoxyModelClass
 import im.vector.app.R
 
@@ -26,7 +30,20 @@ abstract class RedactedMessageItem : AbsMessageItem<RedactedMessageItem.Holder>(
 
     override fun shouldShowReactionAtBottom() = false
 
-    class Holder : AbsMessageItem.Holder(STUB_ID)
+    class Holder : AbsMessageItem.Holder(STUB_ID) {
+        val tvMessage by bind<TextView>(R.id.tvMessage)
+        val viewGroup by bind<ViewGroup>(R.id.clRedacted)
+    }
+
+    override fun bind(holder: Holder) {
+        super.bind(holder)
+        if (attributes.informationData.sentByMe) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(holder.viewGroup as ConstraintLayout)
+            constraintSet.setHorizontalBias(holder.tvMessage.id, 1f)
+            constraintSet.applyTo(holder.viewGroup as ConstraintLayout)
+        }
+    }
 
     companion object {
         private const val STUB_ID = R.id.messageContentRedactedStub

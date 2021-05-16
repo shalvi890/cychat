@@ -19,17 +19,14 @@
         android:id="@+id/optionsButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical" />
 
-        <!-- Filled at runtime with buttons -->
-        <!--com.google.android.material.button.MaterialButton
-            android:id="@+id/pollButton1"
-            style="@style/Style.Vector.Poll.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Create Github issue" /-->
-
-    </LinearLayout>
-
+    <!-- Filled at runtime with buttons -->
+    <!--com.google.android.material.button.MaterialButton
+        android:id="@+id/pollButton1"
+        style="@style/Style.Vector.Poll.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Create Github issue" /-->
 
 </LinearLayout>

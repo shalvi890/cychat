@@ -16,9 +16,12 @@
 
 package im.vector.app.features.home.room.detail.timeline.item
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.google.android.material.button.MaterialButton
@@ -63,12 +66,13 @@ abstract class MessageOptionsItem : AbsMessageItem<MessageOptionsItem.Holder>() 
                 callback?.onTimelineItemAction(RoomDetailAction.ReplyToOptions(relatedEventId, index, option.value ?: "$index"))
             }
         }
+
+        if (attributes.informationData.sentByMe)
+            holder.labelText.gravity = Gravity.END
     }
 
     class Holder : AbsMessageItem.Holder(STUB_ID) {
-
         val labelText by bind<TextView>(R.id.optionLabelText)
-
         val buttonContainer by bind<ViewGroup>(R.id.optionsButtonContainer)
     }
 

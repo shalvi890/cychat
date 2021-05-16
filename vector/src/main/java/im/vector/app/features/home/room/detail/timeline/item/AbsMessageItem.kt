@@ -18,10 +18,13 @@ package im.vector.app.features.home.room.detail.timeline.item
 
 import android.graphics.Typeface
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
@@ -84,6 +87,13 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
             holder.avatarImageView.setOnLongClickListener(null)
             holder.memberNameView.setOnLongClickListener(null)
         }
+        if (attributes.informationData.sentByMe) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(holder.clParentView)
+            constraintSet.connect(holder.flStubContainer.id, ConstraintSet.END, holder.clParentView.id, ConstraintSet.END, 0)
+            constraintSet.connect(holder.flStubContainer.id, ConstraintSet.TOP, holder.memberNameView.id, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(holder.clParentView)
+        }
 
         // Render send state indicator
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
@@ -107,6 +117,8 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
         val timeView by bind<TextView>(R.id.messageTimeView)
         val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
         val eventSendingIndicator by bind<ProgressBar>(R.id.eventSendingIndicator)
+        val clParentView by bind<ConstraintLayout>(R.id.clStubContainer)
+        val flStubContainer by bind<FrameLayout>(R.id.viewStubContainer)
     }
 
     /**

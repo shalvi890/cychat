@@ -17,6 +17,7 @@
 package im.vector.app.features.home.room.detail.timeline.item
 
 import android.text.method.MovementMethod
+import android.view.Gravity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.PrecomputedTextCompat
 import androidx.core.view.isVisible
@@ -91,6 +92,10 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         holder.messageView.setOnClickListener(attributes.itemClickListener)
         holder.messageView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.messageView.setTextFuture(textFuture)
+        if (attributes.informationData.sentByMe) {
+            holder.messageView.gravity = Gravity.END
+            holder.previewUrlView.sentByMe()
+        }
     }
 
     override fun unbind(holder: Holder) {

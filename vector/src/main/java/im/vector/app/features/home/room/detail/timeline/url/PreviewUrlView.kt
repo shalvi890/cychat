@@ -19,6 +19,7 @@ package im.vector.app.features.home.room.detail.timeline.url
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import im.vector.app.R
@@ -136,5 +137,9 @@ class PreviewUrlView @JvmOverloads constructor(
         views.urlPreviewImage.isVisible = false
         views.urlPreviewDescription.isVisible = false
         views.urlPreviewSite.isVisible = false
+    }
+
+    fun sentByMe() {
+        views.urlPreviewImage.scaleType = ImageView.ScaleType.FIT_END
     }
 }
