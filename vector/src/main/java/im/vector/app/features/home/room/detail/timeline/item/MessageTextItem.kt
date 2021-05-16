@@ -95,7 +95,8 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         if (attributes.informationData.sentByMe) {
             holder.messageView.gravity = Gravity.END
             holder.previewUrlView.sentByMe()
-        }
+        } else
+            holder.messageView.gravity = Gravity.START
     }
 
     override fun unbind(holder: Holder) {

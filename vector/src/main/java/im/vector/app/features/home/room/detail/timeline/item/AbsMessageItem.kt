@@ -87,13 +87,13 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
             holder.avatarImageView.setOnLongClickListener(null)
             holder.memberNameView.setOnLongClickListener(null)
         }
-        if (attributes.informationData.sentByMe) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(holder.clParentView)
-            constraintSet.connect(holder.flStubContainer.id, ConstraintSet.END, holder.clParentView.id, ConstraintSet.END, 0)
-            constraintSet.connect(holder.flStubContainer.id, ConstraintSet.TOP, holder.memberNameView.id, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(holder.clParentView)
-        }
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(holder.clParentView)
+        if (attributes.informationData.sentByMe)
+            constraintSet.setHorizontalBias(holder.flStubContainer.id, 1f)
+        else
+            constraintSet.setHorizontalBias(holder.flStubContainer.id, 0f)
+        constraintSet.applyTo(holder.clParentView)
 
         // Render send state indicator
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
