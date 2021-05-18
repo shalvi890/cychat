@@ -446,9 +446,8 @@ dependencies {
     // Emoji Keyboard
     implementation 'com.vanniktech:emoji-material:0.7.0'
     implementation 'com.vanniktech:emoji-google:0.7.0'
-
     implementation 'im.dlg:android-dialer:1.2.5'
-
+    implementation 'com.hbb20:ccp:2.3.4'
     // TESTS
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.amshove.kluent:kluent-android:$kluent_version"

@@ -21,14 +21,56 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_vertical_margin"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Title"
-                tools:text="@string/login_signin_to" />
+                android:text="@string/login_signup_signin" />
+
+            <TextView
+                android:id="@+id/loginDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_vertical_margin"
+                android:text="@string/you_are_signing_up_for_your_ourganization_s_secure_instant_messanger"
+                android:textAppearance="@style/TextAppearance.Vector.Login.Text" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/firstNameFieldTil"
+                style="@style/VectorTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="@string/login_signin_first_name_hint"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/firstNameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lastNameFieldTil"
+                style="@style/VectorTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_signin_last_name_hint"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lastNameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/loginFieldTil"
                 style="@style/VectorTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
                 app:errorEnabled="true"
                 android:hint="@string/login_signin_username_hint">
 
@@ -41,27 +83,52 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/mobileNumberTil"
-                style="@style/VectorTextInputLayout"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/login_signup_mobile_hint"
-                app:errorEnabled="true"
-                app:errorIconDrawable="@null">
+                android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/mobileNumberField"
-                    android:layout_width="match_parent"
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="phone"
-                    android:maxLines="1"
-                    android:paddingEnd="48dp"
-                    tools:ignore="RtlSymmetry" />
+                    app:ccpDialog_fastScroller_bubbleColor="?riotx_text_primary"
+                    app:ccpDialog_fastScroller_bubbleTextAppearance="?riotx_text_primary"
+                    app:ccpDialog_fastScroller_handleColor="?riotx_text_secondary"
+                    app:ccpDialog_searchEditTextTint="?riotx_text_secondary"
+                    app:ccpDialog_textColor="?riotx_text_primary"
+                    app:ccp_contentColor="?riotx_text_primary"
+                    app:ccp_showFlag="false"
+                    app:layout_constraintBottom_toBottomOf="@id/mobileNumberTil"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/mobileNumberTil"
+                    app:layout_constraintVertical_bias="0.35" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/mobileNumberTil"
+                    style="@style/VectorTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_signup_mobile_hint"
+                    app:errorEnabled="true"
+                    app:errorIconDrawable="@null"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ccp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mobileNumberField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:paddingEnd="48dp"
+                        tools:ignore="RtlSymmetry" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <!--            <TextView-->

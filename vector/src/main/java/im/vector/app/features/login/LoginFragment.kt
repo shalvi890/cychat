@@ -27,12 +27,9 @@ import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
-import com.jakewharton.rxbinding3.widget.textChanges
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
-import io.reactivex.Observable
-import io.reactivex.rxkotlin.subscribeBy
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.failure.MatrixError
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
@@ -59,12 +56,11 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
+//        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
         setupSubmitButton()
 //        setupForgottenPasswordButton()
 //        setupPasswordReveal()
-
-        views.loginField.setOnEditorActionListener { _, actionId, _ ->
+        views.mobileNumberField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submit()
                 return@setOnEditorActionListener true
@@ -99,22 +95,45 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     @SuppressLint("HardwareIds")
     private fun submit() {
         cleanupUi()
-
+        val firstName = views.firstNameField.text.toString()
+        val lastName = views.lastNameField.text.toString()
         val login = views.loginField.text.toString()
         val mobileNo = views.mobileNumberField.text.toString()
-
-        // This can be called by the IME action, so deal with empty cases
+        val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
+        val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
         var error = 0
+        if (firstName.isEmpty()) {
+            views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
+            error++
+        }
+        if (!firstName.matches(nameRegex)) {
+            views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
+            error++
+        }
+        if (lastName.isEmpty()) {
+            views.lastNameFieldTil.error = getString(R.string.error_empty_field_enter_last_name)
+            error++
+        }
+        if (!lastName.matches(nameRegex)) {
+            views.lastNameFieldTil.error = getString(R.string.error_empty_field_enter_last_name)
+            error++
+        }
         if (login.isEmpty()) {
             views.loginFieldTil.error = getString(R.string.error_empty_field_enter_user_name)
             error++
         }
-
-        if (mobileNo.isEmpty() && !mobileNo.isDigitsOnly() && mobileNo.length != 10) {
+        if (!login.matches(emailRegex)) {
+            views.loginFieldTil.error = getString(R.string.error_empty_field_enter_user_name)
+            error++
+        }
+        if (mobileNo.isEmpty()) {
             views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
             error++
         }
-
+        if (!mobileNo.isDigitsOnly()) {
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+            error++
+        }
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
             loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, ""))
@@ -126,6 +145,8 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         views.loginSubmit.hideKeyboard()
         views.loginFieldTil.error = null
         views.mobileNumberTil.error = null
+        views.firstNameFieldTil.error = null
+        views.lastNameFieldTil.error = null
     }
 
 //    private fun setupUi(state: LoginViewState) {
@@ -205,18 +226,18 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
-        Observable
-                .combineLatest(
-                        views.loginField.textChanges().map { it.trim().isNotEmpty() },
-                        views.mobileNumberField.textChanges().map { it.isNotEmpty() && it.isDigitsOnly() && it.length == 10 },
-                        { isLoginNotEmpty, isPasswordNotEmpty ->
-                            isLoginNotEmpty && isPasswordNotEmpty
-                        }
-                ).subscribeBy {
-                    views.loginFieldTil.error = null
-                    views.mobileNumberTil.error = null
-                    views.loginSubmit.isEnabled = it
-                }.disposeOnDestroyView()
+//        Observable
+//                .combineLatest(
+//                        views.loginField.textChanges().map { it.trim().isNotEmpty() },
+//                        views.mobileNumberField.textChanges().map { it.isNotEmpty() && it.isDigitsOnly() },
+//                        { isLoginNotEmpty, isPasswordNotEmpty ->
+//                            isLoginNotEmpty && isPasswordNotEmpty
+//                        }
+//                ).subscribeBy {
+//                    views.loginFieldTil.error = null
+//                    views.mobileNumberTil.error = null
+//                    views.loginSubmit.isEnabled = it
+//                }.disposeOnDestroyView()
     }
 
 //    private fun forgetPasswordClicked() {

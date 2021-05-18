@@ -585,11 +585,13 @@
     <string name="auth_resend_email_otp">Resend Email OTP</string>
     <string name="auth_resend_mobile_otp">Resend Mobile OTP</string>
     <string name="auth_verify_otp">Verify OTP to Login</string>
+    <string name="auth_resend_email_otp_query_min">You can resend email OTP in %d mins %d secs</string>
+    <string name="auth_resend_mobile_otp_query_min">You can resend mobile no OTP in %d mins %d ecs</string>
     <string name="auth_resend_email_otp_query">You can resend email OTP in %d secs</string>
     <string name="auth_resend_mobile_otp_query">You can resend mobile no OTP in %d secs</string>
     <string name="auth_secs"> secs</string>
-    <string name="auth_enter_email_otp">Enter Email OTP</string>
-    <string name="auth_enter_mobile_otp">Enter Mobile OTP</string>
+    <string name="auth_enter_email_otp">Enter Email OTP*</string>
+    <string name="auth_enter_mobile_otp">Enter Mobile OTP*</string>
 
     <string name="auth_login_sso">Sign in with single sign-on</string>
     <string name="auth_register">Create Account</string>
@@ -1802,8 +1804,9 @@
     <string name="deactivate_account_delete_checkbox">Please forget all messages I have sent when my account is deactivated (Warning: this will cause future users to see an incomplete view of conversations)</string>
     <string name="deactivate_account_prompt_password">To continue, please enter your password:</string>
     <string name="deactivate_account_submit">Deactivate Account</string>
-
-    <string name="error_empty_field_enter_user_name">Please enter a username.</string>
+    <string name="error_empty_field_enter_first_name">Please enter valid first name</string>
+    <string name="error_empty_field_enter_last_name">Please enter valid last name</string>
+    <string name="error_empty_field_enter_user_name">Please enter valid organization\'s email address</string>
     <string name="error_empty_field_enter_email_otp">Please enter valid email OTP.</string>
     <string name="error_empty_field_enter_mobile_otp">Please enter valid mobile No OTP.</string>
     <string name="error_empty_field_your_password">Please enter your password.</string>
@@ -2467,10 +2470,12 @@
 
     <!-- Replaced string is the homeserver url -->
     <string name="login_signup_to">Sign up to %1$s</string>
-    <string name="login_signin_username_hint">Username or email</string>
+    <string name="login_signin_username_hint">Enter organization\'s email address*</string>
+    <string name="login_signin_first_name_hint">Enter first name*</string>
+    <string name="login_signin_last_name_hint">Enter last name*</string>
     <string name="login_signup_username_hint">Username</string>
     <string name="login_signup_password_hint">Password</string>
-    <string name="login_signup_mobile_hint">Mobile No</string>
+    <string name="login_signup_mobile_hint">Mobile No*</string>
     <string name="login_signup_submit">Next</string>
     <string name="login_signup_error_user_in_use">That username is taken</string>
     <string name="login_signup_cancel_confirmation_title">Warning</string>
@@ -3005,9 +3010,9 @@
 
     <string name="failed_to_initialize_cross_signing">Failed to set up Cross Signing</string>
 
-    <string name="error_empty_field_choose_user_name">Please choose a username.</string>
-    <string name="error_empty_field_choose_password">Please choose a password.</string>
-    <string name="error_empty_field_enter_mobile">Please enter valid mobile number.</string>
+    <string name="error_empty_field_choose_user_name">Please choose a username</string>
+    <string name="error_empty_field_choose_password">Please choose a password</string>
+    <string name="error_empty_field_enter_mobile">Please enter valid mobile number</string>
     <string name="external_link_confirmation_title">Double-check this link</string>
     <string name="external_link_confirmation_message">The link %1$s is taking you to another site: %2$s.\n\nAre you sure you want to continue?</string>
 
@@ -3265,4 +3270,5 @@
     <string name="event_status_failed_messages_warning">Messages failed to send</string>
     <string name="event_status_delete_all_failed_dialog_title">Delete unsent messages</string>
     <string name="event_status_delete_all_failed_dialog_message">Are you sure you want to delete all unsent messages in this room?</string>
+    <string name="you_are_signing_up_for_your_ourganization_s_secure_instant_messanger">You are signing up for your organization\'s secure Instant messenger.</string>
 </resources>
