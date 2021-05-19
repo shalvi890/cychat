@@ -25,8 +25,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
+import androidx.core.widget.doOnTextChanged
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.google.i18n.phonenumbers.Phonenumber
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
@@ -44,10 +47,10 @@ import javax.inject.Inject
  * - the user is asked for login and password
  */
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>() {
-
-//    private var passwordShown = false
+    val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
+    val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+    //    private var passwordShown = false
 //    private var isSignupMode = false
-
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
     // waiting for https://github.com/matrix-org/synapse/issues/7576
 //    private var isNumericOnlyUserIdForbidden = false
@@ -67,8 +70,46 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             }
             return@setOnEditorActionListener false
         }
+        views.ccp.setOnCountryChangeListener {
+            invalidMobileNumber()
+        }
     }
 
+    fun invalidMobileNumber(): Boolean {
+        if (views.mobileNumberField.text.toString().isNotBlank()) {
+            try {
+                val number = Phonenumber.PhoneNumber()
+                number.countryCode = views.ccp.selectedCountryCodeAsInt
+                number.nationalNumber = views.mobileNumberField.text.toString().toLong()
+                val isValid = PhoneNumberUtil.getInstance().isPossibleNumber(number)
+                if (!isValid) {
+                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+                    return true
+                }
+                val mobileLength = views.mobileNumberField.text.toString().length
+                if (views.ccp.selectedCountryCodeAsInt == 27) {
+                    if (views.mobileNumberField.text.toString()[0] == '0') {
+                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_9_digit_mobile)
+                        return true
+                    }
+                    if (mobileLength != 9) {
+                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+                        return true
+                    }
+                } else if (mobileLength != 10) {
+                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_10_digit_mobile)
+                    return true
+                }
+            } catch (ex: Exception) {
+                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+                return true
+            }
+            return false
+        } else {
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+            return true
+        }
+    }
 //    private fun setupForgottenPasswordButton() {
 //        views.forgetPasswordButton.setOnClickListener { forgetPasswordClicked() }
 //    }
@@ -99,8 +140,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         val lastName = views.lastNameField.text.toString()
         val login = views.loginField.text.toString()
         val mobileNo = views.mobileNumberField.text.toString()
-        val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
-        val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+
         var error = 0
         if (firstName.isEmpty()) {
             views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
@@ -134,6 +174,11 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
             error++
         }
+        if (!mobileNo.isDigitsOnly()) {
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+            error++
+        }
+        if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
             loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, ""))
@@ -226,18 +271,32 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
-//        Observable
-//                .combineLatest(
-//                        views.loginField.textChanges().map { it.trim().isNotEmpty() },
-//                        views.mobileNumberField.textChanges().map { it.isNotEmpty() && it.isDigitsOnly() },
-//                        { isLoginNotEmpty, isPasswordNotEmpty ->
-//                            isLoginNotEmpty && isPasswordNotEmpty
-//                        }
-//                ).subscribeBy {
-//                    views.loginFieldTil.error = null
-//                    views.mobileNumberTil.error = null
-//                    views.loginSubmit.isEnabled = it
-//                }.disposeOnDestroyView()
+        views.firstNameField.doOnTextChanged { firstName, _, _, _ ->
+            views.firstNameFieldTil.error = when {
+                firstName?.isEmpty() == true || (firstName?.matches(nameRegex) != true) ->
+                    getString(R.string.error_empty_field_enter_first_name)
+                else                                                                    -> null
+            }
+        }
+        views.lastNameField.doOnTextChanged { lastName, _, _, _ ->
+            views.lastNameFieldTil.error = when {
+                lastName?.isEmpty() == true || (lastName?.matches(nameRegex) != true) ->
+                    getString(R.string.error_empty_field_enter_first_name)
+                else                                                                  -> null
+            }
+        }
+        views.loginField.doOnTextChanged { email, _, _, _ ->
+            views.loginFieldTil.error = when {
+                email?.isEmpty() == true || (email?.matches(emailRegex) != true) ->
+                    getString(R.string.error_empty_field_enter_first_name)
+                else                                                             -> null
+            }
+
+        }
+        views.mobileNumberField.doOnTextChanged { _, _, _, _ ->
+            if (!invalidMobileNumber())
+                views.mobileNumberTil.error = null
+        }
     }
 
 //    private fun forgetPasswordClicked() {
