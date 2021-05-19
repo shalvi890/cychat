@@ -63,11 +63,11 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     private fun startCountDownForEmailOTP() {
         var counter = 600
         views.emailOTPTimer.isVisible = true
-        object : CountDownTimer(60000, 1000) {
+        object : CountDownTimer(600000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 try {
                     views.emailOTPTimer.text = if (counter > 60)
-                        getString(R.string.auth_resend_email_otp_query_min, counter / 60, counter)
+                        getString(R.string.auth_resend_email_otp_query_min, counter / 60, counter % 60)
                     else
                         getString(R.string.auth_resend_mobile_otp_query, counter)
                     counter--
@@ -96,11 +96,11 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     private fun startCountDownForMobileOTP() {
         var counter = 600
         views.mobileOTPTimer.isVisible = true
-        object : CountDownTimer(60000, 1000) {
+        object : CountDownTimer(600000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 try {
                     views.mobileOTPTimer.text = if (counter > 60)
-                        getString(R.string.auth_resend_email_otp_query_min, counter / 60, counter)
+                        getString(R.string.auth_resend_email_otp_query_min, counter / 60, counter % 60)
                     else
                         getString(R.string.auth_resend_mobile_otp_query, counter)
                     counter--
