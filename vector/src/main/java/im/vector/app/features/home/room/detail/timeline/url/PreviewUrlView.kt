@@ -138,8 +138,4 @@ class PreviewUrlView @JvmOverloads constructor(
         views.urlPreviewDescription.isVisible = false
         views.urlPreviewSite.isVisible = false
     }
-
-    fun sentByMe() {
-        views.urlPreviewImage.scaleType = ImageView.ScaleType.FIT_END
-    }
 }

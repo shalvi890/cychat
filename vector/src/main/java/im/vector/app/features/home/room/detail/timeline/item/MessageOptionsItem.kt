@@ -20,8 +20,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.google.android.material.button.MaterialButton
@@ -67,8 +65,10 @@ abstract class MessageOptionsItem : AbsMessageItem<MessageOptionsItem.Holder>() 
             }
         }
 
-        if (attributes.informationData.sentByMe)
-            holder.labelText.gravity = Gravity.END
+        holder.labelText.gravity = if (attributes.informationData.sentByMe)
+            Gravity.END
+        else
+            Gravity.START
     }
 
     class Holder : AbsMessageItem.Holder(STUB_ID) {

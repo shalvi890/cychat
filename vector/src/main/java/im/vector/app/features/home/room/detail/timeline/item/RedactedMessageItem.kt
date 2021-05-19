@@ -37,12 +37,13 @@ abstract class RedactedMessageItem : AbsMessageItem<RedactedMessageItem.Holder>(
 
     override fun bind(holder: Holder) {
         super.bind(holder)
-        if (attributes.informationData.sentByMe) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(holder.viewGroup as ConstraintLayout)
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(holder.viewGroup as ConstraintLayout)
+        if (attributes.informationData.sentByMe)
             constraintSet.setHorizontalBias(holder.tvMessage.id, 1f)
-            constraintSet.applyTo(holder.viewGroup as ConstraintLayout)
-        }
+        else
+            constraintSet.setHorizontalBias(holder.tvMessage.id, 0f)
+        constraintSet.applyTo(holder.viewGroup as ConstraintLayout)
     }
 
     companion object {

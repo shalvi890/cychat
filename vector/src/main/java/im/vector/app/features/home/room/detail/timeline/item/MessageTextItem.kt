@@ -92,10 +92,9 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         holder.messageView.setOnClickListener(attributes.itemClickListener)
         holder.messageView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.messageView.setTextFuture(textFuture)
-        if (attributes.informationData.sentByMe) {
+        if (attributes.informationData.sentByMe)
             holder.messageView.gravity = Gravity.END
-            holder.previewUrlView.sentByMe()
-        } else
+        else
             holder.messageView.gravity = Gravity.START
     }
 

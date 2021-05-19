@@ -88,13 +88,13 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         holder.fileImageWrapper.setOnClickListener(attributes.itemClickListener)
         holder.fileImageWrapper.setOnLongClickListener(attributes.itemLongClickListener)
         holder.filenameView.paintFlags = (holder.filenameView.paintFlags or Paint.UNDERLINE_TEXT_FLAG)
-
-        if (attributes.informationData.sentByMe) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(holder.fileLayout as ConstraintLayout)
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(holder.fileLayout as ConstraintLayout)
+        if (attributes.informationData.sentByMe)
             constraintSet.setHorizontalBias(holder.clFiles.id, 1f)
-            constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
-        }
+        else
+            constraintSet.setHorizontalBias(holder.clFiles.id, 0f)
+        constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
     }
 
     override fun unbind(holder: Holder) {

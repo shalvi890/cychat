@@ -70,15 +70,13 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         holder.mediaContentView.setOnClickListener(attributes.itemClickListener)
         holder.mediaContentView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.playContentView.visibility = if (playable) View.VISIBLE else View.GONE
-
-        if (attributes.informationData.sentByMe) {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(holder.clImageVideo)
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(holder.clImageVideo)
+        if (attributes.informationData.sentByMe)
             constraintSet.setHorizontalBias(holder.imageView.id, 1f)
-            constraintSet.connect(holder.imageView.id, ConstraintSet.END, holder.clImageVideo.id, ConstraintSet.END, 0)
-            constraintSet.connect(holder.imageView.id, ConstraintSet.TOP, holder.clImageVideo.id, ConstraintSet.TOP, 0)
-            constraintSet.applyTo(holder.clImageVideo)
-        }
+        else
+            constraintSet.setHorizontalBias(holder.imageView.id, 0f)
+        constraintSet.applyTo(holder.clImageVideo)
     }
 
     override fun unbind(holder: Holder) {
