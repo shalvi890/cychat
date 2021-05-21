@@ -20,6 +20,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.ActivityViewModelContext
 import com.airbnb.mvrx.Fail
@@ -59,6 +61,8 @@ import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import timber.log.Timber
@@ -125,6 +129,8 @@ class LoginViewModel @AssistedInject constructor(
     private var loginConfig: LoginConfig? = null
 
     private var loginParams: PasswordLoginParams? = null
+
+    val countryCodeList: MutableLiveData<CountryCodeParent> = MutableLiveData()
 
     private var currentJob: Job? = null
         set(value) {
@@ -210,20 +216,43 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun getListOfCountries(): SingleObserver<BaseResponse> {
-        return object : SingleObserver<BaseResponse> {
+    fun handleCountryList(auth: String) {
+        authenticationService.getCountryList(auth)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getListOfCountriesObserver())
+        setState {
+            copy(
+                    asyncGetCountryList = Loading()
+            )
+        }
+    }
 
-            override fun onSuccess(t: BaseResponse) {
+    fun getListOfCountriesObserver(): SingleObserver<CountryCodeParent> {
+        return object : SingleObserver<CountryCodeParent> {
 
+            override fun onSuccess(t: CountryCodeParent) {
+                countryCodeList.postValue(t)
+                setState {
+                    copy(
+                            asyncGetCountryList = Success(Unit)
+                    )
+                }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
+                /** @TODO REMOVE WHEN API COMES */
+                val mutableList = mutableListOf(
+                        CountryCode("IN", "+91", "", 10),
+                        CountryCode("ZA", "+27", "0", 9))
+                countryCodeList.postValue(CountryCodeParent(mutableList))
+                /** @TODO REMOVE WHEN API COMES */
                 _viewEvents.post(LoginViewEvents.Failure(e))
                 setState {
                     copy(
-                            asyncCyCheckOTP = Success(Unit)
+                            asyncGetCountryList = Success(Unit)
                     )
                 }
             }

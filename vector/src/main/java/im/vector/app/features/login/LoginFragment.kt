@@ -23,8 +23,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
@@ -35,6 +38,7 @@ import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.failure.MatrixError
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import javax.inject.Inject
 
@@ -48,7 +52,7 @@ import javax.inject.Inject
  */
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>() {
     val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
-    val listOfCountries = mutableListOf<String>()
+    var listOfCountries = mutableListOf<CountryCode>()
     //    private var passwordShown = false
 //    private var isSignupMode = false
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
@@ -60,7 +64,31 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
-        loginViewModel.getListOfCountries()
+
+        loginViewModel.handleCountryList("Bearer Avdhut")
+        loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
+            listOfCountries = it.data
+            val list = mutableListOf<String>()
+            it.data.forEach { countryCode -> list.add(countryCode.countryName + " " + countryCode.countryCode) }
+            val spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
+                    R.layout.item_spinner_country,
+                    list)
+            views.spinnerList.adapter = spinnerArrayAdapter
+        }
+        views.spinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val temp = listOfCountries[position]
+                if (temp.isZero.isEmpty()) {
+                    views.optionalDigit.isVisible = false
+                } else {
+                    views.optionalDigit.isVisible = true
+                    views.optionalDigit.text = temp.isZero
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
         setupSubmitButton()
 //        setupForgottenPasswordButton()
 //        setupPasswordReveal()
@@ -71,40 +99,44 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             }
             return@setOnEditorActionListener false
         }
-        views.ccp.setOnCountryChangeListener {
-            invalidMobileNumber()
-        }
+
+//        views.spinnerList.setOnItemClickListener { _, _, position, _ ->
+//            Toast.makeText(requireContext(), listOfCountries[position], Toast.LENGTH_LONG).show()
+//        }
+//        views.ccp.setOnCountryChangeListener {
+//            invalidMobileNumber()
+//        }
     }
 
     fun invalidMobileNumber(): Boolean {
         if (views.mobileNumberField.text.toString().isNotBlank()) {
-            try {
-                val number = Phonenumber.PhoneNumber()
-                number.countryCode = views.ccp.selectedCountryCodeAsInt
-                number.nationalNumber = views.mobileNumberField.text.toString().toLong()
-                val isValid = PhoneNumberUtil.getInstance().isPossibleNumber(number)
-                if (!isValid) {
-                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-                    return true
-                }
-                val mobileLength = views.mobileNumberField.text.toString().length
-                if (views.ccp.selectedCountryCodeAsInt == 27) {
-                    if (views.mobileNumberField.text.toString()[0] == '0') {
-                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_9_digit_mobile)
-                        return true
-                    }
-                    if (mobileLength != 9) {
-                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-                        return true
-                    }
-                } else if (mobileLength != 10) {
-                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_10_digit_mobile)
-                    return true
-                }
-            } catch (ex: Exception) {
-                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-                return true
-            }
+//            try {
+//                val number = Phonenumber.PhoneNumber()
+//                number.countryCode = views.ccp.selectedCountryCodeAsInt
+//                number.nationalNumber = views.mobileNumberField.text.toString().toLong()
+//                val isValid = PhoneNumberUtil.getInstance().isPossibleNumber(number)
+//                if (!isValid) {
+//                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+//                    return true
+//                }
+//                val mobileLength = views.mobileNumberField.text.toString().length
+//                if (views.ccp.selectedCountryCodeAsInt == 27) {
+//                    if (views.mobileNumberField.text.toString()[0] == '0') {
+//                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_9_digit_mobile)
+//                        return true
+//                    }
+//                    if (mobileLength != 9) {
+//                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+//                        return true
+//                    }
+//                } else if (mobileLength != 10) {
+//                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_10_digit_mobile)
+//                    return true
+//                }
+//            } catch (ex: Exception) {
+//                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+//                return true
+//            }
             return false
         } else {
             views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
@@ -185,7 +217,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //            SignMode.SignInWithMatrixId -> R.string.login_signin_matrix_id_hint
 //        })
 
-    // Handle direct signin first
+// Handle direct signin first
 //        if (state.signMode == SignMode.SignInWithMatrixId) {
 //            views.loginServerIcon.isVisible = false
 //            views.loginTitle.text = getString(R.string.login_signin_matrix_id_title)
@@ -297,7 +329,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //                && throwable.error.code == MatrixError.M_WEAK_PASSWORD) {
 //            views.passwordFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        } else {
-        Toast.makeText(requireContext(),throwable.message,Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show()
 //        views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        }
     }

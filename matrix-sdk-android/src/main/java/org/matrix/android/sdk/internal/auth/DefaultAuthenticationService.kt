@@ -43,6 +43,8 @@ import org.matrix.android.sdk.internal.auth.version.isLoginAndRegistrationSuppor
 import org.matrix.android.sdk.internal.auth.version.isSupportedBySdk
 import org.matrix.android.sdk.internal.cy_auth.CyAuthAPI
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.di.Unauthenticated
@@ -405,6 +407,10 @@ internal class DefaultAuthenticationService @Inject constructor(
 
     override fun checkOTP(auth: String, verifyParams: VerifyOTPParams): Single<BaseResponse> {
         return buildCyAuthAPI().checkOTP(auth, verifyParams)
+    }
+
+    override fun getCountryList(auth: String): Single<CountryCodeParent> {
+        return buildCyAuthAPI().getCountryList(auth)
     }
 
     private fun buildAuthAPI(homeServerConnectionConfig: HomeServerConnectionConfig): AuthAPI {

@@ -18,6 +18,7 @@ package org.matrix.android.sdk.internal.cy_auth
 
 import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
@@ -39,4 +40,9 @@ interface CyAuthAPI {
     fun checkOTP(
             @Header("Authorization") auth: String,
             @Body loginParams: VerifyOTPParams): Single<BaseResponse>
+
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.CHECK_OTP)
+    fun getCountryList(
+            @Header("Authorization") auth: String): Single<CountryCodeParent>
 }
