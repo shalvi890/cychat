@@ -210,7 +210,7 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun getListOfCountries(auth: String): SingleObserver<BaseResponse> {
+    fun getListOfCountries(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {

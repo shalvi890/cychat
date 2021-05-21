@@ -4,6 +4,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/74eb78c167f265e88895f7004ba39c76/transformed/jetified-rxbinding-material-3.1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/74eb78c167f265e88895f7004ba39c76/transformed/jetified-rxbinding-material-3.1.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/74eb78c167f265e88895f7004ba39c76/transformed/jetified-rxbinding-material-3.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f272b5940396d95cb5200729e4aaeb27/jetified-rxbinding-material-3.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f272b5940396d95cb5200729e4aaeb27/jetified-rxbinding-material-3.1.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f272b5940396d95cb5200729e4aaeb27/jetified-rxbinding-material-3.1.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jakewharton.rxbinding3/rxbinding-material/3.1.0/33c23f4f8838226aa9e18c99f386a4633593513c/rxbinding-material-3.1.0-javadoc.jar!/" />

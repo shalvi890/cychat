@@ -4,6 +4,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/06d9a41f906c13b270f97823346069c3/transformed/jetified-paging-runtime-ktx-2.1.2/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/06d9a41f906c13b270f97823346069c3/transformed/jetified-paging-runtime-ktx-2.1.2/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/06d9a41f906c13b270f97823346069c3/transformed/jetified-paging-runtime-ktx-2.1.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3d1d0870ef5551a286bfd082be54b29/jetified-paging-runtime-ktx-2.1.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3d1d0870ef5551a286bfd082be54b29/jetified-paging-runtime-ktx-2.1.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3d1d0870ef5551a286bfd082be54b29/jetified-paging-runtime-ktx-2.1.2/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

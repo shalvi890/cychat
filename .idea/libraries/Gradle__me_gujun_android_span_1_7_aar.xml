@@ -4,6 +4,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b89f167710c7359e4dd1fbdd8e057418/transformed/jetified-span-1.7/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b89f167710c7359e4dd1fbdd8e057418/transformed/jetified-span-1.7/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b89f167710c7359e4dd1fbdd8e057418/transformed/jetified-span-1.7/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/081bf2bbfbb948cec580be3f4a80a008/jetified-span-1.7/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/081bf2bbfbb948cec580be3f4a80a008/jetified-span-1.7/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/081bf2bbfbb948cec580be3f4a80a008/jetified-span-1.7/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.gujun.android/span/1.7/14d0ecd0a278979910e85801649c2ac69a45190f/span-1.7-javadoc.jar!/" />

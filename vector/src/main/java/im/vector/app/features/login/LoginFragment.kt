@@ -60,7 +60,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
-        loginViewModel.getListOfCountries("Bearer Avdhut")
+        loginViewModel.getListOfCountries()
         setupSubmitButton()
 //        setupForgottenPasswordButton()
 //        setupPasswordReveal()

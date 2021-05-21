@@ -4,6 +4,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f27439547c7d34045a1ffcd58ecdab9a/transformed/jetified-konfetti-1.2.6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f27439547c7d34045a1ffcd58ecdab9a/transformed/jetified-konfetti-1.2.6/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f27439547c7d34045a1ffcd58ecdab9a/transformed/jetified-konfetti-1.2.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e53b1a22f1c2556acffb340bbbf4cd7/jetified-konfetti-1.2.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e53b1a22f1c2556acffb340bbbf4cd7/jetified-konfetti-1.2.6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e53b1a22f1c2556acffb340bbbf4cd7/jetified-konfetti-1.2.6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/nl.dionsegijn/konfetti/1.2.6/d404379841cda27eaf67e8e7a69753d5ec321f4/konfetti-1.2.6-javadoc.jar!/" />

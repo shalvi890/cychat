@@ -46,7 +46,7 @@ class LocalePickerController @Inject constructor(
         }
         localeItem {
             id(data.currentLocale.toString())
-            title(VectorLocale.localeToLocalisedString(data.currentLocale).capitalize(data.currentLocale))
+            title(VectorLocale.localeToLocalisedString(data.currentLocale).replaceFirstChar { if (it.isLowerCase()) it.titlecase(data.currentLocale) else it.toString() })
             if (vectorPreferences.developerMode()) {
                 subtitle(VectorLocale.localeToLocalisedStringInfo(data.currentLocale))
             }
@@ -75,7 +75,7 @@ class LocalePickerController @Inject constructor(
                             .forEach {
                                 localeItem {
                                     id(it.toString())
-                                    title(VectorLocale.localeToLocalisedString(it).capitalize(it))
+                                    title(VectorLocale.localeToLocalisedString(it).replaceFirstChar { if (it.isLowerCase()) it.titlecase(data.currentLocale) else it.toString() })
                                     if (vectorPreferences.developerMode()) {
                                         subtitle(VectorLocale.localeToLocalisedStringInfo(it))
                                     }

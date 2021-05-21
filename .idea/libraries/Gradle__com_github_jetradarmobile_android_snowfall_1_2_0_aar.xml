@@ -4,6 +4,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/1d5600b99a2860895fc7306de5908652/transformed/jetified-android-snowfall-1.2.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/1d5600b99a2860895fc7306de5908652/transformed/jetified-android-snowfall-1.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/1d5600b99a2860895fc7306de5908652/transformed/jetified-android-snowfall-1.2.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/55dfc65502f97b36e86d543d975ee870/jetified-android-snowfall-1.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/55dfc65502f97b36e86d543d975ee870/jetified-android-snowfall-1.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/55dfc65502f97b36e86d543d975ee870/jetified-android-snowfall-1.2.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

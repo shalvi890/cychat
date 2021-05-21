@@ -4,6 +4,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/55a46aec97a428b949ac1f587420702e/transformed/emoji-appcompat-1.1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/55a46aec97a428b949ac1f587420702e/transformed/emoji-appcompat-1.1.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/55a46aec97a428b949ac1f587420702e/transformed/emoji-appcompat-1.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f0a5ff1dd0b5157ed4162e04880ec6de/emoji-appcompat-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f0a5ff1dd0b5157ed4162e04880ec6de/emoji-appcompat-1.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f0a5ff1dd0b5157ed4162e04880ec6de/emoji-appcompat-1.1.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
