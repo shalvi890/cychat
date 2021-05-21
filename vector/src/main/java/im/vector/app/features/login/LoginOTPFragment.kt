@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -35,7 +36,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 
 class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
-
+    val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentLoginOTPBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -120,12 +121,31 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun submit() {
         cleanupUi()
-
+        val firstName = views.firstNameField.text.toString()
+        val lastName = views.lastNameField.text.toString()
         val emailOTP = views.otpEmailField.text.toString()
         val mobileOTP = views.otpMobileField.text.toString()
-
         // This can be called by the IME action, so deal with empty cases
         var error = 0
+        if (false) {
+            if (firstName.isEmpty()) {
+                views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
+                error++
+            }
+            if (!firstName.matches(nameRegex)) {
+                views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
+                error++
+            }
+            if (lastName.isEmpty()) {
+                views.lastNameFieldTil.error = getString(R.string.error_empty_field_enter_last_name)
+                error++
+            }
+            if (!lastName.matches(nameRegex)) {
+                views.lastNameFieldTil.error = getString(R.string.error_empty_field_enter_last_name)
+                error++
+            }
+        }
+
         if (emailOTP.isEmpty() || !emailOTP.isDigitsOnly() || emailOTP.length != 4) {
             views.otpEmailFieldTil.error = getString(R.string.error_empty_field_enter_email_otp)
             error++
@@ -146,6 +166,8 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         views.loginSubmit.hideKeyboard()
         views.otpEmailFieldTil.error = null
         views.otpMobileFieldTil.error = null
+        views.firstNameFieldTil.error = null
+        views.lastNameFieldTil.error = null
     }
 
     private fun setupSubmitButton() {
@@ -162,12 +184,27 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                     views.otpMobileFieldTil.error = null
                     views.loginSubmit.isEnabled = it
                 }.disposeOnDestroyView()
+
+        views.firstNameField.doOnTextChanged { firstName, _, _, _ ->
+            views.firstNameFieldTil.error = when {
+                firstName?.isEmpty() == true || (firstName?.matches(nameRegex) != true) ->
+                    getString(R.string.error_empty_field_enter_first_name)
+                else                                                                    -> null
+            }
+        }
+        views.lastNameField.doOnTextChanged { lastName, _, _, _ ->
+            views.lastNameFieldTil.error = when {
+                lastName?.isEmpty() == true || (lastName?.matches(nameRegex) != true) ->
+                    getString(R.string.error_empty_field_enter_first_name)
+                else                                                                  -> null
+            }
+        }
     }
 
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        views.otpMobileFieldTil.error = errorFormatter.toHumanReadable(throwable)
+        Toast.makeText(requireContext(),throwable.message,Toast.LENGTH_LONG).show()
     }
 
     override fun updateWithState(state: LoginViewState) {
@@ -178,7 +215,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 //        setupAutoFill(state)
 //        setupButtons(state)
 
-        when (state.asyncLoginAction) {
+        when (state.asyncGetCountryList) {
             is Loading -> {
             }
             is Fail    -> {

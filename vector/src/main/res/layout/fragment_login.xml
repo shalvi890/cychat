@@ -15,56 +15,21 @@
                 style="@style/LoginLogo"
                 tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/loginTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_vertical_margin"
-                android:textAppearance="@style/TextAppearance.Vector.Login.Title"
-                android:text="@string/login_signup_signin" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/loginTitle"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="@dimen/layout_vertical_margin"-->
+            <!--                android:textAppearance="@style/TextAppearance.Vector.Login.Title"-->
+            <!--                android:text="@string/send-" />-->
 
             <TextView
                 android:id="@+id/loginDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_vertical_margin"
-                android:text="@string/you_are_signing_up_for_your_ourganization_s_secure_instant_messanger"
+                android:text="@string/you_are_signing_up_for_your_organization_s_secure_instant_messenger"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/firstNameFieldTil"
-                style="@style/VectorTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:hint="@string/login_signin_first_name_hint"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/firstNameField"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lastNameFieldTil"
-                style="@style/VectorTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/login_signin_last_name_hint"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/lastNameField"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/loginFieldTil"
@@ -72,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:errorEnabled="true"
+                android:layout_marginTop="16dp"
                 android:hint="@string/login_signin_username_hint">
 
                 <com.google.android.material.textfield.TextInputEditText

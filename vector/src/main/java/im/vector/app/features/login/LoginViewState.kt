@@ -31,6 +31,7 @@ data class LoginViewState(
         val asyncRegistration: Async<Unit> = Uninitialized,
         val asyncCyLogin: Async<Unit> = Uninitialized,
         val asyncCyCheckOTP: Async<Unit> = Uninitialized,
+        val asyncGetCountryList: Async<Unit> = Uninitialized,
         // User choices
         //        val serverType: ServerType = ServerType.Unknown,
         @PersistState
@@ -64,6 +65,7 @@ data class LoginViewState(
                 || asyncLoginAction is Success
                 || asyncCyCheckOTP is Loading
                 || asyncCyLogin is Loading
+                || asyncGetCountryList is Loading
     }
 
     fun isUserLogged(): Boolean {

@@ -210,17 +210,37 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
+    fun getListOfCountries(auth: String): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                _viewEvents.post(LoginViewEvents.Failure(e))
+                setState {
+                    copy(
+                            asyncCyCheckOTP = Success(Unit)
+                    )
+                }
+            }
+        }
+    }
+
     private fun getCyCheckOTPObserver(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {
-                if (t.status == "ok") {
-                    LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
-                } else
-                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+//                if (t.status == "ok") {
+//                    LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
+//                } else
+//                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                 setState {
                     copy(
-                            asyncCyCheckOTP = Success(Unit)
+                            asyncGetCountryList = Success(Unit)
                     )
                 }
             }
@@ -231,7 +251,7 @@ class LoginViewModel @AssistedInject constructor(
                 _viewEvents.post(LoginViewEvents.Failure(e))
                 setState {
                     copy(
-                            asyncCyCheckOTP = Success(Unit)
+                            asyncGetCountryList = Success(Unit)
                     )
                 }
             }

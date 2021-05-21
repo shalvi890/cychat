@@ -47,8 +47,8 @@ import javax.inject.Inject
  * - the user is asked for login and password
  */
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>() {
-    val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
     val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+    val listOfCountries = mutableListOf<String>()
     //    private var passwordShown = false
 //    private var isSignupMode = false
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
@@ -60,6 +60,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
+        loginViewModel.getListOfCountries("Bearer Avdhut")
         setupSubmitButton()
 //        setupForgottenPasswordButton()
 //        setupPasswordReveal()
@@ -136,28 +137,12 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     @SuppressLint("HardwareIds")
     private fun submit() {
         cleanupUi()
-        val firstName = views.firstNameField.text.toString()
-        val lastName = views.lastNameField.text.toString()
+
         val login = views.loginField.text.toString()
         val mobileNo = views.mobileNumberField.text.toString()
 
         var error = 0
-        if (firstName.isEmpty()) {
-            views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
-            error++
-        }
-        if (!firstName.matches(nameRegex)) {
-            views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
-            error++
-        }
-        if (lastName.isEmpty()) {
-            views.lastNameFieldTil.error = getString(R.string.error_empty_field_enter_last_name)
-            error++
-        }
-        if (!lastName.matches(nameRegex)) {
-            views.lastNameFieldTil.error = getString(R.string.error_empty_field_enter_last_name)
-            error++
-        }
+
         if (login.isEmpty()) {
             views.loginFieldTil.error = getString(R.string.error_empty_field_enter_user_name)
             error++
@@ -190,8 +175,6 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         views.loginSubmit.hideKeyboard()
         views.loginFieldTil.error = null
         views.mobileNumberTil.error = null
-        views.firstNameFieldTil.error = null
-        views.lastNameFieldTil.error = null
     }
 
 //    private fun setupUi(state: LoginViewState) {
@@ -271,20 +254,6 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
-        views.firstNameField.doOnTextChanged { firstName, _, _, _ ->
-            views.firstNameFieldTil.error = when {
-                firstName?.isEmpty() == true || (firstName?.matches(nameRegex) != true) ->
-                    getString(R.string.error_empty_field_enter_first_name)
-                else                                                                    -> null
-            }
-        }
-        views.lastNameField.doOnTextChanged { lastName, _, _, _ ->
-            views.lastNameFieldTil.error = when {
-                lastName?.isEmpty() == true || (lastName?.matches(nameRegex) != true) ->
-                    getString(R.string.error_empty_field_enter_first_name)
-                else                                                                  -> null
-            }
-        }
         views.loginField.doOnTextChanged { email, _, _, _ ->
             views.loginFieldTil.error = when {
                 email?.isEmpty() == true || (email?.matches(emailRegex) != true) ->
