@@ -77,10 +77,10 @@
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/item_optional_digit_border"
                     android:gravity="center"
-                    app:layout_constraintVertical_bias="0.3"
                     app:layout_constraintBottom_toBottomOf="@id/mobileNumberTil"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/mobileNumberTil"
+                    app:layout_constraintVertical_bias="0.3"
                     app:layout_constraintWidth_percent="0.2" />
 
                 <TextView
@@ -94,6 +94,7 @@
                     android:background="@drawable/item_optional_digit_border"
                     android:gravity="center"
                     android:padding="8dp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/mobileNumberTil"
                     app:layout_constraintStart_toEndOf="@id/spinner_list"
                     app:layout_constraintTop_toTopOf="@id/mobileNumberTil"

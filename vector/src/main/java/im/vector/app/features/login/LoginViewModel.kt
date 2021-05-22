@@ -279,10 +279,10 @@ class LoginViewModel @AssistedInject constructor(
 
             override fun onError(e: Throwable) {
                 /** @TODO REMOVE WHEN API COMES */
-                val mutableList = mutableListOf(
-                        CountryCode("India", "IN", "+91", "", 10),
-                        CountryCode("South Africa", "ZA", "+27", "0", 9))
-                countryCodeList.postValue(CountryCodeParent(CountryData(mutableList)))
+//                val mutableList = mutableListOf(
+//                        CountryCode("India", "IN", "+91", "", 10),
+//                        CountryCode("South Africa", "ZA", "+27", "0", 9))
+//                countryCodeList.postValue(CountryCodeParent(CountryData(mutableList)))
                 /** @TODO REMOVE WHEN API COMES */
                 _viewEvents.post(LoginViewEvents.Failure(e))
                 setState {

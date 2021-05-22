@@ -71,27 +71,28 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
                         R.layout.item_spinner_country,
                         list)
                 views.spinnerList.adapter = spinnerArrayAdapter
-            }
-        }
-        views.spinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                selectedCountry = listOfCountries[position]
-                if (!firstTime) {
-                    views.mobileNumberTil.error = null
-                    invalidMobileNumber()
-                } else
-                    firstTime = false
+                views.spinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                        selectedCountry = listOfCountries[position]
+                        if (!firstTime) {
+                            views.mobileNumberTil.error = null
+                            invalidMobileNumber()
+                        } else
+                            firstTime = false
 
-                if (selectedCountry?.local_code.isNullOrEmpty()) {
-                    views.optionalDigit.isVisible = false
-                } else {
-                    views.optionalDigit.isVisible = true
-                    views.optionalDigit.text = selectedCountry!!.local_code
+                        if (selectedCountry?.local_code.isNullOrEmpty()) {
+                            views.optionalDigit.isVisible = false
+                        } else {
+                            views.optionalDigit.isVisible = true
+                            views.optionalDigit.text = selectedCountry!!.local_code
+                        }
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>) {}
                 }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
+
 
         setupSubmitButton()
 //        setupForgottenPasswordButton()
