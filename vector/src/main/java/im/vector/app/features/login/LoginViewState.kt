@@ -32,6 +32,7 @@ data class LoginViewState(
         val asyncCyLogin: Async<Unit> = Uninitialized,
         val asyncCyCheckOTP: Async<Unit> = Uninitialized,
         val asyncGetCountryList: Async<Unit> = Uninitialized,
+        val resendOTP: Async<Unit> = Uninitialized,
         // User choices
         //        val serverType: ServerType = ServerType.Unknown,
         @PersistState

@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Title"
-                tools:text="@string/auth_verify_otp" />
+                tools:text="@string/auth_register" />
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:visibility="gone"
                 android:hint="@string/login_signin_first_name_hint"
                 app:errorEnabled="true">
 
@@ -46,6 +47,7 @@
                 style="@style/VectorTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:hint="@string/login_signin_last_name_hint"
                 app:errorEnabled="true">
 
@@ -146,7 +148,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:enabled="false"
                 android:text="@string/auth_login"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

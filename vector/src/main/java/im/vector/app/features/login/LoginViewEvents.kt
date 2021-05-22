@@ -45,6 +45,7 @@ sealed class LoginViewEvents : VectorViewEvents {
     object OnSendOTPs : LoginViewEvents()
     object OnOTPSendSuccess : LoginViewEvents()
     data class OnSendMsisdnSuccess(val msisdn: String) : LoginViewEvents()
+    object OnResendOTP : LoginViewEvents()
 
     data class OnWebLoginError(val errorCode: Int, val description: String, val failingUrl: String) : LoginViewEvents()
 }

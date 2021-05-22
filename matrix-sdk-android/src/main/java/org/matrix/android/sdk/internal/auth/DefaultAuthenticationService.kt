@@ -45,6 +45,7 @@ import org.matrix.android.sdk.internal.cy_auth.CyAuthAPI
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
+import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.di.Unauthenticated
@@ -401,17 +402,13 @@ internal class DefaultAuthenticationService @Inject constructor(
         return directLoginTask.execute(DirectLoginTask.Params(homeServerConnectionConfig, matrixId, password, initialDeviceName))
     }
 
-    override fun cyLogin(auth: String, loginParams: PasswordLoginParams): Single<BaseResponse> {
-        return buildCyAuthAPI().login(auth, loginParams)
-    }
+    override fun cyLogin(auth: String, loginParams: PasswordLoginParams) = buildCyAuthAPI().login(auth, loginParams)
 
-    override fun checkOTP(auth: String, verifyParams: VerifyOTPParams): Single<BaseResponse> {
-        return buildCyAuthAPI().checkOTP(auth, verifyParams)
-    }
+    override fun checkOTP(auth: String, verifyParams: VerifyOTPParams) = buildCyAuthAPI().checkOTP(auth, verifyParams)
 
-    override fun getCountryList(auth: String): Single<CountryCodeParent> {
-        return buildCyAuthAPI().getCountryList(auth)
-    }
+    override fun getCountryList(auth: String) = buildCyAuthAPI().getCountryList(auth)
+
+    override fun cyResendOTP(auth: String, hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(auth, hashMap)
 
     private fun buildAuthAPI(homeServerConnectionConfig: HomeServerConnectionConfig): AuthAPI {
         val retrofit = retrofitFactory.create(buildClient(homeServerConnectionConfig), homeServerConnectionConfig.homeServerUri.toString())

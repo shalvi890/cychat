@@ -37,10 +37,24 @@ import io.reactivex.rxkotlin.subscribeBy
 
 class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
+    var isSignUp = true
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentLoginOTPBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loginViewModel.signUpSignInData.observe(viewLifecycleOwner) {
+            if (it.type == "Sign-Up") {
+                isSignUp = true
+                views.firstNameFieldTil.isVisible = true
+                views.lastNameFieldTil.isVisible = true
+                views.loginTitle.text = getString(R.string.auth_register)
+            } else if (it.type == "Sign-In") {
+                isSignUp = false
+                views.firstNameFieldTil.isVisible = false
+                views.lastNameFieldTil.isVisible = false
+                views.loginTitle.text = getString(R.string.sign_in_pf)
+            }
+        }
         setupSubmitButton()
         setupEmailOTP()
         setupMobileOTP()
@@ -51,11 +65,17 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
             }
             return@setOnEditorActionListener false
         }
+
+        loginViewModel.observeViewEvents { loginViewEvents ->
+            if (loginViewEvents is LoginViewEvents.OnResendOTP){
+                Toast.makeText(requireContext(), "OTP Sent", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun setupEmailOTP() {
         views.btnResendEmailOTP.setOnClickListener {
-            Toast.makeText(requireContext(), "Email OTP Send", Toast.LENGTH_LONG).show()
+            loginViewModel.resendOTP("Bearer Avdhut","email")
             startCountDownForEmailOTP()
         }
         startCountDownForEmailOTP()
@@ -88,7 +108,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun setupMobileOTP() {
         views.btnResendMobileOTP.setOnClickListener {
-            Toast.makeText(requireContext(), "Mobile OTP Send", Toast.LENGTH_LONG).show()
+            loginViewModel.resendOTP("Bearer Avdhut","mobile")
             startCountDownForMobileOTP()
         }
         startCountDownForMobileOTP()
@@ -125,9 +145,8 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         val lastName = views.lastNameField.text.toString()
         val emailOTP = views.otpEmailField.text.toString()
         val mobileOTP = views.otpMobileField.text.toString()
-        // This can be called by the IME action, so deal with empty cases
         var error = 0
-        if (false) {
+        if (isSignUp) {
             if (firstName.isEmpty()) {
                 views.firstNameFieldTil.error = getString(R.string.error_empty_field_enter_first_name)
                 error++
@@ -172,30 +191,50 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
-        Observable
-                .combineLatest(
-                        views.otpEmailField.textChanges().map { it.trim().isNotEmpty() && it.isDigitsOnly() && it.length == 4 },
-                        views.otpMobileField.textChanges().map { it.trim().isNotEmpty() && it.isDigitsOnly() && it.length == 4 },
-                        { isLoginNotEmpty, isPasswordNotEmpty ->
-                            isLoginNotEmpty && isPasswordNotEmpty
-                        }
-                ).subscribeBy {
-                    views.otpEmailFieldTil.error = null
-                    views.otpMobileFieldTil.error = null
-                    views.loginSubmit.isEnabled = it
-                }.disposeOnDestroyView()
+//        Observable
+//                .combineLatest(
+//                        views.otpEmailField.textChanges().map { },
+//                        views.otpMobileField.textChanges().map { it.trim().isNotEmpty() && it.isDigitsOnly() && it.length == 4 },
+//                        { isLoginNotEmpty, isPasswordNotEmpty ->
+//                            isLoginNotEmpty && isPasswordNotEmpty
+//                        }
+//                ).subscribeBy {
+//                    views.otpEmailFieldTil.error = null
+//                    views.otpMobileFieldTil.error = null
+//                    views.loginSubmit.isEnabled = it
+//                }.disposeOnDestroyView()
+        views.otpEmailField.doOnTextChanged { it, _, _, _ ->
+            views.otpEmailFieldTil.error = when {
+                (it?.trim()?.isEmpty() == true || it?.isDigitsOnly() == false || it?.length != 4) -> {
+                    getString(R.string.error_empty_field_enter_email_otp)
+                }
+                else                                                                              -> null
+            }
+        }
+
+        views.otpMobileField.doOnTextChanged { it, _, _, _ ->
+            views.otpMobileFieldTil.error = when {
+                (it?.trim()?.isEmpty() == true || it?.isDigitsOnly() == false || it?.length != 4) -> {
+                    getString(R.string.error_empty_field_enter_email_otp)
+                }
+                else                                                                              -> null
+            }
+        }
 
         views.firstNameField.doOnTextChanged { firstName, _, _, _ ->
             views.firstNameFieldTil.error = when {
-                firstName?.isEmpty() == true || (firstName?.matches(nameRegex) != true) ->
+                firstName?.isEmpty() == true || (firstName?.matches(nameRegex) != true) -> {
                     getString(R.string.error_empty_field_enter_first_name)
+                }
                 else                                                                    -> null
             }
         }
+
         views.lastNameField.doOnTextChanged { lastName, _, _, _ ->
             views.lastNameFieldTil.error = when {
-                lastName?.isEmpty() == true || (lastName?.matches(nameRegex) != true) ->
+                lastName?.isEmpty() == true || (lastName?.matches(nameRegex) != true) -> {
                     getString(R.string.error_empty_field_enter_first_name)
+                }
                 else                                                                  -> null
             }
         }
@@ -204,7 +243,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        Toast.makeText(requireContext(),throwable.message,Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show()
     }
 
     override fun updateWithState(state: LoginViewState) {

@@ -27,6 +27,7 @@ import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
+import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 
@@ -113,10 +114,11 @@ interface AuthenticationService {
                                      password: String,
                                      initialDeviceName: String): Session
 
-    fun cyLogin(auth:String, loginParams:PasswordLoginParams): Single<BaseResponse>
+    fun cyLogin(auth: String, loginParams: PasswordLoginParams): Single<LoginResponse>
 
-    fun checkOTP(auth:String, verifyParams: VerifyOTPParams): Single<BaseResponse>
+    fun checkOTP(auth: String, verifyParams: VerifyOTPParams): Single<BaseResponse>
 
-    fun getCountryList(auth:String): Single<CountryCodeParent>
+    fun getCountryList(auth: String): Single<CountryCodeParent>
 
+    fun cyResendOTP(auth: String, hashMap: HashMap<String, String>): Single<BaseResponse>
 }

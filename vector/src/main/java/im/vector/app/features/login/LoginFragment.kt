@@ -29,15 +29,9 @@ import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import com.airbnb.mvrx.Fail
-import com.airbnb.mvrx.Loading
-import com.google.i18n.phonenumbers.PhoneNumberUtil
-import com.google.i18n.phonenumbers.Phonenumber
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
-import org.matrix.android.sdk.api.failure.Failure
-import org.matrix.android.sdk.api.failure.MatrixError
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import javax.inject.Inject
@@ -53,6 +47,8 @@ import javax.inject.Inject
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>() {
     val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
     var listOfCountries = mutableListOf<CountryCode>()
+    var selectedCountry: CountryCode? = null
+    private var firstTime = true
     //    private var passwordShown = false
 //    private var isSignupMode = false
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
@@ -67,22 +63,30 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
         loginViewModel.handleCountryList("Bearer Avdhut")
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
-            listOfCountries = it.data
-            val list = mutableListOf<String>()
-            it.data.forEach { countryCode -> list.add(countryCode.countryName + " " + countryCode.countryCode) }
-            val spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
-                    R.layout.item_spinner_country,
-                    list)
-            views.spinnerList.adapter = spinnerArrayAdapter
+            if (it != null) {
+                listOfCountries = it.data.countries
+                val list = mutableListOf<String>()
+                it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
+                val spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
+                        R.layout.item_spinner_country,
+                        list)
+                views.spinnerList.adapter = spinnerArrayAdapter
+            }
         }
         views.spinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val temp = listOfCountries[position]
-                if (temp.isZero.isEmpty()) {
+                selectedCountry = listOfCountries[position]
+                if (!firstTime) {
+                    views.mobileNumberTil.error = null
+                    invalidMobileNumber()
+                } else
+                    firstTime = false
+
+                if (selectedCountry?.local_code.isNullOrEmpty()) {
                     views.optionalDigit.isVisible = false
                 } else {
                     views.optionalDigit.isVisible = true
-                    views.optionalDigit.text = temp.isZero
+                    views.optionalDigit.text = selectedCountry!!.local_code
                 }
             }
 
@@ -109,38 +113,16 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     }
 
     fun invalidMobileNumber(): Boolean {
-        if (views.mobileNumberField.text.toString().isNotBlank()) {
-//            try {
-//                val number = Phonenumber.PhoneNumber()
-//                number.countryCode = views.ccp.selectedCountryCodeAsInt
-//                number.nationalNumber = views.mobileNumberField.text.toString().toLong()
-//                val isValid = PhoneNumberUtil.getInstance().isPossibleNumber(number)
-//                if (!isValid) {
-//                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-//                    return true
-//                }
-//                val mobileLength = views.mobileNumberField.text.toString().length
-//                if (views.ccp.selectedCountryCodeAsInt == 27) {
-//                    if (views.mobileNumberField.text.toString()[0] == '0') {
-//                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_9_digit_mobile)
-//                        return true
-//                    }
-//                    if (mobileLength != 9) {
-//                        views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-//                        return true
-//                    }
-//                } else if (mobileLength != 10) {
-//                    views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_10_digit_mobile)
-//                    return true
-//                }
-//            } catch (ex: Exception) {
-//                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-//                return true
-//            }
-            return false
+        return if (views.mobileNumberField.text.toString().isNotBlank()) {
+            if (selectedCountry != null && views.mobileNumberField.text?.length != selectedCountry?.noOfDigits) {
+                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.noOfDigits ?: 10
+                )
+                return true
+            }
+            false
         } else {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-            return true
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.noOfDigits)
+            true
         }
     }
 //    private fun setupForgottenPasswordButton() {
@@ -188,17 +170,13 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             error++
         }
         if (!mobileNo.isDigitsOnly()) {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
-            error++
-        }
-        if (!mobileNo.isDigitsOnly()) {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_mobile)
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.noOfDigits)
             error++
         }
         if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, ""))
+            loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
 //            loginViewModel.handle(LoginAction.LoginOrRegister(login, password, getString(R.string.login_default_session_public_name)))
         }
     }
@@ -342,32 +320,32 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //        setupAutoFill(state)
 //        setupButtons(state)
 
-        when (state.asyncLoginAction) {
-            is Loading -> {
-                // Ensure password is hidden
+//        when (state.asyncLoginAction) {
+//            is Loading -> {
+        // Ensure password is hidden
 //                passwordShown = false
 //                renderPasswordField()
-            }
-            is Fail    -> {
-                val error = state.asyncLoginAction.error
-                if (error is Failure.ServerError
-                        && error.error.code == MatrixError.M_FORBIDDEN
-                        && error.error.message.isEmpty()) {
-                    // Login with email, but email unknown
-                    views.loginFieldTil.error = getString(R.string.login_login_with_email_error)
-                } else {
-                    // Trick to display the error without text.
-                    views.loginFieldTil.error = " "
+//            }
+//            is Fail    -> {
+//                val error = state.asyncLoginAction.error
+//                if (error is Failure.ServerError
+//                        && error.error.code == MatrixError.M_FORBIDDEN
+//                        && error.error.message.isEmpty()) {
+//                    // Login with email, but email unknown
+//                    views.loginFieldTil.error = getString(R.string.login_login_with_email_error)
+//                } else {
+        // Trick to display the error without text.
+//                    views.loginFieldTil.error = " "
 //                    if (error.isInvalidPassword() && spaceInPassword()) {
 //                        views.passwordFieldTil.error = getString(R.string.auth_invalid_login_param_space_in_password)
 //                    } else {
 //                        views.passwordFieldTil.error = errorFormatter.toHumanReadable(error)
 //                    }
-                }
-            }
-            // Success is handled by the LoginActivity
-            else       -> Unit
-        }
+//                }
+//            }
+        // Success is handled by the LoginActivity
+//            else       -> Unit
+//        }
 
 //        when (state.asyncRegistration) {
 //            is Loading -> {

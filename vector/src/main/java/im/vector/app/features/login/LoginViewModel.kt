@@ -63,6 +63,9 @@ import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
+import org.matrix.android.sdk.internal.cy_auth.data.CountryData
+import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
+import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import timber.log.Timber
@@ -132,6 +135,8 @@ class LoginViewModel @AssistedInject constructor(
 
     val countryCodeList: MutableLiveData<CountryCodeParent> = MutableLiveData()
 
+    val signUpSignInData: MutableLiveData<LoginResponseChild> = MutableLiveData()
+
     private var currentJob: Job? = null
         set(value) {
             // Cancel any previous Job
@@ -173,14 +178,15 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    private fun getCyLoginObserver(): SingleObserver<BaseResponse> {
-        return object : SingleObserver<BaseResponse> {
+    private fun getCyLoginObserver(): SingleObserver<LoginResponse> {
+        return object : SingleObserver<LoginResponse> {
 
-            override fun onSuccess(t: BaseResponse) {
+            override fun onSuccess(t: LoginResponse) {
                 if (t.message == "otp sent")
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                 else
                     _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                signUpSignInData.postValue(LoginResponseChild("Sign-Up", "", ""))
                 setState {
                     copy(
                             asyncCyLogin = Success(Unit)
@@ -191,10 +197,11 @@ class LoginViewModel @AssistedInject constructor(
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
-                _viewEvents.post(LoginViewEvents.Failure(e))
+                _viewEvents.post(LoginViewEvents.OnSendOTPs)
+                signUpSignInData.postValue(LoginResponseChild("Sign-Up", "", ""))
                 setState {
                     copy(
-                            asyncCyLogin = Success(Unit)
+                            asyncCyLogin = Fail(e)
                     )
                 }
             }
@@ -203,7 +210,7 @@ class LoginViewModel @AssistedInject constructor(
 
     fun handleCyCheckOTP(auth: String, emailOTP: String, mobileOTP: String) {
         loginParams?.let {
-            val checkOTPParams = VerifyOTPParams(it.email, it.mobile, it.imei, emailOTP, mobileOTP)
+            val checkOTPParams = VerifyOTPParams(it.email, it.mobile, it.IMEI, emailOTP, mobileOTP)
             authenticationService.checkOTP(auth, checkOTPParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -213,6 +220,34 @@ class LoginViewModel @AssistedInject constructor(
             copy(
                     asyncCyCheckOTP = Loading()
             )
+        }
+    }
+
+    private fun getCyCheckOTPObserver(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+//                if (t.status == "ok") {
+//                    LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
+//                } else
+//                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                setState {
+                    copy(
+                            asyncCyCheckOTP = Success(Unit)
+                    )
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                _viewEvents.post(LoginViewEvents.Failure(e))
+                setState {
+                    copy(
+                            asyncCyCheckOTP = Fail(e)
+                    )
+                }
+            }
         }
     }
 
@@ -245,31 +280,54 @@ class LoginViewModel @AssistedInject constructor(
             override fun onError(e: Throwable) {
                 /** @TODO REMOVE WHEN API COMES */
                 val mutableList = mutableListOf(
-                        CountryCode("IN", "+91", "", 10),
-                        CountryCode("ZA", "+27", "0", 9))
-                countryCodeList.postValue(CountryCodeParent(mutableList))
+                        CountryCode("India", "IN", "+91", "", 10),
+                        CountryCode("South Africa", "ZA", "+27", "0", 9))
+                countryCodeList.postValue(CountryCodeParent(CountryData(mutableList)))
                 /** @TODO REMOVE WHEN API COMES */
                 _viewEvents.post(LoginViewEvents.Failure(e))
                 setState {
                     copy(
-                            asyncGetCountryList = Success(Unit)
+                            asyncGetCountryList = Fail(e)
                     )
                 }
             }
         }
     }
 
-    private fun getCyCheckOTPObserver(): SingleObserver<BaseResponse> {
+    fun resendOTP(auth: String, type: String) {
+        loginParams?.let {
+            signUpSignInData.value?.req_id?.let { reqId ->
+                val map = hashMapOf(
+                        "type" to type,
+                        "mobile" to it.mobile,
+                        "email" to it.email,
+                        "req_id" to reqId
+                )
+                authenticationService.cyResendOTP(auth, map)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(getResendOTPObserver())
+                setState {
+                    copy(
+                            resendOTP = Loading()
+                    )
+                }
+            }
+
+        }
+    }
+
+    private fun getResendOTPObserver(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {
-//                if (t.status == "ok") {
-//                    LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
-//                } else
-//                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnResendOTP)
+                } else
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                 setState {
                     copy(
-                            asyncGetCountryList = Success(Unit)
+                            resendOTP = Success(Unit)
                     )
                 }
             }
@@ -277,10 +335,10 @@ class LoginViewModel @AssistedInject constructor(
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
-                _viewEvents.post(LoginViewEvents.Failure(e))
+                _viewEvents.post(LoginViewEvents.OnResendOTP)
                 setState {
                     copy(
-                            asyncGetCountryList = Success(Unit)
+                            resendOTP = Fail(e)
                     )
                 }
             }

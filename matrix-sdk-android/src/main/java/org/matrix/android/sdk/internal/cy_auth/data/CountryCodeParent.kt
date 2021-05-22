@@ -17,5 +17,9 @@
 package org.matrix.android.sdk.internal.cy_auth.data
 
 data class CountryCodeParent(
-        val data: MutableList<CountryCode>
+        val data: CountryData
 ) : BaseResponse()
+
+data class CountryData(
+        val countries: MutableList<CountryCode>
+)
