@@ -16,11 +16,13 @@
     <im.vector.app.core.preference.VectorPreference
         android:key="SETTINGS_SDK_VERSION_PREFERENCE_KEY"
         android:title="@string/settings_sdk_version"
+        app:isPreferenceVisible="false"
         tools:summary="4.5.6" />
 
     <im.vector.app.core.preference.VectorPreference
         android:key="SETTINGS_OLM_VERSION_PREFERENCE_KEY"
         android:title="@string/settings_olm_version"
+        app:isPreferenceVisible="false"
         tools:summary="7.8.9" />
 
     <im.vector.app.core.preference.VectorPreference
@@ -33,15 +35,17 @@
 
     <im.vector.app.core.preference.VectorPreference
         android:key="SETTINGS_PRIVACY_POLICY_PREFERENCE_KEY"
-        android:title="@string/settings_privacy_policy" />
+        android:title="@string/settings_privacy_policy"
+        app:isPreferenceVisible="false" />
 
     <im.vector.app.core.preference.VectorPreference
         android:key="SETTINGS_THIRD_PARTY_NOTICES_PREFERENCE_KEY"
-        android:title="@string/settings_third_party_notices" />
+        android:title="@string/settings_third_party_notices"
+        app:isPreferenceVisible="false" />
 
     <im.vector.app.core.preference.VectorPreference
         android:key="SETTINGS_OTHER_THIRD_PARTY_NOTICES_PREFERENCE_KEY"
         android:title="@string/settings_other_third_party_notices"
-        app:isPreferenceVisible="@bool/isGplay" />
+        app:isPreferenceVisible="false" />
 
 </androidx.preference.PreferenceScreen>

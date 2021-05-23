@@ -1178,7 +1178,7 @@
     <string name="settings_notification_privacy_message_content_not_shown">• Notifications will <b>not show message content</b></string>
 
     <string name="settings_notification_ringtone">Notification sound</string>
-    <string name="settings_enable_all_notif">Enable notifications for this account</string>
+    <string name="settings_enable_all_notif">Enable notifications</string>
     <string name="settings_enable_this_device">Enable notifications for this session</string>
     <string name="settings_turn_screen_on">Turn the screen on for 3 seconds</string>
     <string name="settings_noisy_notifications_preferences">Configure Noisy Notifications</string>

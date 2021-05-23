@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import im.vector.app.R
@@ -50,8 +49,6 @@ import im.vector.app.databinding.DialogImportE2eKeysBinding
 import im.vector.app.features.crypto.keys.KeysExporter
 import im.vector.app.features.crypto.keys.KeysImporter
 import im.vector.app.features.crypto.keysbackup.settings.KeysBackupManageActivity
-import im.vector.app.features.crypto.recover.BootstrapBottomSheet
-import im.vector.app.features.crypto.recover.SetupMode
 import im.vector.app.features.navigation.Navigator
 import im.vector.app.features.pin.PinCodeStore
 import im.vector.app.features.pin.PinMode
@@ -83,9 +80,9 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
     private var disposables = mutableListOf<Disposable>()
 
     // cryptography
-    private val mCryptographyCategory by lazy {
-        findPreference<PreferenceCategory>(VectorPreferences.SETTINGS_CRYPTOGRAPHY_PREFERENCE_KEY)!!
-    }
+//    private val mCryptographyCategory by lazy {
+//        findPreference<PreferenceCategory>(VectorPreferences.SETTINGS_CRYPTOGRAPHY_PREFERENCE_KEY)!!
+//    }
 
     private val cryptoInfoDeviceNamePreference by lazy {
         findPreference<VectorPreference>("SETTINGS_ENCRYPTION_INFORMATION_DEVICE_NAME_PREFERENCE_KEY")!!
@@ -145,7 +142,7 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
         session.rx().liveSecretSynchronisationInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    refresh4SSection(it)
+                    refresh4SSection()
                     refreshXSigningStatus()
                 }.also {
                     disposables.add(it)
@@ -178,69 +175,69 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
         disposables.clear()
     }
 
-    private fun refresh4SSection(info: SecretsSynchronisationInfo) {
-        // it's a lot of if / else if / else
-        // But it's not yet clear how to manage all cases
-        if (!info.isCrossSigningEnabled) {
-            // There is not cross signing, so we can remove the section
-            secureBackupCategory.isVisible = false
-        } else {
-            if (!info.isBackupSetup) {
-                if (info.isCrossSigningEnabled && info.allPrivateKeysKnown) {
-                    // You can setup recovery!
-                    secureBackupCategory.isVisible = true
-                    secureBackupPreference.title = getString(R.string.settings_secure_backup_setup)
-                    secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        BootstrapBottomSheet.show(parentFragmentManager, SetupMode.NORMAL)
-                        true
-                    }
-                } else {
-                    // just hide all, you can't setup from here
-                    // you should synchronize to get gossips
-                    secureBackupCategory.isVisible = false
-                }
-            } else {
-                // so here we know that 4S is setup
-                if (info.isCrossSigningTrusted && info.allPrivateKeysKnown) {
-                    // Looks like we have all cross signing secrets and session is trusted
-                    // Let's see if there is a megolm backup
-                    if (!info.megolmBackupAvailable || info.megolmSecretKnown) {
-                        // Only option here is to create a new backup if you want?
-                        // aka reset
-                        secureBackupCategory.isVisible = true
-                        secureBackupPreference.title = getString(R.string.settings_secure_backup_reset)
-                        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                            BootstrapBottomSheet.show(parentFragmentManager, SetupMode.PASSPHRASE_RESET)
-                            true
-                        }
-                    } else if (!info.megolmSecretKnown) {
-                        // megolm backup is available but we don't have key
-                        // you could try to synchronize to get missing megolm key ?
-                        secureBackupCategory.isVisible = true
-                        secureBackupPreference.title = getString(R.string.settings_secure_backup_enter_to_setup)
-                        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                            vectorActivity.let {
-                                it.navigator.requestSelfSessionVerification(it)
-                            }
-                            true
-                        }
-                    } else {
-                        secureBackupCategory.isVisible = false
-                    }
-                } else {
-                    // there is a backup, but this session is not trusted, or is missing some secrets
-                    // you should enter passphrase to get them or verify against another session
-                    secureBackupCategory.isVisible = true
-                    secureBackupPreference.title = getString(R.string.settings_secure_backup_enter_to_setup)
-                    secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        vectorActivity.let {
-                            it.navigator.requestSelfSessionVerification(it)
-                        }
-                        true
-                    }
-                }
+    private fun refresh4SSection() {
+//        // it's a lot of if / else if / else
+//        // But it's not yet clear how to manage all cases
+//        if (!info.isCrossSigningEnabled) {
+//            // There is not cross signing, so we can remove the section
+//            secureBackupCategory.isVisible = false
+//        } else {
+//            if (!info.isBackupSetup) {
+//                if (info.isCrossSigningEnabled && info.allPrivateKeysKnown) {
+//                    // You can setup recovery!
+//                    secureBackupCategory.isVisible = true
+//                    secureBackupPreference.title = getString(R.string.settings_secure_backup_setup)
+//                    secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//                        BootstrapBottomSheet.show(parentFragmentManager, SetupMode.NORMAL)
+//                        true
+//                    }
+//                } else {
+//                    // just hide all, you can't setup from here
+//                    // you should synchronize to get gossips
+//                    secureBackupCategory.isVisible = false
+//                }
+//            } else {
+//                // so here we know that 4S is setup
+//                if (info.isCrossSigningTrusted && info.allPrivateKeysKnown) {
+//                    // Looks like we have all cross signing secrets and session is trusted
+//                    // Let's see if there is a megolm backup
+//                    if (!info.megolmBackupAvailable || info.megolmSecretKnown) {
+//                        // Only option here is to create a new backup if you want?
+//                        // aka reset
+//                        secureBackupCategory.isVisible = true
+//                        secureBackupPreference.title = getString(R.string.settings_secure_backup_reset)
+//                        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//                            BootstrapBottomSheet.show(parentFragmentManager, SetupMode.PASSPHRASE_RESET)
+//                            true
+//                        }
+//                    } else if (!info.megolmSecretKnown) {
+//                        // megolm backup is available but we don't have key
+//                        // you could try to synchronize to get missing megolm key ?
+//                        secureBackupCategory.isVisible = true
+//                        secureBackupPreference.title = getString(R.string.settings_secure_backup_enter_to_setup)
+//                        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//                            vectorActivity.let {
+//                                it.navigator.requestSelfSessionVerification(it)
+//                            }
+//                            true
+//                        }
+//                    } else {
+//                        secureBackupCategory.isVisible = false
+//                    }
+//                } else {
+//                    // there is a backup, but this session is not trusted, or is missing some secrets
+//                    // you should enter passphrase to get them or verify against another session
+        secureBackupCategory.isVisible = true
+        secureBackupPreference.title = getString(R.string.settings_secure_backup_enter_to_setup)
+        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            vectorActivity.let {
+                it.navigator.requestSelfSessionVerification(it)
             }
+            true
         }
+//                }
+//            }
+//        }
     }
 
     override fun bindPref() {

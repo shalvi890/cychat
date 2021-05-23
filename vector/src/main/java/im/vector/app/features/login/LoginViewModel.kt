@@ -20,7 +20,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.ActivityViewModelContext
@@ -61,9 +60,7 @@ import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
-import org.matrix.android.sdk.internal.cy_auth.data.CountryData
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
@@ -991,7 +988,7 @@ class LoginViewModel @AssistedInject constructor(
                             loginModeSupportedTypes = data.supportedLoginTypes.toList()
                     )
                 }
-                handle(LoginAction.LoginOrRegister("tejas", "tejas", "loginParams!!.imei"))
+                handle(LoginAction.LoginOrRegister("tejas", "tejas", ""))
 
                 if ((loginMode == LoginMode.Password && !data.isLoginAndRegistrationSupported)
                         || data.isOutdatedHomeserver) {

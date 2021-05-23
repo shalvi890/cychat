@@ -128,7 +128,7 @@
     <im.vector.app.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_HOME_DISPLAY_KEY"
         android:title="@string/settings_home_display"
-        app:isPreferenceVisible="@bool/false_not_implemented">
+        app:isPreferenceVisible="false">
 
         <im.vector.app.core.preference.VectorSwitchPreference
             android:defaultValue="true"
@@ -144,7 +144,7 @@
 
     <im.vector.app.core.preference.VectorPreferenceCategory
         android:title="@string/settings_media"
-        app:isPreferenceVisible="@bool/false_not_implemented">
+        app:isPreferenceVisible="false">
 
         <im.vector.app.core.preference.VectorPreference
             android:key="SETTINGS_MEDIA_SAVING_PERIOD_KEY"
@@ -183,7 +183,9 @@
 
     </im.vector.app.core.preference.VectorPreferenceCategory>
 
-    <im.vector.app.core.preference.VectorPreferenceCategory android:title="@string/settings_category_room_directory">
+    <im.vector.app.core.preference.VectorPreferenceCategory
+        app:isPreferenceVisible="false"
+        android:title="@string/settings_category_room_directory">
 
     <im.vector.app.core.preference.VectorSwitchPreference
         android:key="SETTINGS_ROOM_DIRECTORY_SHOW_ALL_PUBLIC_ROOMS"

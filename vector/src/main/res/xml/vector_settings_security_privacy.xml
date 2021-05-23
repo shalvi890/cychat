@@ -8,7 +8,6 @@
         android:key="SETTINGS_CRYPTOGRAPHY_HS_ADMIN_DISABLED_E2E_DEFAULT"
         android:persistent="false"
         app:isPreferenceVisible="false"
-        tools:isPreferenceVisible="true"
         tools:summary="@string/settings_hs_admin_e2e_disabled">
 
     </im.vector.app.core.preference.VectorPreference>
@@ -16,6 +15,7 @@
     <!-- ************ Cryptography section ************ -->
     <im.vector.app.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_CRYPTOGRAPHY_PREFERENCE_KEY"
+        app:isPreferenceVisible="false"
         android:title="@string/settings_cryptography">
 
         <im.vector.app.core.preference.VectorPreference
@@ -55,6 +55,7 @@
     <!-- devices list entry point -->
     <im.vector.app.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_DEVICES_LIST_PREFERENCE_KEY"
+        app:isPreferenceVisible="false"
         android:title="@string/settings_active_sessions_list">
 
         <im.vector.app.core.preference.VectorPreference
@@ -83,6 +84,7 @@
 
     <im.vector.app.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_CRYPTOGRAPHY_MANAGE_PREFERENCE_KEY"
+        app:isPreferenceVisible="false"
         android:title="@string/settings_cryptography_manage_keys">
 
         <im.vector.app.core.preference.VectorPreference
@@ -117,6 +119,7 @@
 
     <im.vector.app.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_SECURITY_OTHER_CATEGORY"
+        app:isPreferenceVisible="false"
         android:title="@string/settings_other">
 
         <im.vector.app.core.preference.VectorPreference
