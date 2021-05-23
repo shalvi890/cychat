@@ -178,7 +178,6 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
             loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
-//            loginViewModel.handle(LoginAction.LoginOrRegister(login, password, getString(R.string.login_default_session_public_name)))
         }
     }
 
@@ -268,7 +267,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         views.loginField.doOnTextChanged { email, _, _, _ ->
             views.loginFieldTil.error = when {
                 email?.isEmpty() == true || (email?.matches(emailRegex) != true) ->
-                    getString(R.string.error_empty_field_enter_first_name)
+                    getString(R.string.error_empty_field_enter_user_name)
                 else                                                             -> null
             }
 
@@ -308,7 +307,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //                && throwable.error.code == MatrixError.M_WEAK_PASSWORD) {
 //            views.passwordFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        } else {
-        Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Server Is Temporarily Offline", Toast.LENGTH_LONG).show()
 //        views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        }
     }
