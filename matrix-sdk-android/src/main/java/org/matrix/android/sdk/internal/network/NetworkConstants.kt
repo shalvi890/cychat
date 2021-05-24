@@ -43,6 +43,7 @@ internal object NetworkConstants {
     // Cy Chat APIs
     const val USER_LOGIN = "/"
     const val CHECK_OTP = "/check-otp"
-    const val COUNTRY_LIST = "/country-list"
+    const val COUNTRY_LIST = "/get-settings"
+    const val RESENT_OTP = "/"
 
 }

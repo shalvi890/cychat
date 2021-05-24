@@ -49,7 +49,7 @@ interface CyAuthAPI {
             @Header("Authorization") auth: String): Single<CountryCodeParent>
 
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @POST(NetworkConstants.CHECK_OTP)
+    @POST(NetworkConstants.RESENT_OTP)
     fun resendOTP(
             @Header("Authorization") auth: String,
             @Body map: HashMap<String, String>): Single<BaseResponse>
