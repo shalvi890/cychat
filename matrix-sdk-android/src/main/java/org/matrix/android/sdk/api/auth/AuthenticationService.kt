@@ -25,6 +25,7 @@ import org.matrix.android.sdk.api.auth.registration.RegistrationWizard
 import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
@@ -116,7 +117,7 @@ interface AuthenticationService {
 
     fun cyLogin(auth: String, loginParams: PasswordLoginParams): Single<LoginResponse>
 
-    fun checkOTP(auth: String, verifyParams: VerifyOTPParams): Single<BaseResponse>
+    fun checkOTP(auth: String, verifyParams: VerifyOTPParams): Single<CheckOTPResponse>
 
     fun getCountryList(auth: String): Single<CountryCodeParent>
 

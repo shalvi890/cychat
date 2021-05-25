@@ -60,6 +60,7 @@ import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
@@ -225,21 +226,21 @@ class LoginViewModel @AssistedInject constructor(
             authenticationService.checkOTP(auth, checkOTPParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getCyCheckOTPObserver())
-        }
-        setState {
-            copy(
-                    asyncCyCheckOTP = Loading()
-            )
+                    .subscribe(getCyCheckOTPObserver(it.email))
+            setState {
+                copy(
+                        asyncCyCheckOTP = Loading()
+                )
+            }
         }
     }
 
-    private fun getCyCheckOTPObserver(): SingleObserver<BaseResponse> {
-        return object : SingleObserver<BaseResponse> {
+    private fun getCyCheckOTPObserver(email: String): SingleObserver<CheckOTPResponse> {
+        return object : SingleObserver<CheckOTPResponse> {
 
-            override fun onSuccess(t: BaseResponse) {
+            override fun onSuccess(t: CheckOTPResponse) {
                 if (t.status == "ok") {
-                    handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
+                    handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email, t.data.password))
                     setState {
                         copy(
                                 asyncCyCheckOTP = Success(Unit)
@@ -963,10 +964,10 @@ class LoginViewModel @AssistedInject constructor(
         if (homeServerConnectionConfig == null)
             _viewEvents.post(LoginViewEvents.Failure(Throwable("Unable to create a HomeServerConnectionConfig")))
         else
-            getLoginFlow(homeServerConnectionConfig)
+            getLoginFlow(homeServerConnectionConfig, action.id, action.password)
     }
 
-    private fun getLoginFlow(homeServerConnectionConfig: HomeServerConnectionConfig) {
+    private fun getLoginFlow(homeServerConnectionConfig: HomeServerConnectionConfig, id: String? = null, password: String? = null) {
         currentHomeServerConnectionConfig = homeServerConnectionConfig
 
         currentJob = viewModelScope.launch {
@@ -1018,7 +1019,8 @@ class LoginViewModel @AssistedInject constructor(
                             loginModeSupportedTypes = data.supportedLoginTypes.toList()
                     )
                 }
-                handle(LoginAction.LoginOrRegister("tejas", "tejas", ""))
+                if (id != null && password != null)
+                    handle(LoginAction.LoginOrRegister(id, password, ""))
 
                 if ((loginMode == LoginMode.Password && !data.isLoginAndRegistrationSupported)
                         || data.isOutdatedHomeserver) {
