@@ -240,7 +240,7 @@ class LoginViewModel @AssistedInject constructor(
 
             override fun onSuccess(t: CheckOTPResponse) {
                 if (t.status == "ok") {
-                    handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email, t.data.password))
+                    handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email.replace("@","-at-"), t.data.password))
                     setState {
                         copy(
                                 asyncCyCheckOTP = Success(Unit)
