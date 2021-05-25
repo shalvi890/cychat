@@ -179,23 +179,26 @@ class LoginViewModel @AssistedInject constructor(
         return object : SingleObserver<LoginResponse> {
 
             override fun onSuccess(t: LoginResponse) {
-                if (t.message == "otp sent")
+                if (t.status == "ok") {
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
-                else
-                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
-                signUpSignInData.postValue(LoginResponseChild("Sign-Up", "", ""))
-                setState {
-                    copy(
-                            asyncCyLogin = Success(Unit)
-                    )
+                    signUpSignInData.postValue(t.data)
+                    setState {
+                        copy(
+                                asyncCyLogin = Success(Unit)
+                        )
+                    }
+                } else {
+                    setState {
+                        copy(
+                                asyncCyLogin = Fail(Throwable(t.message))
+                        )
+                    }
                 }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
-                _viewEvents.post(LoginViewEvents.OnSendOTPs)
-                signUpSignInData.postValue(LoginResponseChild("Sign-Up", "", ""))
                 setState {
                     copy(
                             asyncCyLogin = Fail(e)
@@ -205,9 +208,18 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun handleCyCheckOTP(auth: String, emailOTP: String, mobileOTP: String) {
+    fun handleCyCheckOTP(auth: String, emailOTP: String, mobileOTP: String, firstName: String?, lastName: String?) {
         loginParams?.let {
-            val checkOTPParams = VerifyOTPParams(it.email, it.mobile, it.IMEI, emailOTP, mobileOTP)
+            val checkOTPParams = VerifyOTPParams(it.email,
+                    it.mobile,
+                    it.imei_no,
+                    emailOTP,
+                    mobileOTP,
+                    signUpSignInData.value!!.req_id,
+                    signUpSignInData.value!!.type,
+                    firstName,
+                    lastName
+            )
             authenticationService.checkOTP(auth, checkOTPParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -224,15 +236,19 @@ class LoginViewModel @AssistedInject constructor(
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {
-//                if (t.status == "ok") {
-//                    LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com")
-//                } else
-//                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
-                setState {
-                    copy(
-                            asyncCyCheckOTP = Success(Unit)
-                    )
-                }
+                if (t.status == "ok") {
+                    handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
+                    setState {
+                        copy(
+                                asyncCyCheckOTP = Success(Unit)
+                        )
+                    }
+                } else
+                    setState {
+                        copy(
+                                asyncCyCheckOTP = Fail(Throwable(t.message))
+                        )
+                    }
             }
 
             override fun onSubscribe(d: Disposable) {}
@@ -249,14 +265,16 @@ class LoginViewModel @AssistedInject constructor(
     }
 
     fun handleCountryList(auth: String) {
-        authenticationService.getCountryList(auth)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getListOfCountriesObserver())
-        setState {
-            copy(
-                    asyncGetCountryList = Loading()
-            )
+        if (countryCodeList.value == null) {
+            authenticationService.getCountryList(auth)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getListOfCountriesObserver())
+            setState {
+                copy(
+                        asyncGetCountryList = Loading()
+                )
+            }
         }
     }
 
@@ -264,23 +282,26 @@ class LoginViewModel @AssistedInject constructor(
         return object : SingleObserver<CountryCodeParent> {
 
             override fun onSuccess(t: CountryCodeParent) {
-                countryCodeList.postValue(t)
-                setState {
-                    copy(
-                            asyncGetCountryList = Success(Unit)
-                    )
+                if (t.status == "ok") {
+                    countryCodeList.postValue(t)
+                    setState {
+                        copy(
+                                asyncGetCountryList = Success(Unit)
+                        )
+                    }
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                    setState {
+                        copy(
+                                asyncGetCountryList = Fail(Throwable(t.message))
+                        )
+                    }
                 }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
-                /** @TODO REMOVE WHEN API COMES */
-//                val mutableList = mutableListOf(
-//                        CountryCode("India", "IN", "+91", "", 10),
-//                        CountryCode("South Africa", "ZA", "+27", "0", 9))
-//                countryCodeList.postValue(CountryCodeParent(CountryData(mutableList)))
-                /** @TODO REMOVE WHEN API COMES */
                 _viewEvents.post(LoginViewEvents.Failure(e))
                 setState {
                     copy(
@@ -320,19 +341,24 @@ class LoginViewModel @AssistedInject constructor(
             override fun onSuccess(t: BaseResponse) {
                 if (t.status == "ok") {
                     _viewEvents.post(LoginViewEvents.OnResendOTP)
-                } else
+                    setState {
+                        copy(
+                                resendOTP = Success(Unit)
+                        )
+                    }
+                } else {
                     _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
-                setState {
-                    copy(
-                            resendOTP = Success(Unit)
-                    )
+                    setState {
+                        copy(
+                                resendOTP = Fail(Throwable(t.message))
+                        )
+                    }
                 }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
-                _viewEvents.post(LoginViewEvents.OnResendOTP)
                 setState {
                     copy(
                             resendOTP = Fail(e)

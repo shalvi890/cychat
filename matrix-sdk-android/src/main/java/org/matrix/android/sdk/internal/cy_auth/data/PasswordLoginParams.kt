@@ -19,6 +19,6 @@ package org.matrix.android.sdk.internal.cy_auth.data
 data class PasswordLoginParams(
         val email: String,
         val mobile: String,
-        val IMEI: String,
+        val imei_no: String,
         val country_code: String
 )

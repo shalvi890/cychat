@@ -104,12 +104,13 @@
     <!-- Link color -->
     <color name="link_color_light">#368BD6</color>
     <color name="link_color_dark">#368BD6</color>
+    <color name="sender_text_color">#69CDFF</color>
 
     <!-- Notification (do not depends on theme) -->
     <color name="notification_accent_color">#368BD6</color>
     <color name="key_share_req_accent_color">#ff812d</color>
 
-        <!-- Source: https://zpl.io/aBKw9Mk -->
+    <!-- Source: https://zpl.io/aBKw9Mk -->
 
     <!-- Accents -->
     <color name="riotx_accent">#FF0DBD8B</color>
@@ -159,6 +160,10 @@
     <color name="riotx_background_light">#FFFFFFFF</color>
     <color name="riotx_background_dark">#FF15191E</color>
     <color name="riotx_background_black">#FF000000</color>
+
+    <attr name="riotx_background_text_field" format="color" />
+    <color name="riotx_background_text_field_light">#903C3C3C</color>
+    <color name="riotx_background_text_field_dark">#606368</color>
 
     <attr name="vctr_home_drawer_header_background" format="color" />
     <color name="vctr_home_drawer_header_background_light">#FFF5F7FA</color>

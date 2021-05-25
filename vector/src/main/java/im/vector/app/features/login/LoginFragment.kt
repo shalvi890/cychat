@@ -44,7 +44,7 @@ import javax.inject.Inject
  * In signup mode:
  * - the user is asked for login and password
  */
-class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>() {
+class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>(), AdapterView.OnItemSelectedListener {
     val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
     var listOfCountries = mutableListOf<CountryCode>()
     var selectedCountry: CountryCode? = null
@@ -60,36 +60,21 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
+        var spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
+                R.layout.item_spinner_country,
+                mutableListOf<String>())
 
+        views.spinnerList.adapter = spinnerArrayAdapter
         loginViewModel.handleCountryList("Bearer Avdhut")
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
-            if (it != null) {
+            if (it != null && it.data.countries.isNotEmpty()) {
                 listOfCountries = it.data.countries
                 val list = mutableListOf<String>()
                 it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
-                val spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
-                        R.layout.item_spinner_country,
+                spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
                         list)
                 views.spinnerList.adapter = spinnerArrayAdapter
-                views.spinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                        selectedCountry = listOfCountries[position]
-                        if (!firstTime) {
-                            views.mobileNumberTil.error = null
-                            invalidMobileNumber()
-                        } else
-                            firstTime = false
-
-                        if (selectedCountry?.local_code.isNullOrEmpty()) {
-                            views.optionalDigit.isVisible = false
-                        } else {
-                            views.optionalDigit.isVisible = true
-                            views.optionalDigit.text = selectedCountry!!.local_code
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                }
+                views.spinnerList.onItemSelectedListener = this
             }
         }
 
@@ -115,14 +100,14 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     fun invalidMobileNumber(): Boolean {
         return if (views.mobileNumberField.text.toString().isNotBlank()) {
-            if (selectedCountry != null && views.mobileNumberField.text?.length != selectedCountry?.noOfDigits) {
-                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.noOfDigits ?: 10
+            if (selectedCountry != null && views.mobileNumberField.text?.length != selectedCountry?.mobile_size) {
+                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size ?: 10
                 )
                 return true
             }
             false
         } else {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.noOfDigits)
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size)
             true
         }
     }
@@ -171,7 +156,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             error++
         }
         if (!mobileNo.isDigitsOnly()) {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.noOfDigits)
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size)
             error++
         }
         if (invalidMobileNumber()) error++
@@ -357,6 +342,21 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //            else       -> Unit
 //        }
     }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        selectedCountry = listOfCountries[position]
+        if (firstTime)
+            firstTime = false
+
+        if (selectedCountry?.local_code.isNullOrEmpty()) {
+            views.optionalDigit.isVisible = false
+        } else {
+            views.optionalDigit.isVisible = true
+            views.optionalDigit.text = selectedCountry!!.local_code
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     /**
      * Detect if password ends or starts with spaces

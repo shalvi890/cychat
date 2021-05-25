@@ -20,6 +20,10 @@ data class VerifyOTPParams(
         val email: String,
         val mobile: String,
         val imei: String,
-        val mobileOTP: String,
-        val emailOTP: String
+        val mobile_otp: String,
+        val email_otp: String,
+        val req_id: String,
+        val type: String,
+        val fname: String? = null,
+        val lname: String? = null
 )

@@ -1804,8 +1804,10 @@
     <string name="deactivate_account_delete_checkbox">Please forget all messages I have sent when my account is deactivated (Warning: this will cause future users to see an incomplete view of conversations)</string>
     <string name="deactivate_account_prompt_password">To continue, please enter your password:</string>
     <string name="deactivate_account_submit">Deactivate Account</string>
-    <string name="error_empty_field_enter_first_name">Please enter valid first name</string>
-    <string name="error_empty_field_enter_last_name">Please enter valid last name</string>
+    <string name="error_empty_field_enter_first_name">Please enter First Name</string>
+    <string name="error_empty_field_enter_valid_first_name">Please enter valid First Name</string>
+    <string name="error_empty_field_enter_last_name">Please enter Last Name</string>
+    <string name="error_empty_field_enter_valid_last_name">Please enter valid Last Name</string>
     <string name="error_empty_field_enter_user_name">Please enter valid organization\'s email address</string>
     <string name="error_empty_field_enter_email_otp">Please enter valid email OTP.</string>
     <string name="error_empty_field_enter_mobile_otp">Please enter valid mobile No OTP.</string>
@@ -3271,5 +3273,5 @@
     <string name="event_status_failed_messages_warning">Messages failed to send</string>
     <string name="event_status_delete_all_failed_dialog_title">Delete unsent messages</string>
     <string name="event_status_delete_all_failed_dialog_message">Are you sure you want to delete all unsent messages in this room?</string>
-    <string name="you_are_signing_up_for_your_organization_s_secure_instant_messenger">You are using secure Instant messenger for your organization\'s.</string>
+    <string name="you_are_signing_up_for_your_organization_s_secure_instant_messenger">You are using secure Instant messenger for your organization.</string>
 </resources>

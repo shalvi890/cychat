@@ -30,6 +30,7 @@
         <item name="riotx_reaction_background_on">@color/riotx_reaction_background_on_light</item>
         <item name="riotx_alerter_background">@color/riotx_alerter_background_light</item>
         <item name="riotx_bottom_nav_icon_color">@color/riotx_bottom_nav_icon_color_light</item>
+        <item name="riotx_background_text_field">@color/riotx_background_text_field_light</item>
 
         <!-- Material color: Note: this block should be the same in all theme because it references only common colors and ?riotx attributes -->
         <item name="colorPrimary">@color/riotx_accent</item>
