@@ -109,6 +109,8 @@ class DefaultErrorFormatter @Inject constructor(
                     HttpURLConnection.HTTP_UNAUTHORIZED ->
                         // uia errors?
                         stringProvider.getString(R.string.error_unauthorized)
+                    HttpURLConnection.HTTP_BAD_GATEWAY ->
+                        "Server Is Temporarily Offline"
                     else                             ->
                         throwable.localizedMessage
                 }

@@ -32,6 +32,7 @@ import androidx.core.widget.doOnTextChanged
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
+import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import javax.inject.Inject
@@ -288,11 +289,10 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     override fun onError(throwable: Throwable) {
         // Show M_WEAK_PASSWORD error in the password field
-//        if (throwable is Failure.ServerError
-//                && throwable.error.code == MatrixError.M_WEAK_PASSWORD) {
-//            views.passwordFieldTil.error = errorFormatter.toHumanReadable(throwable)
+//        if (throwable is Failure.ServerError) {
+//            views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        } else {
-        Toast.makeText(requireContext(), "Server Is Temporarily Offline", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), errorFormatter.toHumanReadable(throwable), Toast.LENGTH_LONG).show()
 //        views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
 //        }
     }

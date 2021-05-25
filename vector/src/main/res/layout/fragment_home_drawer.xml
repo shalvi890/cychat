@@ -173,6 +173,7 @@
         android:text="@string/logout"
         android:textSize="14sp"
         android:tint="?riotx_android_secondary"
+        android:visibility="gone"
         app:drawableStartCompat="@drawable/ic_signout_18dp"
         app:drawableTint="?riotx_android_secondary"
         app:layout_constraintBottom_toBottomOf="parent"

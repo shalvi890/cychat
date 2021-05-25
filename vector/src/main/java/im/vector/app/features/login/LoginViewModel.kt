@@ -188,6 +188,7 @@ class LoginViewModel @AssistedInject constructor(
                         )
                     }
                 } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                     setState {
                         copy(
                                 asyncCyLogin = Fail(Throwable(t.message))
@@ -199,6 +200,7 @@ class LoginViewModel @AssistedInject constructor(
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {
+                _viewEvents.post(LoginViewEvents.Failure(e))
                 setState {
                     copy(
                             asyncCyLogin = Fail(e)
@@ -243,12 +245,14 @@ class LoginViewModel @AssistedInject constructor(
                                 asyncCyCheckOTP = Success(Unit)
                         )
                     }
-                } else
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                     setState {
                         copy(
                                 asyncCyCheckOTP = Fail(Throwable(t.message))
                         )
                     }
+                }
             }
 
             override fun onSubscribe(d: Disposable) {}
