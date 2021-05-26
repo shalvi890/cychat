@@ -25,19 +25,15 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
-import com.jakewharton.rxbinding3.widget.textChanges
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginOTPBinding
-import io.reactivex.Observable
-import io.reactivex.rxkotlin.subscribeBy
 
 class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
-    var isSignUp = true
+    private var isSignUp = true
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentLoginOTPBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -191,38 +187,46 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
-        views.otpEmailField.doOnTextChanged { it, _, _, _ ->
-            views.otpEmailFieldTil.error = when {
-                (it?.trim()?.isEmpty() == true || it?.isDigitsOnly() == false || it?.length != 4) -> {
-                    getString(R.string.error_empty_field_enter_email_otp)
+        views.otpEmailField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus)
+                views.otpEmailFieldTil.error = when {
+                    (views.otpEmailField.text.toString().trim().isEmpty()
+                            || !views.otpEmailField.text.toString().isDigitsOnly()
+                            || views.otpEmailField.text.toString().length != 4) -> {
+                        getString(R.string.error_empty_field_enter_email_otp)
+                    }
+                    else                                                        -> null
                 }
-                else                                                                              -> null
-            }
         }
 
-        views.otpMobileField.doOnTextChanged { it, _, _, _ ->
-            views.otpMobileFieldTil.error = when {
-                (it?.trim()?.isEmpty() == true || it?.isDigitsOnly() == false || it?.length != 4) -> {
-                    getString(R.string.error_empty_field_enter_email_otp)
+        views.otpMobileField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus)
+                views.otpMobileFieldTil.error = when {
+                    (views.otpMobileField.text.toString().trim().isEmpty()
+                            || !views.otpMobileField.text.toString().isDigitsOnly()
+                            || views.otpMobileField.text.toString().length != 4) -> {
+                        getString(R.string.error_empty_field_enter_mobile_otp)
+                    }
+                    else                                                         -> null
                 }
-                else                                                                              -> null
-            }
         }
 
-        views.firstNameField.doOnTextChanged { firstName, _, _, _ ->
-            views.firstNameFieldTil.error = when {
-                firstName?.isEmpty() == true          -> getString(R.string.error_empty_field_enter_first_name)
-                firstName?.matches(nameRegex) != true -> getString(R.string.error_empty_field_enter_valid_first_name)
-                else                                  -> null
-            }
+        views.firstNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus)
+                views.firstNameFieldTil.error = when {
+                    views.firstNameField.text.toString().isEmpty()           -> getString(R.string.error_empty_field_enter_first_name)
+                    !views.firstNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_first_name)
+                    else                                                     -> null
+                }
         }
 
-        views.lastNameField.doOnTextChanged { lastName, _, _, _ ->
-            views.lastNameFieldTil.error = when {
-                lastName?.isEmpty() == true          -> getString(R.string.error_empty_field_enter_first_name)
-                lastName?.matches(nameRegex) != true -> getString(R.string.error_empty_field_enter_valid_first_name)
-                else                                 -> null
-            }
+        views.lastNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus)
+                views.lastNameFieldTil.error = when {
+                    views.lastNameField.text.toString().isEmpty()           -> getString(R.string.error_empty_field_enter_first_name)
+                    !views.lastNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_first_name)
+                    else                                                    -> null
+                }
         }
     }
 

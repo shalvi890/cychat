@@ -28,11 +28,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
-import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import javax.inject.Inject
@@ -250,17 +248,19 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
-        views.loginField.doOnTextChanged { email, _, _, _ ->
-            views.loginFieldTil.error = when {
-                email?.isEmpty() == true || (email?.matches(emailRegex) != true) ->
-                    getString(R.string.error_empty_field_enter_user_name)
-                else                                                             -> null
-            }
+        views.loginField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus)
+                views.loginFieldTil.error = when {
+                    views.loginField.text.toString().isEmpty() || !views.loginField.text.toString().matches(emailRegex) ->
+                        getString(R.string.error_empty_field_enter_user_name)
+                    else                                                                                                -> null
+                }
 
         }
-        views.mobileNumberField.doOnTextChanged { _, _, _, _ ->
-            if (!invalidMobileNumber())
-                views.mobileNumberTil.error = null
+        views.mobileNumberField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus)
+                if (!invalidMobileNumber())
+                    views.mobileNumberTil.error = null
         }
     }
 
@@ -347,6 +347,8 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         selectedCountry = listOfCountries[position]
         if (firstTime)
             firstTime = false
+        else
+            views.mobileNumberTil.error = null
 
         if (selectedCountry?.local_code.isNullOrEmpty()) {
             views.optionalDigit.isVisible = false
