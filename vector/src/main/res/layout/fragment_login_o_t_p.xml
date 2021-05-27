@@ -22,13 +22,22 @@
                 android:textAppearance="@style/TextAppearance.Vector.Login.Title"
                 tools:text="@string/auth_register" />
 
+            <TextView
+                android:id="@+id/loginWelcome"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:textAppearance="@style/TextAppearance.Vector.Login.Text"
+                tools:text="Welcome Back Tejas Bhagwat!" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/firstNameFieldTil"
                 style="@style/VectorTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:visibility="gone"
                 android:hint="@string/login_signin_first_name_hint"
                 app:errorEnabled="true">

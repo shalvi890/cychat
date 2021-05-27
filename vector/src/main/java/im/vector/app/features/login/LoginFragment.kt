@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import im.vector.app.R
 import im.vector.app.core.extensions.hideKeyboard
 import im.vector.app.databinding.FragmentLoginBinding
@@ -58,7 +59,6 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        loginViewModel.handle(LoginAction.UpdateHomeServer("https://cyberia1.cioinfotech.com"))
         var spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
                 R.layout.item_spinner_country,
                 mutableListOf<String>())
@@ -257,10 +257,21 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
                 }
 
         }
+        views.loginField.doOnTextChanged { text, _, _, _ ->
+            text?.let {
+                if (it.matches(emailRegex) && it.isNotEmpty()) {
+                    views.loginFieldTil.error = null
+                }
+            }
+        }
         views.mobileNumberField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus)
                 if (!invalidMobileNumber())
                     views.mobileNumberTil.error = null
+        }
+        views.mobileNumberField.doOnTextChanged { _, _, _, _ ->
+            if (selectedCountry != null && views.mobileNumberField.text.toString().length == selectedCountry!!.mobile_size)
+                views.mobileNumberTil.error = null
         }
     }
 
@@ -288,13 +299,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        // Show M_WEAK_PASSWORD error in the password field
-//        if (throwable is Failure.ServerError) {
-//            views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
-//        } else {
-        Toast.makeText(requireContext(), errorFormatter.toHumanReadable(throwable), Toast.LENGTH_LONG).show()
-//        views.loginFieldTil.error = errorFormatter.toHumanReadable(throwable)
-//        }
+        showErrorInSnackbar( if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable )
     }
 
     override fun updateWithState(state: LoginViewState) {
@@ -348,7 +353,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (firstTime)
             firstTime = false
         else
-            views.mobileNumberTil.error = null
+            invalidMobileNumber()
 
         if (selectedCountry?.local_code.isNullOrEmpty()) {
             views.optionalDigit.isVisible = false

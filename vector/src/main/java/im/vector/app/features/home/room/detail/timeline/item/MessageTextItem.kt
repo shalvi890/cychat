@@ -18,7 +18,13 @@ package im.vector.app.features.home.room.detail.timeline.item
 
 import android.text.method.MovementMethod
 import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.text.PrecomputedTextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
@@ -92,10 +98,29 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         holder.messageView.setOnClickListener(attributes.itemClickListener)
         holder.messageView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.messageView.setTextFuture(textFuture)
-        if (attributes.informationData.sentByMe)
-            holder.messageView.gravity = Gravity.END
-        else
-            holder.messageView.gravity = Gravity.START
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(holder.clParent as ConstraintLayout)
+        if (attributes.informationData.sentByMe) {
+            constraintSet.setHorizontalBias(holder.clText.id, 1f)
+            holder.messageView.setTextColor(ContextCompat.getColor(holder.messageView.rootView.context, R.color.sender_text_color))
+        } else {
+            constraintSet.setHorizontalBias(holder.clText.id, 0f)
+            holder.messageView.setTextColor(ContextCompat.getColor(holder.messageView.rootView.context, R.color.white))
+        }
+        constraintSet.applyTo(holder.clParent as ConstraintLayout)
+
+        if (attributes.informationData.showInformation) {
+            holder.textTimeView.visibility = View.VISIBLE
+            holder.textTimeView.text = attributes.informationData.time
+        } else {
+            if (attributes.informationData.forceShowTimestamp) {
+                holder.textTimeView.isVisible = true
+                holder.textTimeView.text = attributes.informationData.time
+            } else {
+                holder.textTimeView.visibility = View.GONE
+            }
+        }
     }
 
     override fun unbind(holder: Holder) {
@@ -110,6 +135,9 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
     class Holder : AbsMessageItem.Holder(STUB_ID) {
         val messageView by bind<AppCompatTextView>(R.id.messageTextView)
         val previewUrlView by bind<PreviewUrlView>(R.id.messageUrlPreview)
+        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
+        val clText by bind<ConstraintLayout>(R.id.clText)
+        val clParent by bind<ViewGroup>(R.id.clParentText)
     }
 
     inner class PreviewUrlViewUpdater : PreviewUrlRetriever.PreviewUrlRetrieverListener {
@@ -125,6 +153,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
             previewUrlView?.render(state, safeImageContentRenderer)
         }
     }
+
     companion object {
         private const val STUB_ID = R.id.messageContentTextStub
     }

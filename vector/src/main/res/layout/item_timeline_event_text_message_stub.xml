@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:addStatesFromChildren="true"
+    android:id="@+id/clParentText"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/messageTextView"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?riotx_text_primary"
-        android:textSize="14sp"
-        tools:text="@sample/matrix.json/data/message" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/messageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?riotx_text_primary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="one liner text" />
+
+        <TextView
+            android:id="@+id/messageTextTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="?riotx_text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/messageTextView"
+            app:layout_constraintStart_toEndOf="@id/messageTextView"
+            tools:text="@tools:sample/date/hhmm" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <im.vector.app.features.home.room.detail.timeline.url.PreviewUrlView
         android:id="@+id/messageUrlPreview"
@@ -22,6 +48,7 @@
         android:layout_marginBottom="4dp"
         android:foreground="?attr/selectableItemBackground"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/clText"
         tools:visibility="visible" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

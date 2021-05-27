@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
 import im.vector.app.R
@@ -49,6 +50,8 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                 views.firstNameFieldTil.isVisible = false
                 views.lastNameFieldTil.isVisible = false
                 views.loginTitle.text = getString(R.string.sign_in_pf)
+                views.loginWelcome.isVisible = true
+                views.loginWelcome.text = getString(R.string.welcome_back, it.fname, it.lname)
             }
         }
         setupSubmitButton()
@@ -199,6 +202,15 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                 }
         }
 
+        views.otpEmailField.doOnTextChanged { text, _, _, _ ->
+            text?.let {
+                if (views.otpEmailField.text.toString().isDigitsOnly()
+                        && views.otpEmailField.text.toString().length == 4 && it.isNotEmpty()) {
+                    views.otpEmailFieldTil.error = null
+                }
+            }
+        }
+
         views.otpMobileField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus)
                 views.otpMobileFieldTil.error = when {
@@ -211,6 +223,15 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                 }
         }
 
+        views.otpMobileField.doOnTextChanged { text, _, _, _ ->
+            text?.let {
+                if (views.otpMobileField.text.toString().isDigitsOnly()
+                        && views.otpMobileField.text.toString().length == 4 && it.isNotEmpty()) {
+                    views.otpMobileFieldTil.error = null
+                }
+            }
+        }
+
         views.firstNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus)
                 views.firstNameFieldTil.error = when {
@@ -218,6 +239,13 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                     !views.firstNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_first_name)
                     else                                                     -> null
                 }
+        }
+
+        views.firstNameField.doOnTextChanged { text, _, _, _ ->
+            text?.let {
+                if (views.firstNameField.text.toString().matches(nameRegex) && it.isNotEmpty())
+                    views.firstNameFieldTil.error = null
+            }
         }
 
         views.lastNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -228,12 +256,19 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                     else                                                    -> null
                 }
         }
+
+        views.lastNameField.doOnTextChanged { text, _, _, _ ->
+            text?.let {
+                if (views.lastNameField.text.toString().matches(nameRegex) && it.isNotEmpty())
+                    views.lastNameFieldTil.error = null
+            }
+        }
     }
 
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_LONG).show()
+        showErrorInSnackbar( if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable )
     }
 
     override fun updateWithState(state: LoginViewState) {
