@@ -62,11 +62,11 @@ class TimelineItemFactory @Inject constructor(private val messageItemFactory: Me
                 EventType.STATE_ROOM_GUEST_ACCESS,
                 EventType.REDACTION,
                 EventType.STATE_ROOM_ALIASES,
-                EventType.KEY_VERIFICATION_ACCEPT,
-                EventType.KEY_VERIFICATION_START,
-                EventType.KEY_VERIFICATION_KEY,
-                EventType.KEY_VERIFICATION_READY,
-                EventType.KEY_VERIFICATION_MAC,
+//                EventType.KEY_VERIFICATION_ACCEPT,
+//                EventType.KEY_VERIFICATION_START,
+//                EventType.KEY_VERIFICATION_KEY,
+//                EventType.KEY_VERIFICATION_READY,
+//                EventType.KEY_VERIFICATION_MAC,
                 EventType.CALL_CANDIDATES,
                 EventType.CALL_REPLACES,
                 EventType.CALL_SELECT_ANSWER,
@@ -92,10 +92,10 @@ class TimelineItemFactory @Inject constructor(private val messageItemFactory: Me
                         encryptedItemFactory.create(params)
                     }
                 }
-                EventType.KEY_VERIFICATION_CANCEL,
-                EventType.KEY_VERIFICATION_DONE -> {
-                    verificationConclusionItemFactory.create(params)
-                }
+//                EventType.KEY_VERIFICATION_CANCEL,
+//                EventType.KEY_VERIFICATION_DONE -> {
+//                    verificationConclusionItemFactory.create(params)
+//                }
                 // Unhandled event types
                 else                            -> {
                     // Should only happen when shouldShowHiddenEvents() settings is ON

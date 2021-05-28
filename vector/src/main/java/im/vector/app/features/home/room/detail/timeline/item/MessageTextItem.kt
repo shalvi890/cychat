@@ -111,11 +111,11 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         constraintSet.applyTo(holder.clParent as ConstraintLayout)
 
         if (attributes.informationData.showInformation) {
-            holder.textTimeView.visibility = View.VISIBLE
+            holder.textTimeView.visibility = View.GONE
             holder.textTimeView.text = attributes.informationData.time
         } else {
             if (attributes.informationData.forceShowTimestamp) {
-                holder.textTimeView.isVisible = true
+                holder.textTimeView.visibility = View.GONE
                 holder.textTimeView.text = attributes.informationData.time
             } else {
                 holder.textTimeView.visibility = View.GONE

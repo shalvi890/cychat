@@ -21,14 +21,17 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.squareup.moshi.Moshi
 import dagger.Lazy
 import okhttp3.OkHttpClient
-import org.matrix.android.sdk.BuildConfig
 import org.matrix.android.sdk.internal.util.ensureTrailingSlash
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 
-internal class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
+class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
+
+    companion object {
+        var BASE_URL = "https://cychat-dev.cioinfotech.com"
+    }
 
     /**
      * Use only for authentication service
@@ -44,7 +47,7 @@ internal class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
 
     fun create(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(BuildConfig.CY_BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

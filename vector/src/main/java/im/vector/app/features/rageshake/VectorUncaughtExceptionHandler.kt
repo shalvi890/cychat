@@ -61,9 +61,9 @@ class VectorUncaughtExceptionHandler @Inject constructor(private val bugReporter
      */
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
         Timber.v("Uncaught exception: $throwable")
-        DefaultSharedPreferences.getInstance(context).edit {
-            putBoolean(PREFS_CRASH_KEY, true)
-        }
+//        DefaultSharedPreferences.getInstance(context).edit {
+//            putBoolean(PREFS_CRASH_KEY, true)
+//        }
         val b = StringBuilder()
         val appName = "Element" // TODO Matrix.getApplicationName()
 
@@ -114,17 +114,17 @@ class VectorUncaughtExceptionHandler @Inject constructor(private val bugReporter
      *
      * @return true if the application crashed
      */
-    fun didAppCrash(context: Context): Boolean {
-        return DefaultSharedPreferences.getInstance(context)
-                .getBoolean(PREFS_CRASH_KEY, false)
-    }
+//    fun didAppCrash(context: Context): Boolean {
+//        return DefaultSharedPreferences.getInstance(context)
+//                .getBoolean(PREFS_CRASH_KEY, false)
+//    }
 
     /**
      * Clear the crash status
      */
-    fun clearAppCrashStatus(context: Context) {
-        DefaultSharedPreferences.getInstance(context).edit {
-            remove(PREFS_CRASH_KEY)
-        }
-    }
+//    fun clearAppCrashStatus(context: Context) {
+//        DefaultSharedPreferences.getInstance(context).edit {
+//            remove(PREFS_CRASH_KEY)
+//        }
+//    }
 }

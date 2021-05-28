@@ -91,11 +91,11 @@ class TimelineEventVisibilityHelper @Inject constructor(private val userPreferen
     fun shouldShowEvent(timelineEvent: TimelineEvent, highlightedEventId: String?): Boolean {
         // If show hidden events is true we should always display something
         if (userPreferencesProvider.shouldShowHiddenEvents()) {
-            return true
+            return false
         }
         // We always show highlighted event
         if (timelineEvent.eventId == highlightedEventId) {
-            return true
+            return false
         }
         if (!timelineEvent.isDisplayable()) {
             return false
@@ -110,15 +110,15 @@ class TimelineEventVisibilityHelper @Inject constructor(private val userPreferen
 
     private fun TimelineEvent.shouldBeHidden(): Boolean {
         if (root.isRedacted() && !userPreferencesProvider.shouldShowRedactedMessages()) {
-            return true
+            return false
         }
         if (root.getRelationContent()?.type == RelationType.REPLACE) {
-            return true
+            return false
         }
         if (root.getClearType() == EventType.STATE_ROOM_MEMBER) {
             val diff = computeMembershipDiff()
-            if ((diff.isJoin || diff.isPart) && !userPreferencesProvider.shouldShowJoinLeaves()) return true
-            if ((diff.isAvatarChange || diff.isDisplaynameChange) && !userPreferencesProvider.shouldShowAvatarDisplayNameChanges()) return true
+            if ((diff.isJoin || diff.isPart) && !userPreferencesProvider.shouldShowJoinLeaves()) return false
+            if ((diff.isAvatarChange || diff.isDisplaynameChange) && !userPreferencesProvider.shouldShowAvatarDisplayNameChanges()) return false
         }
         return false
     }

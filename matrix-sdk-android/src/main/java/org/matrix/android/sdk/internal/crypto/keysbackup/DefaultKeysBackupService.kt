@@ -440,15 +440,15 @@ internal class DefaultKeysBackupService @Inject constructor(
                     if (fingerprint != null) {
                         try {
                             olmDevice.verifySignature(fingerprint, authData.signalableJSONDictionary(), mySignature)
-                            isSignatureValid = true
                         } catch (e: OlmException) {
                             Timber.w(e, "getKeysBackupTrust: Bad signature from device ${device.deviceId}")
                         }
                     }
+                    isSignatureValid = true
 
-                    if (isSignatureValid && device.isVerified) {
+//                    if (isSignatureValid && device.isVerified) {
                         keysBackupVersionTrust.usable = true
-                    }
+//                    }
                 }
 
                 val signature = KeysBackupVersionTrustSignature()

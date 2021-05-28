@@ -770,7 +770,7 @@ internal class DefaultCrossSigningService @Inject constructor(
 
     private fun setUserKeysAsTrusted(otherUserId: String, trusted: Boolean) {
         val currentTrust = cryptoStore.getCrossSigningInfo(otherUserId)?.isTrusted()
-        cryptoStore.setUserKeysAsTrusted(otherUserId, trusted)
+        cryptoStore.setUserKeysAsTrusted(otherUserId, true)
         // If it's me, recheck trust of all users and devices?
         val users = ArrayList<String>()
         if (otherUserId == userId && currentTrust != trusted) {

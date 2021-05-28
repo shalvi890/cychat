@@ -122,7 +122,7 @@ android {
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
-        buildConfigField "String", "CY_BASE_URL", "\"https://cychat-dev.cioinfotech.com\""
+//        buildConfigField "String", "CY_BASE_URL", "\"https://cychat-dev.cioinfotech.com\""
 
 //        buildConfigField "String", "GIT_REVISION", "\"${gitRevision()}\""
 //        resValue "string", "git_revision", "\"${gitRevision()}\""

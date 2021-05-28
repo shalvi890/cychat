@@ -339,25 +339,25 @@ class HomeActivity :
         super.onDestroy()
     }
 
-    override fun onResume() {
-        super.onResume()
+//    override fun onResume() {
+//        super.onResume()
 
-        if (vectorUncaughtExceptionHandler.didAppCrash(this)) {
-            vectorUncaughtExceptionHandler.clearAppCrashStatus(this)
-
-            AlertDialog.Builder(this)
-                    .setMessage(R.string.send_bug_report_app_crashed)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.yes) { _, _ -> bugReporter.openBugReportScreen(this) }
-                    .setNegativeButton(R.string.no) { _, _ -> bugReporter.deleteCrashFile(this) }
-                    .show()
-        } else {
-            showDisclaimerDialog(this)
-        }
+//        if (vectorUncaughtExceptionHandler.didAppCrash(this)) {
+//            vectorUncaughtExceptionHandler.clearAppCrashStatus(this)
+//
+//            AlertDialog.Builder(this)
+//                    .setMessage(R.string.send_bug_report_app_crashed)
+//                    .setCancelable(false)
+//                    .setPositiveButton(R.string.yes) { _, _ -> bugReporter.openBugReportScreen(this) }
+//                    .setNegativeButton(R.string.no) { _, _ -> bugReporter.deleteCrashFile(this) }
+//                    .show()
+//        } else {
+//            showDisclaimerDialog(this)
+//        }
 
         // Force remote backup state update to update the banner if needed
-        serverBackupStatusViewModel.refreshRemoteStateIfNeeded()
-    }
+//        serverBackupStatusViewModel.refreshRemoteStateIfNeeded()
+//    }
 
     override fun configure(toolbar: Toolbar) {
         configureToolbar(toolbar, false)

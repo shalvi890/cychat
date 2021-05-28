@@ -158,14 +158,15 @@ open class LoginActivity : VectorBaseActivity<ActivityLoginBinding>(), ToolbarCo
                         })
             is LoginViewEvents.OnServerSelectionDone                      -> onServerSelectionDone(loginViewEvents)
             is LoginViewEvents.OnSignModeSelected                         -> onSignModeSelected(loginViewEvents)
+            is LoginViewEvents.OnHomeserverSelection                      -> addFragmentToBackstack(R.id.loginFragmentContainer,
+                    LoginFragment::class.java,
+                    tag = FRAGMENT_LOGIN_TAG,
+                    option = commonOption)
             is LoginViewEvents.OnLoginFlowRetrieved                       ->
                 addFragmentToBackstack(R.id.loginFragmentContainer,
-                        LoginFragment::class.java,
+                        SelectEnvFragment::class.java,
                         tag = FRAGMENT_LOGIN_TAG,
                         option = commonOption)
-//                addFragmentToBackstack(R.id.loginFragmentContainer,
-//                        LoginSignUpSignInSelectionFragment::class.java,
-//                        option = commonOption)
             is LoginViewEvents.OnSendOTPs                                 -> addFragmentToBackstack(R.id.loginFragmentContainer,
                     LoginOTPFragment::class.java,
                     tag = FRAGMENT_LOGIN_TAG,
