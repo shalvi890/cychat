@@ -19,6 +19,7 @@ package im.vector.app.features.home.room.detail.timeline.item
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
@@ -77,6 +78,18 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         else
             constraintSet.setHorizontalBias(holder.imageView.id, 0f)
         constraintSet.applyTo(holder.clImageVideo)
+
+        if (attributes.informationData.showInformation) {
+            holder.textTimeView.visibility = View.VISIBLE
+            holder.textTimeView.text = attributes.informationData.time
+        } else {
+            if (attributes.informationData.forceShowTimestamp) {
+                holder.textTimeView.visibility = View.VISIBLE
+                holder.textTimeView.text = attributes.informationData.time
+            } else {
+                holder.textTimeView.visibility = View.GONE
+            }
+        }
     }
 
     override fun unbind(holder: Holder) {
@@ -96,6 +109,7 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         val playContentView by bind<ImageView>(R.id.messageMediaPlayView)
         val mediaContentView by bind<ViewGroup>(R.id.messageContentMedia)
         val clImageVideo by bind<ConstraintLayout>(R.id.clImageVideoView)
+        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
     }
 
     companion object {

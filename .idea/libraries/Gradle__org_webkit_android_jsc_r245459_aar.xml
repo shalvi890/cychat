@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: org.webkit:android-jsc:r245459@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/dc0b6f22985bf756201cbc72c97498ee/transformed/jetified-android-jsc-r245459/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/dc0b6f22985bf756201cbc72c97498ee/transformed/jetified-android-jsc-r245459/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/dc0b6f22985bf756201cbc72c97498ee/transformed/jetified-android-jsc-r245459/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0bcdf4a4e6b735bcf7c16302103666b/jetified-android-jsc-r245459/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0bcdf4a4e6b735bcf7c16302103666b/jetified-android-jsc-r245459/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0bcdf4a4e6b735bcf7c16302103666b/jetified-android-jsc-r245459/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0bcdf4a4e6b735bcf7c16302103666b/jetified-android-jsc-r245459/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

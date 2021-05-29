@@ -126,8 +126,8 @@ class MessageItemFactory @Inject constructor(
         val informationData = messageInformationDataFactory.create(params)
         if (event.root.isRedacted()) {
             // message is redacted
-            val attributes = messageItemAttributesFactory.create(null, informationData, callback)
-            return buildRedactedItem(attributes, highlight)
+//            val attributes = messageItemAttributesFactory.create(null, informationData, callback)
+//            return buildRedactedItem(attributes, highlight)
         }
 
         val messageContent = event.getLastMessageContent()

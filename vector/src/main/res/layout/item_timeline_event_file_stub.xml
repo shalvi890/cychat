@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/messageFileLayout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="4dp"
     android:paddingBottom="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,21 +19,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <im.vector.app.core.ui.views.ShieldImageView
-            android:id="@+id/messageFilee2eIcon"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+<!--        <im.vector.app.core.ui.views.ShieldImageView-->
+<!--            android:id="@+id/messageFilee2eIcon"-->
+<!--            android:layout_width="14dp"-->
+<!--            android:layout_height="14dp"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            tools:visibility="visible" />-->
 
         <!-- the media type -->
         <RelativeLayout
             android:id="@+id/messageFileImageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="4dp"
             app:layout_constraintStart_toEndOf="@+id/messageFilee2eIcon"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -82,5 +83,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalBarrier"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/messageTextTimeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="?riotx_text_secondary_contrast"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageFileUploadProgressLayout"
+        tools:text="@tools:sample/date/hhmm" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

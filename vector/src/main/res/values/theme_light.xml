@@ -12,6 +12,9 @@
         <item name="riotx_header_panel_text_secondary">@color/riotx_header_panel_text_secondary_light</item>
         <item name="riotx_text_primary">@color/riotx_text_primary_light</item>
         <item name="riotx_text_secondary">@color/riotx_text_secondary_light</item>
+        <item name="riotx_text_primary_contrast">@color/riotx_text_primary_contrast_light</item>
+        <item name="riotx_text_secondary_contrast">@color/riotx_text_secondary_contrast_light</item>
+
         <item name="riotx_text_tertiary">@color/riotx_text_tertiary_light</item>
         <item name="riotx_text_primary_body_contrast">@color/riotx_text_primary_body_contrast_light</item>
         <item name="riotx_android_secondary">@color/riotx_android_secondary_light</item>
@@ -31,6 +34,8 @@
         <item name="riotx_alerter_background">@color/riotx_alerter_background_light</item>
         <item name="riotx_bottom_nav_icon_color">@color/riotx_bottom_nav_icon_color_light</item>
         <item name="riotx_background_text_field">@color/riotx_background_text_field_light</item>
+        <item name="cy_chat_bg_receive">@color/chat_bg_receive_white</item>
+        <item name="cy_chat_bg_send">@color/chat_bg_send_white</item>
 
         <!-- Material color: Note: this block should be the same in all theme because it references only common colors and ?riotx attributes -->
         <item name="colorPrimary">@color/riotx_accent</item>

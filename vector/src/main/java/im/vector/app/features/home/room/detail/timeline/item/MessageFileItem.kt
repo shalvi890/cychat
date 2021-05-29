@@ -17,6 +17,7 @@
 package im.vector.app.features.home.room.detail.timeline.item
 
 import android.graphics.Paint
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -95,6 +96,18 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         else
             constraintSet.setHorizontalBias(holder.clFiles.id, 0f)
         constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
+
+        if (attributes.informationData.showInformation) {
+            holder.textTimeView.visibility = View.VISIBLE
+            holder.textTimeView.text = attributes.informationData.time
+        } else {
+            if (attributes.informationData.forceShowTimestamp) {
+                holder.textTimeView.visibility = View.VISIBLE
+                holder.textTimeView.text = attributes.informationData.time
+            } else {
+                holder.textTimeView.visibility = View.GONE
+            }
+        }
     }
 
     override fun unbind(holder: Holder) {
@@ -113,6 +126,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         val fileDownloadProgress by bind<ProgressBar>(R.id.messageFileProgressbar)
         val filenameView by bind<TextView>(R.id.messageFilenameView)
         val clFiles by bind<ConstraintLayout>(R.id.clFiles)
+        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
     }
 
     companion object {

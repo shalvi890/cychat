@@ -48,7 +48,7 @@ class TimelineItemFactory @Inject constructor(private val messageItemFactory: Me
             when (event.root.getClearType()) {
                 // Message itemsX
                 EventType.STICKER,
-                EventType.MESSAGE               -> messageItemFactory.create(params)
+                EventType.MESSAGE                 -> messageItemFactory.create(params)
                 EventType.STATE_ROOM_TOMBSTONE,
                 EventType.STATE_ROOM_NAME,
                 EventType.STATE_ROOM_TOPIC,
@@ -74,22 +74,23 @@ class TimelineItemFactory @Inject constructor(private val messageItemFactory: Me
                 EventType.REACTION,
                 EventType.STATE_ROOM_POWER_LEVELS -> noticeItemFactory.create(params)
                 EventType.STATE_ROOM_WIDGET_LEGACY,
-                EventType.STATE_ROOM_WIDGET     -> widgetItemFactory.create(params)
-                EventType.STATE_ROOM_ENCRYPTION -> encryptionItemFactory.create(params)
+                EventType.STATE_ROOM_WIDGET       -> widgetItemFactory.create(params)
+                EventType.STATE_ROOM_ENCRYPTION   -> encryptionItemFactory.create(params)
                 // State room create
-                EventType.STATE_ROOM_CREATE     -> roomCreateItemFactory.create(params)
+                EventType.STATE_ROOM_CREATE       -> roomCreateItemFactory.create(params)
                 // Calls
                 EventType.CALL_INVITE,
                 EventType.CALL_HANGUP,
                 EventType.CALL_REJECT,
-                EventType.CALL_ANSWER           -> callItemFactory.create(params)
+                EventType.CALL_ANSWER             -> callItemFactory.create(params)
                 // Crypto
-                EventType.ENCRYPTED             -> {
+                EventType.ENCRYPTED               -> {
                     if (event.root.isRedacted()) {
                         // Redacted event, let the MessageItemFactory handle it
                         messageItemFactory.create(params)
                     } else {
-                        encryptedItemFactory.create(params)
+                        null
+//                        encryptedItemFactory.create(params)
                     }
                 }
 //                EventType.KEY_VERIFICATION_CANCEL,
@@ -97,7 +98,7 @@ class TimelineItemFactory @Inject constructor(private val messageItemFactory: Me
 //                    verificationConclusionItemFactory.create(params)
 //                }
                 // Unhandled event types
-                else                            -> {
+                else                              -> {
                     // Should only happen when shouldShowHiddenEvents() settings is ON
                     Timber.v("Type ${event.root.getClearType()} not handled")
                     defaultItemFactory.create(params)

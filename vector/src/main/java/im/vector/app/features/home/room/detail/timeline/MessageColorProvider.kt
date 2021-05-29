@@ -37,21 +37,22 @@ class MessageColorProvider @Inject constructor(
 
     @ColorInt
     fun getMessageTextColor(sendState: SendState): Int {
-        return if (vectorPreferences.developerMode()) {
-            when (sendState) {
-                // SendStates, in the classical order they will occur
-                SendState.UNKNOWN,
-                SendState.UNSENT                 -> colorProvider.getColorFromAttribute(R.attr.vctr_sending_message_text_color)
-                SendState.ENCRYPTING             -> colorProvider.getColorFromAttribute(R.attr.vctr_encrypting_message_text_color)
-                SendState.SENDING                -> colorProvider.getColorFromAttribute(R.attr.vctr_sending_message_text_color)
-                SendState.SENT,
-                SendState.SYNCED                 -> colorProvider.getColorFromAttribute(R.attr.vctr_message_text_color)
-                SendState.UNDELIVERED,
-                SendState.FAILED_UNKNOWN_DEVICES -> colorProvider.getColorFromAttribute(R.attr.vctr_unsent_message_text_color)
-            }
-        } else {
-            // When not in developer mode, we use only one color
-            colorProvider.getColorFromAttribute(R.attr.vctr_message_text_color)
+        return when (sendState) {
+            // SendStates, in the classical order they will occur
+            SendState.UNKNOWN,
+            SendState.UNSENT                 -> colorProvider.getColorFromAttribute(R.attr.riotx_text_secondary_contrast)
+            SendState.ENCRYPTING             -> colorProvider.getColorFromAttribute(R.attr.riotx_text_secondary_contrast)
+            SendState.SENDING                -> colorProvider.getColorFromAttribute(R.attr.riotx_text_secondary_contrast)
+            SendState.SENT,
+            SendState.SYNCED                 -> colorProvider.getColorFromAttribute(R.attr.riotx_text_primary_contrast)
+            SendState.UNDELIVERED,
+            SendState.FAILED_UNKNOWN_DEVICES -> colorProvider.getColorFromAttribute(R.attr.riotx_text_secondary_contrast)
+            else                             -> colorProvider.getColorFromAttribute(R.attr.riotx_text_primary_contrast)
         }
+        //        if (vectorPreferences.developerMode()) {
+//        } else {
+//            // When not in developer mode, we use only one color
+//            colorProvider.getColorFromAttribute(R.attr.vctr_message_text_color)
+//        }
     }
 }

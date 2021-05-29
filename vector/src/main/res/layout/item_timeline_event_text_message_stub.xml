@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clParentText"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:addStatesFromChildren="true"
-    android:id="@+id/clParentText"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,21 +33,23 @@
             android:layout_height="wrap_content"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            android:textColor="?riotx_text_secondary"
+            android:textColor="?riotx_text_secondary_contrast"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/messageTextView"
             app:layout_constraintStart_toEndOf="@id/messageTextView"
             tools:text="@tools:sample/date/hhmm" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <im.vector.app.features.home.room.detail.timeline.url.PreviewUrlView
         android:id="@+id/messageUrlPreview"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:foreground="?attr/selectableItemBackground"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/clText"
         tools:visibility="visible" />
 

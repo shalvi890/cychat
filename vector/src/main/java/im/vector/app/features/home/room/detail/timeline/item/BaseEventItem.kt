@@ -17,15 +17,11 @@ package im.vector.app.features.home.room.detail.timeline.item
 
 import android.view.View
 import android.view.ViewStub
-import android.widget.RelativeLayout
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
-import androidx.core.view.updateLayoutParams
 import com.airbnb.epoxy.EpoxyAttribute
-import im.vector.app.R
 import im.vector.app.core.epoxy.VectorEpoxyHolder
 import im.vector.app.core.epoxy.VectorEpoxyModel
-import im.vector.app.core.platform.CheckableView
 import im.vector.app.core.utils.DimensionConverter
 
 /**
@@ -46,15 +42,15 @@ abstract class BaseEventItem<H : BaseEventItem.BaseHolder> : VectorEpoxyModel<H>
     @CallSuper
     override fun bind(holder: H) {
         super.bind(holder)
-        holder.leftGuideline.updateLayoutParams<RelativeLayout.LayoutParams> {
-            this.marginStart = leftGuideline
-        }
-        holder.checkableBackground.isChecked = highlighted
+//        holder.leftGuideline.updateLayoutParams<RelativeLayout.LayoutParams> {
+//            this.marginStart = leftGuideline
+//        }
+//        holder.checkableBackground.isChecked = highlighted
     }
 
     abstract class BaseHolder(@IdRes val stubId: Int) : VectorEpoxyHolder() {
-        val leftGuideline by bind<View>(R.id.messageStartGuideline)
-        val checkableBackground by bind<CheckableView>(R.id.messageSelectedBackground)
+//        val leftGuideline by bind<View>(R.id.messageStartGuideline)
+//        val checkableBackground by bind<CheckableView>(R.id.messageSelectedBackground)
 
         override fun bindView(itemView: View) {
             super.bindView(itemView)

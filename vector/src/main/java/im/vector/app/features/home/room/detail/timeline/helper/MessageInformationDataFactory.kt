@@ -118,7 +118,8 @@ class MessageInformationDataFactory @Inject constructor(private val session: Ses
                 },
                 sentByMe = isSentByMe,
                 e2eDecoration = e2eDecoration,
-                sendStateDecoration = sendStateDecoration
+                sendStateDecoration = sendStateDecoration,
+                memberCount = roomSummariesHolder.get(event.roomId)?.joinedMembersCount ?: 0
         )
     }
 

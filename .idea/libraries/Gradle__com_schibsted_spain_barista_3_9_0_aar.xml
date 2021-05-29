@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.schibsted.spain:barista:3.9.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e3944ed412b83bafd7da6fca082fc5cc/transformed/jetified-barista-3.9.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e3944ed412b83bafd7da6fca082fc5cc/transformed/jetified-barista-3.9.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e3944ed412b83bafd7da6fca082fc5cc/transformed/jetified-barista-3.9.0/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c956ebe96d7df63399325edde7856cf/jetified-barista-3.9.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c956ebe96d7df63399325edde7856cf/jetified-barista-3.9.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c956ebe96d7df63399325edde7856cf/jetified-barista-3.9.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c956ebe96d7df63399325edde7856cf/jetified-barista-3.9.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.schibsted.spain/barista/3.9.0/ef0914ad41c624e64faf26685e3cbfb1996e2c5b/barista-3.9.0-javadoc.jar!/" />

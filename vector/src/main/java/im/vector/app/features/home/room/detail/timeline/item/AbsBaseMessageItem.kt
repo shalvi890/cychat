@@ -23,12 +23,10 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.view.isVisible
 import im.vector.app.R
-import im.vector.app.core.ui.views.ShieldImageView
 import im.vector.app.features.home.AvatarRenderer
 import im.vector.app.features.home.room.detail.timeline.MessageColorProvider
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
 import im.vector.app.features.reactions.widget.ReactionButton
-import org.matrix.android.sdk.api.crypto.RoomEncryptionTrustLevel
 import org.matrix.android.sdk.api.session.room.send.SendState
 
 /**
@@ -83,16 +81,16 @@ abstract class AbsBaseMessageItem<H : AbsBaseMessageItem.Holder> : BaseEventItem
             holder.reactionsContainer.setOnLongClickListener(baseAttributes.itemLongClickListener)
         }
 
-        when (baseAttributes.informationData.e2eDecoration) {
-            E2EDecoration.NONE                 -> {
-                holder.e2EDecorationView.render(null)
-            }
-            E2EDecoration.WARN_IN_CLEAR,
-            E2EDecoration.WARN_SENT_BY_UNVERIFIED,
-            E2EDecoration.WARN_SENT_BY_UNKNOWN -> {
-                holder.e2EDecorationView.render(RoomEncryptionTrustLevel.Warning)
-            }
-        }
+//        when (baseAttributes.informationData.e2eDecoration) {
+//            E2EDecoration.NONE                 -> {
+//                holder.e2EDecorationView.render(null)
+//            }
+//            E2EDecoration.WARN_IN_CLEAR,
+//            E2EDecoration.WARN_SENT_BY_UNVERIFIED,
+//            E2EDecoration.WARN_SENT_BY_UNKNOWN -> {
+//                holder.e2EDecorationView.render(RoomEncryptionTrustLevel.Warning)
+//            }
+//        }
 
         holder.view.setOnClickListener(baseAttributes.itemClickListener)
         holder.view.setOnLongClickListener(baseAttributes.itemLongClickListener)
@@ -112,7 +110,7 @@ abstract class AbsBaseMessageItem<H : AbsBaseMessageItem.Holder> : BaseEventItem
 
     abstract class Holder(@IdRes stubId: Int) : BaseEventItem.BaseHolder(stubId) {
         val reactionsContainer by bind<ViewGroup>(R.id.reactionsContainer)
-        val e2EDecorationView by bind<ShieldImageView>(R.id.messageE2EDecoration)
+//        val e2EDecorationView by bind<ShieldImageView>(R.id.messageE2EDecoration)
     }
 
     /**
@@ -125,6 +123,7 @@ abstract class AbsBaseMessageItem<H : AbsBaseMessageItem.Holder> : BaseEventItem
         val messageColorProvider: MessageColorProvider
         val itemLongClickListener: View.OnLongClickListener?
         val itemClickListener: View.OnClickListener?
+
         //        val memberClickListener: View.OnClickListener?
         val reactionPillCallback: TimelineEventController.ReactionPillCallback?
 

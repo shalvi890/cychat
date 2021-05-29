@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="4dp"
     android:addStatesFromChildren="true"
     android:background="?attr/selectableItemBackground">
 
-    <im.vector.app.core.platform.CheckableView
-        android:id="@+id/messageSelectedBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/informationBottom"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/highlighted_message_background" />
+    <!--    <im.vector.app.core.platform.CheckableView-->
+    <!--        android:id="@+id/messageSelectedBackground"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_alignBottom="@+id/informationBottom"-->
+    <!--        android:layout_alignParentTop="true"-->
+    <!--        android:background="@drawable/highlighted_message_background" />-->
 
     <ImageView
         android:id="@+id/messageAvatarImageView"
@@ -22,51 +24,45 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:contentDescription="@string/avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
-    <im.vector.app.core.ui.views.ShieldImageView
-        android:id="@+id/messageE2EDecoration"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignTop="@id/clStubContainer"
-        android:layout_alignEnd="@id/messageAvatarImageView"
-        android:layout_marginTop="7dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-    <View
-        android:id="@+id/messageStartGuideline"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:layout_marginStart="52dp" />
+    <!--    <View-->
+    <!--        android:id="@+id/messageStartGuideline"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        tools:layout_marginStart="52dp" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clStubContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/messageStartGuideline"
-        android:layout_alignParentTop="true"
-        android:paddingStart="0dp"
-        android:paddingEnd="8dp"
-        android:layout_alignParentEnd="true">
+        android:background="@drawable/received_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/messageAvatarImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintWidth_percent="0.85">
 
-        <TextView
-            android:id="@+id/messageMemberNameView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="?riotx_text_primary"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@sample/matrix.json/data/displayName" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/messageMemberNameView"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentTop="true"-->
+        <!--            android:layout_marginStart="4dp"-->
+        <!--            android:layout_marginTop="4dp"-->
+        <!--            android:layout_marginEnd="4dp"-->
+        <!--            android:ellipsize="end"-->
+        <!--            android:maxLines="1"-->
+        <!--            android:textColor="?riotx_text_primary"-->
+        <!--            android:textSize="15sp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            tools:text="@sample/matrix.json/data/displayName" />-->
 
         <!--        <Space-->
         <!--            android:id="@+id/decorationSpace"-->
@@ -76,14 +72,12 @@
 
         <FrameLayout
             android:id="@+id/viewStubContainer"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:addStatesFromChildren="true"
-            app:layout_constraintEnd_toStartOf="@id/messageSendStateImageView"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/messageMemberNameView"
-            app:layout_constraintWidth_percent="0.9">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ViewStub
                 android:id="@+id/messageContentTextStub"
@@ -116,21 +110,18 @@
                 android:id="@+id/messageContentRedactedStub"
                 style="@style/TimelineContentStubBaseParams"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="56dp"
                 android:layout="@layout/item_timeline_event_redacted_stub" />
 
             <ViewStub
                 android:id="@+id/messagePollStub"
                 style="@style/TimelineContentStubBaseParams"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="56dp"
                 android:layout="@layout/item_timeline_event_poll_stub" />
 
             <ViewStub
                 android:id="@+id/messageOptionsStub"
                 style="@style/TimelineContentStubBaseParams"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="56dp"
                 android:layout="@layout/item_timeline_event_option_buttons_stub" />
 
         </FrameLayout>
@@ -144,62 +135,67 @@
             android:layout_marginBottom="4dp"
             android:indeterminateTint="?riotx_text_secondary"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/viewStubContainer"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toBottomOf="@id/clStubContainer"
+            tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/messageTimeView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="?riotx_text_secondary"
-            android:textSize="12sp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/viewStubContainer"
-            tools:text="@tools:sample/date/hhmm" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/messageTimeView"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:textColor="?riotx_text_secondary"-->
+        <!--            android:textSize="12sp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/viewStubContainer"-->
+        <!--            tools:text="@tools:sample/date/hhmm" />-->
 
-        <im.vector.app.core.ui.views.SendStateImageView
-            android:id="@+id/messageSendStateImageView"
-            android:layout_width="@dimen/item_event_message_state_size"
-            android:layout_height="@dimen/item_event_message_state_size"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="4dp"
-            android:contentDescription="@string/event_status_a11y_sending"
-            android:src="@drawable/ic_sending_message"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/viewStubContainer"
-            app:layout_constraintEnd_toEndOf="parent" />
+        <!--        <im.vector.app.core.ui.views.SendStateImageView-->
+        <!--            android:id="@+id/messageSendStateImageView"-->
+        <!--            android:layout_width="@dimen/item_event_message_state_size"-->
+        <!--            android:layout_height="@dimen/item_event_message_state_size"-->
+        <!--            android:layout_alignParentEnd="true"-->
+        <!--            android:layout_marginBottom="4dp"-->
+        <!--            android:contentDescription="@string/event_status_a11y_sending"-->
+        <!--            android:src="@drawable/ic_sending_message"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/viewStubContainer"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/viewStubContainer" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/informationBottom"
-        android:layout_width="match_parent"
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/informationBottom"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:addStatesFromChildren="true"-->
+    <!--        android:orientation="vertical"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/messageAvatarImageView"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/clStubContainer">-->
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/reactionsContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/clStubContainer"
-        android:layout_toEndOf="@+id/messageStartGuideline"
-        android:addStatesFromChildren="true"
-        android:orientation="vertical">
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/riotx_text_secondary_contrast_black"
+        app:dividerDrawable="@drawable/reaction_divider"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toEndOf="@id/clStubContainer"
+        app:layout_constraintStart_toStartOf="@id/clStubContainer"
+        app:layout_constraintTop_toBottomOf="@id/clStubContainer"
+        app:showDivider="middle"
+        tools:background="#F0E0F0"
+        tools:layout_height="40dp" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/reactionsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="4dp"
-            app:dividerDrawable="@drawable/reaction_divider"
-            app:flexWrap="wrap"
-            app:showDivider="middle"
-            tools:background="#F0E0F0"
-            tools:layout_height="40dp">
+    <!--            &lt;!&ndash; ReactionButtons will be added here in the code &ndash;&gt;-->
+    <!--            &lt;!&ndash;im.vector.app.features.reactions.widget.ReactionButton-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content" /&ndash;&gt;-->
 
-            <!-- ReactionButtons will be added here in the code -->
-            <!--im.vector.app.features.reactions.widget.ReactionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" /-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        </com.google.android.flexbox.FlexboxLayout>
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

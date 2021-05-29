@@ -16,16 +16,14 @@
 
 package im.vector.app.features.home.room.detail.timeline.item
 
+import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
 import im.vector.app.R
@@ -34,6 +32,7 @@ import im.vector.app.core.utils.DebouncedClickListener
 import im.vector.app.features.home.AvatarRenderer
 import im.vector.app.features.home.room.detail.timeline.MessageColorProvider
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
+import im.vector.app.features.themes.ThemeUtils
 
 /**
  * Base timeline item that adds an optional information bar with the sender avatar, name, time, send state
@@ -63,49 +62,55 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
             }
             holder.avatarImageView.visibility = View.VISIBLE
             holder.avatarImageView.setOnClickListener(_avatarClickListener)
-            holder.memberNameView.visibility = View.VISIBLE
-            holder.memberNameView.setOnClickListener(_memberNameClickListener)
-            holder.timeView.visibility = View.VISIBLE
-            holder.timeView.text = attributes.informationData.time
-            holder.memberNameView.text = attributes.informationData.memberName
-            holder.memberNameView.setTextColor(attributes.getMemberNameColor())
+//            holder.memberNameView.visibility = View.VISIBLE
+//            holder.memberNameView.setOnClickListener(_memberNameClickListener)
+//            holder.timeView.visibility = View.VISIBLE
+//            holder.timeView.text = attributes.informationData.time
+//            holder.memberNameView.text = attributes.informationData.memberName
+//            holder.memberNameView.setTextColor(attributes.getMemberNameColor())
             attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)
             holder.avatarImageView.setOnLongClickListener(attributes.itemLongClickListener)
-            holder.memberNameView.setOnLongClickListener(attributes.itemLongClickListener)
+//            holder.memberNameView.setOnLongClickListener(attributes.itemLongClickListener)
         } else {
             holder.avatarImageView.setOnClickListener(null)
-            holder.memberNameView.setOnClickListener(null)
+//            holder.memberNameView.setOnClickListener(null)
             holder.avatarImageView.visibility = View.GONE
             if (attributes.informationData.forceShowTimestamp) {
-                holder.memberNameView.isInvisible = true
-                holder.timeView.isVisible = true
-                holder.timeView.text = attributes.informationData.time
+//                holder.memberNameView.isInvisible = true
+//                holder.timeView.isVisible = true
+//                holder.timeView.text = attributes.informationData.time
             } else {
-                holder.memberNameView.isVisible = false
-                holder.timeView.isVisible = false
+//                holder.memberNameView.isVisible = false
+//                holder.timeView.isVisible = false
             }
             holder.avatarImageView.setOnLongClickListener(null)
-            holder.memberNameView.setOnLongClickListener(null)
+//            holder.memberNameView.setOnLongClickListener(null)
         }
         val constraintSet = ConstraintSet()
-        constraintSet.clone(holder.clParentView)
-        if (attributes.informationData.sentByMe)
-            constraintSet.setHorizontalBias(holder.flStubContainer.id, 1f)
-        else
-            constraintSet.setHorizontalBias(holder.flStubContainer.id, 0f)
-        constraintSet.applyTo(holder.clParentView)
+        constraintSet.clone(holder.clParent)
+        if (attributes.informationData.sentByMe) {
+            holder.clStubContainer.setBackgroundResource(R.drawable.sent_bg)
+            holder.clStubContainer.backgroundTintList = ColorStateList.valueOf(ThemeUtils.getColor(holder.clStubContainer.context, R.attr.cy_chat_bg_send))
+            constraintSet.setHorizontalBias(holder.clStubContainer.id, 1f)
+        } else {
+            holder.clStubContainer.setBackgroundResource(R.drawable.received_bg)
+            holder.clStubContainer.backgroundTintList = ColorStateList.valueOf(ThemeUtils.getColor(holder.clStubContainer.context, R.attr.cy_chat_bg_receive))
+            constraintSet.setHorizontalBias(holder.clStubContainer.id, 0f)
+        }
+        constraintSet.applyTo(holder.clParent)
 
         // Render send state indicator
-        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
+//        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
         holder.eventSendingIndicator.isVisible = attributes.informationData.sendStateDecoration == SendStateDecoration.SENDING_MEDIA
+        holder.avatarImageView.isVisible = attributes.informationData.memberCount != 2
     }
 
     override fun unbind(holder: H) {
         attributes.avatarRenderer.clear(holder.avatarImageView)
         holder.avatarImageView.setOnClickListener(null)
         holder.avatarImageView.setOnLongClickListener(null)
-        holder.memberNameView.setOnClickListener(null)
-        holder.memberNameView.setOnLongClickListener(null)
+//        holder.memberNameView.setOnClickListener(null)
+//        holder.memberNameView.setOnLongClickListener(null)
         super.unbind(holder)
     }
 
@@ -113,12 +118,13 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
 
     abstract class Holder(@IdRes stubId: Int) : AbsBaseMessageItem.Holder(stubId) {
         val avatarImageView by bind<ImageView>(R.id.messageAvatarImageView)
-        val memberNameView by bind<TextView>(R.id.messageMemberNameView)
-        val timeView by bind<TextView>(R.id.messageTimeView)
-        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
+
+        //        val memberNameView by bind<TextView>(R.id.messageMemberNameView)
+//        val timeView by bind<TextView>(R.id.messageTimeView)
+//        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
         val eventSendingIndicator by bind<ProgressBar>(R.id.eventSendingIndicator)
-        val clParentView by bind<ConstraintLayout>(R.id.clStubContainer)
-        val flStubContainer by bind<FrameLayout>(R.id.viewStubContainer)
+        val clParent by bind<ConstraintLayout>(R.id.clParent)
+        val clStubContainer by bind<ConstraintLayout>(R.id.clStubContainer)
     }
 
     /**

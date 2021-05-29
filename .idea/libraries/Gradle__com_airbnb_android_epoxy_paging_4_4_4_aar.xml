@@ -1,11 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.airbnb.android:epoxy-paging:4.4.4@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f06088f034775e75a653c1ff8344a9f0/transformed/jetified-epoxy-paging-4.4.4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f06088f034775e75a653c1ff8344a9f0/transformed/jetified-epoxy-paging-4.4.4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f06088f034775e75a653c1ff8344a9f0/transformed/jetified-epoxy-paging-4.4.4/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/83c84c49faa2193b5fbbb6e2cee09e5f/jetified-epoxy-paging-4.4.4/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/83c84c49faa2193b5fbbb6e2cee09e5f/jetified-epoxy-paging-4.4.4/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/83c84c49faa2193b5fbbb6e2cee09e5f/jetified-epoxy-paging-4.4.4/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/83c84c49faa2193b5fbbb6e2cee09e5f/jetified-epoxy-paging-4.4.4/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>

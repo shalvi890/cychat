@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.danikula:videocache:2.7.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/656e538d3b49e819053f9892ee6c0309/transformed/jetified-videocache-2.7.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/656e538d3b49e819053f9892ee6c0309/transformed/jetified-videocache-2.7.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/656e538d3b49e819053f9892ee6c0309/transformed/jetified-videocache-2.7.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00e52ffd40a4abc1336558daa8f0087d/jetified-videocache-2.7.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00e52ffd40a4abc1336558daa8f0087d/jetified-videocache-2.7.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00e52ffd40a4abc1336558daa8f0087d/jetified-videocache-2.7.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00e52ffd40a4abc1336558daa8f0087d/jetified-videocache-2.7.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.danikula/videocache/2.7.1/ddde8c8b43f936da25f47320e17e0974f5567c2a/videocache-2.7.1-javadoc.jar!/" />
