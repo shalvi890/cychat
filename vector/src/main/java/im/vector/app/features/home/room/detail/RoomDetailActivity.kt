@@ -47,9 +47,7 @@ class RoomDetailActivity :
         RequireActiveMembershipViewModel.Factory,
         RoomWidgetPermissionViewModel.Factory {
 
-    override fun getBinding(): ActivityRoomDetailBinding {
-        return ActivityRoomDetailBinding.inflate(layoutInflater)
-    }
+    override fun getBinding() = ActivityRoomDetailBinding.inflate(layoutInflater)
 
     private lateinit var sharedActionViewModel: RoomDetailSharedActionViewModel
     private val requireActiveMembershipViewModel: RequireActiveMembershipViewModel by viewModel()

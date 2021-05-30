@@ -78,18 +78,7 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         else
             constraintSet.setHorizontalBias(holder.imageView.id, 0f)
         constraintSet.applyTo(holder.clImageVideo)
-
-        if (attributes.informationData.showInformation) {
-            holder.textTimeView.visibility = View.VISIBLE
-            holder.textTimeView.text = attributes.informationData.time
-        } else {
-            if (attributes.informationData.forceShowTimestamp) {
-                holder.textTimeView.visibility = View.VISIBLE
-                holder.textTimeView.text = attributes.informationData.time
-            } else {
-                holder.textTimeView.visibility = View.GONE
-            }
-        }
+        holder.textTimeView.text = attributes.informationData.time
     }
 
     override fun unbind(holder: Holder) {

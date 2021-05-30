@@ -96,18 +96,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         else
             constraintSet.setHorizontalBias(holder.clFiles.id, 0f)
         constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
-
-        if (attributes.informationData.showInformation) {
-            holder.textTimeView.visibility = View.VISIBLE
-            holder.textTimeView.text = attributes.informationData.time
-        } else {
-            if (attributes.informationData.forceShowTimestamp) {
-                holder.textTimeView.visibility = View.VISIBLE
-                holder.textTimeView.text = attributes.informationData.time
-            } else {
-                holder.textTimeView.visibility = View.GONE
-            }
-        }
+        holder.textTimeView.text = attributes.informationData.time
     }
 
     override fun unbind(holder: Holder) {

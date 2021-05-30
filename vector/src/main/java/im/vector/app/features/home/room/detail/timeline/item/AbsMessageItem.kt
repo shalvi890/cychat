@@ -27,7 +27,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
 import im.vector.app.R
-import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.core.utils.DebouncedClickListener
 import im.vector.app.features.home.AvatarRenderer
 import im.vector.app.features.home.room.detail.timeline.MessageColorProvider
@@ -75,14 +74,14 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
             holder.avatarImageView.setOnClickListener(null)
 //            holder.memberNameView.setOnClickListener(null)
             holder.avatarImageView.visibility = View.GONE
-            if (attributes.informationData.forceShowTimestamp) {
+//            if (attributes.informationData.forceShowTimestamp) {
 //                holder.memberNameView.isInvisible = true
 //                holder.timeView.isVisible = true
 //                holder.timeView.text = attributes.informationData.time
-            } else {
+//            } else {
 //                holder.memberNameView.isVisible = false
 //                holder.timeView.isVisible = false
-            }
+//            }
             holder.avatarImageView.setOnLongClickListener(null)
 //            holder.memberNameView.setOnLongClickListener(null)
         }
@@ -102,7 +101,7 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
         // Render send state indicator
 //        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
         holder.eventSendingIndicator.isVisible = attributes.informationData.sendStateDecoration == SendStateDecoration.SENDING_MEDIA
-        holder.avatarImageView.isVisible = attributes.informationData.memberCount != 2
+        holder.avatarImageView.isVisible = attributes.informationData.memberCount > 2
     }
 
     override fun unbind(holder: H) {
