@@ -25,6 +25,7 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import im.vector.app.R
 import im.vector.app.core.extensions.setTextOrHide
+import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.core.utils.DebouncedClickListener
 import im.vector.app.features.home.room.detail.RoomDetailAction
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
@@ -108,6 +109,8 @@ abstract class MessagePollItem : AbsMessageItem<MessagePollItem.Holder>() {
             }
         }
         holder.infoText.text = holder.view.context.resources.getQuantityString(R.plurals.poll_info, totalVotes, totalVotes)
+        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
+        holder.textTimeView.text = attributes.informationData.time
     }
 
     override fun unbind(holder: Holder) {
@@ -152,6 +155,8 @@ abstract class MessagePollItem : AbsMessageItem<MessagePollItem.Holder>() {
             })
             buttons.forEach { it.setOnClickListener(clickListener) }
         }
+        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
+        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
     companion object {

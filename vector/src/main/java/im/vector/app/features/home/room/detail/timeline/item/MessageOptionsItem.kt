@@ -25,6 +25,7 @@ import com.airbnb.epoxy.EpoxyModelClass
 import com.google.android.material.button.MaterialButton
 import im.vector.app.R
 import im.vector.app.core.extensions.setTextOrHide
+import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.features.home.room.detail.RoomDetailAction
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
 import org.matrix.android.sdk.api.session.room.model.message.MessageOptionsContent
@@ -69,11 +70,15 @@ abstract class MessageOptionsItem : AbsMessageItem<MessageOptionsItem.Holder>() 
             Gravity.END
         else
             Gravity.START
+        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
+        holder.textTimeView.text = attributes.informationData.time
     }
 
     class Holder : AbsMessageItem.Holder(STUB_ID) {
         val labelText by bind<TextView>(R.id.optionLabelText)
         val buttonContainer by bind<ViewGroup>(R.id.optionsButtonContainer)
+        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
+        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
     companion object {

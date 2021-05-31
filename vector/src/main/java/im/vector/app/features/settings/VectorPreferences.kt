@@ -362,18 +362,20 @@ class VectorPreferences @Inject constructor(private val context: Context) {
      *
      * @return true if the join and leave membership events should be shown in the messages list
      */
-    fun showJoinLeaveMessages(): Boolean {
-        return defaultPrefs.getBoolean(SETTINGS_SHOW_JOIN_LEAVE_MESSAGES_KEY, false)
-    }
+    fun showJoinLeaveMessages() = false
+//    : Boolean {
+//        return defaultPrefs.getBoolean(SETTINGS_SHOW_JOIN_LEAVE_MESSAGES_KEY, false)
+//    }
 
     /**
      * Tells if the avatar and display name events should be shown in the messages list.
      *
      * @return true true if the avatar and display name events should be shown in the messages list.
      */
-    fun showAvatarDisplayNameChangeMessages(): Boolean {
-        return defaultPrefs.getBoolean(SETTINGS_SHOW_AVATAR_DISPLAY_NAME_CHANGES_MESSAGES_KEY, true)
-    }
+    fun showAvatarDisplayNameChangeMessages() = false
+//    : Boolean {
+//        return defaultPrefs.getBoolean(SETTINGS_SHOW_AVATAR_DISPLAY_NAME_CHANGES_MESSAGES_KEY, false)
+//    }
 
     /**
      * Tells the native camera to take a photo or record a video.

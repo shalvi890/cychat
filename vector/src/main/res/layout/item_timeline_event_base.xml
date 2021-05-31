@@ -9,13 +9,13 @@
     android:addStatesFromChildren="true"
     android:background="?attr/selectableItemBackground">
 
-    <!--    <im.vector.app.core.platform.CheckableView-->
-    <!--        android:id="@+id/messageSelectedBackground"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_alignBottom="@+id/informationBottom"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:background="@drawable/highlighted_message_background" />-->
+    <!--        <im.vector.app.core.platform.CheckableView-->
+    <!--            android:id="@+id/messageSelectedBackground"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_alignBottom="@+id/informationBottom"-->
+    <!--            android:layout_alignParentTop="true"-->
+    <!--            android:background="@drawable/highlighted_message_background" />-->
 
     <ImageView
         android:id="@+id/messageAvatarImageView"
@@ -131,12 +131,12 @@
             android:layout_width="@dimen/item_event_message_state_size"
             android:layout_height="@dimen/item_event_message_state_size"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
             android:indeterminateTint="?riotx_text_secondary"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/viewStubContainer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/clStubContainer"
             tools:visibility="visible" />
 
         <!--        <TextView-->
@@ -149,21 +149,6 @@
         <!--            app:layout_constraintEnd_toEndOf="parent"-->
         <!--            app:layout_constraintTop_toBottomOf="@id/viewStubContainer"-->
         <!--            tools:text="@tools:sample/date/hhmm" />-->
-
-        <!--        <im.vector.app.core.ui.views.SendStateImageView-->
-        <!--            android:id="@+id/messageSendStateImageView"-->
-        <!--            android:layout_width="@dimen/item_event_message_state_size"-->
-        <!--            android:layout_height="@dimen/item_event_message_state_size"-->
-        <!--            android:layout_alignParentEnd="true"-->
-        <!--            android:layout_marginBottom="4dp"-->
-        <!--            android:contentDescription="@string/event_status_a11y_sending"-->
-        <!--            android:src="@drawable/ic_sending_message"-->
-        <!--            android:visibility="gone"-->
-        <!--            app:layout_constraintBottom_toBottomOf="@id/viewStubContainer"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintHorizontal_bias="0"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/viewStubContainer" />-->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--    <androidx.constraintlayout.widget.ConstraintLayout-->

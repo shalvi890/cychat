@@ -29,6 +29,7 @@ import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import im.vector.app.R
+import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.features.home.room.detail.timeline.helper.ContentDownloadStateTrackerBinder
 import im.vector.app.features.home.room.detail.timeline.helper.ContentUploadStateTrackerBinder
 
@@ -97,6 +98,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
             constraintSet.setHorizontalBias(holder.clFiles.id, 0f)
         constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
         holder.textTimeView.text = attributes.informationData.time
+        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
     }
 
     override fun unbind(holder: Holder) {
@@ -116,6 +118,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         val filenameView by bind<TextView>(R.id.messageFilenameView)
         val clFiles by bind<ConstraintLayout>(R.id.clFiles)
         val textTimeView by bind<TextView>(R.id.messageTextTimeView)
+        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
     companion object {

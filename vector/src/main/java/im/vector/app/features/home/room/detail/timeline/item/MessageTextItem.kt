@@ -29,6 +29,7 @@ import androidx.core.widget.TextViewCompat
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import im.vector.app.R
+import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
 import im.vector.app.features.home.room.detail.timeline.tools.findPillsAndProcess
 import im.vector.app.features.home.room.detail.timeline.url.PreviewUrlRetriever
@@ -106,6 +107,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         }
         constraintSet.applyTo(holder.clParentText as ConstraintLayout)
         holder.textTimeView.text = attributes.informationData.time
+        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
     }
 
     override fun unbind(holder: Holder) {
@@ -123,6 +125,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         val textTimeView by bind<TextView>(R.id.messageTextTimeView)
         val clText by bind<ConstraintLayout>(R.id.clText)
         val clParentText by bind<ViewGroup>(R.id.clParentText)
+        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
     inner class PreviewUrlViewUpdater : PreviewUrlRetriever.PreviewUrlRetrieverListener {

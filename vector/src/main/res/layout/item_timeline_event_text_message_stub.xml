@@ -41,6 +41,19 @@
             app:layout_constraintStart_toEndOf="@id/messageTextView"
             tools:text="@tools:sample/date/hhmm" />
 
+        <im.vector.app.core.ui.views.SendStateImageView
+            android:id="@+id/messageSendStateImageView"
+            android:layout_width="@dimen/item_event_message_state_size"
+            android:layout_height="@dimen/item_event_message_state_size"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/event_status_a11y_sending"
+            android:src="@drawable/ic_sending_message"
+            android:visibility="visible"
+            android:layout_marginStart="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/messageTextTimeView" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <im.vector.app.features.home.room.detail.timeline.url.PreviewUrlView

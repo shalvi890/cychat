@@ -411,11 +411,11 @@ class RoomDetailViewModel @AssistedInject constructor(
     private fun handleOpenIntegrationManager() {
         viewModelScope.launch {
             val viewEvent = withContext(Dispatchers.Default) {
-                if (isIntegrationEnabled()) {
-                    RoomDetailViewEvents.OpenIntegrationManager
-                } else {
-                    RoomDetailViewEvents.DisplayEnableIntegrationsWarning
-                }
+//                if (isIntegrationEnabled()) {
+                RoomDetailViewEvents.OpenIntegrationManager
+//                } else {
+//                    RoomDetailViewEvents.DisplayEnableIntegrationsWarning
+//                }
             }
             _viewEvents.post(viewEvent)
         }
@@ -668,12 +668,12 @@ class RoomDetailViewModel @AssistedInject constructor(
         when (itemId) {
             R.id.timeline_setting -> true
             R.id.invite           -> state.canInvite
-            R.id.open_matrix_apps -> true
+//            R.id.open_matrix_apps -> true
             R.id.voice_call,
             R.id.video_call       -> callManager.getCallsByRoomId(state.roomId).isEmpty()
             R.id.hangup_call      -> callManager.getCallsByRoomId(state.roomId).isNotEmpty()
             R.id.search           -> true
-            R.id.dev_tools        -> vectorPreferences.developerMode()
+//            R.id.dev_tools        -> vectorPreferences.developerMode()
             else                  -> false
         }
     }
@@ -820,7 +820,7 @@ class RoomDetailViewModel @AssistedInject constructor(
                         }
                     }.exhaustive
                 }
-                is SendMode.EDIT -> {
+                is SendMode.EDIT    -> {
                     // is original event a reply?
                     val inReplyTo = state.sendMode.timelineEvent.getRelationContent()?.inReplyTo?.eventId
                     if (inReplyTo != null) {
@@ -843,7 +843,7 @@ class RoomDetailViewModel @AssistedInject constructor(
                     _viewEvents.post(RoomDetailViewEvents.MessageSent)
                     popDraft()
                 }
-                is SendMode.QUOTE -> {
+                is SendMode.QUOTE   -> {
                     val messageContent = state.sendMode.timelineEvent.getLastMessageContent()
                     val textMsg = messageContent?.body
 
@@ -864,7 +864,7 @@ class RoomDetailViewModel @AssistedInject constructor(
                     _viewEvents.post(RoomDetailViewEvents.MessageSent)
                     popDraft()
                 }
-                is SendMode.REPLY -> {
+                is SendMode.REPLY   -> {
                     state.sendMode.timelineEvent.let {
                         room.replyToMessage(it, action.text.toString(), action.autoMarkdown)
                         _viewEvents.post(RoomDetailViewEvents.MessageSent)

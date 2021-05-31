@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,6 +21,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/messageTextTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="2dp"
+            android:textColor="?riotx_text_secondary_contrast"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/messageSendStateImageView"
+            tools:text="@tools:sample/date/hhmm" />
+
+        <im.vector.app.core.ui.views.SendStateImageView
+            android:id="@+id/messageSendStateImageView"
+            android:layout_width="@dimen/item_event_message_state_size"
+            android:layout_height="@dimen/item_event_message_state_size"
+            android:contentDescription="@string/event_status_a11y_sending"
+            android:src="@drawable/ic_sending_message"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- Filled at runtime with buttons -->
     <!--com.google.android.material.button.MaterialButton

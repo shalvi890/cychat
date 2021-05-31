@@ -29,6 +29,7 @@ import com.airbnb.epoxy.EpoxyModelClass
 import im.vector.app.R
 import im.vector.app.core.files.LocalFilesHelper
 import im.vector.app.core.glide.GlideApp
+import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.features.home.room.detail.timeline.helper.ContentUploadStateTrackerBinder
 import im.vector.app.features.media.ImageContentRenderer
 
@@ -79,6 +80,7 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
             constraintSet.setHorizontalBias(holder.imageView.id, 0f)
         constraintSet.applyTo(holder.clImageVideo)
         holder.textTimeView.text = attributes.informationData.time
+        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
     }
 
     override fun unbind(holder: Holder) {
@@ -99,6 +101,7 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
         val mediaContentView by bind<ViewGroup>(R.id.messageContentMedia)
         val clImageVideo by bind<ConstraintLayout>(R.id.clImageVideoView)
         val textTimeView by bind<TextView>(R.id.messageTextTimeView)
+        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
     companion object {
