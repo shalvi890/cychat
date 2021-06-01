@@ -19,7 +19,7 @@ package org.matrix.android.sdk.api.session.room.summary
 import org.matrix.android.sdk.api.session.events.model.EventType
 
 object RoomSummaryConstants {
-
+    const val MEDIA_TYPE = "audio/mpeg"
     /**
      *
      */

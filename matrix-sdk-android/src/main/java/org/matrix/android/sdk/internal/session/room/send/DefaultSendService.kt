@@ -276,7 +276,7 @@ internal class DefaultSendService @AssistedInject constructor(
                                 .then(dispatcherWork)
                                 .enqueue()
                                 .also { operation ->
-                                    operation.result.addListener(Runnable {
+                                    operation.result.addListener( {
                                         if (operation.result.isCancelled) {
                                             Timber.e("CHAIN WAS CANCELLED")
                                         } else if (operation.state.value is Operation.State.FAILURE) {

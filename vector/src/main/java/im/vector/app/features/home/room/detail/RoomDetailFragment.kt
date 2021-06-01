@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -118,6 +119,7 @@ import im.vector.app.features.attachments.AttachmentsHelper
 import im.vector.app.features.attachments.ContactAttachment
 import im.vector.app.features.attachments.preview.AttachmentsPreviewActivity
 import im.vector.app.features.attachments.preview.AttachmentsPreviewArgs
+import im.vector.app.features.attachments.toContentAttachmentData
 import im.vector.app.features.attachments.toGroupedContentAttachmentData
 import im.vector.app.features.call.SharedKnownCallsViewModel
 import im.vector.app.features.call.VectorCallActivity
@@ -127,6 +129,7 @@ import im.vector.app.features.command.Command
 import im.vector.app.features.crypto.keysbackup.restore.KeysBackupRestoreActivity
 import im.vector.app.features.crypto.verification.VerificationBottomSheet
 import im.vector.app.features.home.AvatarRenderer
+import im.vector.app.features.home.room.detail.audiorecorder.AudioRecorderFragment
 import im.vector.app.features.home.room.detail.composer.TextComposerView
 import im.vector.app.features.home.room.detail.readreceipts.DisplayReadReceiptsBottomSheet
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
@@ -165,9 +168,14 @@ import im.vector.app.features.widgets.WidgetActivity
 import im.vector.app.features.widgets.WidgetArgs
 import im.vector.app.features.widgets.WidgetKind
 import im.vector.app.features.widgets.permissions.RoomWidgetPermissionBottomSheet
+import im.vector.lib.multipicker.entity.MultiPickerAudioType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.Parcelize
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
@@ -188,6 +196,7 @@ import org.matrix.android.sdk.api.session.room.model.message.MessageVerification
 import org.matrix.android.sdk.api.session.room.model.message.MessageVideoContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageWithAttachmentContent
 import org.matrix.android.sdk.api.session.room.send.SendState
+import org.matrix.android.sdk.api.session.room.summary.RoomSummaryConstants
 import org.matrix.android.sdk.api.session.room.timeline.Timeline
 import org.matrix.android.sdk.api.session.room.timeline.TimelineEvent
 import org.matrix.android.sdk.api.session.room.timeline.getLastMessageContent
@@ -198,6 +207,7 @@ import org.matrix.android.sdk.api.util.toMatrixItem
 import org.matrix.android.sdk.internal.crypto.model.event.EncryptedEventContent
 import org.matrix.android.sdk.internal.crypto.model.event.WithHeldCode
 import timber.log.Timber
+import java.io.File
 import java.net.URL
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -236,7 +246,7 @@ class RoomDetailFragment @Inject constructor(
         AttachmentTypeSelectorView.Callback,
         AttachmentsHelper.Callback,
         GalleryOrCameraDialogHelper.Listener,
-        CurrentCallsView.Callback {
+        CurrentCallsView.Callback, AudioRecorderFragment.RecordAudio {
 
     companion object {
         /**
@@ -399,12 +409,19 @@ class RoomDetailFragment @Inject constructor(
                 is RoomDetailViewEvents.StartChatEffect                  -> handleChatEffect(it.type)
                 RoomDetailViewEvents.StopChatEffects                     -> handleStopChatEffects()
                 is RoomDetailViewEvents.DisplayAndAcceptCall             -> acceptIncomingCall(it)
+                is RoomDetailViewEvents.OpenAudioRecording               -> openAudioRecording()
             }.exhaustive
         }
 
         if (savedInstanceState == null) {
             handleShareData()
         }
+    }
+
+    private fun openAudioRecording() {
+        AudioRecorderFragment().apply {
+            recordAudio = this@RoomDetailFragment
+        }.show(parentFragmentManager, "Voice Recorder")
     }
 
     private fun acceptIncomingCall(event: RoomDetailViewEvents.DisplayAndAcceptCall) {
@@ -1958,6 +1975,7 @@ class RoomDetailFragment @Inject constructor(
             AttachmentTypeSelectorView.Type.AUDIO   -> attachmentsHelper.selectAudio(attachmentAudioActivityResultLauncher)
             AttachmentTypeSelectorView.Type.CONTACT -> attachmentsHelper.selectContact(attachmentContactActivityResultLauncher)
             AttachmentTypeSelectorView.Type.STICKER -> roomDetailViewModel.handle(RoomDetailAction.SelectStickerAttachment)
+            AttachmentTypeSelectorView.Type.RECORD  -> roomDetailViewModel.handle(RoomDetailAction.SelectRecordAudioAttachment)
         }.exhaustive
     }
 
@@ -2002,6 +2020,23 @@ class RoomDetailFragment @Inject constructor(
                     mode = null
             ).let {
                 startActivity(it)
+            }
+        }
+    }
+
+    override fun sendRecordedAudioFile(file: File) {
+        if (file.exists()) {
+            val uri = Uri.parse(file.absolutePath)
+            val mmr = MediaMetadataRetriever()
+            mmr.setDataSource(requireContext(), uri)
+            val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            val millSecond = Integer.parseInt(durationStr!!)
+            val attachments = mutableListOf<MultiPickerAudioType>()
+            attachments.add(MultiPickerAudioType(file.name, file.length(), RoomSummaryConstants.MEDIA_TYPE, file.toUri(), millSecond.toLong()))
+            onContentAttachmentsReady(attachments.map { it.toContentAttachmentData() })
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(TimeUnit.SECONDS.toMillis(4))
+                file.delete()
             }
         }
     }

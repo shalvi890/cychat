@@ -56,6 +56,7 @@ const val PERMISSIONS_FOR_VIDEO_RECORDING = PERMISSION_CAMERA or PERMISSION_RECO
 const val PERMISSIONS_FOR_WRITING_FILES = PERMISSION_WRITE_EXTERNAL_STORAGE
 const val PERMISSIONS_FOR_READING_FILES = PERMISSION_READ_EXTERNAL_STORAGE
 const val PERMISSIONS_FOR_PICKING_CONTACT = PERMISSION_READ_CONTACTS
+const val PERMISSIONS_FOR_RECORD_AUDIO = PERMISSION_WRITE_EXTERNAL_STORAGE and PERMISSION_RECORD_AUDIO and PERMISSION_READ_EXTERNAL_STORAGE
 
 const val PERMISSIONS_EMPTY = PERMISSION_BYPASSED
 
@@ -168,7 +169,8 @@ private fun checkPermissions(permissionsToBeGrantedBitMap: Int,
             && PERMISSIONS_FOR_ROOM_AVATAR != permissionsToBeGrantedBitMap
             && PERMISSIONS_FOR_VIDEO_RECORDING != permissionsToBeGrantedBitMap
             && PERMISSIONS_FOR_WRITING_FILES != permissionsToBeGrantedBitMap
-            && PERMISSIONS_FOR_READING_FILES != permissionsToBeGrantedBitMap) {
+            && PERMISSIONS_FOR_READING_FILES != permissionsToBeGrantedBitMap
+            && PERMISSIONS_FOR_RECORD_AUDIO != permissionsToBeGrantedBitMap) {
         Timber.w("## checkPermissions(): permissions to be granted are not supported")
         isPermissionGranted = false
     } else {
@@ -242,39 +244,11 @@ private fun checkPermissions(permissionsToBeGrantedBitMap: Int,
                 val permissionsArrayToBeGranted = permissionsListToBeGranted.toTypedArray()
 
                 // for android < M, we use a custom dialog to request the contacts book access.
-                if (permissionsListToBeGranted.contains(Manifest.permission.READ_CONTACTS)
-                        && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    TODO()
-                    /*
-                    AlertDialog.Builder(activity)
-                            .setIcon(android.R.drawable.ic_dialog_info)
-                            .setTitle(R.string.permissions_rationale_popup_title)
-                            .setMessage(R.string.permissions_msg_contacts_warning_other_androids)
-                            // gives the contacts book access
-                            .setPositiveButton(R.string.yes) { _, _ ->
-                                ContactsManager.getInstance().setIsContactBookAccessAllowed(true)
-                                fragment?.requestPermissions(permissionsArrayToBeGranted, requestCode)
-                                        ?: run {
-                                            ActivityCompat.requestPermissions(activity, permissionsArrayToBeGranted, requestCode)
-                                        }
-                            }
-                            // or reject it
-                            .setNegativeButton(R.string.no) { _, _ ->
-                                ContactsManager.getInstance().setIsContactBookAccessAllowed(false)
-                                fragment?.requestPermissions(permissionsArrayToBeGranted, requestCode)
-                                        ?: run {
-                                            ActivityCompat.requestPermissions(activity, permissionsArrayToBeGranted, requestCode)
-                                        }
-                            }
-                            .show()
-                    */
-                } else {
-                    activityResultLauncher
-                            ?.launch(permissionsArrayToBeGranted)
-                            ?: run {
-                                ActivityCompat.requestPermissions(activity, permissionsArrayToBeGranted, requestCode)
-                            }
-                }
+                activityResultLauncher
+                        ?.launch(permissionsArrayToBeGranted)
+                        ?: run {
+                            ActivityCompat.requestPermissions(activity, permissionsArrayToBeGranted, requestCode)
+                        }
             } else {
                 // permissions were granted, start now.
                 isPermissionGranted = true

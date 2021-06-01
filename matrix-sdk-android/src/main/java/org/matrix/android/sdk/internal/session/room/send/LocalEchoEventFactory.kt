@@ -162,16 +162,13 @@ internal class LocalEchoEventFactory @Inject constructor(
                                  newBodyAutoMarkdown: Boolean,
                                  msgType: String,
                                  compatibilityText: String): Event {
-        val permalink = permalinkFactory.createPermalink(roomId, originalEvent.root.eventId ?: "")
-        val userLink = originalEvent.root.senderId?.let { permalinkFactory.createPermalink(it) } ?: ""
+//        val permalink = permalinkFactory.createPermalink(roomId, originalEvent.root.eventId ?: "")
+//        val userLink = originalEvent.root.senderId?.let { permalinkFactory.createPermalink(it) } ?: ""
 
         val body = bodyForReply(originalEvent.getLastMessageContent(), originalEvent.isReply())
         val replyFormatted = REPLY_PATTERN.format(
-                permalink,
-                userLink,
-                originalEvent.senderInfo.disambiguatedDisplayName,
                 // Remove inner mx_reply tags if any
-                body.takeFormatted().replace(MX_REPLY_REGEX, ""),
+                body.takeFormatted().replace(MX_REPLY_REGEX, "").substring(0, 100) + "...",
                 createTextContent(newBodyText, newBodyAutoMarkdown).takeFormatted()
         )
         //
@@ -340,17 +337,14 @@ internal class LocalEchoEventFactory @Inject constructor(
                              autoMarkdown: Boolean): Event? {
         // Fallbacks and event representation
         // TODO Add error/warning logs when any of this is null
-        val permalink = permalinkFactory.createPermalink(eventReplied.root) ?: return null
+//        val permalink = permalinkFactory.createPermalink(eventReplied.root) ?: return null
         val userId = eventReplied.root.senderId ?: return null
-        val userLink = permalinkFactory.createPermalink(userId) ?: return null
+//        val userLink = permalinkFactory.createPermalink(userId) ?: return null
 
         val body = bodyForReply(eventReplied.getLastMessageContent(), eventReplied.isReply())
         val replyFormatted = REPLY_PATTERN.format(
-                permalink,
-                userLink,
-                userId,
                 // Remove inner mx_reply tags if any
-                body.takeFormatted().replace(MX_REPLY_REGEX, ""),
+                body.takeFormatted().replace(MX_REPLY_REGEX, "").substring(0, 100) + "...",
                 createTextContent(replyText, autoMarkdown).takeFormatted()
         )
         //
@@ -461,7 +455,7 @@ internal class LocalEchoEventFactory @Inject constructor(
         //     </blockquote>
         // </mx-reply>
         // No whitespace because currently breaks temporary formatted text to Span
-        const val REPLY_PATTERN = """<mx-reply><blockquote><a href="%s">In reply to</a> <a href="%s">%s</a><br />%s</blockquote></mx-reply>%s"""
+        const val REPLY_PATTERN = """<mx-reply><blockquote style="background-color:#ffffff">%s</blockquote></mx-reply>%s"""
 
         // This is used to replace inner mx-reply tags
         val MX_REPLY_REGEX = "<mx-reply>.*</mx-reply>".toRegex()

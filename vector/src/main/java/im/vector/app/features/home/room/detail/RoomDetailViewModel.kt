@@ -17,6 +17,7 @@
 package im.vector.app.features.home.room.detail
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.Async
@@ -323,6 +324,7 @@ class RoomDetailViewModel @AssistedInject constructor(
                 )
             }
             is RoomDetailAction.DoNotShowPreviewUrlFor           -> handleDoNotShowPreviewUrlFor(action)
+            is RoomDetailAction.SelectRecordAudioAttachment      -> _viewEvents.post(RoomDetailViewEvents.OpenAudioRecording)
             RoomDetailAction.RemoveAllFailedMessages             -> handleRemoveAllFailedMessages()
             RoomDetailAction.ResendAll                           -> handleResendAll()
         }.exhaustive
