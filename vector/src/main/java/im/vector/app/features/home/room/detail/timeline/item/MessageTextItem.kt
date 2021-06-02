@@ -16,9 +16,11 @@
 
 package im.vector.app.features.home.room.detail.timeline.item
 
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.text.method.MovementMethod
-import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,12 +33,14 @@ import com.airbnb.epoxy.EpoxyModelClass
 import im.vector.app.R
 import im.vector.app.core.ui.views.SendStateImageView
 import im.vector.app.features.home.room.detail.timeline.TimelineEventController
+import im.vector.app.features.home.room.detail.timeline.helper.ShowMoreText
 import im.vector.app.features.home.room.detail.timeline.tools.findPillsAndProcess
 import im.vector.app.features.home.room.detail.timeline.url.PreviewUrlRetriever
 import im.vector.app.features.home.room.detail.timeline.url.PreviewUrlUiState
 import im.vector.app.features.home.room.detail.timeline.url.PreviewUrlView
 import im.vector.app.features.media.ImageContentRenderer
 
+@Suppress("DEPRECATION")
 @EpoxyModelClass(layout = R.layout.item_timeline_event_base)
 abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
 
@@ -62,7 +66,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
     var movementMethod: MovementMethod? = null
 
     private val previewUrlViewUpdater = PreviewUrlViewUpdater()
-
+    private val expandText = ""
     override fun bind(holder: Holder) {
         // Preview URL
         previewUrlViewUpdater.previewUrlView = holder.previewUrlView
@@ -108,6 +112,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         constraintSet.applyTo(holder.clParentText as ConstraintLayout)
         holder.textTimeView.text = attributes.informationData.time
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
+//        ShowMoreText.makeTextViewResizable(holder.messageView, ".. See More", true)
     }
 
     override fun unbind(holder: Holder) {

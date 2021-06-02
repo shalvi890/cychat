@@ -75,20 +75,20 @@ sealed class EventSharedAction(@StringRes val titleRes: Int,
     data class CopyPermalink(val eventId: String) :
             EventSharedAction(R.string.permalink, R.drawable.ic_permalink)
 
-    data class ReportContent(val eventId: String, val senderId: String?) :
-            EventSharedAction(R.string.report_content, R.drawable.ic_flag)
+//    data class ReportContent(val eventId: String, val senderId: String?) :
+//            EventSharedAction(R.string.report_content, R.drawable.ic_flag)
+//
+//    data class ReportContentSpam(val eventId: String, val senderId: String?) :
+//            EventSharedAction(R.string.report_content_spam, R.drawable.ic_report_spam)
+//
+//    data class ReportContentInappropriate(val eventId: String, val senderId: String?) :
+//            EventSharedAction(R.string.report_content_inappropriate, R.drawable.ic_report_inappropriate)
+//
+//    data class ReportContentCustom(val eventId: String, val senderId: String?) :
+//            EventSharedAction(R.string.report_content_custom, R.drawable.ic_report_custom)
 
-    data class ReportContentSpam(val eventId: String, val senderId: String?) :
-            EventSharedAction(R.string.report_content_spam, R.drawable.ic_report_spam)
-
-    data class ReportContentInappropriate(val eventId: String, val senderId: String?) :
-            EventSharedAction(R.string.report_content_inappropriate, R.drawable.ic_report_inappropriate)
-
-    data class ReportContentCustom(val eventId: String, val senderId: String?) :
-            EventSharedAction(R.string.report_content_custom, R.drawable.ic_report_custom)
-
-    data class IgnoreUser(val senderId: String?) :
-            EventSharedAction(R.string.message_ignore_user, R.drawable.ic_alert_triangle, true)
+//    data class IgnoreUser(val senderId: String?) :
+//            EventSharedAction(R.string.message_ignore_user, R.drawable.ic_alert_triangle, true)
 
     data class QuickReact(val eventId: String, val clickedOn: String, val add: Boolean) :
             EventSharedAction(0, 0)

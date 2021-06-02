@@ -2320,13 +2320,13 @@
     <string name="uploads_files_subtitle">%1$s at %2$s</string>
     <string name="uploads_files_no_result">There are no files in this room</string>
 
-    <string name="report_content_spam">"It's spam"</string>
+<!--    <string name="report_content_spam">"It's spam"</string>-->
     <string name="report_content_inappropriate">"It's inappropriate"</string>
     <string name="report_content_custom">"Custom report…"</string>
     <string name="report_content_custom_title">"Report this content"</string>
     <string name="report_content_custom_hint">"Reason for reporting this content"</string>
     <string name="report_content_custom_submit">"REPORT"</string>
-    <string name="block_user">"IGNORE USER"</string>
+<!--    <string name="block_user">"IGNORE USER"</string>-->
 
     <string name="content_reported_title">"Content reported"</string>
     <string name="content_reported_content">"This content was reported.\n\nIf you don't want to see any more content from this user, you can ignore them to hide their messages."</string>
@@ -2340,7 +2340,7 @@
 
     <string name="no_network_indicator">There is no network connection right now</string>
 
-    <string name="message_ignore_user">Ignore user</string>
+<!--    <string name="message_ignore_user">Ignore user</string>-->
 
     <string name="room_list_quick_actions_notifications_all_noisy">"All messages (noisy)"</string>
     <string name="room_list_quick_actions_notifications_all">"All messages"</string>

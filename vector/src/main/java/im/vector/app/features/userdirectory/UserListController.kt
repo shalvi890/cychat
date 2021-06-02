@@ -54,7 +54,8 @@ class UserListController @Inject constructor(private val session: Session,
 
         // Build generic items
         if (currentState.searchTerm.isBlank()) {
-            if (currentState.showInviteActions()) {
+            if (false) {
+//                if (currentState.showInviteActions()) {
                 actionItem {
                     id(R.drawable.ic_share)
                     title(stringProvider.getString(R.string.invite_friends))
@@ -64,7 +65,8 @@ class UserListController @Inject constructor(private val session: Session,
                     })
                 }
             }
-            if (currentState.showContactBookAction) {
+//            if (currentState.showContactBookAction) {
+            if (false) {
                 actionItem {
                     id(R.drawable.ic_baseline_perm_contact_calendar_24)
                     title(stringProvider.getString(R.string.contacts_book_title))
@@ -74,10 +76,10 @@ class UserListController @Inject constructor(private val session: Session,
                     })
                 }
             }
-            if (currentState.showInviteActions()) {
+            if (false) {
+//                if (currentState.showInviteActions()) {
                 actionItem {
-                    id(R.drawable.ic_qr_code_add)
-                    title(stringProvider.getString(R.string.qr_code))
+                    id(R.drawable.ic_qr_code_add).title(stringProvider.getString(R.string.qr_code))
                     actionIconRes(R.drawable.ic_qr_code_add)
                     clickAction(View.OnClickListener {
                         callback?.onUseQRCode()

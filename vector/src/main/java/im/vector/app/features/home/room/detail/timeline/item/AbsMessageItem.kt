@@ -54,26 +54,26 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
 
     override fun bind(holder: H) {
         super.bind(holder)
-        if (attributes.informationData.showInformation) {
-            holder.avatarImageView.layoutParams = holder.avatarImageView.layoutParams?.apply {
-                height = attributes.avatarSize
-                width = attributes.avatarSize
-            }
-            holder.avatarImageView.visibility = View.VISIBLE
-            holder.avatarImageView.setOnClickListener(_avatarClickListener)
+//        if (attributes.informationData.showInformation) {
+        holder.avatarImageView.layoutParams = holder.avatarImageView.layoutParams?.apply {
+            height = attributes.avatarSize
+            width = attributes.avatarSize
+        }
+        holder.avatarImageView.visibility = View.VISIBLE
+        holder.avatarImageView.setOnClickListener(_avatarClickListener)
 //            holder.memberNameView.visibility = View.VISIBLE
 //            holder.memberNameView.setOnClickListener(_memberNameClickListener)
 //            holder.timeView.visibility = View.VISIBLE
 //            holder.timeView.text = attributes.informationData.time
 //            holder.memberNameView.text = attributes.informationData.memberName
 //            holder.memberNameView.setTextColor(attributes.getMemberNameColor())
-            attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)
-            holder.avatarImageView.setOnLongClickListener(attributes.itemLongClickListener)
+        attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)
+        holder.avatarImageView.setOnLongClickListener(attributes.itemLongClickListener)
 //            holder.memberNameView.setOnLongClickListener(attributes.itemLongClickListener)
-        } else {
-            holder.avatarImageView.setOnClickListener(null)
+//        } else {
+//            holder.avatarImageView.setOnClickListener(null)
 //            holder.memberNameView.setOnClickListener(null)
-            holder.avatarImageView.visibility = View.GONE
+//            holder.avatarImageView.visibility = View.VISIBLE
 //            if (attributes.informationData.forceShowTimestamp) {
 //                holder.memberNameView.isInvisible = true
 //                holder.timeView.isVisible = true
@@ -82,9 +82,9 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
 //                holder.memberNameView.isVisible = false
 //                holder.timeView.isVisible = false
 //            }
-            holder.avatarImageView.setOnLongClickListener(null)
+//            holder.avatarImageView.setOnLongClickListener(null)
 //            holder.memberNameView.setOnLongClickListener(null)
-        }
+//        }
         val constraintSet = ConstraintSet()
         constraintSet.clone(holder.clParent)
         if (attributes.informationData.sentByMe) {

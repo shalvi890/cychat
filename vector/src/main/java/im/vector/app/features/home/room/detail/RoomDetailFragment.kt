@@ -1336,21 +1336,21 @@ class RoomDetailFragment @Inject constructor(
                 .show()
     }
 
-    private fun promptReasonToReportContent(action: EventSharedAction.ReportContentCustom) {
-        val inflater = requireActivity().layoutInflater
-        val layout = inflater.inflate(R.layout.dialog_report_content, null)
-        val views = DialogReportContentBinding.bind(layout)
-
-        AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.report_content_custom_title)
-                .setView(layout)
-                .setPositiveButton(R.string.report_content_custom_submit) { _, _ ->
-                    val reason = views.dialogReportContentInput.text.toString()
-                    roomDetailViewModel.handle(RoomDetailAction.ReportContent(action.eventId, action.senderId, reason))
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-    }
+//    private fun promptReasonToReportContent(action: EventSharedAction.ReportContentCustom) {
+//        val inflater = requireActivity().layoutInflater
+//        val layout = inflater.inflate(R.layout.dialog_report_content, null)
+//        val views = DialogReportContentBinding.bind(layout)
+//
+//        AlertDialog.Builder(requireActivity())
+//                .setTitle(R.string.report_content_custom_title)
+//                .setView(layout)
+//                .setPositiveButton(R.string.report_content_custom_submit) { _, _ ->
+//                    val reason = views.dialogReportContentInput.text.toString()
+//                    roomDetailViewModel.handle(RoomDetailAction.ReportContent(action.eventId, action.senderId, reason))
+//                }
+//                .setNegativeButton(R.string.cancel, null)
+//                .show()
+//    }
 
     private fun promptConfirmationToRedactEvent(action: EventSharedAction.Redact) {
         ConfirmationDialogBuilder
@@ -1377,41 +1377,41 @@ class RoomDetailFragment @Inject constructor(
     private fun displayRoomDetailActionSuccess(result: RoomDetailViewEvents.ActionSuccess) {
         when (val data = result.action) {
             is RoomDetailAction.ReportContent             -> {
-                when {
-                    data.spam          -> {
-                        AlertDialog.Builder(requireActivity())
-                                .setTitle(R.string.content_reported_as_spam_title)
-                                .setMessage(R.string.content_reported_as_spam_content)
-                                .setPositiveButton(R.string.ok, null)
-                                .setNegativeButton(R.string.block_user) { _, _ ->
-                                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(data.senderId))
-                                }
-                                .show()
-                                .withColoredButton(DialogInterface.BUTTON_NEGATIVE)
-                    }
-                    data.inappropriate -> {
-                        AlertDialog.Builder(requireActivity())
-                                .setTitle(R.string.content_reported_as_inappropriate_title)
-                                .setMessage(R.string.content_reported_as_inappropriate_content)
-                                .setPositiveButton(R.string.ok, null)
-                                .setNegativeButton(R.string.block_user) { _, _ ->
-                                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(data.senderId))
-                                }
-                                .show()
-                                .withColoredButton(DialogInterface.BUTTON_NEGATIVE)
-                    }
-                    else               -> {
-                        AlertDialog.Builder(requireActivity())
-                                .setTitle(R.string.content_reported_title)
-                                .setMessage(R.string.content_reported_content)
-                                .setPositiveButton(R.string.ok, null)
-                                .setNegativeButton(R.string.block_user) { _, _ ->
-                                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(data.senderId))
-                                }
-                                .show()
-                                .withColoredButton(DialogInterface.BUTTON_NEGATIVE)
-                    }
-                }
+//                when {
+//                    data.spam          -> {
+//                        AlertDialog.Builder(requireActivity())
+//                                .setTitle(R.string.content_reported_as_spam_title)
+//                                .setMessage(R.string.content_reported_as_spam_content)
+//                                .setPositiveButton(R.string.ok, null)
+//                                .setNegativeButton(R.string.block_user) { _, _ ->
+//                                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(data.senderId))
+//                                }
+//                                .show()
+//                                .withColoredButton(DialogInterface.BUTTON_NEGATIVE)
+//                    }
+//                    data.inappropriate -> {
+//                        AlertDialog.Builder(requireActivity())
+//                                .setTitle(R.string.content_reported_as_inappropriate_title)
+//                                .setMessage(R.string.content_reported_as_inappropriate_content)
+//                                .setPositiveButton(R.string.ok, null)
+//                                .setNegativeButton(R.string.block_user) { _, _ ->
+//                                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(data.senderId))
+//                                }
+//                                .show()
+//                                .withColoredButton(DialogInterface.BUTTON_NEGATIVE)
+//                    }
+//                    else               -> {
+//                        AlertDialog.Builder(requireActivity())
+//                                .setTitle(R.string.content_reported_title)
+//                                .setMessage(R.string.content_reported_content)
+//                                .setPositiveButton(R.string.ok, null)
+//                                .setNegativeButton(R.string.block_user) { _, _ ->
+//                                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(data.senderId))
+//                                }
+//                                .show()
+//                                .withColoredButton(DialogInterface.BUTTON_NEGATIVE)
+//                    }
+//                }
             }
             is RoomDetailAction.RequestVerification       -> {
                 Timber.v("## SAS RequestVerification action")
@@ -1806,20 +1806,20 @@ class RoomDetailFragment @Inject constructor(
             is EventSharedAction.Cancel                     -> {
                 handleCancelSend(action)
             }
-            is EventSharedAction.ReportContentSpam          -> {
-                roomDetailViewModel.handle(RoomDetailAction.ReportContent(
-                        action.eventId, action.senderId, "This message is spam", spam = true))
-            }
-            is EventSharedAction.ReportContentInappropriate -> {
-                roomDetailViewModel.handle(RoomDetailAction.ReportContent(
-                        action.eventId, action.senderId, "This message is inappropriate", inappropriate = true))
-            }
-            is EventSharedAction.ReportContentCustom        -> {
-                promptReasonToReportContent(action)
-            }
-            is EventSharedAction.IgnoreUser                 -> {
-                action.senderId?.let { askConfirmationToIgnoreUser(it) }
-            }
+//            is EventSharedAction.ReportContentSpam          -> {
+//                roomDetailViewModel.handle(RoomDetailAction.ReportContent(
+//                        action.eventId, action.senderId, "This message is spam", spam = true))
+//            }
+//            is EventSharedAction.ReportContentInappropriate -> {
+//                roomDetailViewModel.handle(RoomDetailAction.ReportContent(
+//                        action.eventId, action.senderId, "This message is inappropriate", inappropriate = true))
+//            }
+//            is EventSharedAction.ReportContentCustom        -> {
+//                promptReasonToReportContent(action)
+//            }
+//            is EventSharedAction.IgnoreUser                 -> {
+//                action.senderId?.let { askConfirmationToIgnoreUser(it) }
+//            }
             is EventSharedAction.OnUrlClicked               -> {
                 onUrlClicked(action.url, action.title)
             }
@@ -1837,17 +1837,17 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
-    private fun askConfirmationToIgnoreUser(senderId: String) {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.room_participants_action_ignore_title)
-                .setMessage(R.string.room_participants_action_ignore_prompt_msg)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.room_participants_action_ignore) { _, _ ->
-                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(senderId))
-                }
-                .show()
-                .withColoredButton(DialogInterface.BUTTON_POSITIVE)
-    }
+//    private fun askConfirmationToIgnoreUser(senderId: String) {
+//        AlertDialog.Builder(requireContext())
+//                .setTitle(R.string.room_participants_action_ignore_title)
+//                .setMessage(R.string.room_participants_action_ignore_prompt_msg)
+//                .setNegativeButton(R.string.cancel, null)
+//                .setPositiveButton(R.string.room_participants_action_ignore) { _, _ ->
+//                    roomDetailViewModel.handle(RoomDetailAction.IgnoreUser(senderId))
+//                }
+//                .show()
+//                .withColoredButton(DialogInterface.BUTTON_POSITIVE)
+//    }
 
     /**
      * Insert a user displayName in the message editor.

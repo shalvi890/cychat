@@ -78,7 +78,6 @@ class MessageInformationDataFactory @Inject constructor(private val session: Ses
         val sendStateDecoration = if (isSentByMe) {
             getSendStateDecoration(
                     event = event,
-                    lastSentEventWithoutReadReceipts = params.lastSentEventIdWithoutReadReceipts,
                     isMedia = event.root.isAttachmentMessage()
             )
         } else {
@@ -124,14 +123,13 @@ class MessageInformationDataFactory @Inject constructor(private val session: Ses
     }
 
     private fun getSendStateDecoration(event: TimelineEvent,
-                                       lastSentEventWithoutReadReceipts: String?,
                                        isMedia: Boolean): SendStateDecoration {
         val eventSendState = event.root.sendState
         return if (eventSendState.isSending()) {
             if (isMedia) SendStateDecoration.SENDING_MEDIA else SendStateDecoration.SENDING_NON_MEDIA
         } else if (eventSendState.hasFailed()) {
             SendStateDecoration.FAILED
-        } else if (lastSentEventWithoutReadReceipts == event.eventId) {
+        } else if (eventSendState.isSent()) {
             SendStateDecoration.SENT
         } else {
             SendStateDecoration.NONE

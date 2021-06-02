@@ -27,18 +27,22 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="one liner text" />
+            tools:text="o" />
 
         <TextView
             android:id="@+id/messageTextTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:paddingStart="4dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="2dp"
+            android:gravity="bottom"
             android:textColor="?riotx_text_secondary_contrast"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@id/messageTextView"
-            app:layout_constraintStart_toEndOf="@id/messageTextView"
+            app:layout_constraintEnd_toStartOf="@id/messageSendStateImageView"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/messageTextView"
             tools:text="@tools:sample/date/hhmm" />
 
         <im.vector.app.core.ui.views.SendStateImageView
@@ -46,13 +50,12 @@
             android:layout_width="@dimen/item_event_message_state_size"
             android:layout_height="@dimen/item_event_message_state_size"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
             android:contentDescription="@string/event_status_a11y_sending"
             android:src="@drawable/ic_sending_message"
             android:visibility="visible"
-            android:layout_marginStart="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/messageTextTimeView" />
+            app:layout_constraintTop_toBottomOf="@id/messageTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

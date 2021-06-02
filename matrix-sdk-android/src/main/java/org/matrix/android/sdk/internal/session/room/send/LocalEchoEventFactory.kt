@@ -167,8 +167,7 @@ internal class LocalEchoEventFactory @Inject constructor(
 
         val body = bodyForReply(originalEvent.getLastMessageContent(), originalEvent.isReply())
         val replyFormatted = REPLY_PATTERN.format(
-                // Remove inner mx_reply tags if any
-                body.takeFormatted().replace(MX_REPLY_REGEX, "").substring(0, 100) + "...",
+                body.takeFormatted().replace(MX_REPLY_REGEX, ""),
                 createTextContent(newBodyText, newBodyAutoMarkdown).takeFormatted()
         )
         //
@@ -344,7 +343,7 @@ internal class LocalEchoEventFactory @Inject constructor(
         val body = bodyForReply(eventReplied.getLastMessageContent(), eventReplied.isReply())
         val replyFormatted = REPLY_PATTERN.format(
                 // Remove inner mx_reply tags if any
-                body.takeFormatted().replace(MX_REPLY_REGEX, "").substring(0, 100) + "...",
+                body.takeFormatted().replace(MX_REPLY_REGEX, ""),
                 createTextContent(replyText, autoMarkdown).takeFormatted()
         )
         //
@@ -455,7 +454,7 @@ internal class LocalEchoEventFactory @Inject constructor(
         //     </blockquote>
         // </mx-reply>
         // No whitespace because currently breaks temporary formatted text to Span
-        const val REPLY_PATTERN = """<mx-reply><blockquote style="background-color:#ffffff">%s</blockquote></mx-reply>%s"""
+        const val REPLY_PATTERN = """<mx-reply>%s</mx-reply>%s"""
 
         // This is used to replace inner mx-reply tags
         val MX_REPLY_REGEX = "<mx-reply>.*</mx-reply>".toRegex()
