@@ -47,7 +47,7 @@ abstract class UserDirectoryUserItem : VectorEpoxyModel<UserDirectoryUserItem.Ho
         } else {
             holder.userIdView.visibility = View.VISIBLE
             holder.nameView.text = matrixItem.displayName
-            holder.userIdView.text = matrixItem.id
+            holder.userIdView.text = matrixItem.id.substring(1, matrixItem.id.lastIndexOf(":")).replace(Regex("-at-"), "@")
         }
         renderSelection(holder, selected)
     }
