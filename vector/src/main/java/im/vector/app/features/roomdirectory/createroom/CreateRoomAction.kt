@@ -29,7 +29,7 @@ sealed class CreateRoomAction : VectorViewModelAction {
 
     object ToggleShowAdvanced : CreateRoomAction()
     data class DisableFederation(val disableFederation: Boolean) : CreateRoomAction()
-
+    data class TextError(val isError: Boolean) : CreateRoomAction()
     object Create : CreateRoomAction()
     object Reset : CreateRoomAction()
 }

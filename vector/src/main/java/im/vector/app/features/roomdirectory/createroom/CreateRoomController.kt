@@ -27,6 +27,7 @@ import im.vector.app.features.form.formEditTextItem
 import im.vector.app.features.form.formEditableAvatarItem
 import im.vector.app.features.form.formSubmitButtonItem
 import im.vector.app.features.form.formSwitchItem
+import im.vector.app.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import org.matrix.android.sdk.api.session.room.failure.CreateRoomFailure
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class CreateRoomController @Inject constructor(
 ) : TypedEpoxyController<CreateRoomViewState>() {
 
     var listener: Listener? = null
-
+    var isTextEmpty = true
     var index = 0
 
     override fun buildModels(viewState: CreateRoomViewState) {
@@ -61,8 +62,13 @@ class CreateRoomController @Inject constructor(
             enabled(enableFormElement)
             value(viewState.roomName)
             hint(stringProvider.getString(R.string.create_room_name_hint))
-
+            if (viewState.onTextError)
+                errorMessage(stringProvider.getString(R.string.create_room_name_error))
+            else
+                errorMessage(null)
             onTextChange { text ->
+                isTextEmpty = text.isEmpty()
+                listener?.onNameError(isTextEmpty)
                 listener?.onNameChange(text)
             }
         }
@@ -91,7 +97,6 @@ class CreateRoomController @Inject constructor(
             summary(stringProvider.getString(R.string.create_room_public_description))
             switchChecked(viewState.roomType is CreateRoomViewState.RoomType.Public)
             showDivider(viewState.roomType !is CreateRoomViewState.RoomType.Public)
-
             listener { value ->
                 listener?.setIsPublic(value)
             }
@@ -152,7 +157,13 @@ class CreateRoomController @Inject constructor(
             id("submit")
             enabled(enableFormElement)
             buttonTitleId(R.string.create_room_action_create)
-            buttonClickListener { listener?.submit() }
+            buttonClickListener {
+                if (!isOneToOneChatOpen)
+                    if (isTextEmpty)
+                        listener?.onNameError(true)
+                    else listener?.submit()
+                else listener?.submit()
+            }
         }
     }
 
@@ -167,5 +178,6 @@ class CreateRoomController @Inject constructor(
         fun toggleShowAdvanced()
         fun setDisableFederation(disableFederation: Boolean)
         fun submit()
+        fun onNameError(boolean: Boolean)
     }
 }

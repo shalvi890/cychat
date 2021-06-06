@@ -153,6 +153,10 @@ class CreateRoomFragment @Inject constructor(
         viewModel.handle(CreateRoomAction.Create)
     }
 
+    override fun onNameError(boolean: Boolean) {
+        viewModel.handle(CreateRoomAction.TextError(boolean))
+    }
+
     override fun onBackPressed(toolbarButton: Boolean): Boolean {
         return withState(viewModel) {
             return@withState if (!it.isEmpty()) {

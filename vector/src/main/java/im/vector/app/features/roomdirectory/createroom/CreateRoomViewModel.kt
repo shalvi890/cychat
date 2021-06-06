@@ -106,7 +106,14 @@ class CreateRoomViewModel @AssistedInject constructor(@Assisted initialState: Cr
             CreateRoomAction.Reset                    -> doReset()
             CreateRoomAction.ToggleShowAdvanced       -> toggleShowAdvanced()
             is CreateRoomAction.DisableFederation     -> disableFederation(action)
+            is CreateRoomAction.TextError             -> onTextError(action.isError)
         }.exhaustive
+    }
+
+    private fun onTextError(error: Boolean) {
+        setState {
+            copy(onTextError = error)
+        }
     }
 
     private fun disableFederation(action: CreateRoomAction.DisableFederation) {

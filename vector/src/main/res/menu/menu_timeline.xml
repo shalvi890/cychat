@@ -9,10 +9,10 @@
         android:title="@string/settings"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/search"
-        android:title="@string/search"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id="@+id/search"-->
+<!--        android:title="@string/search"-->
+<!--        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/invite"

@@ -30,6 +30,7 @@ data class CreateRoomViewState(
         val isEncrypted: Boolean = false,
         val showAdvanced: Boolean = false,
         val disableFederation: Boolean = false,
+        val onTextError: Boolean = false,
         val homeServerName: String = "",
         val hsAdminHasDisabledE2E: Boolean = false,
         val asyncCreateRoomRequest: Async<String> = Uninitialized
