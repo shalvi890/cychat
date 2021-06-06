@@ -310,7 +310,6 @@ class HomeDetailFragment @Inject constructor(
     private fun updateSelectedFragment(displayMode: RoomListDisplayMode) {
         val fragmentTag = "FRAGMENT_TAG_${displayMode.name}"
         isOneToOneChatOpen = displayMode == RoomListDisplayMode.PEOPLE
-        Toast.makeText(requireContext(), isOneToOneChatOpen.toString(), Toast.LENGTH_SHORT).show()
         val fragmentToShow = childFragmentManager.findFragmentByTag(fragmentTag)
         childFragmentManager.commitTransaction {
             childFragmentManager.fragments
