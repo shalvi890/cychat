@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--        <im.vector.app.core.ui.views.ShieldImageView-->
+<!--        <com.cioinfotech.cychat.core.ui.views.ShieldImageView-->
 <!--            android:id="@+id/messageFilee2eIcon"-->
 <!--            android:layout_width="14dp"-->
 <!--            android:layout_height="14dp"-->
@@ -96,7 +96,7 @@
         app:layout_constraintTop_toBottomOf="@+id/messageFileUploadProgressLayout"
         tools:text="@tools:sample/date/hhmm" />
 
-    <im.vector.app.core.ui.views.SendStateImageView
+    <com.cioinfotech.cychat.core.ui.views.SendStateImageView
         android:id="@+id/messageSendStateImageView"
         android:layout_width="@dimen/item_event_message_state_size"
         android:layout_height="@dimen/item_event_message_state_size"

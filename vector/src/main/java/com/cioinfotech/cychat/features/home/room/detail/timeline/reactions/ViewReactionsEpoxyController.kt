@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2021 New Vector Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.cioinfotech.cychat.features.home.room.detail.timeline.reactions
+
+import com.airbnb.epoxy.TypedEpoxyController
+import com.airbnb.mvrx.Fail
+import com.airbnb.mvrx.Incomplete
+import com.airbnb.mvrx.Success
+import com.cioinfotech.cychat.EmojiCompatWrapper
+import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.core.ui.list.genericFooterItem
+import com.cioinfotech.cychat.core.ui.list.genericLoaderItem
+import javax.inject.Inject
+
+/**
+ * Epoxy controller for reaction event list
+ */
+class ViewReactionsEpoxyController @Inject constructor(
+        private val stringProvider: StringProvider,
+        private val emojiCompatWrapper: EmojiCompatWrapper)
+    : TypedEpoxyController<DisplayReactionsViewState>() {
+
+    var listener: Listener? = null
+
+    override fun buildModels(state: DisplayReactionsViewState) {
+        when (state.mapReactionKeyToMemberList) {
+            is Incomplete -> {
+                genericLoaderItem {
+                    id("Spinner")
+                }
+            }
+            is Fail       -> {
+                genericFooterItem {
+                    id("failure")
+                    text(stringProvider.getString(R.string.unknown_error))
+                }
+            }
+            is Success    -> {
+                state.mapReactionKeyToMemberList()?.forEach {
+                    reactionInfoSimpleItem {
+                        id(it.eventId)
+                        timeStamp(it.timestamp)
+                        reactionKey(emojiCompatWrapper.safeEmojiSpanify(it.reactionKey))
+                        authorDisplayName(it.authorName ?: it.authorId)
+                        userClicked { listener?.didSelectUser(it.authorId) }
+                    }
+                }
+            }
+        }
+    }
+
+    interface Listener {
+        fun didSelectUser(userId: String)
+    }
+}

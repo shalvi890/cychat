@@ -38,7 +38,7 @@
             app:layout_constraintEnd_toStartOf="@id/messageSendStateImageView"
             tools:text="@tools:sample/date/hhmm" />
 
-        <im.vector.app.core.ui.views.SendStateImageView
+        <com.cioinfotech.cychat.core.ui.views.SendStateImageView
             android:id="@+id/messageSendStateImageView"
             android:layout_width="@dimen/item_event_message_state_size"
             android:layout_height="@dimen/item_event_message_state_size"

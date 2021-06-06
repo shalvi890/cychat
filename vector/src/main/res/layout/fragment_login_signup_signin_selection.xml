@@ -106,7 +106,7 @@
 <!--                    android:textAppearance="@style/TextAppearance.Vector.Login.Text"-->
 <!--                    android:textSize="14sp" />-->
 
-<!--                <im.vector.app.features.login.SocialLoginButtonsView-->
+<!--                <com.cioinfotech.cychat.features.login.SocialLoginButtonsView-->
 <!--                    android:id="@+id/loginSignupSigninSocialLoginButtons"-->
 <!--                    android:layout_width="match_parent"-->
 <!--                    android:layout_height="wrap_content"-->

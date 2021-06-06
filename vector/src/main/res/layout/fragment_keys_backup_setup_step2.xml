@@ -68,7 +68,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <im.vector.app.core.ui.views.RevealPasswordImageView
+        <com.cioinfotech.cychat.core.ui.views.RevealPasswordImageView
             android:id="@+id/keys_backup_setup_step2_show_password"
             android:layout_width="@dimen/layout_touch_size"
             android:layout_height="@dimen/layout_touch_size"
@@ -80,7 +80,7 @@
             app:layout_constraintTop_toTopOf="@id/keys_backup_setup_step2_passphrase_enter_til"
             app:tint="?attr/colorAccent" />
 
-        <im.vector.app.core.ui.views.PasswordStrengthBar
+        <com.cioinfotech.cychat.core.ui.views.PasswordStrengthBar
             android:id="@+id/keys_backup_setup_step2_passphrase_strength_level"
             android:layout_width="0dp"
             android:layout_height="4dp"

@@ -60,7 +60,7 @@
         app:layout_constraintCircleRadius="30dp"
         tools:ignore="MissingConstraints" />
 
-<!--    <im.vector.app.core.ui.views.ShieldImageView-->
+<!--    <com.cioinfotech.cychat.core.ui.views.ShieldImageView-->
 <!--        android:id="@+id/roomAvatarDecorationImageView"-->
 <!--        android:layout_width="24dp"-->
 <!--        android:layout_height="24dp"-->
@@ -116,7 +116,7 @@
         tools:ignore="MissingPrefix"
         tools:visibility="visible" />
 
-    <im.vector.app.features.home.room.list.UnreadCounterBadgeView
+    <com.cioinfotech.cychat.features.home.room.list.UnreadCounterBadgeView
         android:id="@+id/roomUnreadCounterBadgeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

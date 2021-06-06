@@ -20,9 +20,9 @@ package im.vector.app.fdroid.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import im.vector.app.core.di.HasVectorInjector
-import im.vector.app.core.extensions.vectorComponent
-import im.vector.app.fdroid.BackgroundSyncStarter
+import com.cioinfotech.cychat.core.di.HasVectorInjector
+import com.cioinfotech.cychat.core.extensions.vectorComponent
+import com.cioinfotech.cychat.fdroid.BackgroundSyncStarter
 import timber.log.Timber
 
 class OnApplicationUpgradeOrRebootReceiver : BroadcastReceiver() {

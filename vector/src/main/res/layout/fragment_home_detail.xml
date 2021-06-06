@@ -45,7 +45,7 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <im.vector.app.features.sync.widget.SyncStateView
+    <com.cioinfotech.cychat.features.sync.widget.SyncStateView
         android:id="@+id/syncStateView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/groupToolbar" />
 
-    <im.vector.app.core.ui.views.KeysBackupBanner
+    <com.cioinfotech.cychat.core.ui.views.KeysBackupBanner
         android:id="@+id/homeKeysBackupBanner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/syncStateView" />
 
-    <im.vector.app.core.ui.views.CurrentCallsView
+    <com.cioinfotech.cychat.core.ui.views.CurrentCallsView
         android:id="@+id/activeCallView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

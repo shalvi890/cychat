@@ -33,7 +33,7 @@
             android:id="@+id/messageTextTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="3dp"
             android:paddingStart="4dp"
             android:paddingEnd="2dp"
             android:gravity="bottom"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toBottomOf="@id/messageTextView"
             tools:text="@tools:sample/date/hhmm" />
 
-        <im.vector.app.core.ui.views.SendStateImageView
+        <com.cioinfotech.cychat.core.ui.views.SendStateImageView
             android:id="@+id/messageSendStateImageView"
             android:layout_width="@dimen/item_event_message_state_size"
             android:layout_height="@dimen/item_event_message_state_size"
@@ -59,7 +59,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <im.vector.app.features.home.room.detail.timeline.url.PreviewUrlView
+    <com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlView
         android:id="@+id/messageUrlPreview"
         android:layout_width="300dp"
         android:layout_height="wrap_content"

@@ -18,11 +18,11 @@ package im.vector.app.fdroid.features.settings.troubleshoot
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import im.vector.app.R
-import im.vector.app.core.resources.StringProvider
-import im.vector.app.core.utils.isIgnoringBatteryOptimizations
-import im.vector.app.core.utils.requestDisablingBatteryOptimization
-import im.vector.app.features.settings.troubleshoot.TroubleshootTest
+import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.core.utils.isIgnoringBatteryOptimizations
+import com.cioinfotech.cychat.core.utils.requestDisablingBatteryOptimization
+import com.cioinfotech.cychat.features.settings.troubleshoot.TroubleshootTest
 import javax.inject.Inject
 
 class TestBatteryOptimization @Inject constructor(

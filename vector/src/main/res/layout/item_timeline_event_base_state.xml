@@ -7,7 +7,7 @@
     android:addStatesFromChildren="true"
     android:background="?attr/selectableItemBackground">
 
-    <im.vector.app.core.platform.CheckableView
+    <com.cioinfotech.cychat.core.platform.CheckableView
         android:id="@+id/messageSelectedBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -70,7 +70,7 @@
     </FrameLayout>
 
 
-    <!--    <im.vector.app.core.ui.views.ShieldImageView-->
+    <!--    <com.cioinfotech.cychat.core.ui.views.ShieldImageView-->
     <!--        android:id="@+id/messageE2EDecoration"-->
     <!--        android:layout_width="16dp"-->
     <!--        android:layout_height="16dp"-->

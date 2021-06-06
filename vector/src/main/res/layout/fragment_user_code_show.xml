@@ -134,7 +134,7 @@
                 <!--                android:contentDescription="@string/a11y_qr_code_for_verification"-->
                 <!--                tools:src="@color/riotx_header_panel_background_black" />-->
 
-                <im.vector.app.core.ui.views.QrCodeImageView
+                <com.cioinfotech.cychat.core.ui.views.QrCodeImageView
                     android:id="@+id/showUserCodeQRImage"
                     android:layout_width="260dp"
                     android:layout_height="260dp"

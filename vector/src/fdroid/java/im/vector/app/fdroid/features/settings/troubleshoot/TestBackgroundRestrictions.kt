@@ -21,9 +21,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
 import androidx.core.net.ConnectivityManagerCompat
-import im.vector.app.R
-import im.vector.app.core.resources.StringProvider
-import im.vector.app.features.settings.troubleshoot.TroubleshootTest
+import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.features.settings.troubleshoot.TroubleshootTest
 import javax.inject.Inject
 
 class TestBackgroundRestrictions @Inject constructor(private val context: AppCompatActivity,

@@ -31,7 +31,7 @@
         tools:text="@string/room_participants_header_direct_chats"
         app:drawableTint="?riotx_text_secondary" />
 
-    <im.vector.app.features.home.room.list.UnreadCounterBadgeView
+    <com.cioinfotech.cychat.features.home.room.list.UnreadCounterBadgeView
         android:id="@+id/roomCategoryUnreadCounterBadgeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -9,7 +9,7 @@
     android:addStatesFromChildren="true"
     android:background="?attr/selectableItemBackground">
 
-    <!--        <im.vector.app.core.platform.CheckableView-->
+    <!--        <com.cioinfotech.cychat.core.platform.CheckableView-->
     <!--            android:id="@+id/messageSelectedBackground"-->
     <!--            android:layout_width="match_parent"-->
     <!--            android:layout_height="match_parent"-->

@@ -7,7 +7,7 @@
     android:background="?riotx_bottom_sheet_background"
     android:orientation="vertical">
 
-    <im.vector.app.core.ui.views.BottomSheetActionButton
+    <com.cioinfotech.cychat.core.ui.views.BottomSheetActionButton
         android:id="@+id/dialerChoiceDialPad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         app:tint="?attr/riotx_text_primary"
         app:titleTextColor="?attr/riotx_text_primary" />
 
-    <im.vector.app.core.ui.views.BottomSheetActionButton
+    <com.cioinfotech.cychat.core.ui.views.BottomSheetActionButton
         android:id="@+id/dialerChoiceVoiceCall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -17,10 +17,10 @@
 package im.vector.app.fdroid
 
 import android.content.Context
-import im.vector.app.core.di.ActiveSessionHolder
-import im.vector.app.fdroid.receiver.AlarmSyncBroadcastReceiver
-import im.vector.app.features.settings.BackgroundSyncMode
-import im.vector.app.features.settings.VectorPreferences
+import com.cioinfotech.cychat.core.di.ActiveSessionHolder
+import com.cioinfotech.cychat.fdroid.receiver.AlarmSyncBroadcastReceiver
+import com.cioinfotech.cychat.features.settings.BackgroundSyncMode
+import com.cioinfotech.cychat.features.settings.VectorPreferences
 import timber.log.Timber
 
 object BackgroundSyncStarter {

@@ -17,10 +17,10 @@ package im.vector.app.fdroid.features.settings.troubleshoot
 
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
-import im.vector.app.R
-import im.vector.app.core.resources.StringProvider
-import im.vector.app.features.settings.VectorPreferences
-import im.vector.app.features.settings.troubleshoot.TroubleshootTest
+import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.features.settings.VectorPreferences
+import com.cioinfotech.cychat.features.settings.troubleshoot.TroubleshootTest
 import javax.inject.Inject
 
 /**

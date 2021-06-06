@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <im.vector.app.core.ui.views.ShieldImageView
+        <com.cioinfotech.cychat.core.ui.views.ShieldImageView
             android:id="@+id/otherUserShield"
             android:layout_width="16dp"
             android:layout_height="16dp"

@@ -139,7 +139,7 @@
         app:layout_constraintTop_toTopOf="@+id/sendButton"
         tools:ignore="MissingPrefix" />
 
-<!--    <im.vector.app.core.ui.views.ShieldImageView-->
+<!--    <com.cioinfotech.cychat.core.ui.views.ShieldImageView-->
 <!--        android:id="@+id/composerShieldImageView"-->
 <!--        android:layout_width="16dp"-->
 <!--        android:layout_height="16dp"-->
@@ -149,7 +149,7 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="@+id/sendButton" />-->
 
-    <im.vector.app.features.home.room.detail.composer.ComposerEditText
+    <com.cioinfotech.cychat.features.home.room.detail.composer.ComposerEditText
         android:id="@+id/composerEditText"
         style="@style/ComposerEditTextStyle"
         android:layout_width="0dp"

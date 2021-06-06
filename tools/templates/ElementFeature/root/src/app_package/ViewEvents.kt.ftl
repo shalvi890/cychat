@@ -1,5 +1,5 @@
 package ${escapeKotlinIdentifiers(packageName)}
 
-import im.vector.app.core.platform.VectorViewEvents
+import com.cioinfotech.cychat.core.platform.VectorViewEvents
 
 sealed class ${viewEventsClass} : VectorViewEvents

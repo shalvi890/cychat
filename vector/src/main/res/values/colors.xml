@@ -202,14 +202,14 @@
     <color name="riotx_text_secondary_black">#FFA1B2D1</color>
 
     <attr name="riotx_text_primary_contrast" format="color" />
-    <color name="riotx_text_primary_contrast_light">#FFEDF3FF</color>
-    <color name="riotx_text_primary_contrast_dark">#FF2E2F32</color>
-    <color name="riotx_text_primary_contrast_black">#FF2E2F32</color>
+    <color name="riotx_text_primary_contrast_light">#000000</color>
+    <color name="riotx_text_primary_contrast_dark">#000000</color>
+    <color name="riotx_text_primary_contrast_black">#000000</color>
 
     <attr name="riotx_text_secondary_contrast" format="color" />
-    <color name="riotx_text_secondary_contrast_light">#FFA1B2D1</color>
-    <color name="riotx_text_secondary_contrast_dark">#FF9E9E9E</color>
-    <color name="riotx_text_secondary_contrast_black">#FF9E9E9E</color>
+    <color name="riotx_text_secondary_contrast_light">#444444</color>
+    <color name="riotx_text_secondary_contrast_dark">#444444</color>
+    <color name="riotx_text_secondary_contrast_black">#444444</color>
 
     <attr name="riotx_text_tertiary" format="color" />
     <color name="riotx_text_tertiary_light">#FF8D99A5</color>
@@ -329,9 +329,9 @@
 
     <attr name="cy_chat_bg_send" format="color" />
     <color name="chat_bg_send_dark">#e2ffc7</color>
-    <color name="chat_bg_send_white">#e2ffc7</color>
+    <color name="chat_bg_send_white">#D7FFC7</color>
 
     <attr name="cy_chat_bg_receive" format="color" />
-    <color name="chat_bg_receive_dark">#E5E5E5</color>
-    <color name="chat_bg_receive_white">#E5E5E5</color>
+    <color name="chat_bg_receive_dark">#FFFFFF</color>
+    <color name="chat_bg_receive_white">#F5F5F5</color>
 </resources>

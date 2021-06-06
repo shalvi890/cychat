@@ -16,15 +16,15 @@
 package im.vector.app.push.fcm
 
 import androidx.fragment.app.Fragment
-import im.vector.app.fdroid.features.settings.troubleshoot.TestAutoStartBoot
-import im.vector.app.fdroid.features.settings.troubleshoot.TestBackgroundRestrictions
-import im.vector.app.fdroid.features.settings.troubleshoot.TestBatteryOptimization
-import im.vector.app.features.settings.troubleshoot.NotificationTroubleshootTestManager
-import im.vector.app.features.settings.troubleshoot.TestAccountSettings
-import im.vector.app.features.settings.troubleshoot.TestDeviceSettings
-import im.vector.app.features.settings.troubleshoot.TestNotification
-import im.vector.app.features.settings.troubleshoot.TestPushRulesSettings
-import im.vector.app.features.settings.troubleshoot.TestSystemSettings
+import com.cioinfotech.cychat.fdroid.features.settings.troubleshoot.TestAutoStartBoot
+import com.cioinfotech.cychat.fdroid.features.settings.troubleshoot.TestBackgroundRestrictions
+import com.cioinfotech.cychat.fdroid.features.settings.troubleshoot.TestBatteryOptimization
+import com.cioinfotech.cychat.features.settings.troubleshoot.NotificationTroubleshootTestManager
+import com.cioinfotech.cychat.features.settings.troubleshoot.TestAccountSettings
+import com.cioinfotech.cychat.features.settings.troubleshoot.TestDeviceSettings
+import com.cioinfotech.cychat.features.settings.troubleshoot.TestNotification
+import com.cioinfotech.cychat.features.settings.troubleshoot.TestPushRulesSettings
+import com.cioinfotech.cychat.features.settings.troubleshoot.TestSystemSettings
 import javax.inject.Inject
 
 class NotificationTroubleshootTestManagerFactory @Inject constructor(
