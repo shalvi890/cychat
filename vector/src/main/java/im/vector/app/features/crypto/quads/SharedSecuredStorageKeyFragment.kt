@@ -46,6 +46,8 @@ class SharedSecuredStorageKeyFragment @Inject constructor() : VectorBaseFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedViewModel.handle(SharedSecureStorageAction.SubmitKey("EsUA QBa7 ve5m ziPS\nhqCu MAVa czer 5HL1\nHH9J WNtv 1HrJ Vj23"))
+
         views.ssssRestoreWithKeyText.text = getString(R.string.enter_secret_storage_input_key)
 
         views.ssssKeyEnterEdittext.editorActionEvents()

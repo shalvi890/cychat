@@ -34,7 +34,6 @@ class VerificationRequestFragment @Inject constructor(
         val controller: VerificationRequestController
 ) : VectorBaseFragment<BottomSheetVerificationChildFragmentBinding>(),
         VerificationRequestController.Listener {
-
     private val viewModel by parentFragmentViewModel(VerificationBottomSheetViewModel::class)
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): BottomSheetVerificationChildFragmentBinding {

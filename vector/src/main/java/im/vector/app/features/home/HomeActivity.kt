@@ -16,6 +16,7 @@
 
 package im.vector.app.features.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -30,12 +31,14 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import com.airbnb.mvrx.MvRx
+import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.viewModel
 import im.vector.app.R
 import im.vector.app.core.di.ActiveSessionHolder
 import im.vector.app.core.di.ScreenComponent
 import im.vector.app.core.extensions.exhaustive
 import im.vector.app.core.extensions.hideKeyboard
+import im.vector.app.core.extensions.registerStartForActivityResult
 import im.vector.app.core.extensions.replaceFragment
 import im.vector.app.core.platform.ToolbarConfigurable
 import im.vector.app.core.platform.VectorBaseActivity
@@ -43,7 +46,11 @@ import im.vector.app.core.pushers.PushersManager
 import im.vector.app.databinding.ActivityHomeBinding
 import im.vector.app.features.MainActivity
 import im.vector.app.features.MainActivityArgs
-import im.vector.app.features.disclaimer.showDisclaimerDialog
+import im.vector.app.features.crypto.quads.SharedSecureStorageAction
+import im.vector.app.features.crypto.quads.SharedSecureStorageActivity
+import im.vector.app.features.crypto.quads.SharedSecureStorageViewModel
+import im.vector.app.features.crypto.verification.VerificationAction
+import im.vector.app.features.crypto.verification.VerificationBottomSheetViewModel
 import im.vector.app.features.matrixto.MatrixToBottomSheet
 import im.vector.app.features.notifications.NotificationDrawerManager
 import im.vector.app.features.permalink.NavigationInterceptor
@@ -60,6 +67,10 @@ import im.vector.app.features.workers.signout.ServerBackupStatusViewState
 import im.vector.app.push.fcm.FcmHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.parcelize.Parcelize
+import org.matrix.android.sdk.api.session.crypto.crosssigning.KEYBACKUP_SECRET_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.MASTER_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.api.util.MatrixItem
@@ -86,7 +97,6 @@ class HomeActivity :
     private val homeActivityViewModel: HomeActivityViewModel by viewModel()
     @Inject lateinit var viewModelFactory: HomeActivityViewModel.Factory
 
-    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by viewModel()
     @Inject lateinit var serverBackupviewModelFactory: ServerBackupStatusViewModel.Factory
 
     @Inject lateinit var activeSessionHolder: ActiveSessionHolder
@@ -135,9 +145,9 @@ class HomeActivity :
                 .observe()
                 .subscribe { sharedAction ->
                     when (sharedAction) {
-                        is HomeActivitySharedAction.OpenDrawer -> views.drawerLayout.openDrawer(GravityCompat.START)
+                        is HomeActivitySharedAction.OpenDrawer  -> views.drawerLayout.openDrawer(GravityCompat.START)
                         is HomeActivitySharedAction.CloseDrawer -> views.drawerLayout.closeDrawer(GravityCompat.START)
-                        is HomeActivitySharedAction.OpenGroup -> {
+                        is HomeActivitySharedAction.OpenGroup   -> {
                             views.drawerLayout.closeDrawer(GravityCompat.START)
                             replaceFragment(R.id.homeDetailFragmentContainer, HomeDetailFragment::class.java, allowStateLoss = true)
                         }
@@ -154,9 +164,9 @@ class HomeActivity :
         homeActivityViewModel.observeViewEvents {
             when (it) {
                 is HomeActivityViewEvents.AskPasswordToInitCrossSigning -> handleAskPasswordToInitCrossSigning(it)
-                is HomeActivityViewEvents.OnNewSession -> handleOnNewSession(it)
-                HomeActivityViewEvents.PromptToEnableSessionPush -> handlePromptToEnablePush()
-                is HomeActivityViewEvents.OnCrossSignedInvalidated -> handleCrossSigningInvalidated(it)
+                is HomeActivityViewEvents.OnNewSession                  -> handleOnNewSession()
+                HomeActivityViewEvents.PromptToEnableSessionPush        -> handlePromptToEnablePush()
+                is HomeActivityViewEvents.OnCrossSignedInvalidated      -> handleCrossSigningInvalidated(it)
             }.exhaustive
         }
         homeActivityViewModel.subscribe(this) { renderState(it) }
@@ -255,19 +265,20 @@ class HomeActivity :
         }
     }
 
-    private fun handleOnNewSession(event: HomeActivityViewEvents.OnNewSession) {
+    private fun handleOnNewSession() {
+
+        navigator.requestSelfSessionVerification(this)
+
         // We need to ask
-        promptSecurityEvent(
-                event.userItem,
-                R.string.crosssigning_verify_this_session,
-                R.string.confirm_your_identity
-        ) {
-            if (event.waitForIncomingRequest) {
-                it.navigator.waitSessionVerification(it)
-            } else {
-                it.navigator.requestSelfSessionVerification(it)
-            }
-        }
+//        sharedViewModel.handle(SharedSecureStorageAction.SubmitKey("EsUA QBa7 ve5m ziPS\nhqCu MAVa czer 5HL1\nHH9J WNtv 1HrJ Vj23"))
+//        navigator.waitSessionVerification(this)
+
+//        promptSecurityEvent(
+//                event.userItem,
+//                R.string.crosssigning_verify_this_session,
+//                R.string.confirm_your_identity
+//        ) {
+//        }
     }
 
     private fun handlePromptToEnablePush() {
@@ -355,7 +366,7 @@ class HomeActivity :
 //            showDisclaimerDialog(this)
 //        }
 
-        // Force remote backup state update to update the banner if needed
+    // Force remote backup state update to update the banner if needed
 //        serverBackupStatusViewModel.refreshRemoteStateIfNeeded()
 //    }
 
@@ -373,15 +384,15 @@ class HomeActivity :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_home_suggestion -> {
+            R.id.menu_home_suggestion          -> {
                 bugReporter.openBugReportScreen(this, true)
                 return true
             }
-            R.id.menu_home_report_bug -> {
+            R.id.menu_home_report_bug          -> {
                 bugReporter.openBugReportScreen(this, false)
                 return true
             }
-            R.id.menu_home_init_sync_legacy -> {
+            R.id.menu_home_init_sync_legacy    -> {
                 // Configure the SDK
                 initialSyncStrategy = InitialSyncStrategy.Legacy
                 // And clear cache
@@ -395,11 +406,11 @@ class HomeActivity :
                 MainActivity.restartApp(this, MainActivityArgs(clearCache = true))
                 return true
             }
-            R.id.menu_home_filter -> {
+            R.id.menu_home_filter              -> {
                 navigator.openRoomsFiltering(this)
                 return true
             }
-            R.id.menu_home_setting -> {
+            R.id.menu_home_setting             -> {
                 navigator.openSettings(this)
                 return true
             }

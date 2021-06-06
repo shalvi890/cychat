@@ -118,7 +118,7 @@ class ServerBackupStatusViewModel @AssistedInject constructor(@Assisted initialS
                     if (
                             crossSigningInfo.getOrNull() == null
                             || (crossSigningInfo.getOrNull()?.isTrusted() == true
-                            && pInfo.getOrNull()?.allKnown().orFalse())
+                                    && pInfo.getOrNull()?.allKnown().orFalse())
                     ) {
                         // So 4S is not setup and we have local secrets,
                         return@Function4 BannerState.Setup(numberOfKeys = getNumberOfKeysToBackup())
@@ -136,6 +136,12 @@ class ServerBackupStatusViewModel @AssistedInject constructor(@Assisted initialS
                 }
 
         keyBackupPublishSubject.onNext(session.cryptoService().keysBackupService().state)
+    }
+
+    var startBackupRecoveryLiveData = MutableLiveData<Boolean>()
+
+    fun setStartBackupRecoveryLiveData(startKeyBackup: Boolean) {
+        startBackupRecoveryLiveData.postValue(startKeyBackup)
     }
 
     /**

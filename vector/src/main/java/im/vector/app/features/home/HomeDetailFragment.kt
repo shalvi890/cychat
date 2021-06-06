@@ -32,7 +32,6 @@ import im.vector.app.core.extensions.commitTransaction
 import im.vector.app.core.extensions.toMvRxBundle
 import im.vector.app.core.glide.GlideApp
 import im.vector.app.core.platform.ToolbarConfigurable
-import im.vector.app.core.platform.VectorBaseActivity
 import im.vector.app.core.platform.VectorBaseFragment
 import im.vector.app.core.ui.views.CurrentCallsView
 import im.vector.app.core.ui.views.KeysBackupBanner
@@ -41,25 +40,23 @@ import im.vector.app.databinding.FragmentHomeDetailBinding
 import im.vector.app.features.call.SharedKnownCallsViewModel
 import im.vector.app.features.call.VectorCallActivity
 import im.vector.app.features.call.webrtc.WebRtcCallManager
+import im.vector.app.features.crypto.quads.SharedSecureStorageAction
+import im.vector.app.features.crypto.quads.SharedSecureStorageViewModel
 import im.vector.app.features.home.room.list.RoomListFragment
 import im.vector.app.features.home.room.list.RoomListParams
 import im.vector.app.features.popup.PopupAlertManager
-import im.vector.app.features.popup.VerificationVectorAlert
 import im.vector.app.features.settings.VectorPreferences
-import im.vector.app.features.settings.VectorSettingsActivity.Companion.EXTRA_DIRECT_ACCESS_SECURITY_PRIVACY_MANAGE_SESSIONS
 import im.vector.app.features.themes.ThemeUtils
-import im.vector.app.features.workers.signout.BannerState
 import im.vector.app.features.workers.signout.ServerBackupStatusViewModel
 import im.vector.app.features.workers.signout.ServerBackupStatusViewState
 import org.matrix.android.sdk.api.session.group.model.GroupSummary
 import org.matrix.android.sdk.api.util.toMatrixItem
-import org.matrix.android.sdk.internal.crypto.model.rest.DeviceInfo
 import timber.log.Timber
 import javax.inject.Inject
 
-private const val INDEX_PEOPLE = 0
-private const val INDEX_ROOMS = 1
-private const val INDEX_CATCHUP = 2
+//private const val INDEX_PEOPLE = 0
+//private const val INDEX_ROOMS = 1
+//private const val INDEX_CATCHUP = 2
 
 class HomeDetailFragment @Inject constructor(
         val homeDetailViewModelFactory: HomeDetailViewModel.Factory,
@@ -74,7 +71,8 @@ class HomeDetailFragment @Inject constructor(
         ServerBackupStatusViewModel.Factory {
 
     private val viewModel: HomeDetailViewModel by fragmentViewModel()
-    private val unknownDeviceDetectorSharedViewModel: UnknownDeviceDetectorSharedViewModel by activityViewModel()
+
+    //    private val unknownDeviceDetectorSharedViewModel: UnknownDeviceDetectorSharedViewModel by activityViewModel()
     private val serverBackupStatusViewModel: ServerBackupStatusViewModel by activityViewModel()
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
@@ -119,7 +117,7 @@ class HomeDetailFragment @Inject constructor(
 
         setupBottomNavigationView()
         setupToolbar()
-        setupKeysBackupBanner()
+//        setupKeysBackupBanner()
         setupActiveCallView()
 
         withState(viewModel) {
@@ -133,24 +131,30 @@ class HomeDetailFragment @Inject constructor(
         viewModel.selectSubscribe(this, HomeDetailViewState::displayMode) { displayMode ->
             switchDisplayMode(displayMode)
         }
-
-        unknownDeviceDetectorSharedViewModel.subscribe { state ->
-            state.unknownSessions.invoke()?.let { unknownDevices ->
+//        serverBackupStatusViewModel.startBackupRecoveryLiveData.observe(viewLifecycleOwner) {
+//            if (it) {
+//                sharedViewModel.handle(SharedSecureStorageAction.SubmitKey("EsUA QBa7 ve5m ziPS hqCu MAVa czer 5HL1 HH9J WNtv 1HrJ Vj23"))
+//                serverBackupStatusViewModel.setStartBackupRecoveryLiveData(false)
+//            }
+//        }
+//        unknownDeviceDetectorSharedViewModel.subscribe { state ->
+//            state.unknownSessions.invoke()?.let { unknownDevices ->
 //                Timber.v("## Detector Triggerred in fragment - ${unknownDevices.firstOrNull()}")
-                if (unknownDevices.firstOrNull()?.currentSessionTrust == true) {
-                    val uid = "review_login"
-                    alertManager.cancelAlert(uid)
-                    val olderUnverified = unknownDevices.filter { !it.isNew }
-                    val newest = unknownDevices.firstOrNull { it.isNew }?.deviceInfo
-                    if (newest != null) {
-                        promptForNewUnknownDevices(uid, state, newest)
-                    } else if (olderUnverified.isNotEmpty()) {
-                        // In this case we prompt to go to settings to review logins
-                        promptToReviewChanges(uid, state, olderUnverified.map { it.deviceInfo })
-                    }
-                }
-            }
-        }
+//                if (unknownDevices.firstOrNull()?.currentSessionTrust == true) {
+//                    val uid = "review_login"
+//                    alertManager.cancelAlert(uid)
+//                    val olderUnverified = unknownDevices.filter { !it.isNew }
+//                    val newest = unknownDevices.firstOrNull { it.isNew }?.deviceInfo
+//                    if (newest != null) {
+//                        promptForNewUnknownDevices(uid, state, newest)
+//                    }
+//                    else if (olderUnverified.isNotEmpty()) {
+        // In this case we prompt to go to settings to review logins
+//                        promptToReviewChanges(uid, state, olderUnverified.map { it.deviceInfo })
+//                    }
+//                }
+//            }
+//        }
 
         sharedCallActionViewModel
                 .liveKnownCalls
@@ -179,62 +183,62 @@ class HomeDetailFragment @Inject constructor(
         }
     }
 
-    private fun promptForNewUnknownDevices(uid: String, state: UnknownDevicesState, newest: DeviceInfo) {
-        val user = state.myMatrixItem
-        alertManager.postVectorAlert(
-                VerificationVectorAlert(
-                        uid = uid,
-                        title = getString(R.string.new_session),
-                        description = getString(R.string.verify_this_session, newest.displayName ?: newest.deviceId ?: ""),
-                        iconId = R.drawable.ic_shield_warning
-                ).apply {
-                    viewBinder = VerificationVectorAlert.ViewBinder(user, avatarRenderer)
-                    colorInt = ContextCompat.getColor(requireActivity(), R.color.riotx_accent)
-                    contentAction = Runnable {
-                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)
-                                ?.navigator
-                                ?.requestSessionVerification(requireContext(), newest.deviceId ?: "")
-                        unknownDeviceDetectorSharedViewModel.handle(
-                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
-                        )
-                    }
-                    dismissedAction = Runnable {
-                        unknownDeviceDetectorSharedViewModel.handle(
-                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
-                        )
-                    }
-                }
-        )
-    }
+//    private fun promptForNewUnknownDevices(uid: String, state: UnknownDevicesState, newest: DeviceInfo) {
+//        val user = state.myMatrixItem
+//        alertManager.postVectorAlert(
+//                VerificationVectorAlert(
+//                        uid = uid,
+//                        title = getString(R.string.new_session),
+//                        description = getString(R.string.verify_this_session, newest.displayName ?: newest.deviceId ?: ""),
+//                        iconId = R.drawable.ic_shield_warning
+//                ).apply {
+//                    viewBinder = VerificationVectorAlert.ViewBinder(user, avatarRenderer)
+//                    colorInt = ContextCompat.getColor(requireActivity(), R.color.riotx_accent)
+//                    contentAction = Runnable {
+//                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)
+//                                ?.navigator
+//                                ?.requestSessionVerification(requireContext(), newest.deviceId ?: "")
+//                        unknownDeviceDetectorSharedViewModel.handle(
+//                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
+//                        )
+//                    }
+//                    dismissedAction = Runnable {
+//                        unknownDeviceDetectorSharedViewModel.handle(
+//                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
+//                        )
+//                    }
+//                }
+//        )
+//    }
 
-    private fun promptToReviewChanges(uid: String, state: UnknownDevicesState, oldUnverified: List<DeviceInfo>) {
-        val user = state.myMatrixItem
-        alertManager.postVectorAlert(
-                VerificationVectorAlert(
-                        uid = uid,
-                        title = getString(R.string.review_logins),
-                        description = getString(R.string.verify_other_sessions),
-                        iconId = R.drawable.ic_shield_warning
-                ).apply {
-                    viewBinder = VerificationVectorAlert.ViewBinder(user, avatarRenderer)
-                    colorInt = ContextCompat.getColor(requireActivity(), R.color.riotx_accent)
-                    contentAction = Runnable {
-                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)?.let {
-                            // mark as ignored to avoid showing it again
-                            unknownDeviceDetectorSharedViewModel.handle(
-                                    UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(oldUnverified.mapNotNull { it.deviceId })
-                            )
-                            it.navigator.openSettings(it, EXTRA_DIRECT_ACCESS_SECURITY_PRIVACY_MANAGE_SESSIONS)
-                        }
-                    }
-                    dismissedAction = Runnable {
-                        unknownDeviceDetectorSharedViewModel.handle(
-                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(oldUnverified.mapNotNull { it.deviceId })
-                        )
-                    }
-                }
-        )
-    }
+//    private fun promptToReviewChanges(uid: String, state: UnknownDevicesState, oldUnverified: List<DeviceInfo>) {
+//        val user = state.myMatrixItem
+//        alertManager.postVectorAlert(
+//                VerificationVectorAlert(
+//                        uid = uid,
+//                        title = getString(R.string.review_logins),
+//                        description = getString(R.string.verify_other_sessions),
+//                        iconId = R.drawable.ic_shield_warning
+//                ).apply {
+//                    viewBinder = VerificationVectorAlert.ViewBinder(user, avatarRenderer)
+//                    colorInt = ContextCompat.getColor(requireActivity(), R.color.riotx_accent)
+//                    contentAction = Runnable {
+//                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)?.let {
+//                            // mark as ignored to avoid showing it again
+//                            unknownDeviceDetectorSharedViewModel.handle(
+//                                    UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(oldUnverified.mapNotNull { it.deviceId })
+//                            )
+//                            it.navigator.openSettings(it, EXTRA_DIRECT_ACCESS_SECURITY_PRIVACY_MANAGE_SESSIONS)
+//                        }
+//                    }
+//                    dismissedAction = Runnable {
+//                        unknownDeviceDetectorSharedViewModel.handle(
+//                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(oldUnverified.mapNotNull { it.deviceId })
+//                        )
+//                    }
+//                }
+//        )
+//    }
 
     private fun onGroupChange(groupSummary: GroupSummary?) {
         groupSummary?.let {
@@ -243,18 +247,18 @@ class HomeDetailFragment @Inject constructor(
         }
     }
 
-    private fun setupKeysBackupBanner() {
-        serverBackupStatusViewModel
-                .subscribe(this) {
-                    when (val banState = it.bannerState.invoke()) {
-                        is BannerState.Setup  -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Setup(banState.numberOfKeys), false)
-                        BannerState.BackingUp -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.BackingUp, false)
-                        null,
-                        BannerState.Hidden    -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Hidden, false)
-                    }
-                }
-        views.homeKeysBackupBanner.delegate = this
-    }
+//    private fun setupKeysBackupBanner() {
+//        serverBackupStatusViewModel
+//                .subscribe(this) {
+//                    when (val banState = it.bannerState.invoke()) {
+//                        is BannerState.Setup  -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Setup(banState.numberOfKeys), false)
+//                        BannerState.BackingUp -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.BackingUp, false)
+//                        null,
+//                        BannerState.Hidden    -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Hidden, false)
+//                    }
+//                }
+//        views.homeKeysBackupBanner.delegate = this
+//    }
 
     private fun setupActiveCallView() {
         activeCallViewHolder.bind(

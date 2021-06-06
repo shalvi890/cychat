@@ -313,13 +313,23 @@ class VerificationBottomSheet : VectorBaseBottomSheetDialogFragment<BottomSheetV
                             ?: "", state.pendingRequest.invoke()?.transactionId))
                 })
             } else {
-                // Stay on the start fragment
-                showFragment(VerificationRequestFragment::class, Bundle().apply {
-                    putParcelable(MvRx.KEY_ARG, VerificationArgs(
-                            state.otherUserMxItem?.id ?: "",
-                            state.pendingRequest.invoke()?.transactionId,
-                            state.roomId))
-                })
+                if (state.selfVerificationMode) {
+                    viewModel.apply { setMyState() }
+                    secretStartForActivityResult.launch(SharedSecureStorageActivity.newIntent(
+                            requireContext(),
+                            null, // use default key
+                            listOf(MASTER_KEY_SSSS_NAME, USER_SIGNING_KEY_SSSS_NAME, SELF_SIGNING_KEY_SSSS_NAME, KEYBACKUP_SECRET_SSSS_NAME),
+                            SharedSecureStorageActivity.DEFAULT_RESULT_KEYSTORE_ALIAS
+                    ))
+                } else {
+                    // Stay on the start fragment
+                    showFragment(VerificationRequestFragment::class, Bundle().apply {
+                        putParcelable(MvRx.KEY_ARG, VerificationArgs(
+                                state.otherUserMxItem?.id ?: "",
+                                state.pendingRequest.invoke()?.transactionId,
+                                state.roomId))
+                    })
+                }
             }
         } else if (state.pendingRequest.invoke()?.isIncoming == true) {
             Timber.v("## SAS show bottom sheet for Incoming request")

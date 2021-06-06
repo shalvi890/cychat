@@ -16,6 +16,7 @@
 
 package im.vector.app.features.crypto.quads
 
+import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.Async
 import com.airbnb.mvrx.Fail
@@ -34,11 +35,17 @@ import im.vector.app.core.extensions.exhaustive
 import im.vector.app.core.platform.VectorViewModel
 import im.vector.app.core.platform.WaitingViewData
 import im.vector.app.core.resources.StringProvider
+import im.vector.app.features.home.HomeActivity
+import im.vector.app.features.home.HomeActivityArgs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.matrix.android.sdk.api.listeners.ProgressListener
 import org.matrix.android.sdk.api.session.Session
+import org.matrix.android.sdk.api.session.crypto.crosssigning.KEYBACKUP_SECRET_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.MASTER_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.securestorage.IntegrityResult
 import org.matrix.android.sdk.api.session.securestorage.KeyInfoResult
 import org.matrix.android.sdk.api.session.securestorage.RawBytesKeySpec
@@ -331,9 +338,14 @@ class SharedSecureStorageViewModel @AssistedInject constructor(
 
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: SharedSecureStorageViewState): SharedSecureStorageViewModel? {
-            val activity: SharedSecureStorageActivity = viewModelContext.activity()
-            val args: SharedSecureStorageActivity.Args = activity.intent.getParcelableExtra(MvRx.KEY_ARG) ?: error("Missing args")
-            return activity.viewModelFactory.create(state, args)
+            return when (val activity: Activity = viewModelContext.activity()) {
+                is SharedSecureStorageActivity -> {
+                    val args: SharedSecureStorageActivity.Args = activity.intent.getParcelableExtra(MvRx.KEY_ARG) ?: error("Missing args")
+                    activity.viewModelFactory.create(state, args)
+                }
+
+                else                           -> null
+            }
         }
     }
 }

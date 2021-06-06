@@ -372,6 +372,10 @@ class VerificationBottomSheetViewModel @AssistedInject constructor(
         }.exhaustive
     }
 
+    fun setMyState() {
+        setState { copy(verifyingFrom4S = true) }
+    }
+
     private fun handleSecretBackFromSSSS(action: VerificationAction.GotResultFromSsss) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
