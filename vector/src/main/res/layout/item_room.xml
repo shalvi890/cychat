@@ -60,14 +60,14 @@
         app:layout_constraintCircleRadius="30dp"
         tools:ignore="MissingConstraints" />
 
-    <im.vector.app.core.ui.views.ShieldImageView
-        android:id="@+id/roomAvatarDecorationImageView"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:layout_constraintCircle="@id/roomAvatarContainer"
-        app:layout_constraintCircleAngle="135"
-        app:layout_constraintCircleRadius="28dp"
-        tools:ignore="MissingConstraints" />
+<!--    <im.vector.app.core.ui.views.ShieldImageView-->
+<!--        android:id="@+id/roomAvatarDecorationImageView"-->
+<!--        android:layout_width="24dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        app:layout_constraintCircle="@id/roomAvatarContainer"-->
+<!--        app:layout_constraintCircleAngle="135"-->
+<!--        app:layout_constraintCircleRadius="28dp"-->
+<!--        tools:ignore="MissingConstraints" />-->
 
     <!-- Margin bottom does not work, so I use space -->
     <Space

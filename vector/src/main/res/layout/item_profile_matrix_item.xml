@@ -26,14 +26,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
-    <im.vector.app.core.ui.views.ShieldImageView
-        android:id="@+id/matrixItemAvatarDecoration"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        app:layout_constraintCircle="@+id/matrixItemAvatar"
-        app:layout_constraintCircleAngle="135"
-        app:layout_constraintCircleRadius="16dp"
-        tools:ignore="MissingConstraints" />
+<!--    <im.vector.app.core.ui.views.ShieldImageView-->
+<!--        android:id="@+id/matrixItemAvatarDecoration"-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="20dp"-->
+<!--        app:layout_constraintCircle="@+id/matrixItemAvatar"-->
+<!--        app:layout_constraintCircleAngle="135"-->
+<!--        app:layout_constraintCircleRadius="16dp"-->
+<!--        tools:ignore="MissingConstraints" />-->
 
     <TextView
         android:id="@+id/matrixItemTitle"

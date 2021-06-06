@@ -104,8 +104,9 @@ class RoomMemberProfileFragment @Inject constructor(
         appBarStateChangeListener = MatrixItemAppBarStateChangeListener(headerView,
                 listOf(
                         views.matrixProfileToolbarAvatarImageView,
-                        views.matrixProfileToolbarTitleView,
-                        views.matrixProfileDecorationToolbarAvatarImageView
+                        views.matrixProfileToolbarTitleView
+//                        ,
+//                        views.matrixProfileDecorationToolbarAvatarImageView
                 )
         )
         views.matrixProfileAppBarLayout.addOnOffsetChangedListener(appBarStateChangeListener)
@@ -204,33 +205,34 @@ class RoomMemberProfileFragment @Inject constructor(
                 avatarRenderer.render(userMatrixItem, headerViews.memberProfileAvatarView)
                 avatarRenderer.render(userMatrixItem, views.matrixProfileToolbarAvatarImageView)
 
-                if (state.isRoomEncrypted) {
-                    headerViews.memberProfileDecorationImageView.isVisible = true
-                    val trustLevel = if (state.userMXCrossSigningInfo != null) {
-                        // Cross signing is enabled for this user
-                        if (state.userMXCrossSigningInfo.isTrusted()) {
-                            // User is trusted
-                            if (state.allDevicesAreCrossSignedTrusted) {
-                                RoomEncryptionTrustLevel.Trusted
-                            } else {
-                                RoomEncryptionTrustLevel.Warning
-                            }
-                        } else {
-                            RoomEncryptionTrustLevel.Default
-                        }
-                    } else {
-                        // Legacy
-                        if (state.allDevicesAreTrusted) {
-                            RoomEncryptionTrustLevel.Trusted
-                        } else {
-                            RoomEncryptionTrustLevel.Warning
-                        }
-                    }
-                    headerViews.memberProfileDecorationImageView.render(trustLevel)
-                    views.matrixProfileDecorationToolbarAvatarImageView.render(trustLevel)
-                } else {
-                    headerViews.memberProfileDecorationImageView.isVisible = false
-                }
+//                if (state.isRoomEncrypted) {
+////                    headerViews.memberProfileDecorationImageView.isVisible = true
+//                    val trustLevel = if (state.userMXCrossSigningInfo != null) {
+//                        // Cross signing is enabled for this user
+//                        if (state.userMXCrossSigningInfo.isTrusted()) {
+//                            // User is trusted
+//                            if (state.allDevicesAreCrossSignedTrusted) {
+//                                RoomEncryptionTrustLevel.Trusted
+//                            } else {
+//                                RoomEncryptionTrustLevel.Warning
+//                            }
+//                        } else {
+//                            RoomEncryptionTrustLevel.Default
+//                        }
+//                    } else {
+//                        // Legacy
+//                        if (state.allDevicesAreTrusted) {
+//                            RoomEncryptionTrustLevel.Trusted
+//                        } else {
+//                            RoomEncryptionTrustLevel.Warning
+//                        }
+//                    }
+////                    headerViews.memberProfileDecorationImageView.render(trustLevel)
+////                    views.matrixProfileDecorationToolbarAvatarImageView.render(trustLevel)
+//                }
+//                else {
+//                    headerViews.memberProfileDecorationImageView.isVisible = false
+//                }
 
                 headerViews.memberProfileAvatarView.setOnClickListener { view ->
                     onAvatarClicked(view, userMatrixItem)
@@ -305,16 +307,16 @@ class RoomMemberProfileFragment @Inject constructor(
         val views = DialogShareQrCodeBinding.bind(view)
         views.itemShareQrCodeImage.setData(permalink)
         AlertDialog.Builder(requireContext())
-            .setView(view)
-            .setNeutralButton(R.string.ok, null)
-            .setPositiveButton(R.string.share_by_text) { _, _ ->
-                startSharePlainTextIntent(
-                        fragment = this,
-                        activityResultLauncher = null,
-                        chooserTitle = null,
-                        text = permalink
-                )
-            }.show()
+                .setView(view)
+                .setNeutralButton(R.string.ok, null)
+                .setPositiveButton(R.string.share_by_text) { _, _ ->
+                    startSharePlainTextIntent(
+                            fragment = this,
+                            activityResultLauncher = null,
+                            chooserTitle = null,
+                            text = permalink
+                    )
+                }.show()
     }
 
     private fun onAvatarClicked(view: View, userMatrixItem: MatrixItem) {

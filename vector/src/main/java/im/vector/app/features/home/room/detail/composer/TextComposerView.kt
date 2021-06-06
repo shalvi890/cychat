@@ -32,8 +32,6 @@ import androidx.transition.TransitionSet
 import im.vector.app.R
 import im.vector.app.databinding.ComposerLayoutBinding
 
-import org.matrix.android.sdk.api.crypto.RoomEncryptionTrustLevel
-
 /**
  * Encapsulate the timeline composer UX.
  *
@@ -110,8 +108,8 @@ class TextComposerView @JvmOverloads constructor(
         }
         ConstraintSet().also {
             it.clone(context, currentConstraintSetId)
-            // in case shield is hidden, we will have glitch without this
-            it.getConstraint(R.id.composerShieldImageView).propertySet.visibility = views.composerShieldImageView.visibility
+//     in case shield is hidden, we will have glitch without this
+//            it.getConstraint(R.id.composerShieldImageView).propertySet.visibility = views.composerShieldImageView.visibility
             it.applyTo(this)
         }
     }
@@ -139,13 +137,13 @@ class TextComposerView @JvmOverloads constructor(
         TransitionManager.beginDelayedTransition((parent as? ViewGroup ?: this), transition)
     }
 
-    fun setRoomEncrypted(isEncrypted: Boolean, roomEncryptionTrustLevel: RoomEncryptionTrustLevel?) {
+    fun setRoomEncrypted(isEncrypted: Boolean) {
         if (isEncrypted) {
             views.composerEditText.setHint(R.string.room_message_placeholder)
-            views.composerShieldImageView.render(roomEncryptionTrustLevel)
+//            views.composerShieldImageView.render(roomEncryptionTrustLevel)
         } else {
             views.composerEditText.setHint(R.string.room_message_placeholder)
-            views.composerShieldImageView.render(null)
+//            views.composerShieldImageView.render(null)
         }
     }
 }

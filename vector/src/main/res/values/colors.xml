@@ -329,9 +329,9 @@
 
     <attr name="cy_chat_bg_send" format="color" />
     <color name="chat_bg_send_dark">#e2ffc7</color>
-    <color name="chat_bg_send_white">#056162</color>
+    <color name="chat_bg_send_white">#e2ffc7</color>
 
     <attr name="cy_chat_bg_receive" format="color" />
-    <color name="chat_bg_receive_dark">#fff</color>
-    <color name="chat_bg_receive_white">#262d31</color>
+    <color name="chat_bg_receive_dark">#E5E5E5</color>
+    <color name="chat_bg_receive_white">#E5E5E5</color>
 </resources>

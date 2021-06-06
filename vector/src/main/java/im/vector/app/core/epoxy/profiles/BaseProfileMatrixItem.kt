@@ -46,6 +46,6 @@ abstract class BaseProfileMatrixItem<T : ProfileMatrixItem.Holder> : VectorEpoxy
         holder.subtitleView.setTextOrHide(matrixId)
         holder.editableView.isVisible = editable
         avatarRenderer.render(matrixItem, holder.avatarImageView)
-        holder.avatarDecorationImageView.render(userEncryptionTrustLevel)
+//        holder.avatarDecorationImageView.render(userEncryptionTrustLevel)
     }
 }

@@ -40,7 +40,11 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnTest.setOnClickListener {
             RetrofitFactory.BASE_URL = "https://cyberiaqa-api.cioinfotech.com"
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
+        }
 
+        views.btnUat.setOnClickListener {
+            RetrofitFactory.BASE_URL = "https://cychat-ct.cioinfotech.com"
+            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
         }
     }
 }

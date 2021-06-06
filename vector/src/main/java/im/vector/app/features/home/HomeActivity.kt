@@ -135,9 +135,9 @@ class HomeActivity :
                 .observe()
                 .subscribe { sharedAction ->
                     when (sharedAction) {
-                        is HomeActivitySharedAction.OpenDrawer -> views.drawerLayout.openDrawer(GravityCompat.START)
+                        is HomeActivitySharedAction.OpenDrawer  -> views.drawerLayout.openDrawer(GravityCompat.START)
                         is HomeActivitySharedAction.CloseDrawer -> views.drawerLayout.closeDrawer(GravityCompat.START)
-                        is HomeActivitySharedAction.OpenGroup -> {
+                        is HomeActivitySharedAction.OpenGroup   -> {
                             views.drawerLayout.closeDrawer(GravityCompat.START)
                             replaceFragment(R.id.homeDetailFragmentContainer, HomeDetailFragment::class.java, allowStateLoss = true)
                         }
@@ -154,9 +154,9 @@ class HomeActivity :
         homeActivityViewModel.observeViewEvents {
             when (it) {
                 is HomeActivityViewEvents.AskPasswordToInitCrossSigning -> handleAskPasswordToInitCrossSigning(it)
-                is HomeActivityViewEvents.OnNewSession -> handleOnNewSession(it)
-                HomeActivityViewEvents.PromptToEnableSessionPush -> handlePromptToEnablePush()
-                is HomeActivityViewEvents.OnCrossSignedInvalidated -> handleCrossSigningInvalidated(it)
+                is HomeActivityViewEvents.OnNewSession                  -> handleOnNewSession(it)
+                HomeActivityViewEvents.PromptToEnableSessionPush        -> handlePromptToEnablePush()
+                is HomeActivityViewEvents.OnCrossSignedInvalidated      -> handleCrossSigningInvalidated(it)
             }.exhaustive
         }
         homeActivityViewModel.subscribe(this) { renderState(it) }
@@ -355,7 +355,7 @@ class HomeActivity :
 //            showDisclaimerDialog(this)
 //        }
 
-        // Force remote backup state update to update the banner if needed
+    // Force remote backup state update to update the banner if needed
 //        serverBackupStatusViewModel.refreshRemoteStateIfNeeded()
 //    }
 
@@ -373,15 +373,15 @@ class HomeActivity :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_home_suggestion -> {
+            R.id.menu_home_suggestion          -> {
                 bugReporter.openBugReportScreen(this, true)
                 return true
             }
-            R.id.menu_home_report_bug -> {
+            R.id.menu_home_report_bug          -> {
                 bugReporter.openBugReportScreen(this, false)
                 return true
             }
-            R.id.menu_home_init_sync_legacy -> {
+            R.id.menu_home_init_sync_legacy    -> {
                 // Configure the SDK
                 initialSyncStrategy = InitialSyncStrategy.Legacy
                 // And clear cache
@@ -395,11 +395,11 @@ class HomeActivity :
                 MainActivity.restartApp(this, MainActivityArgs(clearCache = true))
                 return true
             }
-            R.id.menu_home_filter -> {
+            R.id.menu_home_filter              -> {
                 navigator.openRoomsFiltering(this)
                 return true
             }
-            R.id.menu_home_setting -> {
+            R.id.menu_home_setting             -> {
                 navigator.openSettings(this)
                 return true
             }
@@ -444,5 +444,6 @@ class HomeActivity :
         private const val MATRIX_TO_CUSTOM_SCHEME_URL_BASE = "element://"
         private const val ROOM_LINK_PREFIX = "${MATRIX_TO_CUSTOM_SCHEME_URL_BASE}room/"
         private const val USER_LINK_PREFIX = "${MATRIX_TO_CUSTOM_SCHEME_URL_BASE}user/"
+        var isOneToOneChatOpen = false
     }
 }

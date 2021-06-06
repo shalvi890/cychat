@@ -19,6 +19,7 @@ package im.vector.app.core.date
 import android.content.Context
 import android.text.format.DateFormat
 import android.text.format.DateUtils
+import im.vector.app.R
 import im.vector.app.core.resources.DateProvider
 import im.vector.app.core.resources.LocaleProvider
 import im.vector.app.core.resources.toTimestamp
@@ -70,7 +71,8 @@ class VectorDateFormatter @Inject constructor(private val context: Context,
             )
             DateFormatKind.TIMELINE_DAY_DIVIDER  -> formatTimeOrDate(
                     date = localDateTime,
-                    alwaysShowYear = true
+                    alwaysShowYear = true,
+                    timeFormatterType = DateFormatKind.TIMELINE_DAY_DIVIDER
             )
             DateFormatKind.MESSAGE_DETAIL        -> formatFullDate(localDateTime)
             DateFormatKind.MESSAGE_SIMPLE        -> formatHour(localDateTime)
@@ -107,18 +109,19 @@ class VectorDateFormatter @Inject constructor(private val context: Context,
             showTimeIfSameDay: Boolean = false,
             useRelative: Boolean = false,
             alwaysShowYear: Boolean = false,
-            abbrev: Boolean = false
+            abbrev: Boolean = false,
+            timeFormatterType: DateFormatKind? = null
     ): String {
-        if (date == null) {
+        if (date == null)
             return ""
-        }
         val currentDate = DateProvider.currentLocalDateTime()
         val isSameDay = date.toLocalDate() == currentDate.toLocalDate()
-        return if (showTimeIfSameDay && isSameDay) {
+        return if (isSameDay && (timeFormatterType == DateFormatKind.TIMELINE_DAY_DIVIDER))
+            context.getString(R.string.today)
+        else if (showTimeIfSameDay && isSameDay)
             formatHour(date)
-        } else {
+        else
             formatDate(date, currentDate, alwaysShowYear, abbrev, useRelative)
-        }
     }
 
     private fun formatDate(

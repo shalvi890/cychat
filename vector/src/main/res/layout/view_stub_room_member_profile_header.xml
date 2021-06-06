@@ -30,14 +30,14 @@
             app:layout_constraintVertical_chainStyle="spread_inside"
             tools:src="@tools:sample/avatars" />
 
-        <im.vector.app.core.ui.views.ShieldImageView
-            android:id="@+id/memberProfileDecorationImageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:layout_constraintCircle="@+id/memberProfileAvatarView"
-            app:layout_constraintCircleAngle="135"
-            app:layout_constraintCircleRadius="64dp"
-            tools:ignore="MissingConstraints" />
+<!--        <im.vector.app.core.ui.views.ShieldImageView-->
+<!--            android:id="@+id/memberProfileDecorationImageView"-->
+<!--            android:layout_width="48dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            app:layout_constraintCircle="@+id/memberProfileAvatarView"-->
+<!--            app:layout_constraintCircleAngle="135"-->
+<!--            app:layout_constraintCircleRadius="64dp"-->
+<!--            tools:ignore="MissingConstraints" />-->
 
         <TextView
             android:id="@+id/memberProfileNameView"

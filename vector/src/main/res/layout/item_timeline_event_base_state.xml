@@ -70,15 +70,15 @@
     </FrameLayout>
 
 
-    <im.vector.app.core.ui.views.ShieldImageView
-        android:id="@+id/messageE2EDecoration"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignTop="@id/viewStubContainer"
-        android:layout_marginTop="4dp"
-        android:layout_toStartOf="@id/viewStubContainer"
-        android:visibility="gone"
-        tools:visibility="visible" />
+    <!--    <im.vector.app.core.ui.views.ShieldImageView-->
+    <!--        android:id="@+id/messageE2EDecoration"-->
+    <!--        android:layout_width="16dp"-->
+    <!--        android:layout_height="16dp"-->
+    <!--        android:layout_alignTop="@id/viewStubContainer"-->
+    <!--        android:layout_marginTop="4dp"-->
+    <!--        android:layout_toStartOf="@id/viewStubContainer"-->
+    <!--        android:visibility="gone"-->
+    <!--        tools:visibility="visible" />-->
 
     <ImageView
         android:id="@+id/messageFailToSendIndicator"
@@ -111,14 +111,12 @@
             app:flexWrap="wrap"
             app:showDivider="middle"
             tools:background="#F0E0F0"
-            tools:layout_height="40dp">
+            tools:layout_height="40dp" />
 
-            <!-- ReactionButtons will be added here in the code -->
-            <!--im.vector.app.features.reactions.widget.ReactionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" /-->
-
-        </com.google.android.flexbox.FlexboxLayout>
+        <!-- ReactionButtons will be added here in the code -->
+        <!--im.vector.app.features.reactions.widget.ReactionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" /-->
 
     </LinearLayout>
 

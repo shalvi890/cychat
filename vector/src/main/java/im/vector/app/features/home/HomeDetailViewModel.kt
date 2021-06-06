@@ -59,7 +59,7 @@ class HomeDetailViewModel @AssistedInject constructor(@Assisted initialState: Ho
 
     companion object : MvRxViewModelFactory<HomeDetailViewModel, HomeDetailViewState> {
 
-        override fun initialState(viewModelContext: ViewModelContext): HomeDetailViewState? {
+        override fun initialState(viewModelContext: ViewModelContext): HomeDetailViewState{
             val uiStateRepository = (viewModelContext.activity as HasScreenInjector).injector().uiStateRepository()
             return HomeDetailViewState(
                     displayMode = uiStateRepository.getDisplayMode()
@@ -67,7 +67,7 @@ class HomeDetailViewModel @AssistedInject constructor(@Assisted initialState: Ho
         }
 
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: HomeDetailViewState): HomeDetailViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: HomeDetailViewState): HomeDetailViewModel {
             val fragment: HomeDetailFragment = (viewModelContext as FragmentViewModelContext).fragment()
             return fragment.homeDetailViewModelFactory.create(state)
         }

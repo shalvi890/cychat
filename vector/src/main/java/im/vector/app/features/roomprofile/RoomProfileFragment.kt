@@ -98,8 +98,9 @@ class RoomProfileFragment @Inject constructor(
         appBarStateChangeListener = MatrixItemAppBarStateChangeListener(
                 headerView,
                 listOf(views.matrixProfileToolbarAvatarImageView,
-                        views.matrixProfileToolbarTitleView,
-                        views.matrixProfileDecorationToolbarAvatarImageView)
+                        views.matrixProfileToolbarTitleView)
+//                        ,
+//                        views.matrixProfileDecorationToolbarAvatarImageView)
         )
         views.matrixProfileAppBarLayout.addOnOffsetChangedListener(appBarStateChangeListener)
         roomProfileViewModel.observeViewEvents {
@@ -203,8 +204,8 @@ class RoomProfileFragment @Inject constructor(
                 val matrixItem = it.toMatrixItem()
                 avatarRenderer.render(matrixItem, headerViews.roomProfileAvatarView)
                 avatarRenderer.render(matrixItem, views.matrixProfileToolbarAvatarImageView)
-                headerViews.roomProfileDecorationImageView.render(it.roomEncryptionTrustLevel)
-                views.matrixProfileDecorationToolbarAvatarImageView.render(it.roomEncryptionTrustLevel)
+//                headerViews.roomProfileDecorationImageView.render(it.roomEncryptionTrustLevel)
+//                views.matrixProfileDecorationToolbarAvatarImageView.render(it.roomEncryptionTrustLevel)
             }
         }
         roomProfileController.setData(state)

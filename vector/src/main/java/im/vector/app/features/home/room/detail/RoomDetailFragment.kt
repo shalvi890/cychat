@@ -112,7 +112,6 @@ import im.vector.app.core.utils.saveMedia
 import im.vector.app.core.utils.shareMedia
 import im.vector.app.core.utils.shareText
 import im.vector.app.core.utils.toast
-import im.vector.app.databinding.DialogReportContentBinding
 import im.vector.app.databinding.FragmentRoomDetailBinding
 import im.vector.app.features.attachments.AttachmentTypeSelectorView
 import im.vector.app.features.attachments.AttachmentsHelper
@@ -175,7 +174,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.parcelize.Parcelize
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
@@ -1224,7 +1222,7 @@ class RoomDetailFragment @Inject constructor(
             if (state.tombstoneEvent == null) {
                 if (state.canSendMessage) {
                     views.composerLayout.visibility = View.VISIBLE
-                    views.composerLayout.setRoomEncrypted(summary.isEncrypted, summary.roomEncryptionTrustLevel)
+                    views.composerLayout.setRoomEncrypted(summary.isEncrypted)
                     views.notificationAreaView.render(NotificationAreaView.State.Hidden)
                 } else {
                     views.composerLayout.visibility = View.GONE
@@ -1253,7 +1251,7 @@ class RoomDetailFragment @Inject constructor(
             avatarRenderer.render(roomSummary.toMatrixItem(), views.roomToolbarAvatarImageView)
 
             renderSubTitle(typingMessage, roomSummary.topic)
-            views.roomToolbarDecorationImageView.render(roomSummary.roomEncryptionTrustLevel)
+//            views.roomToolbarDecorationImageView.render(roomSummary.roomEncryptionTrustLevel)
         }
     }
 
@@ -1738,72 +1736,72 @@ class RoomDetailFragment @Inject constructor(
 
     private fun handleActions(action: EventSharedAction) {
         when (action) {
-            is EventSharedAction.OpenUserProfile            -> {
+            is EventSharedAction.OpenUserProfile     -> {
                 openRoomMemberProfile(action.userId)
             }
-            is EventSharedAction.AddReaction                -> {
+            is EventSharedAction.AddReaction         -> {
                 emojiActivityResultLauncher.launch(EmojiReactionPickerActivity.intent(requireContext(), action.eventId))
             }
-            is EventSharedAction.ViewReactions              -> {
+            is EventSharedAction.ViewReactions       -> {
                 ViewReactionsBottomSheet.newInstance(roomDetailArgs.roomId, action.messageInformationData)
                         .show(requireActivity().supportFragmentManager, "DISPLAY_REACTIONS")
             }
-            is EventSharedAction.Copy                       -> {
+            is EventSharedAction.Copy                -> {
                 // I need info about the current selected message :/
                 copyToClipboard(requireContext(), action.content, false)
                 showSnackWithMessage(getString(R.string.copied_to_clipboard))
             }
-            is EventSharedAction.Redact                     -> {
+            is EventSharedAction.Redact              -> {
                 promptConfirmationToRedactEvent(action)
             }
-            is EventSharedAction.Share                      -> {
+            is EventSharedAction.Share               -> {
                 onShareActionClicked(action)
             }
-            is EventSharedAction.Save                       -> {
+            is EventSharedAction.Save                -> {
                 onSaveActionClicked(action)
             }
-            is EventSharedAction.ViewEditHistory            -> {
+            is EventSharedAction.ViewEditHistory     -> {
                 onEditedDecorationClicked(action.messageInformationData)
             }
-            is EventSharedAction.ViewSource                 -> {
+            is EventSharedAction.ViewSource          -> {
                 JSonViewerDialog.newInstance(
                         action.content,
                         -1,
                         createJSonViewerStyleProvider(colorProvider)
                 ).show(childFragmentManager, "JSON_VIEWER")
             }
-            is EventSharedAction.ViewDecryptedSource        -> {
+            is EventSharedAction.ViewDecryptedSource -> {
                 JSonViewerDialog.newInstance(
                         action.content,
                         -1,
                         createJSonViewerStyleProvider(colorProvider)
                 ).show(childFragmentManager, "JSON_VIEWER")
             }
-            is EventSharedAction.QuickReact                 -> {
+            is EventSharedAction.QuickReact          -> {
                 // eventId,ClickedOn,Add
                 roomDetailViewModel.handle(RoomDetailAction.UpdateQuickReactAction(action.eventId, action.clickedOn, action.add))
             }
-            is EventSharedAction.Edit                       -> {
+            is EventSharedAction.Edit                -> {
                 roomDetailViewModel.handle(RoomDetailAction.EnterEditMode(action.eventId, views.composerLayout.text.toString()))
             }
-            is EventSharedAction.Quote                      -> {
+            is EventSharedAction.Quote               -> {
                 roomDetailViewModel.handle(RoomDetailAction.EnterQuoteMode(action.eventId, views.composerLayout.text.toString()))
             }
-            is EventSharedAction.Reply                      -> {
+            is EventSharedAction.Reply               -> {
                 roomDetailViewModel.handle(RoomDetailAction.EnterReplyMode(action.eventId, views.composerLayout.text.toString()))
             }
-            is EventSharedAction.CopyPermalink              -> {
+            is EventSharedAction.CopyPermalink       -> {
                 val permalink = session.permalinkService().createPermalink(roomDetailArgs.roomId, action.eventId)
                 copyToClipboard(requireContext(), permalink, false)
                 showSnackWithMessage(getString(R.string.copied_to_clipboard))
             }
-            is EventSharedAction.Resend                     -> {
+            is EventSharedAction.Resend              -> {
                 roomDetailViewModel.handle(RoomDetailAction.ResendMessage(action.eventId))
             }
-            is EventSharedAction.Remove                     -> {
+            is EventSharedAction.Remove              -> {
                 roomDetailViewModel.handle(RoomDetailAction.RemoveFailedEcho(action.eventId))
             }
-            is EventSharedAction.Cancel                     -> {
+            is EventSharedAction.Cancel              -> {
                 handleCancelSend(action)
             }
 //            is EventSharedAction.ReportContentSpam          -> {
@@ -1820,16 +1818,16 @@ class RoomDetailFragment @Inject constructor(
 //            is EventSharedAction.IgnoreUser                 -> {
 //                action.senderId?.let { askConfirmationToIgnoreUser(it) }
 //            }
-            is EventSharedAction.OnUrlClicked               -> {
+            is EventSharedAction.OnUrlClicked        -> {
                 onUrlClicked(action.url, action.title)
             }
-            is EventSharedAction.OnUrlLongClicked           -> {
+            is EventSharedAction.OnUrlLongClicked    -> {
                 onUrlLongClicked(action.url)
             }
-            is EventSharedAction.ReRequestKey               -> {
+            is EventSharedAction.ReRequestKey        -> {
                 roomDetailViewModel.handle(RoomDetailAction.ReRequestKeys(action.eventId))
             }
-            is EventSharedAction.UseKeyBackup               -> {
+            is EventSharedAction.UseKeyBackup        -> {
                 context?.let {
                     startActivity(KeysBackupRestoreActivity.intent(it))
                 }

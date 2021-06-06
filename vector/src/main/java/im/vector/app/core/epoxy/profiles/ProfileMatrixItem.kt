@@ -32,7 +32,7 @@ abstract class ProfileMatrixItem : BaseProfileMatrixItem<ProfileMatrixItem.Holde
         val titleView by bind<TextView>(R.id.matrixItemTitle)
         val subtitleView by bind<TextView>(R.id.matrixItemSubtitle)
         val avatarImageView by bind<ImageView>(R.id.matrixItemAvatar)
-        val avatarDecorationImageView by bind<ShieldImageView>(R.id.matrixItemAvatarDecoration)
+//        val avatarDecorationImageView by bind<ShieldImageView>(R.id.matrixItemAvatarDecoration)
         val editableView by bind<View>(R.id.matrixItemEditable)
     }
 }
