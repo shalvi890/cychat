@@ -25,7 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import im.vector.app.R
@@ -40,13 +39,11 @@ import im.vector.app.core.resources.ColorProvider
 import im.vector.app.core.utils.toast
 import im.vector.app.databinding.FragmentRoomSettingGenericBinding
 import im.vector.app.features.home.AvatarRenderer
-import im.vector.app.features.roomprofile.RoomProfileArgs
 import im.vector.app.features.roomprofile.RoomProfileSharedActionViewModel
-import im.vector.app.features.roomprofile.settings.historyvisibility.RoomHistoryVisibilitySharedActionViewModel
 import im.vector.app.features.roomprofile.settings.historyvisibility.RoomHistoryVisibilityBottomSheet
+import im.vector.app.features.roomprofile.settings.historyvisibility.RoomHistoryVisibilitySharedActionViewModel
 import im.vector.app.features.roomprofile.settings.joinrule.RoomJoinRuleBottomSheet
 import im.vector.app.features.roomprofile.settings.joinrule.RoomJoinRuleSharedActionViewModel
-
 import org.matrix.android.sdk.api.util.toMatrixItem
 import java.util.UUID
 import javax.inject.Inject
@@ -67,7 +64,7 @@ class RoomSettingsFragment @Inject constructor(
     private lateinit var roomHistoryVisibilitySharedActionViewModel: RoomHistoryVisibilitySharedActionViewModel
     private lateinit var roomJoinRuleSharedActionViewModel: RoomJoinRuleSharedActionViewModel
 
-    private val roomProfileArgs: RoomProfileArgs by args()
+    //    private val roomProfileArgs: RoomProfileArgs by args()
     private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentRoomSettingGenericBinding {
@@ -86,7 +83,6 @@ class RoomSettingsFragment @Inject constructor(
         views.roomSettingsRecyclerView.configureWith(controller, hasFixedSize = true)
         views.waitingView.waitingStatusText.setText(R.string.please_wait)
         views.waitingView.waitingStatusText.isVisible = true
-
         viewModel.observeViewEvents {
             when (it) {
                 is RoomSettingsViewEvents.Failure -> showFailure(it.throwable)
@@ -174,7 +170,7 @@ class RoomSettingsFragment @Inject constructor(
                 .show(childFragmentManager, "RoomHistoryVisibilityBottomSheet")
     }
 
-    override fun onJoinRuleClicked()  = withState(viewModel) { state ->
+    override fun onJoinRuleClicked() = withState(viewModel) { state ->
         val currentJoinRule = state.newRoomJoinRules.newJoinRules ?: state.currentRoomJoinRules
         val currentGuestAccess = state.newRoomJoinRules.newGuestAccess ?: state.currentGuestAccess
         RoomJoinRuleBottomSheet.newInstance(currentJoinRule, currentGuestAccess)

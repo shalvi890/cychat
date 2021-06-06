@@ -124,16 +124,18 @@ class RoomProfileController @Inject constructor(
                 icon = R.drawable.ic_room_profile_notification,
                 action = { callback?.onNotificationsClicked() }
         )
-        val numberOfMembers = roomSummary.joinedMembersCount ?: 0
-        val hasWarning = roomSummary.isEncrypted && roomSummary.roomEncryptionTrustLevel == RoomEncryptionTrustLevel.Warning
-        buildProfileAction(
-                id = "member_list",
-                title = stringProvider.getQuantityString(R.plurals.room_profile_section_more_member_list, numberOfMembers, numberOfMembers),
-                dividerColor = dividerColor,
-                icon = R.drawable.ic_room_profile_member_list,
-                accessory = R.drawable.ic_shield_warning.takeIf { hasWarning } ?: 0,
-                action = { callback?.onMemberListClicked() }
-        )
+        if (!roomSummary.isDirect) {
+            val numberOfMembers = roomSummary.joinedMembersCount ?: 0
+            val hasWarning = roomSummary.isEncrypted && roomSummary.roomEncryptionTrustLevel == RoomEncryptionTrustLevel.Warning
+            buildProfileAction(
+                    id = "member_list",
+                    title = stringProvider.getQuantityString(R.plurals.room_profile_section_more_member_list, numberOfMembers, numberOfMembers),
+                    dividerColor = dividerColor,
+                    icon = R.drawable.ic_room_profile_member_list,
+                    accessory = R.drawable.ic_shield_warning.takeIf { hasWarning } ?: 0,
+                    action = { callback?.onMemberListClicked() }
+            )
+        }
 
         if (data.bannedMembership.invoke()?.isNotEmpty() == true) {
             buildProfileAction(
@@ -178,16 +180,16 @@ class RoomProfileController @Inject constructor(
 
         // Advanced
         buildProfileSection(stringProvider.getString(R.string.room_settings_category_advanced_title))
-
-        buildProfileAction(
-                id = "alias",
-                title = stringProvider.getString(R.string.room_settings_alias_title),
-                subtitle = stringProvider.getString(R.string.room_settings_alias_subtitle),
-                dividerColor = dividerColor,
-                divider = true,
-                editable = true,
-                action = { callback?.onRoomAliasesClicked() }
-        )
+        if (!roomSummary.isDirect)
+            buildProfileAction(
+                    id = "alias",
+                    title = stringProvider.getString(R.string.room_settings_alias_title),
+                    subtitle = stringProvider.getString(R.string.room_settings_alias_subtitle),
+                    dividerColor = dividerColor,
+                    divider = true,
+                    editable = true,
+                    action = { callback?.onRoomAliasesClicked() }
+            )
 
         buildProfileAction(
                 id = "permissions",

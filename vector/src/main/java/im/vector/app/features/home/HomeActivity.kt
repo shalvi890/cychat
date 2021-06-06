@@ -43,7 +43,6 @@ import im.vector.app.core.pushers.PushersManager
 import im.vector.app.databinding.ActivityHomeBinding
 import im.vector.app.features.MainActivity
 import im.vector.app.features.MainActivityArgs
-import im.vector.app.features.disclaimer.showDisclaimerDialog
 import im.vector.app.features.matrixto.MatrixToBottomSheet
 import im.vector.app.features.notifications.NotificationDrawerManager
 import im.vector.app.features.permalink.NavigationInterceptor
@@ -373,14 +372,14 @@ class HomeActivity :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_home_suggestion          -> {
-                bugReporter.openBugReportScreen(this, true)
-                return true
-            }
-            R.id.menu_home_report_bug          -> {
-                bugReporter.openBugReportScreen(this, false)
-                return true
-            }
+//            R.id.menu_home_suggestion          -> {
+//                bugReporter.openBugReportScreen(this, true)
+//                return true
+//            }
+//            R.id.menu_home_report_bug          -> {
+//                bugReporter.openBugReportScreen(this, false)
+//                return true
+//            }
             R.id.menu_home_init_sync_legacy    -> {
                 // Configure the SDK
                 initialSyncStrategy = InitialSyncStrategy.Legacy

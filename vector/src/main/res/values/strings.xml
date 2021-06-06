@@ -950,7 +950,7 @@
     <string name="ssl_only_accept">Only accept the certificate if the server administrator has published a fingerprint that matches the one above.</string>
 
     <!-- Room Permissions -->
-    <string name="room_settings_permissions_title">Room permissions</string>
+    <string name="room_settings_permissions_title">Permissions</string>
     <string name="room_settings_permissions_subtitle">View and update the roles required to change various parts of the room.</string>
 
     <string name="room_permissions_title">"Permissions"</string>
@@ -2645,7 +2645,7 @@
     </plurals>
     <string name="room_profile_section_more_uploads">Uploads</string>
     <string name="room_profile_section_more_leave">Leave Room</string>
-    <string name="direct_room_profile_section_more_leave">Leave</string>
+    <string name="direct_room_profile_section_more_leave">Delete Chat</string>
     <string name="room_profile_leaving_room">"Leaving the room…"</string>
 
     <string name="room_member_power_level_admins">Admins</string>

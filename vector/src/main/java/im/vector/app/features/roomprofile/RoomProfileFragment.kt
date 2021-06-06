@@ -45,6 +45,7 @@ import im.vector.app.core.utils.startSharePlainTextIntent
 import im.vector.app.databinding.FragmentMatrixProfileBinding
 import im.vector.app.databinding.ViewStubRoomProfileHeaderBinding
 import im.vector.app.features.home.AvatarRenderer
+import im.vector.app.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import im.vector.app.features.home.room.list.actions.RoomListActionsArgs
 import im.vector.app.features.home.room.list.actions.RoomListQuickActionsBottomSheet
 import im.vector.app.features.home.room.list.actions.RoomListQuickActionsSharedAction
@@ -153,12 +154,13 @@ class RoomProfileFragment @Inject constructor(
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.roomProfileShareAction -> {
-                roomProfileViewModel.handle(RoomProfileAction.ShareRoomProfile)
-                return true
+        if (!isOneToOneChatOpen)
+            when (item.itemId) {
+                R.id.roomProfileShareAction -> {
+                    roomProfileViewModel.handle(RoomProfileAction.ShareRoomProfile)
+                    return true
+                }
             }
-        }
         return super.onOptionsItemSelected(item)
     }
 

@@ -25,6 +25,7 @@ import im.vector.app.core.resources.StringProvider
 import im.vector.app.features.form.formEditTextItem
 import im.vector.app.features.form.formEditableAvatarItem
 import im.vector.app.features.home.AvatarRenderer
+import im.vector.app.features.home.HomeActivity
 import im.vector.app.features.home.room.detail.timeline.format.RoomHistoryVisibilityFormatter
 import org.matrix.android.sdk.api.session.room.model.GuestAccess
 import org.matrix.android.sdk.api.session.room.model.RoomJoinRules
@@ -61,7 +62,6 @@ class RoomSettingsController @Inject constructor(
 
         formEditableAvatarItem {
             id("avatar")
-            enabled(data.actionPermissions.canChangeAvatar)
             when (val avatarAction = data.avatarAction) {
                 RoomSettingsViewState.AvatarAction.None            -> {
                     // Use the current value
@@ -74,24 +74,30 @@ class RoomSettingsController @Inject constructor(
                 is RoomSettingsViewState.AvatarAction.UpdateAvatar ->
                     imageUri(avatarAction.newAvatarUri)
             }
-            clickListener { callback?.onAvatarChange() }
-            deleteListener { callback?.onAvatarDelete() }
+            if (HomeActivity.isOneToOneChatOpen)
+                enabled(false)
+            else {
+                enabled(data.actionPermissions.canChangeAvatar)
+                clickListener { callback?.onAvatarChange() }
+                deleteListener { callback?.onAvatarDelete() }
+            }
         }
 
         buildProfileSection(
                 stringProvider.getString(R.string.settings)
         )
 
-        formEditTextItem {
-            id("name")
-            enabled(data.actionPermissions.canChangeName)
-            value(data.newName ?: roomSummary.displayName)
-            hint(stringProvider.getString(R.string.room_settings_name_hint))
+        if (!HomeActivity.isOneToOneChatOpen)
+            formEditTextItem {
+                id("name")
+                enabled(data.actionPermissions.canChangeName)
+                value(data.newName ?: roomSummary.displayName)
+                hint(stringProvider.getString(R.string.room_settings_name_hint))
 
-            onTextChange { text ->
-                callback?.onNameChanged(text)
+                onTextChange { text ->
+                    callback?.onNameChanged(text)
+                }
             }
-        }
 
         formEditTextItem {
             id("topic")
@@ -103,26 +109,27 @@ class RoomSettingsController @Inject constructor(
                 callback?.onTopicChanged(text)
             }
         }
+        if (!HomeActivity.isOneToOneChatOpen) {
+            buildProfileAction(
+                    id = "historyReadability",
+                    title = stringProvider.getString(R.string.room_settings_room_read_history_rules_pref_title),
+                    subtitle = roomHistoryVisibilityFormatter.getSetting(data.newHistoryVisibility ?: data.currentHistoryVisibility),
+                    dividerColor = dividerColor,
+                    divider = true,
+                    editable = data.actionPermissions.canChangeHistoryVisibility,
+                    action = { if (data.actionPermissions.canChangeHistoryVisibility) callback?.onHistoryVisibilityClicked() }
+            )
 
-        buildProfileAction(
-                id = "historyReadability",
-                title = stringProvider.getString(R.string.room_settings_room_read_history_rules_pref_title),
-                subtitle = roomHistoryVisibilityFormatter.getSetting(data.newHistoryVisibility ?: data.currentHistoryVisibility),
-                dividerColor = dividerColor,
-                divider = true,
-                editable = data.actionPermissions.canChangeHistoryVisibility,
-                action = { if (data.actionPermissions.canChangeHistoryVisibility) callback?.onHistoryVisibilityClicked() }
-        )
-
-        buildProfileAction(
-                id = "joinRule",
-                title = stringProvider.getString(R.string.room_settings_room_access_title),
-                subtitle = data.getJoinRuleWording(),
-                dividerColor = dividerColor,
-                divider = false,
-                editable = data.actionPermissions.canChangeJoinRule,
-                action = { if (data.actionPermissions.canChangeJoinRule) callback?.onJoinRuleClicked() }
-        )
+            buildProfileAction(
+                    id = "joinRule",
+                    title = stringProvider.getString(R.string.room_settings_room_access_title),
+                    subtitle = data.getJoinRuleWording(),
+                    dividerColor = dividerColor,
+                    divider = false,
+                    editable = data.actionPermissions.canChangeJoinRule,
+                    action = { if (data.actionPermissions.canChangeJoinRule) callback?.onJoinRuleClicked() }
+            )
+        }
     }
 
     private fun RoomSettingsViewState.getJoinRuleWording(): String {

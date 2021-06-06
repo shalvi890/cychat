@@ -124,9 +124,7 @@ class RoomProfileViewModel @AssistedInject constructor(
         }.exhaustive
     }
 
-    fun isPublicRoom(): Boolean {
-        return room.isPublic()
-    }
+    fun isPublicRoom() = room.isPublic()
 
     private fun handleEnableEncryption() {
         postLoading(true)
