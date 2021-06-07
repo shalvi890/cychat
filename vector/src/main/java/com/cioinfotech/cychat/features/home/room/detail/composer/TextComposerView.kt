@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.text.toSpannable
+import androidx.core.widget.doOnTextChanged
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.Transition
@@ -45,6 +46,7 @@ class TextComposerView @JvmOverloads constructor(
         fun onCloseRelatedMessage()
         fun onSendMessage(text: CharSequence)
         fun onAddAttachment()
+        fun onSendAudio()
     }
 
     val views: ComposerLayoutBinding
@@ -54,7 +56,7 @@ class TextComposerView @JvmOverloads constructor(
     private var currentConstraintSetId: Int = -1
 
     private val animationDuration = 100L
-
+    private var isExpanded = false
     val text: Editable?
         get() = views.composerEditText.text
 
@@ -75,12 +77,24 @@ class TextComposerView @JvmOverloads constructor(
         }
 
         views.sendButton.setOnClickListener {
-            val textMessage = text?.toSpannable() ?: ""
-            callback?.onSendMessage(textMessage)
+            if (text.isNullOrEmpty() && !isExpanded) {
+                callback?.onSendAudio()
+            } else {
+                val textMessage = text?.toSpannable() ?: ""
+                callback?.onSendMessage(textMessage)
+            }
         }
 
         views.attachmentButton.setOnClickListener {
             callback?.onAddAttachment()
+        }
+
+        views.composerEditText.doOnTextChanged { text, _, _, _ ->
+            if (text.isNullOrEmpty() && !isExpanded) {
+                views.sendButton.setImageResource(R.drawable.ic_microphone)
+            } else {
+                views.sendButton.setImageResource(R.drawable.ic_send)
+            }
         }
     }
 
@@ -88,6 +102,12 @@ class TextComposerView @JvmOverloads constructor(
         if (currentConstraintSetId == R.layout.composer_layout_constraint_set_compact) {
             // ignore we good
             return
+        }
+        isExpanded = false
+        if (text.isNullOrEmpty()) {
+            views.sendButton.setImageResource(R.drawable.ic_microphone)
+        } else {
+            views.sendButton.setImageResource(R.drawable.ic_send)
         }
         currentConstraintSetId = R.layout.composer_layout_constraint_set_compact
         applyNewConstraintSet(animate, transitionComplete)
@@ -98,6 +118,8 @@ class TextComposerView @JvmOverloads constructor(
             // ignore we good
             return
         }
+        views.sendButton.setImageResource(R.drawable.ic_send)
+        isExpanded = true
         currentConstraintSetId = R.layout.composer_layout_constraint_set_expanded
         applyNewConstraintSet(animate, transitionComplete)
     }

@@ -178,27 +178,29 @@ class RoomProfileController @Inject constructor(
         )
 
         // Advanced
-        buildProfileSection(stringProvider.getString(R.string.room_settings_category_advanced_title))
-        if (!roomSummary.isDirect)
-            buildProfileAction(
-                    id = "alias",
-                    title = stringProvider.getString(R.string.room_settings_alias_title),
-                    subtitle = stringProvider.getString(R.string.room_settings_alias_subtitle),
-                    dividerColor = dividerColor,
-                    divider = true,
-                    editable = true,
-                    action = { callback?.onRoomAliasesClicked() }
-            )
+        if (!roomSummary.isDirect) {
+            buildProfileSection(stringProvider.getString(R.string.room_settings_category_advanced_title))
+            if (!roomSummary.isDirect)
+                buildProfileAction(
+                        id = "alias",
+                        title = stringProvider.getString(R.string.room_settings_alias_title),
+                        subtitle = stringProvider.getString(R.string.room_settings_alias_subtitle),
+                        dividerColor = dividerColor,
+                        divider = true,
+                        editable = true,
+                        action = { callback?.onRoomAliasesClicked() }
+                )
 
-        buildProfileAction(
-                id = "permissions",
-                title = stringProvider.getString(R.string.room_settings_permissions_title),
-                subtitle = stringProvider.getString(R.string.room_settings_permissions_subtitle),
-                dividerColor = dividerColor,
-                divider = false,
-                editable = true,
-                action = { callback?.onRoomPermissionsClicked() }
-        )
+            buildProfileAction(
+                    id = "permissions",
+                    title = stringProvider.getString(R.string.room_settings_permissions_title),
+                    subtitle = stringProvider.getString(R.string.room_settings_permissions_subtitle),
+                    dividerColor = dividerColor,
+                    divider = false,
+                    editable = true,
+                    action = { callback?.onRoomPermissionsClicked() }
+            )
+        }
 
         if (vectorPreferences.developerMode()) {
             buildProfileAction(

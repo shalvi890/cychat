@@ -67,7 +67,6 @@ import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
-import com.vanniktech.emoji.EmojiPopup
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.dialogs.ConfirmationDialogBuilder
 import com.cioinfotech.cychat.core.dialogs.GalleryOrCameraDialogHelper
@@ -168,6 +167,7 @@ import com.cioinfotech.cychat.features.widgets.permissions.RoomWidgetPermissionB
 import com.cioinfotech.lib.multipicker.entity.MultiPickerAudioType
 import com.jakewharton.rxbinding3.view.focusChanges
 import com.jakewharton.rxbinding3.widget.textChanges
+import com.vanniktech.emoji.EmojiPopup
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -1149,6 +1149,10 @@ class RoomDetailFragment @Inject constructor(
                 attachmentTypeSelector.show(views.composerLayout.views.attachmentButton, keyboardStateUtils.isKeyboardShowing)
             }
 
+            override fun onSendAudio() {
+                onTypeSelected(AttachmentTypeSelectorView.Type.RECORD)
+            }
+
             override fun onSendMessage(text: CharSequence) {
                 sendTextMessage(text)
             }
@@ -1232,7 +1236,7 @@ class RoomDetailFragment @Inject constructor(
                 views.composerLayout.visibility = View.GONE
                 views.notificationAreaView.render(NotificationAreaView.State.Tombstone(state.tombstoneEvent))
             }
-        } else if (summary?.membership == Membership.INVITE && inviter != null) {
+        } else if (summary?.membership == Membership.INVITE && inviter != null && !summary.isDirect) {
             views.inviteView.visibility = View.VISIBLE
             views.inviteView.render(inviter, VectorInviteView.Mode.LARGE, state.changeMembershipState)
             // Intercept click event

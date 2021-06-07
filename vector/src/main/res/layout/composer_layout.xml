@@ -135,7 +135,7 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_send"
         android:contentDescription="@string/send"
-        android:src="@drawable/ic_send"
+        android:src="@drawable/ic_microphone"
         tools:ignore="MissingConstraints" />
 
 </merge>

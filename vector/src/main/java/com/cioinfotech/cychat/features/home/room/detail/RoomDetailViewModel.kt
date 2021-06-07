@@ -39,6 +39,7 @@ import com.cioinfotech.cychat.features.command.ParsedCommand
 import com.cioinfotech.cychat.features.createdirect.DirectRoomHelper
 import com.cioinfotech.cychat.features.crypto.keysrequest.OutboundSessionKeySharingStrategy
 import com.cioinfotech.cychat.features.crypto.verification.SupportedVerificationMethodsProvider
+import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.home.room.detail.composer.rainbow.RainbowGenerator
 import com.cioinfotech.cychat.features.home.room.detail.sticker.StickerPickerActionHandler
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.RoomSummariesHolder
@@ -668,7 +669,7 @@ class RoomDetailViewModel @AssistedInject constructor(
         }
         when (itemId) {
             R.id.timeline_setting -> true
-            R.id.invite           -> state.canInvite
+            R.id.invite           -> state.canInvite && !HomeActivity.isOneToOneChatOpen
 //            R.id.open_matrix_apps -> true
             R.id.voice_call,
             R.id.video_call       -> callManager.getCallsByRoomId(state.roomId).isEmpty()
