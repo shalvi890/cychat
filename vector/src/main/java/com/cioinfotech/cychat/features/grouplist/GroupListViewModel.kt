@@ -117,8 +117,8 @@ class GroupListViewModel @AssistedInject constructor(@Assisted initialState: Gro
                                     membership = Membership.JOIN,
                                     displayName = stringProvider.getString(R.string.group_all_communities),
                                     avatarUrl = optionalUser.getOrNull()?.avatarUrl ?: "")
-                        },
-                session
+                        }
+                , session
                         .rx()
                         .liveGroupSummaries(groupSummariesQueryParams),
                 { allCommunityGroup, communityGroups ->

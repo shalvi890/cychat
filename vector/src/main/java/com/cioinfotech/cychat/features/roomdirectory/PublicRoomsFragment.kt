@@ -106,16 +106,16 @@ class PublicRoomsFragment @Inject constructor(
         super.onDestroyView()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_room_directory_change_protocol -> {
-                sharedActionViewModel.post(RoomDirectorySharedAction.ChangeProtocol)
-                true
-            }
-            else                                     ->
-                super.onOptionsItemSelected(item)
-        }
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.menu_room_directory_change_protocol -> {
+//                sharedActionViewModel.post(RoomDirectorySharedAction.ChangeProtocol)
+//                true
+//            }
+//            else                                     ->
+//                super.onOptionsItemSelected(item)
+//        }
+//    }
 
     private fun setupRecyclerView() {
         views.publicRoomsList.trackItemsVisibilityChange()
