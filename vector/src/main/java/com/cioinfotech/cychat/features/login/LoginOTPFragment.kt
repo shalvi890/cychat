@@ -81,7 +81,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     }
 
     private fun startCountDownForEmailOTP() {
-        var counter = 600
+        var counter = 300
         views.emailOTPTimer.isVisible = true
         views.btnResendEmailOTP.isEnabled = false
         object : CountDownTimer((counter * 1000).toLong(), 1000) {
@@ -115,7 +115,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     }
 
     private fun startCountDownForMobileOTP() {
-        var counter = 600
+        var counter = 300
         views.mobileOTPTimer.isVisible = true
         views.btnResendMobileOTP.isEnabled = false
         object : CountDownTimer((counter * 1000).toLong(), 1000) {
