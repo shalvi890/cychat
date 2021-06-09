@@ -26,13 +26,11 @@ import androidx.core.content.ContextCompat
 import com.airbnb.mvrx.activityViewModel
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
-import com.google.android.material.badge.BadgeDrawable
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.commitTransaction
 import com.cioinfotech.cychat.core.extensions.toMvRxBundle
 import com.cioinfotech.cychat.core.glide.GlideApp
 import com.cioinfotech.cychat.core.platform.ToolbarConfigurable
-import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.ui.views.CurrentCallsView
 import com.cioinfotech.cychat.core.ui.views.KeysBackupBanner
@@ -45,22 +43,18 @@ import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneCha
 import com.cioinfotech.cychat.features.home.room.list.RoomListFragment
 import com.cioinfotech.cychat.features.home.room.list.RoomListParams
 import com.cioinfotech.cychat.features.popup.PopupAlertManager
-import com.cioinfotech.cychat.features.popup.VerificationVectorAlert
 import com.cioinfotech.cychat.features.settings.VectorPreferences
-import com.cioinfotech.cychat.features.settings.VectorSettingsActivity.Companion.EXTRA_DIRECT_ACCESS_SECURITY_PRIVACY_MANAGE_SESSIONS
 import com.cioinfotech.cychat.features.themes.ThemeUtils
 import com.cioinfotech.cychat.features.workers.signout.BannerState
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewModel
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
-import org.matrix.android.sdk.api.session.group.model.GroupSummary
-import org.matrix.android.sdk.api.util.toMatrixItem
-import org.matrix.android.sdk.internal.crypto.model.rest.DeviceInfo
+import com.google.android.material.badge.BadgeDrawable
 import timber.log.Timber
 import javax.inject.Inject
 
-private const val INDEX_PEOPLE = 0
-private const val INDEX_ROOMS = 1
-private const val INDEX_CATCHUP = 2
+//private const val INDEX_PEOPLE = 0
+//private const val INDEX_ROOMS = 1
+//private const val INDEX_CATCHUP = 2
 
 class HomeDetailFragment @Inject constructor(
         val homeDetailViewModelFactory: HomeDetailViewModel.Factory,
@@ -75,7 +69,8 @@ class HomeDetailFragment @Inject constructor(
         ServerBackupStatusViewModel.Factory {
 
     private val viewModel: HomeDetailViewModel by fragmentViewModel()
-    private val unknownDeviceDetectorSharedViewModel: UnknownDeviceDetectorSharedViewModel by activityViewModel()
+
+    //    private val unknownDeviceDetectorSharedViewModel: UnknownDeviceDetectorSharedViewModel by activityViewModel()
     private val serverBackupStatusViewModel: ServerBackupStatusViewModel by activityViewModel()
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
@@ -117,6 +112,9 @@ class HomeDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         sharedActionViewModel = activityViewModelProvider.get(HomeSharedActionViewModel::class.java)
         sharedCallActionViewModel = activityViewModelProvider.get(SharedKnownCallsViewModel::class.java)
+// @TODO
+        avatarRenderer.render(GlideApp.with(requireActivity()), R.drawable.ic_government_logo, views.groupToolbarAvatarImageView)
+        views.groupToolbarTitleView.text = getString(R.string.cyberia)
 
         setupBottomNavigationView()
         setupToolbar()
@@ -128,9 +126,9 @@ class HomeDetailFragment @Inject constructor(
             views.bottomNavigationView.selectedItemId = it.displayMode.toMenuId()
         }
 
-        viewModel.selectSubscribe(this, HomeDetailViewState::groupSummary) { groupSummary ->
-            onGroupChange(groupSummary.orNull())
-        }
+//        viewModel.selectSubscribe(this, HomeDetailViewState::groupSummary) { groupSummary ->
+//            onGroupChange(groupSummary.orNull())
+//        }
         viewModel.selectSubscribe(this, HomeDetailViewState::displayMode) { displayMode ->
             switchDisplayMode(displayMode)
         }
@@ -180,33 +178,33 @@ class HomeDetailFragment @Inject constructor(
         }
     }
 
-    private fun promptForNewUnknownDevices(uid: String, state: UnknownDevicesState, newest: DeviceInfo) {
-        val user = state.myMatrixItem
-        alertManager.postVectorAlert(
-                VerificationVectorAlert(
-                        uid = uid,
-                        title = getString(R.string.new_session),
-                        description = getString(R.string.verify_this_session, newest.displayName ?: newest.deviceId ?: ""),
-                        iconId = R.drawable.ic_shield_warning
-                ).apply {
-                    viewBinder = VerificationVectorAlert.ViewBinder(user, avatarRenderer)
-                    colorInt = ContextCompat.getColor(requireActivity(), R.color.riotx_accent)
-                    contentAction = Runnable {
-                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)
-                                ?.navigator
-                                ?.requestSessionVerification(requireContext(), newest.deviceId ?: "")
-                        unknownDeviceDetectorSharedViewModel.handle(
-                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
-                        )
-                    }
-                    dismissedAction = Runnable {
-                        unknownDeviceDetectorSharedViewModel.handle(
-                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
-                        )
-                    }
-                }
-        )
-    }
+//    private fun promptForNewUnknownDevices(uid: String, state: UnknownDevicesState, newest: DeviceInfo) {
+//        val user = state.myMatrixItem
+//        alertManager.postVectorAlert(
+//                VerificationVectorAlert(
+//                        uid = uid,
+//                        title = getString(R.string.new_session),
+//                        description = getString(R.string.verify_this_session, newest.displayName ?: newest.deviceId ?: ""),
+//                        iconId = R.drawable.ic_shield_warning
+//                ).apply {
+//                    viewBinder = VerificationVectorAlert.ViewBinder(user, avatarRenderer)
+//                    colorInt = ContextCompat.getColor(requireActivity(), R.color.riotx_accent)
+//                    contentAction = Runnable {
+//                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)
+//                                ?.navigator
+//                                ?.requestSessionVerification(requireContext(), newest.deviceId ?: "")
+//                        unknownDeviceDetectorSharedViewModel.handle(
+//                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
+//                        )
+//                    }
+//                    dismissedAction = Runnable {
+//                        unknownDeviceDetectorSharedViewModel.handle(
+//                                UnknownDeviceDetectorSharedViewModel.Action.IgnoreDevice(newest.deviceId?.let { listOf(it) }.orEmpty())
+//                        )
+//                    }
+//                }
+//        )
+//    }
 
 //    private fun promptToReviewChanges(uid: String, state: UnknownDevicesState, oldUnverified: List<DeviceInfo>) {
 //        val user = state.myMatrixItem
@@ -237,12 +235,12 @@ class HomeDetailFragment @Inject constructor(
 //        )
 //    }
 
-    private fun onGroupChange(groupSummary: GroupSummary?) {
-        groupSummary?.let {
-            // Use GlideApp with activity context to avoid the glideRequests to be paused
-            avatarRenderer.render(it.toMatrixItem(), views.groupToolbarAvatarImageView, GlideApp.with(requireActivity()))
-        }
-    }
+//    private fun onGroupChange(groupSummary: GroupSummary?) {
+//        groupSummary?.let {
+    // Use GlideApp with activity context to avoid the glideRequests to be paused
+//            avatarRenderer.render(it.toMatrixItem(), views.groupToolbarAvatarImageView, GlideApp.with(requireActivity()))
+//        }
+//    }
 
     private fun setupKeysBackupBanner() {
         serverBackupStatusViewModel
@@ -302,7 +300,7 @@ class HomeDetailFragment @Inject constructor(
     }
 
     private fun switchDisplayMode(displayMode: RoomListDisplayMode) {
-        views.groupToolbarTitleView.setText(displayMode.titleRes)
+//        views.groupToolbarTitleView.setText(displayMode.titleRes)
         updateSelectedFragment(displayMode)
     }
 

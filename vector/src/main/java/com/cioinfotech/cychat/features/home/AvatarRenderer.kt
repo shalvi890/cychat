@@ -101,6 +101,15 @@ class AvatarRenderer @Inject constructor(private val activeSessionHolder: Active
                 .into(target)
     }
 
+    @UiThread
+    fun render(glideRequests: GlideRequests,
+               drawable: Int,
+               imageView: ImageView) {
+        buildGlideRequest(glideRequests, drawable)
+                .apply(RequestOptions.circleCropTransform())
+                .into(DrawableImageViewTarget(imageView))
+    }
+
     @AnyThread
     @Throws
     fun shortcutDrawable(glideRequests: GlideRequests, matrixItem: MatrixItem, iconSize: Int): Bitmap {
@@ -164,6 +173,10 @@ class AvatarRenderer @Inject constructor(private val activeSessionHolder: Active
     private fun buildGlideRequest(glideRequests: GlideRequests, avatarUrl: String?): GlideRequest<Drawable> {
         val resolvedUrl = resolvedUrl(avatarUrl)
         return glideRequests.load(resolvedUrl)
+    }
+
+    private fun buildGlideRequest(glideRequests: GlideRequests, avatarUrl: Int): GlideRequest<Drawable> {
+        return glideRequests.load(avatarUrl)
     }
 
     private fun resolvedUrl(avatarUrl: String?): String? {
