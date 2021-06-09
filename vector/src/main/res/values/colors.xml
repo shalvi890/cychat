@@ -333,5 +333,10 @@
 
     <attr name="cy_chat_bg_receive" format="color" />
     <color name="chat_bg_receive_dark">#FFFFFF</color>
-    <color name="chat_bg_receive_white">#F5F5F5</color>
+    <color name="chat_bg_receive_white">#FFFFFF</color>
+
+    <attr name="cy_chat_room_bg" format="color" />
+    <color name="cy_chat_room_bg_light">#ebe6db</color>
+    <color name="cy_chat_room_bg_dark">#FF181B21</color>
+    <color name="cy_chat_room_bg_black">#FF0D0F12</color>
 </resources>

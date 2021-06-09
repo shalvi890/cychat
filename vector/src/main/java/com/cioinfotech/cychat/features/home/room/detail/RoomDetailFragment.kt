@@ -811,6 +811,10 @@ class RoomDetailFragment @Inject constructor(
                 navigator.openRoomProfile(requireActivity(), roomDetailArgs.roomId)
                 true
             }
+            R.id.invite_from_orgs -> {
+                showDialogWithMessage(getString(R.string.feature_is_coming_soon))
+                true
+            }
 //            R.id.open_matrix_apps -> {
 //                roomDetailViewModel.handle(RoomDetailAction.ManageIntegrations)
 //                true

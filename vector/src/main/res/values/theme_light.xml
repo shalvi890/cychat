@@ -36,6 +36,7 @@
         <item name="riotx_background_text_field">@color/riotx_background_text_field_light</item>
         <item name="cy_chat_bg_receive">@color/chat_bg_receive_white</item>
         <item name="cy_chat_bg_send">@color/chat_bg_send_white</item>
+        <item name="cy_chat_room_bg">@color/cy_chat_room_bg_light</item>
 
         <!-- Material color: Note: this block should be the same in all theme because it references only common colors and ?riotx attributes -->
         <item name="colorPrimary">@color/riotx_accent</item>

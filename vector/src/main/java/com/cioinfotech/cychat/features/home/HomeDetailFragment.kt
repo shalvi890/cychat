@@ -86,21 +86,21 @@ class HomeDetailFragment @Inject constructor(
 
     override fun getMenuRes() = R.menu.room_list
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_home_mark_all_as_read -> {
-                viewModel.handle(HomeDetailAction.MarkAllRoomsRead)
-                return true
-            }
-        }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.menu_home_mark_all_as_read -> {
+//                viewModel.handle(HomeDetailAction.MarkAllRoomsRead)
+//                return true
+//            }
+//        }
+//
+//        return super.onOptionsItemSelected(item)
+//    }
 
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.menu_home_mark_all_as_read).isVisible = hasUnreadRooms
-        super.onPrepareOptionsMenu(menu)
-    }
+//    override fun onPrepareOptionsMenu(menu: Menu) {
+//        menu.findItem(R.id.menu_home_mark_all_as_read).isVisible = hasUnreadRooms
+//        super.onPrepareOptionsMenu(menu)
+//    }
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHomeDetailBinding {
         return FragmentHomeDetailBinding.inflate(inflater, container, false)

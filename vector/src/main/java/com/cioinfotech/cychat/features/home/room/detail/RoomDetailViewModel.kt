@@ -675,6 +675,7 @@ class RoomDetailViewModel @AssistedInject constructor(
             R.id.video_call       -> callManager.getCallsByRoomId(state.roomId).isEmpty()
             R.id.hangup_call      -> callManager.getCallsByRoomId(state.roomId).isNotEmpty()
             R.id.search           -> true
+            R.id.invite_from_orgs -> !HomeActivity.isOneToOneChatOpen
 //            R.id.dev_tools        -> vectorPreferences.developerMode()
             else                  -> false
         }

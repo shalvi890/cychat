@@ -48,6 +48,7 @@
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_advanced"
         android:title="@string/settings_advanced_settings"
+        app:isPreferenceVisible="false"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsAdvancedSettingsFragment" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference

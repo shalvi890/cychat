@@ -414,6 +414,7 @@
     <string name="send_anyway">Send Anyway</string>
     <string name="or">or</string>
     <string name="invite">Invite</string>
+    <string name="invite_from_other_organization">Invite From Other Organization</string>
     <string name="offline">Offline</string>
     <string name="accept">Accept</string>
     <string name="skip">Skip</string>
@@ -3285,4 +3286,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="uat">UAT</string>
+    <string name="feature_is_coming_soon">\"Invite From Other Organization\" feature is coming soon!</string>
 </resources>

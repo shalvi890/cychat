@@ -20,6 +20,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/invite_from_orgs"
+        android:title="@string/invite_from_other_organization"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/video_call"
         android:icon="@drawable/ic_video"
         android:title="@string/action_video_call"

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:addStatesFromChildren="true"
-    android:orientation="vertical"
     android:paddingStart="0dp"
     android:paddingEnd="4dp">
 
@@ -37,7 +36,7 @@
             android:paddingStart="4dp"
             android:paddingEnd="2dp"
             android:gravity="bottom"
-            android:textColor="?riotx_text_secondary_contrast"
+            android:textColor="?riotx_text_tertiary"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@id/messageSendStateImageView"
             app:layout_constraintHorizontal_bias="1"
@@ -52,6 +51,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
             android:contentDescription="@string/event_status_a11y_sending"
+            android:paddingEnd="4dp"
+            android:paddingStart="0dp"
             android:src="@drawable/ic_sending_message"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"

@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.home.room.detail.timeline.item
 
+import android.annotation.SuppressLint
 import android.text.method.MovementMethod
 import android.view.ViewGroup
 import android.widget.TextView
@@ -36,6 +37,7 @@ import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlU
 import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlView
 import com.cioinfotech.cychat.features.media.ImageContentRenderer
 
+@SuppressLint("NonConstantResourceId")
 @Suppress("DEPRECATION")
 @EpoxyModelClass(layout = R.layout.item_timeline_event_base)
 abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
@@ -62,7 +64,8 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
     var movementMethod: MovementMethod? = null
 
     private val previewUrlViewUpdater = PreviewUrlViewUpdater()
-    private val expandText = ""
+
+    //    private val expandText = ""
     override fun bind(holder: Holder) {
         // Preview URL
         previewUrlViewUpdater.previewUrlView = holder.previewUrlView

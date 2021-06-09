@@ -5,6 +5,7 @@
         android:id="@+id/roomProfileShareAction"
         android:icon="@drawable/ic_material_share"
         android:title="@string/share"
+        android:visible="false"
         app:iconTint="?attr/riotx_text_secondary"
         app:showAsAction="ifRoom" />
 </menu>

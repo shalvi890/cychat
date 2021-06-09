@@ -73,7 +73,7 @@ class GroupListFragment @Inject constructor(
             is Incomplete -> views.stateView.state = StateView.State.Loading
             is Success    -> views.stateView.state = StateView.State.Content
         }
-        groupController.update(state)
+//        groupController.update(state)
     }
 
     override fun onGroupSelected(groupSummary: GroupSummary) {

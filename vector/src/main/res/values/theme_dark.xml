@@ -45,6 +45,7 @@
         <item name="colorOnSurface">#212121</item-->
         <item name="android:colorBackground">?riotx_background</item>
         <item name="colorOnBackground">?riotx_text_primary</item>
+        <item name="cy_chat_room_bg">@color/cy_chat_room_bg_dark</item>
 
         <item name="riotx_bottom_sheet_background">@color/riotx_bottom_sheet_background_dark</item>
 

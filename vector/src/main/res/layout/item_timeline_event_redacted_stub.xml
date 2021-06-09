@@ -2,8 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/clRedacted"
     android:layout_width="match_parent"
-    android:paddingEnd="4dp"
-    android:paddingStart="0dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -12,11 +10,13 @@
         android:layout_height="wrap_content"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
+        android:paddingStart="0dp"
+        android:paddingEnd="12dp"
         android:text="@string/event_redacted"
-        android:textColor="@color/emoji_gray70"
+        android:textColor="?riotx_text_tertiary"
         android:textSize="14sp"
         app:drawableStartCompat="@drawable/ic_trash_16"
-        app:drawableTint="@color/emoji_gray70"
+        app:drawableTint="?riotx_text_tertiary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"

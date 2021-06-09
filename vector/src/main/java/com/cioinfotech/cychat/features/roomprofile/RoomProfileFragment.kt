@@ -81,7 +81,7 @@ class RoomProfileFragment @Inject constructor(
         return FragmentMatrixProfileBinding.inflate(inflater, container, false)
     }
 
-    override fun getMenuRes() = R.menu.vector_room_profile
+//    override fun getMenuRes() = R.menu.vector_room_profile
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
