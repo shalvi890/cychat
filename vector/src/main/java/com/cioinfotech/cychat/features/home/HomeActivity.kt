@@ -40,6 +40,7 @@ import com.cioinfotech.cychat.core.extensions.replaceFragment
 import com.cioinfotech.cychat.core.platform.ToolbarConfigurable
 import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.core.pushers.PushersManager
+import com.cioinfotech.cychat.databinding.ActivityHomeBinding
 import com.cioinfotech.cychat.features.MainActivity
 import com.cioinfotech.cychat.features.MainActivityArgs
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
@@ -56,7 +57,6 @@ import com.cioinfotech.cychat.features.themes.ThemeUtils
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewModel
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.cioinfotech.cychat.push.fcm.FcmHelper
-import com.cioinfotech.cychat.databinding.ActivityHomeBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
@@ -85,7 +85,7 @@ class HomeActivity :
     private val homeActivityViewModel: HomeActivityViewModel by viewModel()
     @Inject lateinit var viewModelFactory: HomeActivityViewModel.Factory
 
-    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by viewModel()
+    //    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by viewModel()
     @Inject lateinit var serverBackupviewModelFactory: ServerBackupStatusViewModel.Factory
 
     @Inject lateinit var activeSessionHolder: ActiveSessionHolder
@@ -124,7 +124,7 @@ class HomeActivity :
         super.onCreate(savedInstanceState)
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
-        views.drawerLayout.addDrawerListener(drawerListener)
+//        views.drawerLayout.addDrawerListener(drawerListener)
         if (isFirstCreation()) {
             replaceFragment(R.id.homeDetailFragmentContainer, LoadingFragment::class.java)
             replaceFragment(R.id.homeDrawerFragmentContainer, HomeDrawerFragment::class.java)
@@ -134,12 +134,13 @@ class HomeActivity :
                 .observe()
                 .subscribe { sharedAction ->
                     when (sharedAction) {
-                        is HomeActivitySharedAction.OpenDrawer  -> views.drawerLayout.openDrawer(GravityCompat.START)
-                        is HomeActivitySharedAction.CloseDrawer -> views.drawerLayout.closeDrawer(GravityCompat.START)
-                        is HomeActivitySharedAction.OpenGroup   -> {
+//                        is HomeActivitySharedAction.OpenDrawer  -> views.drawerLayout.openDrawer(GravityCompat.START)
+//                        is HomeActivitySharedAction.CloseDrawer -> views.drawerLayout.closeDrawer(GravityCompat.START)
+                        is HomeActivitySharedAction.OpenGroup -> {
                             views.drawerLayout.closeDrawer(GravityCompat.START)
                             replaceFragment(R.id.homeDetailFragmentContainer, HomeDetailFragment::class.java, allowStateLoss = true)
                         }
+                        else                                  -> null
                     }.exhaustive
                 }
                 .disposeOnDestroy()

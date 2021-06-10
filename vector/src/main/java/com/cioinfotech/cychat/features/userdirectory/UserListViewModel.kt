@@ -121,7 +121,7 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .switchMapSingle { search ->
                     val stream = if (search.isBlank()) {
-                        Single.just(emptyList<User>())
+                        Single.just(emptyList())
                     } else {
                         val searchObservable = session.rx()
                                 .searchUsersDirectory(search, 50, state.excludedUserIds ?: emptySet())

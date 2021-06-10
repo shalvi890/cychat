@@ -5,23 +5,25 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="?riotx_list_bottom_sheet_divider_color" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0.5dp"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:background="?cy_chat_bg_receive" />-->
 
     <TextView
         android:id="@+id/itemDayTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="?android:attr/windowBackground"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:textColor="?riotx_header_panel_text_secondary"
+        android:background="@drawable/bg_date"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/black"
         android:textSize="15sp"
         tools:text="@tools:sample/date/day_of_week" />
 
