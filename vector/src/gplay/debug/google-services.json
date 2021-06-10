@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:446109509332:android:42701b472f824f05c5fd41",
         "android_client_info": {
-          "package_name": "com.cioinfotech.cychat"
+          "package_name": "com.cioinfotech.cychat.debug"
         }
       },
       "oauth_client": [
