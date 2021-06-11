@@ -30,8 +30,8 @@ import com.airbnb.mvrx.activityViewModel
 import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
-import com.google.android.material.chip.Chip
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.extensions.cleanup
 import com.cioinfotech.cychat.core.extensions.configureWith
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
@@ -41,9 +41,12 @@ import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.core.utils.startSharePlainTextIntent
 import com.cioinfotech.cychat.databinding.FragmentUserListBinding
 import com.cioinfotech.cychat.features.homeserver.HomeServerCapabilitiesViewModel
+import com.google.android.material.chip.Chip
 import com.jakewharton.rxbinding3.widget.textChanges
-
 import org.matrix.android.sdk.api.session.identity.ThreePid
+import org.matrix.android.sdk.api.session.room.model.Membership
+import org.matrix.android.sdk.api.session.room.model.RoomSummary
+import org.matrix.android.sdk.api.session.room.roomSummaryQueryParams
 import org.matrix.android.sdk.api.session.user.model.User
 import javax.inject.Inject
 
@@ -53,12 +56,13 @@ class UserListFragment @Inject constructor(
         val homeServerCapabilitiesViewModelFactory: HomeServerCapabilitiesViewModel.Factory
 ) : VectorBaseFragment<FragmentUserListBinding>(),
         UserListController.Callback {
+    @Inject lateinit var sessionHolder: ActiveSessionHolder
 
     private val args: UserListFragmentArgs by args()
     private val viewModel: UserListViewModel by activityViewModel()
     private val homeServerCapabilitiesViewModel: HomeServerCapabilitiesViewModel by fragmentViewModel()
     private lateinit var sharedActionViewModel: UserListSharedActionViewModel
-
+    private var roomList: List<RoomSummary> = mutableListOf()
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentUserListBinding {
         return FragmentUserListBinding.inflate(inflater, container, false)
     }
@@ -67,6 +71,12 @@ class UserListFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (::sessionHolder.isInitialized)
+            sessionHolder.getSafeActiveSession()?.getRoomSummaries(roomSummaryQueryParams {
+                memberships = Membership.activeMemberships()
+            })?.let {
+                roomList = it
+            }
         sharedActionViewModel = activityViewModelProvider.get(UserListSharedActionViewModel::class.java)
         if (args.showToolbar) {
             views.userListTitle.text = args.title
@@ -204,7 +214,17 @@ class UserListFragment @Inject constructor(
 
     override fun onItemClick(user: User) {
         view?.hideKeyboard()
-        viewModel.handle(UserListAction.AddPendingSelection(PendingSelection.UserPendingSelection(user)))
+        var selectedRoom: RoomSummary? = null
+        for (roomSummary in roomList) {
+            if (roomSummary.isDirect && roomSummary.otherMemberIds.size == 1 && roomSummary.otherMemberIds[0] == user.userId) {
+                selectedRoom = roomSummary
+                break
+            }
+        }
+        if (selectedRoom != null)
+            navigator.openRoom(requireActivity(), selectedRoom.roomId)
+        else
+            viewModel.handle(UserListAction.AddPendingSelection(PendingSelection.UserPendingSelection(user)))
     }
 
     override fun onMatrixIdClick(matrixId: String) {
