@@ -157,3 +157,14 @@ fun PublicRoom.toMatrixItem() = MatrixItem.RoomItem(roomId, name ?: getPrimaryAl
 fun RoomMemberSummary.toMatrixItem() = MatrixItem.UserItem(userId, displayName, avatarUrl)
 
 fun SenderInfo.toMatrixItem() = MatrixItem.UserItem(userId, disambiguatedDisplayName, avatarUrl)
+
+// Code For converting matrix id to normal email
+fun String.toNormalEmail(): String {
+    return try {
+        this.substring(1, this.lastIndexOf(":")).replace(Regex("-at-"), "@")
+    } catch (ex: Exception) {
+        this
+    }
+}
+
+fun RoomMemberSummary.toMatrixItemWithNormalEmail() = MatrixItem.UserItem(userId.toNormalEmail(), displayName, avatarUrl)

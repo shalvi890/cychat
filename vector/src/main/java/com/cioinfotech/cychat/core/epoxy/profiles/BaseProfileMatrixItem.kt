@@ -24,6 +24,7 @@ import com.cioinfotech.cychat.core.extensions.setTextOrHide
 import com.cioinfotech.cychat.features.home.AvatarRenderer
 import org.matrix.android.sdk.api.crypto.RoomEncryptionTrustLevel
 import org.matrix.android.sdk.api.util.MatrixItem
+import org.matrix.android.sdk.api.util.toNormalEmail
 
 abstract class BaseProfileMatrixItem<T : ProfileMatrixItem.Holder> : VectorEpoxyModel<T>() {
     @EpoxyAttribute lateinit var avatarRenderer: AvatarRenderer
@@ -43,7 +44,7 @@ abstract class BaseProfileMatrixItem<T : ProfileMatrixItem.Holder> : VectorEpoxy
                 .takeIf { it != "@" }
         holder.view.setOnClickListener(clickListener?.takeIf { editable })
         holder.titleView.text = bestName
-        holder.subtitleView.setTextOrHide(matrixId)
+        holder.subtitleView.setTextOrHide(matrixId?.toNormalEmail())
         holder.editableView.isVisible = editable
         avatarRenderer.render(matrixItem, holder.avatarImageView)
 //        holder.avatarDecorationImageView.render(userEncryptionTrustLevel)

@@ -28,6 +28,7 @@ import com.cioinfotech.cychat.core.epoxy.VectorEpoxyHolder
 import com.cioinfotech.cychat.core.epoxy.VectorEpoxyModel
 import com.cioinfotech.cychat.features.home.AvatarRenderer
 import org.matrix.android.sdk.api.util.MatrixItem
+import org.matrix.android.sdk.api.util.toNormalEmail
 
 @EpoxyModelClass(layout = R.layout.item_known_user)
 abstract class UserDirectoryUserItem : VectorEpoxyModel<UserDirectoryUserItem.Holder>() {
@@ -43,11 +44,11 @@ abstract class UserDirectoryUserItem : VectorEpoxyModel<UserDirectoryUserItem.Ho
         // If name is empty, use userId as name and force it being centered
         if (matrixItem.displayName.isNullOrEmpty()) {
             holder.userIdView.visibility = View.GONE
-            holder.nameView.text = matrixItem.id
+            holder.nameView.text = matrixItem.id.toNormalEmail()
         } else {
             holder.userIdView.visibility = View.VISIBLE
             holder.nameView.text = matrixItem.displayName
-            holder.userIdView.text = matrixItem.id.substring(1, matrixItem.id.lastIndexOf(":")).replace(Regex("-at-"), "@")
+            holder.userIdView.text = matrixItem.id.toNormalEmail()
         }
         renderSelection(holder, selected)
     }

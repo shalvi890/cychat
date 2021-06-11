@@ -53,6 +53,7 @@ import com.cioinfotech.cychat.features.roommemberprofile.powerlevel.EditPowerLev
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.session.room.powerlevels.Role
 import org.matrix.android.sdk.api.util.MatrixItem
+import org.matrix.android.sdk.api.util.toNormalEmail
 import javax.inject.Inject
 
 @Parcelize
@@ -142,15 +143,15 @@ class RoomMemberProfileFragment @Inject constructor(
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.roomMemberProfileShareAction -> {
-                viewModel.handle(RoomMemberProfileAction.ShareRoomMemberProfile)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.roomMemberProfileShareAction -> {
+//                viewModel.handle(RoomMemberProfileAction.ShareRoomMemberProfile)
+//                return true
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     private fun handleStartVerification(startVerification: RoomMemberProfileViewEvents.StartVerification) {
         if (startVerification.canCrossSign) {
@@ -195,7 +196,7 @@ class RoomMemberProfileFragment @Inject constructor(
             is Success    -> {
                 val userMatrixItem = asyncUserMatrixItem()
                 headerViews.memberProfileStateView.state = StateView.State.Content
-                headerViews.memberProfileIdView.text = userMatrixItem.id
+                headerViews.memberProfileIdView.text = userMatrixItem.id.toNormalEmail()
                 val bestName = userMatrixItem.getBestName()
                 headerViews.memberProfileNameView.text = bestName
                 views.matrixProfileToolbarTitleView.text = bestName

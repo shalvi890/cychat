@@ -15,7 +15,6 @@
         android:text="@string/event_redacted"
         android:textColor="?riotx_text_tertiary"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:drawableStartCompat="@drawable/ic_trash_16"
         app:drawableTint="?riotx_text_tertiary"
         app:layout_constraintEnd_toEndOf="parent"

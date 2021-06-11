@@ -32,6 +32,7 @@ import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.identity.ThreePid
 import org.matrix.android.sdk.api.session.user.model.User
 import org.matrix.android.sdk.api.util.toMatrixItem
+import org.matrix.android.sdk.api.util.toNormalEmail
 import javax.inject.Inject
 
 class UserListController @Inject constructor(private val session: Session,
@@ -150,7 +151,7 @@ class UserListController @Inject constructor(private val session: Session,
                 if (user.userId != session.myUserId) {
                     val isSelected = selectedUsers.contains(user.userId)
                     userDirectoryUserItem {
-                        id(user.userId)
+                        id(user.userId.toNormalEmail())
                         selected(isSelected)
                         matrixItem(user.toMatrixItem())
                         avatarRenderer(avatarRenderer)
