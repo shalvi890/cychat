@@ -1,3 +1,5 @@
+import com.android.build.OutputFile
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'kotlin-android'
@@ -12,7 +14,7 @@ kapt {
 // Note: 2 digits max for each value
 ext.versionMajor = 0
 ext.versionMinor = 0
-ext.versionPatch = 11
+ext.versionPatch = 12
 //
 //static def getGitTimestamp() {
 //    def cmd = 'git show -s --format=%ct'
@@ -100,6 +102,14 @@ ext.abiVersionCodes = ["armeabi-v7a": 1, "arm64-v8a": 2, "x86": 3, "x86_64": 4].
 //def buildNumber = System.env.BUILDKITE_BUILD_NUMBER as Integer ?: 0
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\tejab\\Documents\\cychat.jks')
+            storePassword 'Qwerty@12345'
+            keyPassword 'Qwerty@12345'
+            keyAlias 'key'
+        }
+    }
     compileSdkVersion 30
 
     // Due to a bug introduced in Android gradle plugin 3.6.0, we have to specify the ndk version to use
@@ -165,17 +175,17 @@ android {
             }
         }
 
-//        applicationVariants.all { variant ->
-//            // assign different version code for each output
-//            def baseVariantVersion = variant.versionCode * 10
-//            variant.outputs.each { output ->
-//                def baseAbiVersionCode = project.ext.abiVersionCodes.get(output.getFilter(OutputFile.ABI))
-//                // Known limitation: it does not modify the value in the BuildConfig.java generated file
-//                // See https://issuetracker.google.com/issues/171133218
-//                output.versionCodeOverride = baseVariantVersion + baseAbiVersionCode
-//                print "ABI " + output.getFilter(OutputFile.ABI) + " \t-> VersionCode = " + output.versionCodeOverride + "\n"
-//            }
-//        }
+        applicationVariants.all { variant ->
+            // assign different version code for each output
+            def baseVariantVersion = variant.versionCode * 20
+            variant.outputs.each { output ->
+                def baseAbiVersionCode = project.ext.abiVersionCodes.get(output.getFilter(OutputFile.ABI))
+                // Known limitation: it does not modify the value in the BuildConfig.java generated file
+                // See https://issuetracker.google.com/issues/171133218
+                output.versionCodeOverride = baseVariantVersion + baseAbiVersionCode
+                print "ABI " + output.getFilter(OutputFile.ABI) + " \t-> VersionCode = " + output.versionCodeOverride + "\n"
+            }
+        }
 
         // The following argument makes the Android Test Orchestrator run its
         // "pm clear" command after each test invocation. This command ensures
@@ -221,8 +231,8 @@ android {
             buildConfigField "boolean", "ENABLE_STRICT_MODE_LOGS", "false"
 
             postprocessing {
-                removeUnusedCode true
-                removeUnusedResources true
+                removeUnusedCode false
+                removeUnusedResources false
                 // We do not activate obfuscation as it makes it hard then to read crash reports, and it's a bit useless on an open source project :)
                 obfuscate false
                 optimizeCode true
@@ -249,7 +259,7 @@ android {
     lintOptions {
         lintConfig file("lint.xml")
 
-        abortOnError true
+        abortOnError false
     }
 
     compileOptions {
