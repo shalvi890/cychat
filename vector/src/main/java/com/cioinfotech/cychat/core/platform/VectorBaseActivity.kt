@@ -79,7 +79,6 @@ import com.cioinfotech.cychat.features.settings.FontScale
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.themes.ActivityOtherThemes
 import com.cioinfotech.cychat.features.themes.ThemeUtils
-import com.cioinfotech.cychat.receivers.DebugReceiver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -150,9 +149,6 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
     private var mainActivityStarted = false
 
     private var savedInstanceState: Bundle? = null
-
-    // For debug only
-    private var debugReceiver: DebugReceiver? = null
 
     private val uiDisposables = CompositeDisposable()
     private val restorables = ArrayList<Restorable>()
@@ -345,13 +341,6 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
         if (this !is BugReportActivity && vectorPreferences.useRageshake()) {
             rageShake.start()
         }
-        DebugReceiver
-                .getIntentFilter(this)
-                .takeIf { BuildConfig.DEBUG }
-                ?.let {
-                    debugReceiver = DebugReceiver()
-                    registerReceiver(debugReceiver, it)
-                }
     }
 
     private val postResumeScheduledActions = mutableListOf<() -> Unit>()
@@ -382,10 +371,6 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
 
         rageShake.stop()
 
-        debugReceiver?.let {
-            unregisterReceiver(debugReceiver)
-            debugReceiver = null
-        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

@@ -44,7 +44,6 @@ import com.cioinfotech.cychat.features.crypto.recover.BootstrapBottomSheet
 import com.cioinfotech.cychat.features.crypto.recover.SetupMode
 import com.cioinfotech.cychat.features.crypto.verification.SupportedVerificationMethodsProvider
 import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomSheet
-import com.cioinfotech.cychat.features.debug.DebugMenuActivity
 import com.cioinfotech.cychat.features.devtools.RoomDevToolActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailArgs
@@ -225,10 +224,6 @@ class DefaultNavigator @Inject constructor(
     override fun openSettings(context: Context, directAccess: Int) {
         val intent = VectorSettingsActivity.getIntent(context, directAccess)
         context.startActivity(intent)
-    }
-
-    override fun openDebug(context: Context) {
-        context.startActivity(Intent(context, DebugMenuActivity::class.java))
     }
 
     override fun openKeysBackupSetup(context: Context, showManualExport: Boolean) {

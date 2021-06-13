@@ -35,7 +35,6 @@ import com.cioinfotech.cychat.features.crypto.keysbackup.settings.KeysBackupMana
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageActivity
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapBottomSheet
 import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomSheet
-import com.cioinfotech.cychat.features.debug.DebugMenuActivity
 import com.cioinfotech.cychat.features.devtools.RoomDevToolActivity
 import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.home.HomeModule
@@ -137,7 +136,6 @@ interface ScreenComponent {
     fun inject(activity: SoftLogoutActivity)
     fun inject(activity: PermalinkHandlerActivity)
     fun inject(activity: QrCodeScannerActivity)
-    fun inject(activity: DebugMenuActivity)
     fun inject(activity: SharedSecureStorageActivity)
     fun inject(activity: BigImageViewerActivity)
     fun inject(activity: InviteUsersToRoomActivity)

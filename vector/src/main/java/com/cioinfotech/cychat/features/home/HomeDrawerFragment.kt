@@ -22,8 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.isVisible
-import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.observeK
 import com.cioinfotech.cychat.core.extensions.replaceChildFragment
@@ -35,7 +33,6 @@ import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.settings.VectorSettingsActivity
 import com.cioinfotech.cychat.features.usercode.UserCodeActivity
 import com.cioinfotech.cychat.features.workers.signout.SignOutUiWorker
-
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.util.toMatrixItem
 import javax.inject.Inject
@@ -108,13 +105,6 @@ class HomeDrawerFragment @Inject constructor(
                         extraTitle = getString(R.string.invite_friends_rich_title)
                 )
             }
-        }
-
-        // Debug menu
-        views.homeDrawerHeaderDebugView.isVisible = BuildConfig.DEBUG && vectorPreferences.developerMode()
-        views.homeDrawerHeaderDebugView.debouncedClicks {
-            sharedActionViewModel.post(HomeActivitySharedAction.CloseDrawer)
-            navigator.openDebug(requireActivity())
         }
     }
 }
