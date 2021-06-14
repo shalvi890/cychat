@@ -40,6 +40,7 @@ import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.core.utils.startSharePlainTextIntent
 import com.cioinfotech.cychat.databinding.FragmentUserListBinding
+import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.homeserver.HomeServerCapabilitiesViewModel
 import com.google.android.material.chip.Chip
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -56,13 +57,13 @@ class UserListFragment @Inject constructor(
         val homeServerCapabilitiesViewModelFactory: HomeServerCapabilitiesViewModel.Factory
 ) : VectorBaseFragment<FragmentUserListBinding>(),
         UserListController.Callback {
+    private var roomList = listOf<RoomSummary>()
     @Inject lateinit var sessionHolder: ActiveSessionHolder
 
     private val args: UserListFragmentArgs by args()
     private val viewModel: UserListViewModel by activityViewModel()
     private val homeServerCapabilitiesViewModel: HomeServerCapabilitiesViewModel by fragmentViewModel()
     private lateinit var sharedActionViewModel: UserListSharedActionViewModel
-    private var roomList: List<RoomSummary> = mutableListOf()
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentUserListBinding {
         return FragmentUserListBinding.inflate(inflater, container, false)
     }
@@ -71,7 +72,7 @@ class UserListFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (::sessionHolder.isInitialized)
+        if (isOneToOneChatOpen && ::sessionHolder.isInitialized)
             sessionHolder.getSafeActiveSession()?.getRoomSummaries(roomSummaryQueryParams {
                 memberships = Membership.activeMemberships()
             })?.let {
@@ -214,16 +215,21 @@ class UserListFragment @Inject constructor(
 
     override fun onItemClick(user: User) {
         view?.hideKeyboard()
-        var selectedRoom: RoomSummary? = null
-        for (roomSummary in roomList) {
-            if (roomSummary.isDirect && roomSummary.otherMemberIds.size == 1 && roomSummary.otherMemberIds[0] == user.userId) {
-                selectedRoom = roomSummary
-                break
+        if (isOneToOneChatOpen) {
+            var selectedRoom: RoomSummary? = null
+            for (roomSummary in roomList) {
+                if (roomSummary.isDirect && roomSummary.otherMemberIds.size == 1 && roomSummary.otherMemberIds[0] == user.userId) {
+                    selectedRoom = roomSummary
+                    break
+                }
             }
-        }
-        if (selectedRoom != null)
-            navigator.openRoom(requireActivity(), selectedRoom.roomId)
-        else
+            if (selectedRoom != null)
+                navigator.openRoom(requireActivity(), selectedRoom.roomId)
+            else {
+                val pendingSelection = PendingSelection.UserPendingSelection(user)
+                sharedActionViewModel.post(UserListSharedAction.OnMenuItemSelected(R.id.action_create_direct_room, setOf(pendingSelection)))
+            }
+        } else
             viewModel.handle(UserListAction.AddPendingSelection(PendingSelection.UserPendingSelection(user)))
     }
 
