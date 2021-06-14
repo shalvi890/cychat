@@ -17,12 +17,10 @@
 package com.cioinfotech.cychat.features.home.room.detail.timeline.item
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.text.method.MovementMethod
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.text.PrecomputedTextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
@@ -63,29 +61,34 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
     var movementMethod: MovementMethod? = null
 
-    private val previewUrlViewUpdater = PreviewUrlViewUpdater()
+    //    private val previewUrlViewUpdater = PreviewUrlViewUpdater()
+    val Float.dp: Int
+        get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
-    //    private val expandText = ""
     override fun bind(holder: Holder) {
         // Preview URL
-        previewUrlViewUpdater.previewUrlView = holder.previewUrlView
-        previewUrlViewUpdater.imageContentRenderer = imageContentRenderer
-        val safePreviewUrlRetriever = previewUrlRetriever
-        if (safePreviewUrlRetriever == null) {
-            holder.previewUrlView.isVisible = false
-        } else {
-            safePreviewUrlRetriever.addListener(attributes.informationData.eventId, previewUrlViewUpdater)
-        }
-        holder.previewUrlView.delegate = previewUrlCallback
+//        previewUrlViewUpdater.previewUrlView = holder.previewUrlView
+//        previewUrlViewUpdater.imageContentRenderer = imageContentRenderer
+//        val safePreviewUrlRetriever = previewUrlRetriever
+//        if (safePreviewUrlRetriever == null) {
+//            holder.previewUrlView.isVisible = false
+//        } else {
+//            safePreviewUrlRetriever.addListener(attributes.informationData.eventId, previewUrlViewUpdater)
+//        }
+//        holder.previewUrlView.delegate = previewUrlCallback
 
-        if (useBigFont) {
-            holder.messageView.textSize = 44F
+        holder.messageView.textSize = if (useBigFont) 44F else 14F
+
+        if (attributes.informationData.sentByMe) {
+            holder.messageView.setPadding(0f.dp, 0f.dp, 60f.dp, 0f.dp)
+            holder.textTimeView.setPadding(0f.dp, 0f.dp, 18f.dp, 0f.dp)
         } else {
-            holder.messageView.textSize = 14F
+            holder.messageView.setPadding(0f.dp, 0f.dp, 44f.dp, 0f.dp)
+            holder.textTimeView.setPadding(0f.dp, 0f.dp, 0f.dp, 0f.dp)
         }
+
         if (searchForPills) {
             message?.findPillsAndProcess(coroutineScope) {
-                // mmm.. not sure this is so safe in regards to cell reuse
                 it.bind(holder.messageView)
             }
         }
@@ -101,34 +104,36 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         holder.messageView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.messageView.setTextFuture(textFuture)
 
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(holder.clParentText as ConstraintLayout)
-        if (attributes.informationData.sentByMe) {
-            constraintSet.setHorizontalBias(holder.clText.id, 1f)
-        } else {
-            constraintSet.setHorizontalBias(holder.clText.id, 0f)
-        }
-        constraintSet.applyTo(holder.clParentText as ConstraintLayout)
+//        val constraintSet = ConstraintSet()
+//        constraintSet.clone(holder.clParentText as ConstraintLayout)
+//        if (attributes.informationData.sentByMe) {
+//            constraintSet.setHorizontalBias(holder.clText.id, 1f)
+//        } else {
+//            constraintSet.setHorizontalBias(holder.clText.id, 0f)
+//        }
+//        constraintSet.applyTo(holder.clParentText as ConstraintLayout)
         holder.textTimeView.text = attributes.informationData.time
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
 //        ShowMoreText.makeTextViewResizable(holder.messageView, ".. See More", true)
     }
 
-    override fun unbind(holder: Holder) {
-        super.unbind(holder)
-        previewUrlViewUpdater.previewUrlView = null
-        previewUrlViewUpdater.imageContentRenderer = null
-        previewUrlRetriever?.removeListener(attributes.informationData.eventId, previewUrlViewUpdater)
-    }
+//    override fun unbind(holder: Holder) {
+//        super.unbind(holder)
+//        previewUrlViewUpdater.previewUrlView = null
+//        previewUrlViewUpdater.imageContentRenderer = null
+//        previewUrlRetriever?.removeListener(attributes.informationData.eventId, previewUrlViewUpdater)
+//    }
 
     override fun getViewType() = STUB_ID
 
     class Holder : AbsMessageItem.Holder(STUB_ID) {
         val messageView by bind<AppCompatTextView>(R.id.messageTextView)
-        val previewUrlView by bind<PreviewUrlView>(R.id.messageUrlPreview)
+
+        //        val previewUrlView by bind<PreviewUrlView>(R.id.messageUrlPreview)
         val textTimeView by bind<TextView>(R.id.messageTextTimeView)
-        val clText by bind<ConstraintLayout>(R.id.clText)
-        val clParentText by bind<ViewGroup>(R.id.clParentText)
+
+        //        val clText by bind<ConstraintLayout>(R.id.clText)
+//        val clParentText by bind<ViewGroup>(R.id.clParentText)
         val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
