@@ -19,8 +19,8 @@ package com.cioinfotech.cychat.features.home.room.detail.timeline.item
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.view.View
-import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -29,6 +29,7 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.utils.DebouncedClickListener
 import com.cioinfotech.cychat.features.home.AvatarRenderer
+import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.home.room.detail.timeline.MessageColorProvider
 import com.cioinfotech.cychat.features.home.room.detail.timeline.TimelineEventController
 import com.cioinfotech.cychat.features.themes.ThemeUtils
@@ -55,20 +56,21 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
     override fun bind(holder: H) {
         super.bind(holder)
 //        if (attributes.informationData.showInformation) {
-        holder.avatarImageView.layoutParams = holder.avatarImageView.layoutParams?.apply {
-            height = attributes.avatarSize
-            width = attributes.avatarSize
-        }
-        holder.avatarImageView.visibility = View.VISIBLE
-        holder.avatarImageView.setOnClickListener(_avatarClickListener)
+//        holder.avatarImageView.layoutParams = holder.avatarImageView.layoutParams?.apply {
+//            height = attributes.avatarSize
+//            width = attributes.avatarSize
+//        }
 //            holder.memberNameView.visibility = View.VISIBLE
 //            holder.memberNameView.setOnClickListener(_memberNameClickListener)
 //            holder.timeView.visibility = View.VISIBLE
 //            holder.timeView.text = attributes.informationData.time
-//            holder.memberNameView.text = attributes.informationData.memberName
-//            holder.memberNameView.setTextColor(attributes.getMemberNameColor())
-        attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)
-        holder.avatarImageView.setOnLongClickListener(attributes.itemLongClickListener)
+        if (!attributes.informationData.sentByMe) {
+            holder.memberNameView.text = attributes.informationData.memberName
+            holder.memberNameView.setOnLongClickListener(attributes.itemLongClickListener)
+            holder.memberNameView.setOnClickListener(_avatarClickListener)
+            holder.memberNameView.setTextColor(attributes.getMemberNameColor())
+        }
+//        attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)
 //            holder.memberNameView.setOnLongClickListener(attributes.itemLongClickListener)
 //        } else {
 //            holder.avatarImageView.setOnClickListener(null)
@@ -101,13 +103,13 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
         // Render send state indicator
 //        holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
         holder.eventSendingIndicator.isVisible = attributes.informationData.sendStateDecoration == SendStateDecoration.SENDING_MEDIA
-        holder.avatarImageView.isVisible = attributes.informationData.memberCount > 2
+        holder.memberNameView.isVisible = !isOneToOneChatOpen && !attributes.informationData.sentByMe
     }
 
     override fun unbind(holder: H) {
-        attributes.avatarRenderer.clear(holder.avatarImageView)
-        holder.avatarImageView.setOnClickListener(null)
-        holder.avatarImageView.setOnLongClickListener(null)
+//        attributes.avatarRenderer.clear(holder.avatarImageView)
+        holder.memberNameView.setOnClickListener(null)
+        holder.memberNameView.setOnLongClickListener(null)
 //        holder.memberNameView.setOnClickListener(null)
 //        holder.memberNameView.setOnLongClickListener(null)
         super.unbind(holder)
@@ -116,10 +118,11 @@ abstract class AbsMessageItem<H : AbsMessageItem.Holder> : AbsBaseMessageItem<H>
     private fun Attributes.getMemberNameColor() = messageColorProvider.getMemberNameTextColor(informationData.matrixItem)
 
     abstract class Holder(@IdRes stubId: Int) : AbsBaseMessageItem.Holder(stubId) {
-        val avatarImageView by bind<ImageView>(R.id.messageAvatarImageView)
+//        val avatarImageView by bind<ImageView>(R.id.messageAvatarImageView)
 
-        //        val memberNameView by bind<TextView>(R.id.messageMemberNameView)
-//        val timeView by bind<TextView>(R.id.messageTimeView)
+        val memberNameView by bind<TextView>(R.id.messageMemberNameView)
+
+        //        val timeView by bind<TextView>(R.id.messageTimeView)
 //        val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
         val eventSendingIndicator by bind<ProgressBar>(R.id.eventSendingIndicator)
         val clParent by bind<ConstraintLayout>(R.id.clParent)
