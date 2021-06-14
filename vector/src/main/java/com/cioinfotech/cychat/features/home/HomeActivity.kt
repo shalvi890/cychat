@@ -31,8 +31,10 @@ import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import com.airbnb.mvrx.MvRx
 import com.airbnb.mvrx.viewModel
+import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.di.ScreenComponent
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
@@ -43,6 +45,7 @@ import com.cioinfotech.cychat.core.pushers.PushersManager
 import com.cioinfotech.cychat.databinding.ActivityHomeBinding
 import com.cioinfotech.cychat.features.MainActivity
 import com.cioinfotech.cychat.features.MainActivityArgs
+import com.cioinfotech.cychat.features.login.SelectEnvFragment.Companion.CY_CHAT_ENV
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
 import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
@@ -122,6 +125,10 @@ class HomeActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (BuildConfig.DEBUG) {
+            views.tvEnvironment.isVisible = true
+            views.tvEnvironment.text = DefaultSharedPreferences.getInstance(this).getString(CY_CHAT_ENV, "")
+        }
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
 //        views.drawerLayout.addDrawerListener(drawerListener)

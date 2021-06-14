@@ -20,9 +20,6 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Resources
-import dagger.Binds
-import dagger.Module
-import dagger.Provides
 import com.cioinfotech.cychat.core.error.DefaultErrorFormatter
 import com.cioinfotech.cychat.core.error.ErrorFormatter
 import com.cioinfotech.cychat.features.navigation.DefaultNavigator
@@ -31,6 +28,9 @@ import com.cioinfotech.cychat.features.pin.PinCodeStore
 import com.cioinfotech.cychat.features.pin.SharedPrefPinCodeStore
 import com.cioinfotech.cychat.features.ui.SharedPreferencesUiStateRepository
 import com.cioinfotech.cychat.features.ui.UiStateRepository
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
 import org.matrix.android.sdk.api.Matrix
 import org.matrix.android.sdk.api.auth.AuthenticationService
 import org.matrix.android.sdk.api.auth.HomeServerHistoryService
@@ -53,7 +53,7 @@ abstract class VectorModule {
         @Provides
         @JvmStatic
         fun providesSharedPreferences(context: Context): SharedPreferences {
-            return context.getSharedPreferences("im.vector.riot", MODE_PRIVATE)
+            return context.getSharedPreferences("com.cioinfotech.cychat", MODE_PRIVATE)
         }
 
         @Provides
