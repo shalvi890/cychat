@@ -23,7 +23,6 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import dagger.Lazy
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.epoxy.VectorEpoxyModel
 import com.cioinfotech.cychat.core.files.LocalFilesHelper
@@ -63,6 +62,7 @@ import com.cioinfotech.cychat.features.html.PillsPostProcessor
 import com.cioinfotech.cychat.features.html.VectorHtmlCompressor
 import com.cioinfotech.cychat.features.media.ImageContentRenderer
 import com.cioinfotech.cychat.features.media.VideoContentRenderer
+import dagger.Lazy
 import me.gujun.android.span.span
 import org.commonmark.node.Document
 import org.matrix.android.sdk.api.session.Session
@@ -152,7 +152,7 @@ class MessageItemFactory @Inject constructor(
             is MessageNoticeContent              -> buildNoticeMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessageVideoContent               -> buildVideoMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessageFileContent                -> buildFileMessageItem(messageContent, highlight, attributes)
-            is MessageAudioContent               -> buildAudioMessageItem(messageContent, informationData, highlight, attributes)
+            is MessageAudioContent               -> buildAudioMessageItem(messageContent, informationData, highlight, attributes, callback)
             is MessageVerificationRequestContent -> buildVerificationRequestMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessageOptionsContent             -> buildOptionsMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessagePollResponseContent        -> noticeItemFactory.create(params)
@@ -195,7 +195,8 @@ class MessageItemFactory @Inject constructor(
                                       @Suppress("UNUSED_PARAMETER")
                                       informationData: MessageInformationData,
                                       highlight: Boolean,
-                                      attributes: AbsMessageItem.Attributes): MessageFileItem? {
+                                      attributes: AbsMessageItem.Attributes,
+                                      callback: TimelineEventController.Callback?): MessageFileItem? {
         val fileUrl = messageContent.getFileUrl()?.let {
             if (informationData.sentByMe && !informationData.sendState.isSent()) {
                 it
@@ -218,7 +219,8 @@ class MessageItemFactory @Inject constructor(
                 .highlighted(highlight)
                 .leftGuideline(avatarSizeProvider.leftGuideline)
                 .filename(messageContent.body)
-                .iconRes(R.drawable.ic_headphones)
+                .iconRes(R.drawable.ic_play_arrow)
+                .clickListener { _ -> callback?.onAudioMessageClicked(messageContent) }
     }
 
     private fun buildVerificationRequestMessageItem(messageContent: MessageVerificationRequestContent,

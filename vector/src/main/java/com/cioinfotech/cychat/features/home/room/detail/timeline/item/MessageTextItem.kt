@@ -17,12 +17,20 @@
 package com.cioinfotech.cychat.features.home.room.detail.timeline.item
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
+import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.MovementMethod
-import android.widget.TextView
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.util.TypedValue
+import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.text.PrecomputedTextCompat
-import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
@@ -31,8 +39,6 @@ import com.cioinfotech.cychat.core.ui.views.SendStateImageView
 import com.cioinfotech.cychat.features.home.room.detail.timeline.TimelineEventController
 import com.cioinfotech.cychat.features.home.room.detail.timeline.tools.findPillsAndProcess
 import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlRetriever
-import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlUiState
-import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlView
 import com.cioinfotech.cychat.features.media.ImageContentRenderer
 
 @SuppressLint("NonConstantResourceId")
@@ -61,10 +67,9 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
     var movementMethod: MovementMethod? = null
 
-    //    private val previewUrlViewUpdater = PreviewUrlViewUpdater()
-    val Float.dp: Int
-        get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+//    private val previewUrlViewUpdater = PreviewUrlViewUpdater()
 
+    //    private val expandText = ""
     override fun bind(holder: Holder) {
         // Preview URL
 //        previewUrlViewUpdater.previewUrlView = holder.previewUrlView
@@ -77,23 +82,35 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
 //        }
 //        holder.previewUrlView.delegate = previewUrlCallback
 
-        holder.messageView.textSize = if (useBigFont) 44F else 14F
-
-        if (attributes.informationData.sentByMe) {
-            holder.messageView.setPadding(0f.dp, 0f.dp, 60f.dp, 0f.dp)
-            holder.textTimeView.setPadding(0f.dp, 0f.dp, 18f.dp, 0f.dp)
+        if (useBigFont) {
+            holder.messageView.textSize = 44F
         } else {
-            holder.messageView.setPadding(0f.dp, 0f.dp, 44f.dp, 0f.dp)
-            holder.textTimeView.setPadding(0f.dp, 0f.dp, 0f.dp, 0f.dp)
+            holder.messageView.textSize = 15F
         }
-
         if (searchForPills) {
             message?.findPillsAndProcess(coroutineScope) {
+                // mmm.. not sure this is so safe in regards to cell reuse
                 it.bind(holder.messageView)
             }
         }
+        val spannable = SpannableString(SpannableStringBuilder().append("  ").append(attributes.informationData.time))
+        spannable.setSpan(
+                ForegroundColorSpan(Color.GRAY),
+                0,
+                spannable.length,
+                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
+        spannable.setSpan(
+                AbsoluteSizeSpan(TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_SP,
+                        12.toFloat(),
+                        holder.messageView.context.resources.displayMetrics
+                ).toInt()),
+                0,
+                spannable.length,
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         val textFuture = PrecomputedTextCompat.getTextFuture(
-                message ?: "",
+                if (!message.isNullOrEmpty()) SpannableStringBuilder().append(message).append(spannable) else "",
                 TextViewCompat.getTextMetricsParams(holder.messageView),
                 null)
         super.bind(holder)
@@ -104,15 +121,17 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         holder.messageView.setOnLongClickListener(attributes.itemLongClickListener)
         holder.messageView.setTextFuture(textFuture)
 
-//        val constraintSet = ConstraintSet()
-//        constraintSet.clone(holder.clParentText as ConstraintLayout)
-//        if (attributes.informationData.sentByMe) {
-//            constraintSet.setHorizontalBias(holder.clText.id, 1f)
-//        } else {
-//            constraintSet.setHorizontalBias(holder.clText.id, 0f)
-//        }
-//        constraintSet.applyTo(holder.clParentText as ConstraintLayout)
-        holder.textTimeView.text = attributes.informationData.time
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(holder.clParentText as ConstraintLayout)
+        if (attributes.informationData.sentByMe) {
+            constraintSet.setHorizontalBias(holder.clText.id, 1f)
+            holder.messageView.setPadding(0, 0, 40, 0)
+        } else {
+            constraintSet.setHorizontalBias(holder.clText.id, 0f)
+            holder.messageView.setPadding(0, 0, 0, 0)
+        }
+        constraintSet.applyTo(holder.clParentText as ConstraintLayout)
+//        holder.textTimeView.text = attributes.informationData.time
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
 //        ShowMoreText.makeTextViewResizable(holder.messageView, ".. See More", true)
     }
@@ -130,26 +149,25 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         val messageView by bind<AppCompatTextView>(R.id.messageTextView)
 
         //        val previewUrlView by bind<PreviewUrlView>(R.id.messageUrlPreview)
-        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
-
-        //        val clText by bind<ConstraintLayout>(R.id.clText)
-//        val clParentText by bind<ViewGroup>(R.id.clParentText)
+//        val textTimeView by bind<TextView>(R.id.messageTextTimeView)
+        val clText by bind<ConstraintLayout>(R.id.clText)
+        val clParentText by bind<ViewGroup>(R.id.clParentText)
         val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
     }
 
-    inner class PreviewUrlViewUpdater : PreviewUrlRetriever.PreviewUrlRetrieverListener {
-        var previewUrlView: PreviewUrlView? = null
-        var imageContentRenderer: ImageContentRenderer? = null
-
-        override fun onStateUpdated(state: PreviewUrlUiState) {
-            val safeImageContentRenderer = imageContentRenderer
-            if (safeImageContentRenderer == null) {
-                previewUrlView?.isVisible = false
-                return
-            }
-            previewUrlView?.render(state, safeImageContentRenderer)
-        }
-    }
+//    inner class PreviewUrlViewUpdater : PreviewUrlRetriever.PreviewUrlRetrieverListener {
+//        var previewUrlView: PreviewUrlView? = null
+//        var imageContentRenderer: ImageContentRenderer? = null
+//
+//        override fun onStateUpdated(state: PreviewUrlUiState) {
+//            val safeImageContentRenderer = imageContentRenderer
+//            if (safeImageContentRenderer == null) {
+//                previewUrlView?.isVisible = false
+//                return
+//            }
+//            previewUrlView?.render(state, safeImageContentRenderer)
+//        }
+//    }
 
     companion object {
         private const val STUB_ID = R.id.messageContentTextStub

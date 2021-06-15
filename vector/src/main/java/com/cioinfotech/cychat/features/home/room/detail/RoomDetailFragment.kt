@@ -125,6 +125,7 @@ import com.cioinfotech.cychat.features.command.Command
 import com.cioinfotech.cychat.features.crypto.keysbackup.restore.KeysBackupRestoreActivity
 import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomSheet
 import com.cioinfotech.cychat.features.home.AvatarRenderer
+import com.cioinfotech.cychat.features.home.room.detail.audioplayer.AudioPlayerFragment
 import com.cioinfotech.cychat.features.home.room.detail.audiorecorder.AudioRecorderFragment
 import com.cioinfotech.cychat.features.home.room.detail.composer.TextComposerView
 import com.cioinfotech.cychat.features.home.room.detail.readreceipts.DisplayReadReceiptsBottomSheet
@@ -185,7 +186,9 @@ import org.matrix.android.sdk.api.session.events.model.Event
 import org.matrix.android.sdk.api.session.events.model.toModel
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
+import org.matrix.android.sdk.api.session.room.model.message.MessageAudioContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageContent
+import org.matrix.android.sdk.api.session.room.model.message.MessageFileContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageFormat
 import org.matrix.android.sdk.api.session.room.model.message.MessageImageInfoContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageStickerContent
@@ -193,6 +196,7 @@ import org.matrix.android.sdk.api.session.room.model.message.MessageTextContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageVerificationRequestContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageVideoContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageWithAttachmentContent
+import org.matrix.android.sdk.api.session.room.model.message.getFileName
 import org.matrix.android.sdk.api.session.room.send.SendState
 import org.matrix.android.sdk.api.session.room.summary.RoomSummaryConstants
 import org.matrix.android.sdk.api.session.room.timeline.Timeline
@@ -362,10 +366,10 @@ class RoomDetailFragment @Inject constructor(
                 return@selectSubscribe
             }
             when (mode) {
-                is SendMode.REGULAR -> renderRegularMode(mode.text)
-                is SendMode.EDIT    -> renderSpecialMode(mode.timelineEvent, R.drawable.ic_edit, R.string.edit, mode.text)
-                is SendMode.QUOTE   -> renderSpecialMode(mode.timelineEvent, R.drawable.ic_quote, R.string.quote, mode.text)
-                is SendMode.REPLY   -> renderSpecialMode(mode.timelineEvent, R.drawable.ic_reply, R.string.reply, mode.text)
+                is SendMode.REGULAR -> renderRegularMode(mode.text.trim())
+                is SendMode.EDIT    -> renderSpecialMode(mode.timelineEvent, R.drawable.ic_edit, R.string.edit, mode.text.trim())
+                is SendMode.QUOTE   -> renderSpecialMode(mode.timelineEvent, R.drawable.ic_quote, R.string.quote, mode.text.trim())
+                is SendMode.REPLY   -> renderSpecialMode(mode.timelineEvent, R.drawable.ic_reply, R.string.reply, mode.text.trim())
             }
         }
 
@@ -1546,17 +1550,17 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
-//    override fun onFileMessageClicked(eventId: String, messageFileContent: MessageFileContent) {
+    override fun onFileMessageClicked(eventId: String, messageFileContent: MessageFileContent) {
 //        val isEncrypted = messageFileContent.encryptedFileInfo != null
-//        val action = RoomDetailAction.DownloadOrOpen(eventId, messageFileContent, isEncrypted)
-//        // We need WRITE_EXTERNAL permission
-// //        if (!isEncrypted || checkPermissions(PERMISSIONS_FOR_WRITING_FILES, this, PERMISSION_REQUEST_CODE_DOWNLOAD_FILE)) {
-//            showSnackWithMessage(getString(R.string.downloading_file, messageFileContent.getFileName()))
-//            roomDetailViewModel.handle(action)
-// //        } else {
-// //            roomDetailViewModel.pendingAction = action
-// //        }
-//    }
+//        val action = RoomDetailAction.DownloadOrOpen(eventId)
+        // We need WRITE_EXTERNAL permission
+        //        if (!isEncrypted || checkPermissions(PERMISSIONS_FOR_WRITING_FILES, this, PERMISSION_REQUEST_CODE_DOWNLOAD_FILE)) {
+//        showSnackWithMessage(getString(R.string.downloading_file, messageFileContent.getFileName()))
+//        roomDetailViewModel.handle(action)
+        //        } else {
+        //            roomDetailViewModel.pendingAction = action
+        //        }
+    }
 
     private fun cleanUpAfterPermissionNotGranted() {
         // Reset all pending data
@@ -1564,9 +1568,16 @@ class RoomDetailFragment @Inject constructor(
         attachmentsHelper.pendingType = null
     }
 
-//    override fun onAudioMessageClicked(messageAudioContent: MessageAudioContent) {
-//        vectorBaseActivity.notImplemented("open audio file")
-//    }
+    override fun onAudioMessageClicked(messageAudioContent: MessageAudioContent) {
+        if (messageAudioContent.url?.startsWith("mxc://") == true) {
+            // url starts with "mxc://"
+            val url = messageAudioContent.url!!
+            val domain = url.substring(6, url.length).substringBefore("/")
+            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
+            AudioPlayerFragment(finalUrl, messageAudioContent.getFileName()).show(parentFragmentManager, "Audio Player")
+        } else
+            Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
+    }
 
     override fun onLoadMore(direction: Timeline.Direction) {
         roomDetailViewModel.handle(RoomDetailAction.LoadMoreTimelineEvents(direction))

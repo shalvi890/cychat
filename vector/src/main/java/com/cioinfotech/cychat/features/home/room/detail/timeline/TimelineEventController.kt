@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyModel
-import com.airbnb.epoxy.VisibilityState
 import com.cioinfotech.cychat.core.date.DateFormatKind
 import com.cioinfotech.cychat.core.date.VectorDateFormatter
 import com.cioinfotech.cychat.core.epoxy.LoadingItem_
@@ -65,6 +64,8 @@ import org.matrix.android.sdk.api.session.events.model.toModel
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.ReadReceipt
 import org.matrix.android.sdk.api.session.room.model.RoomMemberContent
+import org.matrix.android.sdk.api.session.room.model.message.MessageAudioContent
+import org.matrix.android.sdk.api.session.room.model.message.MessageFileContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageImageInfoContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageVideoContent
 import org.matrix.android.sdk.api.session.room.timeline.Timeline
@@ -101,9 +102,8 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
         fun onEncryptedMessageClicked(informationData: MessageInformationData, view: View)
         fun onImageMessageClicked(messageImageContent: MessageImageInfoContent, mediaData: ImageContentRenderer.Data, view: View)
         fun onVideoMessageClicked(messageVideoContent: MessageVideoContent, mediaData: VideoContentRenderer.Data, view: View)
-
-        //        fun onFileMessageClicked(eventId: String, messageFileContent: MessageFileContent)
-//        fun onAudioMessageClicked(messageAudioContent: MessageAudioContent)
+        fun onFileMessageClicked(eventId: String, messageFileContent: MessageFileContent)
+        fun onAudioMessageClicked(messageAudioContent: MessageAudioContent)
         fun onEditedDecorationClicked(informationData: MessageInformationData)
 
         // TODO move all callbacks to this?
@@ -458,7 +458,7 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
     private fun LoadingItem_.setVisibilityStateChangedListener(direction: Timeline.Direction): LoadingItem_ {
         return onVisibilityStateChanged { _, _, visibilityState ->
             if (visibilityState == VisibilityState.VISIBLE) {
-                callback?.onLoadMore(direction)
+                callback.onLoadMore(direction)
             }
         }
     }
@@ -498,7 +498,7 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
      * Return true if added
      */
     private fun LoadingItem_.addWhenLoading(direction: Timeline.Direction): Boolean {
-        val shouldAdd = timeline?.hasMoreToLoad(direction) ?: false
+        val shouldAdd = timeline.hasMoreToLoad(direction) ?: false
         addIf(shouldAdd, this@TimelineEventController)
         return shouldAdd
     }

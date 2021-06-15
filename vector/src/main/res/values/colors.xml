@@ -207,9 +207,9 @@
     <color name="riotx_text_primary_contrast_black">#000000</color>
 
     <attr name="riotx_text_secondary_contrast" format="color" />
-    <color name="riotx_text_secondary_contrast_light">#444444</color>
-    <color name="riotx_text_secondary_contrast_dark">#444444</color>
-    <color name="riotx_text_secondary_contrast_black">#444444</color>
+    <color name="riotx_text_secondary_contrast_light">#515151</color>
+    <color name="riotx_text_secondary_contrast_dark">#515151</color>
+    <color name="riotx_text_secondary_contrast_black">#515151</color>
 
     <attr name="riotx_text_tertiary" format="color" />
     <color name="riotx_text_tertiary_light">#FF8D99A5</color>
