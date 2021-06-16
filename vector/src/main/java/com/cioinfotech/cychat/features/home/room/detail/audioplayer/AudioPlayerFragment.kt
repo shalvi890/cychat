@@ -18,7 +18,6 @@ package com.cioinfotech.cychat.features.home.room.detail.audioplayer
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
-import android.media.MediaPlayer.OnSeekCompleteListener
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -31,7 +30,7 @@ import com.cioinfotech.cychat.core.platform.VectorBaseBottomSheetDialogFragment
 import com.cioinfotech.cychat.databinding.FragmentAudioPlayerBinding
 import java.util.concurrent.TimeUnit
 
-class AudioPlayerFragment(private val url: String, private val fileName: String) : VectorBaseBottomSheetDialogFragment<FragmentAudioPlayerBinding>(), MediaPlayer.OnPreparedListener, OnSeekCompleteListener {
+class AudioPlayerFragment(private val url: String, private val fileName: String) : VectorBaseBottomSheetDialogFragment<FragmentAudioPlayerBinding>(), MediaPlayer.OnPreparedListener {
 
     private val mediaPlayer = MediaPlayer()
 
@@ -49,9 +48,8 @@ class AudioPlayerFragment(private val url: String, private val fileName: String)
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        views.waitingView.isVisible = true
+        views.clWaitingView.waitingView.isVisible = true
         views.tvFileName.text = fileName
-        mediaPlayer.setOnSeekCompleteListener(this)
         views.seekBar.setOnTouchListener { _, _ -> true }
         try {
             mediaPlayer.apply {
@@ -78,7 +76,7 @@ class AudioPlayerFragment(private val url: String, private val fileName: String)
     }
 
     private fun startPlayer() {
-        views.waitingView.isVisible = false
+        views.clWaitingView.waitingView.isVisible = false
         views.btnSend.setImageResource(R.drawable.ic_pause)
         isPlaying = true
         mediaPlayer.start()
@@ -144,9 +142,5 @@ class AudioPlayerFragment(private val url: String, private val fileName: String)
             } catch (ex: Exception) {
             }
         }
-    }
-
-    override fun onSeekComplete(mp: MediaPlayer?) {
-        dismiss()
     }
 }

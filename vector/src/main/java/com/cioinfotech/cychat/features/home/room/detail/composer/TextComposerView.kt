@@ -80,7 +80,7 @@ class TextComposerView @JvmOverloads constructor(
             if (text.isNullOrEmpty() && !isExpanded) {
                 callback?.onSendAudio()
             } else {
-                val textMessage = text?.toSpannable() ?: ""
+                val textMessage = text?.toString()?.trim()?.toSpannable() ?: ""
                 callback?.onSendMessage(textMessage)
             }
         }
