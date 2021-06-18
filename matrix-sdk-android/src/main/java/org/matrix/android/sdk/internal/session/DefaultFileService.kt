@@ -27,8 +27,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.matrix.android.sdk.api.session.content.ContentUrlResolver
 import org.matrix.android.sdk.api.session.file.FileService
+import org.matrix.android.sdk.api.session.room.model.message.MessageWithAttachmentContent
+import org.matrix.android.sdk.api.session.room.model.message.getFileName
+import org.matrix.android.sdk.api.session.room.model.message.getFileUrl
 import org.matrix.android.sdk.internal.crypto.attachments.ElementToDecrypt
 import org.matrix.android.sdk.internal.crypto.attachments.MXEncryptedAttachments
+import org.matrix.android.sdk.internal.crypto.attachments.toElementToDecrypt
 import org.matrix.android.sdk.internal.di.SessionDownloadsDirectory
 import org.matrix.android.sdk.internal.di.UnauthenticatedWithCertificateWithProgress
 import org.matrix.android.sdk.internal.session.download.DownloadProgressInterceptor.Companion.DOWNLOAD_PROGRESS_INTERCEPTOR_HEADER
@@ -264,6 +268,23 @@ internal class DefaultFileService @Inject constructor(
         return if (isDownloading) FileService.FileState.DOWNLOADING else FileService.FileState.UNKNOWN
     }
 
+    override fun getFileURL(mxcUrl: String?,
+                            fileName: String,
+                            mimeType: String?,
+                            elementToDecrypt: ElementToDecrypt?): File? {
+        if (mxcUrl.isNullOrEmpty()) return null
+        return getFiles(mxcUrl, fileName, mimeType, elementToDecrypt != null).file
+//
+//        if (file != null) {
+//            file.inputStream().use { inputStream ->
+//                file.outputStream().buffered().use { outputStream ->
+//                    MXEncryptedAttachments.decryptAttachment(
+//                            inputStream,
+//                            elementToDecrypt,
+//                            outputStream
+//                    )
+    }
+
     /**
      * Use this URI and pass it to intent using flag Intent.FLAG_GRANT_READ_URI_PERMISSION
      * (if not other app won't be able to access it)
@@ -286,7 +307,14 @@ internal class DefaultFileService @Inject constructor(
                     Timber.v("Get size of ${it.absolutePath}")
                     true
                 }
-                .sumOf { it: File -> it.length().toInt() }
+                .sumOf { it.length().toInt() }
+    }
+
+    override fun getFile(messageContent: MessageWithAttachmentContent): File? {
+        return getFileURL(mxcUrl = messageContent.getFileUrl(),
+                fileName = messageContent.getFileName(),
+                mimeType = messageContent.mimeType,
+                elementToDecrypt = messageContent.encryptedFileInfo?.toElementToDecrypt())
     }
 
     override fun clearCache() {

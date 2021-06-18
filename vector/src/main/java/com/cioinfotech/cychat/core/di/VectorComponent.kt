@@ -18,8 +18,6 @@ package com.cioinfotech.cychat.core.di
 
 import android.content.Context
 import android.content.res.Resources
-import dagger.BindsInstance
-import dagger.Component
 import com.cioinfotech.cychat.ActiveSessionDataSource
 import com.cioinfotech.cychat.EmojiCompatFontProvider
 import com.cioinfotech.cychat.EmojiCompatWrapper
@@ -34,6 +32,9 @@ import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.configuration.VectorConfiguration
 import com.cioinfotech.cychat.features.crypto.keysrequest.KeyRequestHandler
 import com.cioinfotech.cychat.features.crypto.verification.IncomingVerificationRequestHandler
+import com.cioinfotech.cychat.features.cycore.CyChatModule
+import com.cioinfotech.cychat.features.cycore.NetworkModule
+import com.cioinfotech.cychat.features.cycore.service.CyCoreService
 import com.cioinfotech.cychat.features.grouplist.SelectedGroupDataSource
 import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailPendingActionStore
@@ -58,6 +59,9 @@ import com.cioinfotech.cychat.features.reactions.data.EmojiDataSource
 import com.cioinfotech.cychat.features.session.SessionListener
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.ui.UiStateRepository
+import dagger.BindsInstance
+import dagger.Component
+import okhttp3.OkHttpClient
 import org.matrix.android.sdk.api.Matrix
 import org.matrix.android.sdk.api.auth.AuthenticationService
 import org.matrix.android.sdk.api.auth.HomeServerHistoryService
@@ -65,7 +69,7 @@ import org.matrix.android.sdk.api.raw.RawService
 import org.matrix.android.sdk.api.session.Session
 import javax.inject.Singleton
 
-@Component(modules = [VectorModule::class])
+@Component(modules = [VectorModule::class, NetworkModule::class, CyChatModule::class])
 @Singleton
 interface VectorComponent {
 
@@ -165,4 +169,8 @@ interface VectorComponent {
     interface Factory {
         fun create(@BindsInstance context: Context): VectorComponent
     }
+
+    fun okHttpClient(): OkHttpClient
+
+    fun cyChatService(): CyCoreService
 }

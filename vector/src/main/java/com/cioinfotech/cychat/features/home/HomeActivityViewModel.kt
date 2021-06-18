@@ -20,14 +20,14 @@ import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.MvRx
 import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.ViewModelContext
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.features.login.ReAuthHelper
 import com.cioinfotech.cychat.features.settings.VectorPreferences
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -81,16 +81,16 @@ class HomeActivityViewModel @AssistedInject constructor(
     private var onceTrusted = false
 
     init {
-        cleanupFiles()
+//        cleanupFiles()
         observeInitialSync()
         checkSessionPushIsOn()
         observeCrossSigningReset()
     }
 
-    private fun cleanupFiles() {
-        // Mitigation: delete all cached decrypted files each time the application is started.
-        activeSessionHolder.getSafeActiveSession()?.fileService()?.clearDecryptedCache()
-    }
+//    private fun cleanupFiles() {
+//        // Mitigation: delete all cached decrypted files each time the application is started.
+//        activeSessionHolder.getSafeActiveSession()?.fileService()?.clearDecryptedCache()
+//    }
 
     private fun observeCrossSigningReset() {
         val safeActiveSession = activeSessionHolder.getSafeActiveSession() ?: return

@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package com.cioinfotech.cychat.features.settings
+package com.cioinfotech.cychat.features.cycore.data
 
-object VectorSettingsUrls {
+import com.google.gson.annotations.SerializedName
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 
-    const val COPYRIGHT = "http://dialoog.co.za/legal/copyrights.html"
-    const val TAC = "http://dialoog.co.za/legal/terms.html"
-    const val PRIVACY_POLICY = "http://dialoog.co.za/legal/privacy.html"
-    const val DISCLAIMER_URL = "https://element.io/previously-riot"
-    const val THIRD_PARTY_LICENSES = "file:///android_asset/open_source_licenses.html"
-}
+data class DomainDetails(
+        val data: DomainDetailsChild
+) : BaseResponse()
+
+data class DomainDetailsChild(
+        @SerializedName("comapany_name")
+        val companyName: String? = null,
+        @SerializedName("logo")
+        val logo: String? = null
+)

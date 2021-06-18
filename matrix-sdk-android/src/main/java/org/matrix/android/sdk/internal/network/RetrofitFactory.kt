@@ -55,6 +55,16 @@ class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
                 .build()
     }
 
+    fun createWithBaseURL(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .build()
+    }
+
     fun create(okHttpClient: Lazy<OkHttpClient>, baseUrl: String): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(baseUrl.ensureTrailingSlash())

@@ -18,8 +18,6 @@ package com.cioinfotech.cychat.features.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -112,9 +110,12 @@ class HomeDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         sharedActionViewModel = activityViewModelProvider.get(HomeSharedActionViewModel::class.java)
         sharedCallActionViewModel = activityViewModelProvider.get(SharedKnownCallsViewModel::class.java)
-// @TODO
+//        val prefs = DefaultSharedPreferences.getInstance(requireContext())
+//        val userId = prefs.getString(USER_ID, null)
+//        if (userId != null) {
         avatarRenderer.render(GlideApp.with(requireActivity()), R.drawable.ic_government_logo, views.groupToolbarAvatarImageView)
         views.groupToolbarTitleView.text = getString(R.string.cyberia)
+//        }
 
         setupBottomNavigationView()
         setupToolbar()

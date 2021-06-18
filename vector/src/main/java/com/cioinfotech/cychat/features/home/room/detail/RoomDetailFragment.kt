@@ -186,9 +186,7 @@ import org.matrix.android.sdk.api.session.events.model.Event
 import org.matrix.android.sdk.api.session.events.model.toModel
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
-import org.matrix.android.sdk.api.session.room.model.message.MessageAudioContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageContent
-import org.matrix.android.sdk.api.session.room.model.message.MessageFileContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageFormat
 import org.matrix.android.sdk.api.session.room.model.message.MessageImageInfoContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageStickerContent
@@ -196,7 +194,6 @@ import org.matrix.android.sdk.api.session.room.model.message.MessageTextContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageVerificationRequestContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageVideoContent
 import org.matrix.android.sdk.api.session.room.model.message.MessageWithAttachmentContent
-import org.matrix.android.sdk.api.session.room.model.message.getFileName
 import org.matrix.android.sdk.api.session.room.send.SendState
 import org.matrix.android.sdk.api.session.room.summary.RoomSummaryConstants
 import org.matrix.android.sdk.api.session.room.timeline.Timeline
@@ -605,7 +602,15 @@ class RoomDetailFragment @Inject constructor(
     }
 
     private fun startOpenFileIntent(action: RoomDetailViewEvents.OpenFile) {
-        if (action.uri != null) {
+        if (action.mimeType?.contains("audio/") == true) {
+            if (action.uri != null) {
+//            val url = messageAudioContent.url!!
+//            val domain = url.substring(6, url.length).substringBefore("/")
+//            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
+                AudioPlayerFragment(null, "Playing Audio", action.uri).show(parentFragmentManager, "Audio Player")
+            } else
+                Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
+        } else if (action.uri != null) {
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndTypeAndNormalize(action.uri, action.mimeType)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -1550,17 +1555,17 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
-    override fun onFileMessageClicked(eventId: String, messageFileContent: MessageFileContent) {
+//    override fun onFileMessageClicked(eventId: String, messageFileContent: MessageFileContent) {
 //        val isEncrypted = messageFileContent.encryptedFileInfo != null
 //        val action = RoomDetailAction.DownloadOrOpen(eventId)
-        // We need WRITE_EXTERNAL permission
-        //        if (!isEncrypted || checkPermissions(PERMISSIONS_FOR_WRITING_FILES, this, PERMISSION_REQUEST_CODE_DOWNLOAD_FILE)) {
+    // We need WRITE_EXTERNAL permission
+    //        if (!isEncrypted || checkPermissions(PERMISSIONS_FOR_WRITING_FILES, this, PERMISSION_REQUEST_CODE_DOWNLOAD_FILE)) {
 //        showSnackWithMessage(getString(R.string.downloading_file, messageFileContent.getFileName()))
 //        roomDetailViewModel.handle(action)
-        //        } else {
-        //            roomDetailViewModel.pendingAction = action
-        //        }
-    }
+    //        } else {
+    //            roomDetailViewModel.pendingAction = action
+    //        }
+//    }
 
     private fun cleanUpAfterPermissionNotGranted() {
         // Reset all pending data
@@ -1568,16 +1573,18 @@ class RoomDetailFragment @Inject constructor(
         attachmentsHelper.pendingType = null
     }
 
-    override fun onAudioMessageClicked(messageAudioContent: MessageAudioContent) {
-        if (messageAudioContent.url?.startsWith("mxc://") == true) {
-            // url starts with "mxc://"
-            val url = messageAudioContent.url!!
-            val domain = url.substring(6, url.length).substringBefore("/")
-            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
-            AudioPlayerFragment(finalUrl, messageAudioContent.getFileName()).show(parentFragmentManager, "Audio Player")
-        } else
-            Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
-    }
+//    override fun onAudioMessageClicked(messageAudioContent: MessageAudioContent, path: Uri?) {
+//        if (messageAudioContent.url?.startsWith("mxc://") == true) {
+//            val url = messageAudioContent.url!!
+//            val domain = url.substring(6, url.length).substringBefore("/")
+//            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
+//            AudioPlayerFragment(finalUrl, messageAudioContent.getFileName(), null).show(parentFragmentManager, "Audio Player")
+//        } else if (path != null) {
+//            Toast.makeText(requireContext(), path.toString(), Toast.LENGTH_LONG).show()
+//            AudioPlayerFragment(null, messageAudioContent.getFileName(), path).show(parentFragmentManager, "Audio Player")
+//        } else
+//            Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
+//    }
 
     override fun onLoadMore(direction: Timeline.Direction) {
         roomDetailViewModel.handle(RoomDetailAction.LoadMoreTimelineEvents(direction))

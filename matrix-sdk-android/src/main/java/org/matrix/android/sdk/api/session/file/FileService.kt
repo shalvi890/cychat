@@ -40,9 +40,9 @@ interface FileService {
      * Result will be a decrypted file, stored in the cache folder. url parameter will be used to create unique filename to avoid name collision.
      */
     suspend fun downloadFile(fileName: String,
-                     mimeType: String?,
-                     url: String?,
-                     elementToDecrypt: ElementToDecrypt?): File
+                             mimeType: String?,
+                             url: String?,
+                             elementToDecrypt: ElementToDecrypt?): File
 
     suspend fun downloadFile(messageContent: MessageWithAttachmentContent): File =
             downloadFile(
@@ -113,4 +113,11 @@ interface FileService {
      * Get size of cached files
      */
     fun getCacheSize(): Int
+
+    fun getFile(messageContent: MessageWithAttachmentContent): File?
+
+    fun getFileURL(mxcUrl: String?,
+                   fileName: String,
+                   mimeType: String?,
+                   elementToDecrypt: ElementToDecrypt?): File?
 }

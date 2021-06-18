@@ -268,7 +268,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        showErrorInSnackbar( if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable )
+        showErrorInSnackbar(if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable)
     }
 
     override fun updateWithState(state: LoginViewState) {

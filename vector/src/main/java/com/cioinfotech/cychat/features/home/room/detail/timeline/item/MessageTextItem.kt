@@ -93,7 +93,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
                 it.bind(holder.messageView)
             }
         }
-        val spannable = SpannableString(SpannableStringBuilder().append("  ").append(attributes.informationData.time))
+        val spannable = SpannableString(SpannableStringBuilder().append("    ").append(attributes.informationData.time))
         spannable.setSpan(
                 ForegroundColorSpan(Color.GRAY),
                 0,

@@ -29,17 +29,18 @@ import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.extensions.configureAndStart
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.core.utils.ensureTrailingSlash
 import com.cioinfotech.cychat.features.signout.soft.SoftLogoutActivity
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -66,6 +67,7 @@ import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 
@@ -240,7 +242,12 @@ class LoginViewModel @AssistedInject constructor(
 
             override fun onSuccess(t: CheckOTPResponse) {
                 if (t.status == "ok") {
-                    handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email.replace("@","-at-"), t.data.password))
+                    val prefs = DefaultSharedPreferences.getInstance(applicationContext)
+                    prefs.edit().apply {
+                        putString(NetworkConstants.USER_ID, t.data.user_id)
+                        apply()
+                    }
+                    handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email.replace("@", "-at-"), t.data.password))
                     setState {
                         copy(
                                 asyncCyCheckOTP = Success(Unit)

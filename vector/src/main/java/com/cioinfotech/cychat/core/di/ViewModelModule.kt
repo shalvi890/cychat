@@ -18,15 +18,13 @@ package com.cioinfotech.cychat.core.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
 import com.cioinfotech.cychat.core.platform.ConfigurationViewModel
 import com.cioinfotech.cychat.features.call.SharedKnownCallsViewModel
 import com.cioinfotech.cychat.features.crypto.keysbackup.restore.KeysBackupRestoreFromKeyViewModel
 import com.cioinfotech.cychat.features.crypto.keysbackup.restore.KeysBackupRestoreFromPassphraseViewModel
 import com.cioinfotech.cychat.features.crypto.keysbackup.restore.KeysBackupRestoreSharedViewModel
 import com.cioinfotech.cychat.features.crypto.keysbackup.setup.KeysBackupSetupSharedViewModel
+import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.discovery.DiscoverySharedViewModel
 import com.cioinfotech.cychat.features.home.HomeSharedActionViewModel
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailSharedActionViewModel
@@ -39,6 +37,9 @@ import com.cioinfotech.cychat.features.roomprofile.alias.detail.RoomAliasBottomS
 import com.cioinfotech.cychat.features.roomprofile.settings.historyvisibility.RoomHistoryVisibilitySharedActionViewModel
 import com.cioinfotech.cychat.features.roomprofile.settings.joinrule.RoomJoinRuleSharedActionViewModel
 import com.cioinfotech.cychat.features.userdirectory.UserListSharedActionViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
 
 @Module
 interface ViewModelModule {
@@ -142,4 +143,9 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(DiscoverySharedViewModel::class)
     fun bindDiscoverySharedViewModel(viewModel: DiscoverySharedViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CyCoreViewModel::class)
+    fun bindCyCoreViewModel(viewModel: CyCoreViewModel): ViewModel
 }

@@ -23,8 +23,8 @@
 
             <ImageView
                 android:id="@+id/groupToolbarAvatarImageView"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:contentDescription="@string/a11y_open_drawer"
                 tools:src="@tools:sample/avatars" />
 
@@ -60,10 +60,10 @@
         android:background="?riotx_keys_backup_banner_accent_color"
         android:minHeight="67dp"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/syncStateView" />
+        app:layout_constraintTop_toBottomOf="@id/syncStateView"
+        tools:visibility="visible" />
 
     <com.cioinfotech.cychat.core.ui.views.CurrentCallsView
         android:id="@+id/activeCallView"

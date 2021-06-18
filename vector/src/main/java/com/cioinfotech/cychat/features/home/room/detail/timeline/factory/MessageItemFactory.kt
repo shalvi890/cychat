@@ -152,7 +152,7 @@ class MessageItemFactory @Inject constructor(
             is MessageNoticeContent              -> buildNoticeMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessageVideoContent               -> buildVideoMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessageFileContent                -> buildFileMessageItem(messageContent, highlight, attributes)
-            is MessageAudioContent               -> buildAudioMessageItem(messageContent, informationData, highlight, attributes, callback)
+            is MessageAudioContent               -> buildAudioMessageItem(messageContent, informationData, highlight, attributes)
             is MessageVerificationRequestContent -> buildVerificationRequestMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessageOptionsContent             -> buildOptionsMessageItem(messageContent, informationData, highlight, callback, attributes)
             is MessagePollResponseContent        -> noticeItemFactory.create(params)
@@ -195,8 +195,7 @@ class MessageItemFactory @Inject constructor(
                                       @Suppress("UNUSED_PARAMETER")
                                       informationData: MessageInformationData,
                                       highlight: Boolean,
-                                      attributes: AbsMessageItem.Attributes,
-                                      callback: TimelineEventController.Callback?): MessageFileItem? {
+                                      attributes: AbsMessageItem.Attributes): MessageFileItem? {
         val fileUrl = messageContent.getFileUrl()?.let {
             if (informationData.sentByMe && !informationData.sendState.isSent()) {
                 it
@@ -219,8 +218,7 @@ class MessageItemFactory @Inject constructor(
                 .highlighted(highlight)
                 .leftGuideline(avatarSizeProvider.leftGuideline)
                 .filename(messageContent.body)
-                .iconRes(R.drawable.ic_play_arrow)
-                .clickListener { _ -> callback?.onAudioMessageClicked(messageContent) }
+                .iconRes(R.drawable.ic_headphones)
     }
 
     private fun buildVerificationRequestMessageItem(messageContent: MessageVerificationRequestContent,

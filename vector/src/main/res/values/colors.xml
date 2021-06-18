@@ -24,16 +24,16 @@
     <!--Default/Android Status Bar-->
     <color name="primary_color_dark_light">#FF1A2027</color>
     <!--Default/Base-->
-    <color name="primary_color_light">#03b381</color>
+    <color name="primary_color_light">#3fa2db</color>
     <!--Default/Accent-->
-    <color name="accent_color_light">#03b381</color>
+    <color name="accent_color_light">#6DCAFF</color>
 
     <!--Dark/Android Status Bar-->
     <color name="primary_color_dark_dark">#FF0D0E10</color>
     <!--Dark/Base-->
     <color name="primary_color_dark">#FF15171B</color>
     <!--Dark/Accent-->
-    <color name="accent_color_dark">#03b381</color>
+    <color name="accent_color_dark">#00A2FF</color>
 
     <!--Black/Android Status Bar-->
     <color name="primary_color_dark_black">#000</color>
@@ -113,8 +113,8 @@
     <!-- Source: https://zpl.io/aBKw9Mk -->
 
     <!-- Accents -->
-    <color name="riotx_accent">#FF0DBD8B</color>
-    <color name="riotx_accent_alpha25">#3F0DBD8B</color>
+    <color name="riotx_accent">#3fa2db</color>
+    <color name="riotx_accent_alpha25">#3F3fa2db</color>
 
 
     <color name="riotx_destructive_accent">#FFFF4B55</color>
@@ -122,9 +122,9 @@
     <color name="riotx_button_primary_accent_alpha12">#14368BD6</color>
 
 
-    <color name="riotx_positive_accent">#0DBD8B</color>
+    <color name="riotx_positive_accent">#3fa2db</color>
     <color name="riotx_disabled_accent">#C4C4C4</color>
-    <color name="riotx_positive_accent_alpha12">#1E0DBD8B</color>
+    <color name="riotx_positive_accent_alpha12">#1E3fa2db</color>
     <color name="riotx_button_disabled_alpha12">#1E61708B</color>
 
     <color name="bg_call_screen">#99000000</color>
@@ -160,6 +160,11 @@
     <color name="riotx_background_light">#FFFFFFFF</color>
     <color name="riotx_background_dark">#FF15191E</color>
     <color name="riotx_background_black">#FF000000</color>
+
+    <attr name="riotx_toolbar" format="color" />
+    <color name="riotx_toolbar_light">#656d78</color>
+    <color name="riotx_toolbar_dark">#FF15191E</color>
+    <color name="riotx_toolbar_black">#FF000000</color>
 
     <attr name="riotx_background_text_field" format="color" />
     <color name="riotx_background_text_field_light">#903C3C3C</color>
@@ -313,9 +318,9 @@
     <color name="riotx_reaction_background_off_black">#22252B</color>
 
     <attr name="riotx_reaction_background_on" format="color" />
-    <color name="riotx_reaction_background_on_light">#2011BC8A</color>
-    <color name="riotx_reaction_background_on_dark">#4011BC8A</color>
-    <color name="riotx_reaction_background_on_black">#4011BC8A</color>
+    <color name="riotx_reaction_background_on_light">#203fa2db</color>
+    <color name="riotx_reaction_background_on_dark">#403fa2db</color>
+    <color name="riotx_reaction_background_on_black">#403fa2db</color>
 
     <attr name="riotx_alerter_background" format="color" />
     <color name="riotx_alerter_background_light">#FFF3F8FD</color>
@@ -328,15 +333,15 @@
     <color name="riotx_keys_backup_banner_accent_color_dark">#22262E</color>
 
     <attr name="cy_chat_bg_send" format="color" />
-    <color name="chat_bg_send_dark">#e2ffc7</color>
-    <color name="chat_bg_send_white">#D7FFC7</color>
+    <color name="chat_bg_send_dark">#DEF3FF</color>
+    <color name="chat_bg_send_white">#DEF3FF</color>
 
     <attr name="cy_chat_bg_receive" format="color" />
     <color name="chat_bg_receive_dark">#FFFFFF</color>
     <color name="chat_bg_receive_white">#FFFFFF</color>
 
     <attr name="cy_chat_room_bg" format="color" />
-    <color name="cy_chat_room_bg_light">#ebe6db</color>
+    <color name="cy_chat_room_bg_light">#dfe0e2</color>
     <color name="cy_chat_room_bg_dark">#FF181B21</color>
     <color name="cy_chat_room_bg_black">#FF0D0F12</color>
 </resources>

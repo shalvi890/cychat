@@ -16,7 +16,7 @@
 
 package org.matrix.android.sdk.internal.network
 
-internal object NetworkConstants {
+object NetworkConstants {
     // Homeserver
     private const val URI_API_PREFIX_PATH = "_matrix/client"
     const val URI_API_PREFIX_PATH_ = "$URI_API_PREFIX_PATH/"
@@ -45,5 +45,11 @@ internal object NetworkConstants {
     const val CHECK_OTP = "/check-otp"
     const val COUNTRY_LIST = "/get-settings"
     const val RESENT_OTP = "/resend-otp"
+    const val GET_DOMAIN_DETAILS = "/get-company-name-and-logo"
 
+    const val CY_CHAT_ENV = "CY_CHAT_ENV"
+    const val BASE_URL = "BASE_URL"
+    const val USER_ID = "USER_ID"
+    const val DOMAIN_NAME = "DOMAIN_NAME"
+    const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
 }

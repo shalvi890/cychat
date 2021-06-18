@@ -491,7 +491,7 @@
     <string name="people_no_identity_server">No identity server configured.</string>
 
     <!-- Rooms fragment -->
-    <string name="cyberia">Cyberia</string>
+    <string name="cyberia">GMT</string>
     <string name="rooms_header">Rooms</string>
     <string name="rooms_directory_header">Room directory</string>
     <string name="no_room_placeholder">No rooms</string>

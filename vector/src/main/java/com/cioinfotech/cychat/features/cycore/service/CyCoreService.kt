@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.cioinfotech.cychat.features.settings
+package com.cioinfotech.cychat.features.cycore.service
 
-object VectorSettingsUrls {
+import com.cioinfotech.cychat.features.cycore.data.DomainDetails
+import io.reactivex.Single
 
-    const val COPYRIGHT = "http://dialoog.co.za/legal/copyrights.html"
-    const val TAC = "http://dialoog.co.za/legal/terms.html"
-    const val PRIVACY_POLICY = "http://dialoog.co.za/legal/privacy.html"
-    const val DISCLAIMER_URL = "https://element.io/previously-riot"
-    const val THIRD_PARTY_LICENSES = "file:///android_asset/open_source_licenses.html"
+interface CyCoreService {
+    fun cyGetDomainDetails(auth: String, hashMap: HashMap<String, String>, url: String): Single<DomainDetails>
 }

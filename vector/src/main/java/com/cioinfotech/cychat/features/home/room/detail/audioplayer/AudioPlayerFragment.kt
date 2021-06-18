@@ -18,19 +18,19 @@ package com.cioinfotech.cychat.features.home.room.detail.audioplayer
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.platform.VectorBaseBottomSheetDialogFragment
 import com.cioinfotech.cychat.databinding.FragmentAudioPlayerBinding
 import java.util.concurrent.TimeUnit
 
-class AudioPlayerFragment(private val url: String, private val fileName: String) : VectorBaseBottomSheetDialogFragment<FragmentAudioPlayerBinding>(), MediaPlayer.OnPreparedListener {
+class AudioPlayerFragment(private val url: String? = null, private val fileName: String, private val file: Uri?) : VectorBaseBottomSheetDialogFragment<FragmentAudioPlayerBinding>(), MediaPlayer.OnPreparedListener {
 
     private val mediaPlayer = MediaPlayer()
 
@@ -48,13 +48,22 @@ class AudioPlayerFragment(private val url: String, private val fileName: String)
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        views.clWaitingView.waitingView.isVisible = true
+//        views.clWaitingView.waitingView.isVisible = true
+        if (url.isNullOrEmpty() && file == null)
+            dismiss()
+
         views.tvFileName.text = fileName
         views.seekBar.setOnTouchListener { _, _ -> true }
         try {
             mediaPlayer.apply {
-                mediaPlayer.setOnPreparedListener(this@AudioPlayerFragment)
-                setDataSource(url)
+                setOnPreparedListener(this@AudioPlayerFragment)
+                if (!url.isNullOrEmpty())
+                    setDataSource(url)
+                else {
+                    file?.let {
+                        setDataSource(requireContext(), it)
+                    }
+                }
                 prepareAsync()
             }
         } catch (e: Exception) {
@@ -76,7 +85,7 @@ class AudioPlayerFragment(private val url: String, private val fileName: String)
     }
 
     private fun startPlayer() {
-        views.clWaitingView.waitingView.isVisible = false
+//        views.clWaitingView.waitingView.isVisible = false
         views.btnSend.setImageResource(R.drawable.ic_pause)
         isPlaying = true
         mediaPlayer.start()
@@ -96,7 +105,7 @@ class AudioPlayerFragment(private val url: String, private val fileName: String)
 
         views.tvTotal.text = (String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()))
+                (TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())).toInt() % 60)
                 )
 
         views.seekBar.progress = (startTime.toInt())

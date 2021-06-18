@@ -17,7 +17,6 @@
 package com.cioinfotech.cychat.features.home.room.detail.timeline.item
 
 import android.graphics.Paint
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -45,9 +44,6 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
     @EpoxyAttribute
     @DrawableRes
     var iconRes: Int = 0
-
-    @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
-    var clickListener: View.OnClickListener? = null
 
     @EpoxyAttribute
     var izLocalFile = false
@@ -83,16 +79,12 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
                 holder.fileDownloadProgress.progress = 0
             }
         }
-        if (filename.contains(".mp3")) {
-            holder.view.setOnClickListener(clickListener)
-            holder.fileImageWrapper.setOnClickListener(clickListener)
-            holder.filenameView.setOnClickListener(clickListener)
-        } else {
-            holder.filenameView.setOnClickListener(attributes.itemClickListener)
-            holder.filenameView.setOnLongClickListener(attributes.itemLongClickListener)
-            holder.fileImageWrapper.setOnClickListener(attributes.itemClickListener)
-            holder.fileImageWrapper.setOnLongClickListener(attributes.itemLongClickListener)
-        }
+//        holder.view.setOnClickListener(clickListener)
+
+        holder.filenameView.setOnClickListener(attributes.itemClickListener)
+        holder.filenameView.setOnLongClickListener(attributes.itemLongClickListener)
+        holder.fileImageWrapper.setOnClickListener(attributes.itemClickListener)
+        holder.fileImageWrapper.setOnLongClickListener(attributes.itemLongClickListener)
         holder.filenameView.paintFlags = (holder.filenameView.paintFlags or Paint.UNDERLINE_TEXT_FLAG)
         val constraintSet = ConstraintSet()
         constraintSet.clone(holder.fileLayout as ConstraintLayout)

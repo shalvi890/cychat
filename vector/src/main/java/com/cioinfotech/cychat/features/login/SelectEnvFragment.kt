@@ -22,13 +22,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentSelectEnvBinding
+import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 
 class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
-    companion object {
-        const val CY_CHAT_ENV = "CY_CHAT_ENV"
-    }
-
     override fun resetViewModel() {}
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentSelectEnvBinding.inflate(inflater, container, false)
@@ -39,6 +37,7 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnDev.setOnClickListener {
             RetrofitFactory.BASE_URL = "https://cychat-dev.cioinfotech.com"
             prefs.edit().apply {
+                putString(BASE_URL, RetrofitFactory.BASE_URL)
                 putString(CY_CHAT_ENV, "Development")
                 apply()
             }
@@ -48,6 +47,7 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnTest.setOnClickListener {
             RetrofitFactory.BASE_URL = "https://cyberiaqa-api.cioinfotech.com"
             prefs.edit().apply {
+                putString(BASE_URL, RetrofitFactory.BASE_URL)
                 putString(CY_CHAT_ENV, "QA")
                 apply()
             }
@@ -57,6 +57,7 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnUat.setOnClickListener {
             RetrofitFactory.BASE_URL = "https://cychat-ct.cioinfotech.com"
             prefs.edit().apply {
+                putString(BASE_URL, RetrofitFactory.BASE_URL)
                 putString(CY_CHAT_ENV, "UAT")
                 apply()
             }
