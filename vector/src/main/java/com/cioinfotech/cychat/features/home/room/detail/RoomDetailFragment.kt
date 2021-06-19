@@ -607,7 +607,7 @@ class RoomDetailFragment @Inject constructor(
 //            val url = messageAudioContent.url!!
 //            val domain = url.substring(6, url.length).substringBefore("/")
 //            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
-                AudioPlayerFragment(null, "Playing Audio", action.uri).show(parentFragmentManager, "Audio Player")
+                AudioPlayerFragment(null, action.fileName, action.uri).show(parentFragmentManager, "Audio Player")
             } else
                 Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
         } else if (action.uri != null) {

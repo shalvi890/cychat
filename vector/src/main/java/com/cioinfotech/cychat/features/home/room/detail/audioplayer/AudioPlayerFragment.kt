@@ -30,7 +30,7 @@ import com.cioinfotech.cychat.core.platform.VectorBaseBottomSheetDialogFragment
 import com.cioinfotech.cychat.databinding.FragmentAudioPlayerBinding
 import java.util.concurrent.TimeUnit
 
-class AudioPlayerFragment(private val url: String? = null, private val fileName: String, private val file: Uri?) : VectorBaseBottomSheetDialogFragment<FragmentAudioPlayerBinding>(), MediaPlayer.OnPreparedListener {
+class AudioPlayerFragment(private val url: String? = null, private val fileName: String?, private val file: Uri?) : VectorBaseBottomSheetDialogFragment<FragmentAudioPlayerBinding>(), MediaPlayer.OnPreparedListener {
 
     private val mediaPlayer = MediaPlayer()
 
@@ -52,7 +52,9 @@ class AudioPlayerFragment(private val url: String? = null, private val fileName:
         if (url.isNullOrEmpty() && file == null)
             dismiss()
 
-        views.tvFileName.text = fileName
+        fileName?.let {
+            views.tvFileName.text = it
+        }
         views.seekBar.setOnTouchListener { _, _ -> true }
         try {
             mediaPlayer.apply {

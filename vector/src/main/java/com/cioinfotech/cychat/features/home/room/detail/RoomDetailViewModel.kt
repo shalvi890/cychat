@@ -87,6 +87,7 @@ import org.matrix.android.sdk.api.session.room.model.RoomMemberSummary
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import org.matrix.android.sdk.api.session.room.model.message.MessageType
 import org.matrix.android.sdk.api.session.room.model.message.OptionItem
+import org.matrix.android.sdk.api.session.room.model.message.getFileName
 import org.matrix.android.sdk.api.session.room.model.message.getFileUrl
 import org.matrix.android.sdk.api.session.room.model.tombstone.RoomTombstoneContent
 import org.matrix.android.sdk.api.session.room.powerlevels.PowerLevelsHelper
@@ -1144,7 +1145,8 @@ class RoomDetailViewModel @AssistedInject constructor(
                 _viewEvents.post(RoomDetailViewEvents.OpenFile(
                         action.messageFileContent.mimeType,
                         it,
-                        null
+                        null,
+                        action.messageFileContent.getFileName()
                 ))
             }
         } else if (isDownloaded) {
@@ -1153,7 +1155,8 @@ class RoomDetailViewModel @AssistedInject constructor(
                 _viewEvents.post(RoomDetailViewEvents.OpenFile(
                         action.messageFileContent.mimeType,
                         uri,
-                        null
+                        null,
+                        action.messageFileContent.getFileName()
                 ))
             }
         } else {
