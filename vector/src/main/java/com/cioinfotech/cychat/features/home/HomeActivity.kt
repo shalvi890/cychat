@@ -45,7 +45,6 @@ import com.cioinfotech.cychat.core.pushers.PushersManager
 import com.cioinfotech.cychat.databinding.ActivityHomeBinding
 import com.cioinfotech.cychat.features.MainActivity
 import com.cioinfotech.cychat.features.MainActivityArgs
-import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
 import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
@@ -65,9 +64,7 @@ import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.api.util.MatrixItem
-import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
-import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
 import org.matrix.android.sdk.internal.session.sync.initialSyncStrategy
 import timber.log.Timber
@@ -87,7 +84,7 @@ class HomeActivity :
         NavigationInterceptor {
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
-    private lateinit var cyChatViewModel: CyCoreViewModel
+//    private lateinit var cyChatViewModel: CyCoreViewModel
 
     private val homeActivityViewModel: HomeActivityViewModel by viewModel()
 
@@ -137,19 +134,19 @@ class HomeActivity :
         }
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
-        cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
-        pref.getString(BASE_URL, "")?.let { baseURL ->
-            pref.getString(USER_ID, "")?.let { userId ->
+//        cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+//        pref.getString(BASE_URL, "")?.let { baseURL ->
+//            pref.getString(USER_ID, "")?.let { userId ->
 //                Toast.makeText(this, "$userId+$baseURL", Toast.LENGTH_LONG).show()
-                cyChatViewModel.handleCyGetDetails("Bearer Avdhut", baseURL)
-            }
-        }
-        cyChatViewModel.domainData.observe(this) {
-            if (it) {
+//                cyChatViewModel.handleCyGetDetails("Bearer Avdhut", baseURL)
+//            }
+//        }
+//        cyChatViewModel.domainData.observe(this) {
+//            if (it) {
 //                Toast.makeText(this, pref.getString(DOMAIN_NAME, "N.A.") + " " + pref.getString(DOMAIN_IMAGE, "N.A."), Toast.LENGTH_LONG).show()
-                cyChatViewModel.setDomainLiveData()
-            }
-        }
+//                cyChatViewModel.setDomainLiveData()
+//            }
+//        }
 //        views.drawerLayout.addDrawerListener(drawerListener)
         if (isFirstCreation()) {
             replaceFragment(R.id.homeDetailFragmentContainer, LoadingFragment::class.java)
