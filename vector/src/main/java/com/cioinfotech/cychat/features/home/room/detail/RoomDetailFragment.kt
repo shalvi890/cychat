@@ -125,7 +125,6 @@ import com.cioinfotech.cychat.features.command.Command
 import com.cioinfotech.cychat.features.crypto.keysbackup.restore.KeysBackupRestoreActivity
 import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomSheet
 import com.cioinfotech.cychat.features.home.AvatarRenderer
-import com.cioinfotech.cychat.features.home.room.detail.audioplayer.AudioPlayerFragment
 import com.cioinfotech.cychat.features.home.room.detail.audiorecorder.AudioRecorderFragment
 import com.cioinfotech.cychat.features.home.room.detail.composer.TextComposerView
 import com.cioinfotech.cychat.features.home.room.detail.readreceipts.DisplayReadReceiptsBottomSheet
@@ -607,7 +606,8 @@ class RoomDetailFragment @Inject constructor(
 //            val url = messageAudioContent.url!!
 //            val domain = url.substring(6, url.length).substringBefore("/")
 //            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
-                AudioPlayerFragment(null, action.fileName, action.uri).show(parentFragmentManager, "Audio Player")
+                Toast.makeText(requireContext(), action.uri.toString(), Toast.LENGTH_LONG).show()
+//                AudioPlayerFragment(null, action.fileName, action.uri).show(parentFragmentManager, "Audio Player")
             } else
                 Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
         } else if (action.uri != null) {
