@@ -23,7 +23,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.matrix.android.sdk.BuildConfig
 import org.matrix.android.sdk.internal.di.MoshiProvider
-import org.matrix.android.sdk.internal.network.interceptors.FormattedJsonHttpLogger
 import java.util.concurrent.TimeUnit
 
 @Module
