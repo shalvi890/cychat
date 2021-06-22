@@ -93,22 +93,30 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
                 it.bind(holder.messageView)
             }
         }
-        val spannable = SpannableString(SpannableStringBuilder().append("    ").append(attributes.informationData.time))
-        spannable.setSpan(
-                ForegroundColorSpan(Color.GRAY),
-                0,
-                spannable.length,
-                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-        )
-        spannable.setSpan(
-                AbsoluteSizeSpan(TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_SP,
-                        12.toFloat(),
-                        holder.messageView.context.resources.displayMetrics
-                ).toInt()),
-                0,
-                spannable.length,
-                Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        val time = attributes.informationData.time?.replace(Regex(" "), ".")
+        val spannable = SpannableString(SpannableStringBuilder().append("    ").append(time)).apply {
+            setSpan(
+                    ForegroundColorSpan(Color.GRAY),
+                    0,
+                    this.length,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+            setSpan(
+                    AbsoluteSizeSpan(TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            11.toFloat(),
+                            holder.messageView.context.resources.displayMetrics
+                    ).toInt()),
+                    0,
+                    this.length,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            setSpan(
+                    ForegroundColorSpan(Color.TRANSPARENT),
+                    this.length - 3,
+                    this.length - 2,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+        }
         val textFuture = PrecomputedTextCompat.getTextFuture(
                 if (!message.isNullOrEmpty()) SpannableStringBuilder().append(message).append(spannable) else "",
                 TextViewCompat.getTextMetricsParams(holder.messageView),
