@@ -27,8 +27,9 @@
         <!-- TODO is it still required? -->
         <item name="colorAccent">#03b381</item>
 
-        <item name="android:statusBarColor">#1188FF</item>
+        <item name="android:statusBarColor">@color/primary_color_light</item>
         <item name="android:navigationBarColor">#FF8811</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="VectorMaterialThemeDebugDark" parent="Theme.MaterialComponents.NoActionBar">
@@ -52,7 +53,7 @@
         <!-- TODO is it still required? -->
         <item name="colorAccent">#03b381</item>
 
-        <item name="android:statusBarColor">#1188FF</item>
+        <item name="android:statusBarColor">@color/primary_color_light</item>
         <item name="android:navigationBarColor">#FF8811</item>
     </style>
 

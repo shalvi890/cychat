@@ -24,6 +24,7 @@ import android.view.ViewTreeObserver
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.transition.addListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -45,7 +46,6 @@ import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
-import androidx.core.transition.addListener
 
 class VectorAttachmentViewerActivity : AttachmentViewerActivity(), BaseAttachmentProvider.InteractionListener {
 
@@ -136,7 +136,7 @@ class VectorAttachmentViewerActivity : AttachmentViewerActivity(), BaseAttachmen
             }
         }
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black_alpha)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary_color_light)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.black_alpha)
     }
 

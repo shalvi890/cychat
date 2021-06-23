@@ -43,9 +43,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.util.Util
-import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding3.view.clicks
-import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.di.DaggerScreenComponent
@@ -79,17 +76,18 @@ import com.cioinfotech.cychat.features.settings.FontScale
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.themes.ActivityOtherThemes
 import com.cioinfotech.cychat.features.themes.ThemeUtils
+import com.google.android.material.snackbar.Snackbar
+import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-
 import org.matrix.android.sdk.api.extensions.tryOrNull
 import org.matrix.android.sdk.api.failure.GlobalError
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScreenInjector {
+abstract class VectorBaseActivity<VB : ViewBinding> : AppCompatActivity(), HasScreenInjector {
     /* ==========================================================================================
      * View
      * ========================================================================================== */
@@ -238,9 +236,7 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
 
         val titleRes = getTitleRes()
         if (titleRes != -1) {
-            supportActionBar?.let {
-                it.setTitle(titleRes)
-            } ?: run {
+            supportActionBar?.setTitle(titleRes) ?: run {
                 setTitle(titleRes)
             }
         }
@@ -370,7 +366,6 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
         Timber.i("onPause Activity ${javaClass.simpleName}")
 
         rageShake.stop()
-
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -419,7 +414,7 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
             // New API instead of SYSTEM_UI_FLAG_IMMERSIVE
             window.decorView.windowInsetsController?.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_BARS_BY_SWIPE
             // New API instead of FLAG_TRANSLUCENT_STATUS
-            window.statusBarColor = ContextCompat.getColor(this, com.cioinfotech.lib.attachmentviewer.R.color.half_transparent_status_bar)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.primary_color_light)
             // New API instead of FLAG_TRANSLUCENT_NAVIGATION
             window.navigationBarColor = ContextCompat.getColor(this, com.cioinfotech.lib.attachmentviewer.R.color.half_transparent_status_bar)
         } else {
@@ -589,7 +584,7 @@ abstract class VectorBaseActivity<VB: ViewBinding> : AppCompatActivity(), HasScr
         getCoordinatorLayout()?.let {
             Snackbar.make(it, message, Snackbar.LENGTH_LONG).apply {
                 withActionTitle?.let {
-                    setAction(withActionTitle, { action?.invoke() })
+                    setAction(withActionTitle) { action?.invoke() }
                 }
             }.show()
         }

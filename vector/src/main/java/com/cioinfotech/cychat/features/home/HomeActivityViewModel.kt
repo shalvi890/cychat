@@ -23,6 +23,7 @@ import com.airbnb.mvrx.ViewModelContext
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
+import com.cioinfotech.cychat.features.crypto.verification.VerificationAction
 import com.cioinfotech.cychat.features.login.ReAuthHelper
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import dagger.assisted.Assisted
@@ -32,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.matrix.android.sdk.api.MatrixCallback
 import org.matrix.android.sdk.api.auth.UIABaseAuth
 import org.matrix.android.sdk.api.auth.UserInteractiveAuthInterceptor
 import org.matrix.android.sdk.api.auth.UserPasswordAuth
@@ -40,11 +42,20 @@ import org.matrix.android.sdk.api.auth.registration.RegistrationFlowResponse
 import org.matrix.android.sdk.api.auth.registration.nextUncompletedStage
 import org.matrix.android.sdk.api.extensions.tryOrNull
 import org.matrix.android.sdk.api.pushrules.RuleIds
+import org.matrix.android.sdk.api.session.crypto.crosssigning.KEYBACKUP_SECRET_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.MASTER_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.roomSummaryQueryParams
 import org.matrix.android.sdk.api.util.toMatrixItem
+import org.matrix.android.sdk.internal.crypto.crosssigning.fromBase64
+import org.matrix.android.sdk.internal.crypto.crosssigning.isVerified
+import org.matrix.android.sdk.internal.crypto.keysbackup.model.rest.KeysVersionResult
+import org.matrix.android.sdk.internal.crypto.keysbackup.util.computeRecoveryKey
 import org.matrix.android.sdk.internal.crypto.model.CryptoDeviceInfo
+import org.matrix.android.sdk.internal.crypto.model.ImportRoomKeysResult
 import org.matrix.android.sdk.internal.crypto.model.MXUsersDevicesMap
 import org.matrix.android.sdk.internal.util.awaitCallback
 import org.matrix.android.sdk.rx.asObservable
@@ -239,6 +250,93 @@ class HomeActivityViewModel @AssistedInject constructor(
                 } catch (failure: Throwable) {
                     Timber.e(failure, "Failed to initialize cross signing")
                 }
+            }
+        }
+    }
+
+    fun handleSecretBackFromSSSS(action: VerificationAction.GotResultFromSsss) {
+        val session = activeSessionHolder.getActiveSession()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                action.cypherData.fromBase64().inputStream().use { ins ->
+                    val res = session.loadSecureSecret<Map<String, String>>(ins, action.alias)
+                    val trustResult = session.cryptoService().crossSigningService().checkTrustFromPrivateKeys(
+                            res?.get(MASTER_KEY_SSSS_NAME),
+                            res?.get(USER_SIGNING_KEY_SSSS_NAME),
+                            res?.get(SELF_SIGNING_KEY_SSSS_NAME)
+                    )
+                    if (trustResult.isVerified()) {
+                        // Sign this device and upload the signature
+                        session.sessionParams.deviceId?.let { deviceId ->
+                            session.cryptoService()
+                                    .crossSigningService().trustDevice(deviceId, object : MatrixCallback<Unit> {
+                                        override fun onFailure(failure: Throwable) {
+                                            Timber.w(failure, "Failed to sign my device after recovery")
+                                        }
+                                    })
+                        }
+
+//                        setState {
+//                            copy(
+//                                    verifyingFrom4S = false,
+//                                    verifiedFromPrivateKeys = true
+//                            )
+//                        }
+
+                        // try the keybackup
+                        tentativeRestoreBackup(res)
+                    }
+//                    else {
+//                        setState {
+//                            copy(
+//                                    verifyingFrom4S = false
+//                            )
+//                        }
+//                        // POP UP something
+//                        _viewEvents.post(VerificationBottomSheetViewEvents.ModalError(stringProvider.getString(R.string.error_failed_to_import_keys)))
+//                    }
+                }
+            } catch (failure: Throwable) {
+//                setState {
+//                    copy(
+//                            verifyingFrom4S = false
+//                    )
+//                }
+//                _viewEvents.post(
+//                        VerificationBottomSheetViewEvents.ModalError(failure.localizedMessage ?: stringProvider.getString(R.string.unexpected_error)))
+            }
+        }
+    }
+
+    private fun tentativeRestoreBackup(res: Map<String, String>?) {
+        val session = activeSessionHolder.getActiveSession()
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val secret = res?.get(KEYBACKUP_SECRET_SSSS_NAME) ?: return@launch Unit.also {
+                    Timber.v("## Keybackup secret not restored from SSSS")
+                }
+
+                val version = awaitCallback<KeysVersionResult?> {
+                    session.cryptoService().keysBackupService().getCurrentVersion(it)
+                } ?: return@launch
+
+                awaitCallback<ImportRoomKeysResult> {
+                    session.cryptoService().keysBackupService().restoreKeysWithRecoveryKey(
+                            version,
+                            computeRecoveryKey(secret.fromBase64()),
+                            null,
+                            null,
+                            null,
+                            it
+                    )
+                }
+
+                awaitCallback<Unit> {
+                    session.cryptoService().keysBackupService().trustKeysBackupVersion(version, true, it)
+                }
+            } catch (failure: Throwable) {
+                // Just ignore for now
+                Timber.e(failure, "## Failed to restore backup after SSSS recovery")
             }
         }
     }

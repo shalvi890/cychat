@@ -18,6 +18,7 @@ package com.cioinfotech.cychat.features.cycore.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,7 +29,13 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID_SMALL
+import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
@@ -37,8 +44,11 @@ class CyCoreViewModel @Inject constructor(
         private val applicationContext: Context
 ) : ViewModel() {
 
-    init {
+    private var pref: SharedPreferences = DefaultSharedPreferences.getInstance(applicationContext)
+    private var url = pref.getString(BASE_URL, null)
 
+    init {
+        handleCyGetDetails()
     }
 
     private var domainMutData: MutableLiveData<Boolean> = MutableLiveData()
@@ -48,11 +58,15 @@ class CyCoreViewModel @Inject constructor(
         domainMutData.postValue(false)
     }
 
-    fun handleCyGetDetails(auth: String, url: String) {
-        cyCoreService.cyGetDomainDetails(auth, hashMapOf("user_id" to "37"), url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getDomainDetails())
+    private fun handleCyGetDetails() {
+        var userId = ""
+        pref.getString(USER_ID, "")?.let { userId = it }
+        url?.let {
+            cyCoreService.cyGetDomainDetails("Bearer Avdhut", userId, it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getDomainDetails())
+        }
     }
 
     private fun getDomainDetails(): SingleObserver<DomainDetails> {
@@ -71,6 +85,31 @@ class CyCoreViewModel @Inject constructor(
                         domainMutData.postValue(true)
                     }
                 }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun handleUpdateRecoveryToken(auth: String, text: String) {
+        var userId = ""
+        pref.getString(USER_ID, "")?.let { userId = it }
+        url?.let {
+            cyCoreService.cyUpdateRecoveryKey(auth, hashMapOf(USER_ID_SMALL to userId, SECRET_KEY_SMALL to text), it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(updateRecoveryToken())
+        }
+    }
+
+    private fun updateRecoveryToken(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
             }
 
             override fun onSubscribe(d: Disposable) {}

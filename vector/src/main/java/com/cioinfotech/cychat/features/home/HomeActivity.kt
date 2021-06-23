@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -31,7 +32,6 @@ import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import com.airbnb.mvrx.MvRx
 import com.airbnb.mvrx.viewModel
-import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
@@ -45,6 +45,11 @@ import com.cioinfotech.cychat.core.pushers.PushersManager
 import com.cioinfotech.cychat.databinding.ActivityHomeBinding
 import com.cioinfotech.cychat.features.MainActivity
 import com.cioinfotech.cychat.features.MainActivityArgs
+import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageAction
+import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageActivity
+import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageViewEvent
+import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageViewModel
+import com.cioinfotech.cychat.features.crypto.verification.VerificationAction
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
 import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
@@ -61,10 +66,16 @@ import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewSta
 import com.cioinfotech.cychat.push.fcm.FcmHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.parcelize.Parcelize
+import org.matrix.android.sdk.api.session.crypto.crosssigning.KEYBACKUP_SECRET_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.MASTER_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_SSSS_NAME
+import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.api.util.MatrixItem
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
+import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
 import org.matrix.android.sdk.internal.session.sync.initialSyncStrategy
 import timber.log.Timber
@@ -73,7 +84,10 @@ import javax.inject.Inject
 @Parcelize
 data class HomeActivityArgs(
         val clearNotification: Boolean,
-        val accountCreation: Boolean
+        val accountCreation: Boolean,
+        val keyId: String? = null,
+        val requestedSecrets: List<String> = listOf(MASTER_KEY_SSSS_NAME, USER_SIGNING_KEY_SSSS_NAME, SELF_SIGNING_KEY_SSSS_NAME, KEYBACKUP_SECRET_SSSS_NAME),
+        val resultKeyStoreAlias: String = SharedSecureStorageActivity.DEFAULT_RESULT_KEYSTORE_ALIAS
 ) : Parcelable
 
 class HomeActivity :
@@ -92,6 +106,9 @@ class HomeActivity :
 
     //    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by viewModel()
     @Inject lateinit var serverBackupviewModelFactory: ServerBackupStatusViewModel.Factory
+
+    private val viewModel: SharedSecureStorageViewModel by viewModel()
+    @Inject lateinit var sharedViewModelFactory: SharedSecureStorageViewModel.Factory
 
     @Inject lateinit var activeSessionHolder: ActiveSessionHolder
     @Inject lateinit var vectorUncaughtExceptionHandler: VectorUncaughtExceptionHandler
@@ -128,29 +145,18 @@ class HomeActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val pref = DefaultSharedPreferences.getInstance(applicationContext)
-        if (BuildConfig.DEBUG) {
-            views.tvEnvironment.isVisible = true
-            views.tvEnvironment.text = pref.getString(CY_CHAT_ENV, "")
-        }
+        views.tvEnvironment.isVisible = true
+        views.tvEnvironment.text = pref.getString(CY_CHAT_ENV, "")
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
-//        cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
-//        pref.getString(BASE_URL, "")?.let { baseURL ->
-//            pref.getString(USER_ID, "")?.let { userId ->
-//                Toast.makeText(this, "$userId+$baseURL", Toast.LENGTH_LONG).show()
-//                cyChatViewModel.handleCyGetDetails("Bearer Avdhut", baseURL)
-//            }
-//        }
-//        cyChatViewModel.domainData.observe(this) {
-//            if (it) {
-//                Toast.makeText(this, pref.getString(DOMAIN_NAME, "N.A.") + " " + pref.getString(DOMAIN_IMAGE, "N.A."), Toast.LENGTH_LONG).show()
-//                cyChatViewModel.setDomainLiveData()
-//            }
-//        }
+        if (pref.getBoolean(SIGNING_MODE, false))
+            Toast.makeText(this, "Signing Up Completed", Toast.LENGTH_LONG).show()
 //        views.drawerLayout.addDrawerListener(drawerListener)
         if (isFirstCreation()) {
             replaceFragment(R.id.homeDetailFragmentContainer, LoadingFragment::class.java)
             replaceFragment(R.id.homeDrawerFragmentContainer, HomeDrawerFragment::class.java)
+//            cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+//            cyChatViewModel.handleCyGetDetails()
         }
 
         sharedActionViewModel
@@ -174,6 +180,8 @@ class HomeActivity :
             notificationDrawerManager.clearAllEvents()
         }
 
+        viewModel.observeViewEvents { observeViewEvents(it) }
+
         homeActivityViewModel.observeViewEvents {
             when (it) {
                 is HomeActivityViewEvents.AskPasswordToInitCrossSigning -> handleAskPasswordToInitCrossSigning(it)
@@ -189,6 +197,13 @@ class HomeActivity :
 
         if (isFirstCreation()) {
             handleIntent(intent)
+        }
+    }
+
+    private fun observeViewEvents(it: SharedSecureStorageViewEvent?) {
+        when (it) {
+            is SharedSecureStorageViewEvent.FinishSuccess -> homeActivityViewModel.handleSecretBackFromSSSS(VerificationAction.GotResultFromSsss(it.cypherResult, SharedSecureStorageActivity.DEFAULT_RESULT_KEYSTORE_ALIAS))
+            else                                          -> Unit
         }
     }
 
@@ -279,18 +294,21 @@ class HomeActivity :
     }
 
     private fun handleOnNewSession(event: HomeActivityViewEvents.OnNewSession) {
-        // We need to ask
-        promptSecurityEvent(
-                event.userItem,
-                R.string.crosssigning_verify_this_session,
-                R.string.confirm_your_identity
-        ) {
-            if (event.waitForIncomingRequest) {
-                it.navigator.waitSessionVerification(it)
-            } else {
-                it.navigator.requestSelfSessionVerification(it)
-            }
+        Timber.log(0, event.toString())
+        DefaultSharedPreferences.getInstance(this).getString(SECRET_KEY, null)?.let {
+            viewModel.handle(SharedSecureStorageAction.SubmitKey(it))
         }
+//        promptSecurityEvent(
+//                event.userItem,
+//                R.string.crosssigning_verify_this_session,
+//                R.string.confirm_your_identity
+//        ) {
+//            if (event.waitForIncomingRequest) {
+//                it.navigator.waitSessionVerification(it)
+//            } else {
+//                it.navigator.requestSelfSessionVerification(it)
+//            }
+//        }
     }
 
     private fun handlePromptToEnablePush() {

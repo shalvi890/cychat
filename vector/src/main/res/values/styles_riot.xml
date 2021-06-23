@@ -4,11 +4,17 @@
     <!-- ************************ Common items ************************ -->
 
     <!-- toolbar styles-->
-    <style name="VectorToolbarStyleWithPadding" parent="Widget.MaterialComponents.Toolbar">
+    <style name="VectorToolbarStyleWithPadding" parent="Widget.MaterialComponents.Toolbar.Primary">
         <!-- main text -->
         <item name="titleTextAppearance">@style/Vector.Toolbar.Title</item>
         <item name="subtitleTextAppearance">@style/Vector.Toolbar.SubTitle</item>
-        <item name="android:background">?riotx_background</item>
+        <item name="android:background">?riotx_toolbar</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
     </style>
 
     <style name="VectorToolbarStyle" parent="VectorToolbarStyleWithPadding">
@@ -286,7 +292,7 @@
         <item name="android:maxLines">6</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:padding">8dp</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">?vctr_message_text_color</item>
     </style>
 

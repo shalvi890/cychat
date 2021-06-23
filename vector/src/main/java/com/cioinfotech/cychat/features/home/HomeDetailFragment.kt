@@ -25,6 +25,7 @@ import com.airbnb.mvrx.activityViewModel
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.extensions.commitTransaction
 import com.cioinfotech.cychat.core.extensions.toMvRxBundle
 import com.cioinfotech.cychat.core.glide.GlideApp
@@ -37,6 +38,7 @@ import com.cioinfotech.cychat.databinding.FragmentHomeDetailBinding
 import com.cioinfotech.cychat.features.call.SharedKnownCallsViewModel
 import com.cioinfotech.cychat.features.call.VectorCallActivity
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
+import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.home.room.list.RoomListFragment
 import com.cioinfotech.cychat.features.home.room.list.RoomListParams
@@ -47,6 +49,8 @@ import com.cioinfotech.cychat.features.workers.signout.BannerState
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewModel
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.google.android.material.badge.BadgeDrawable
+import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_IMAGE
+import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_NAME
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -73,6 +77,7 @@ class HomeDetailFragment @Inject constructor(
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
     private lateinit var sharedCallActionViewModel: SharedKnownCallsViewModel
+    private lateinit var cyChatViewModel: CyCoreViewModel
 
     private var hasUnreadRooms = false
         set(value) {
@@ -110,12 +115,13 @@ class HomeDetailFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         sharedActionViewModel = activityViewModelProvider.get(HomeSharedActionViewModel::class.java)
         sharedCallActionViewModel = activityViewModelProvider.get(SharedKnownCallsViewModel::class.java)
-//        val prefs = DefaultSharedPreferences.getInstance(requireContext())
-//        val userId = prefs.getString(USER_ID, null)
-//        if (userId != null) {
-        avatarRenderer.render(GlideApp.with(requireActivity()), R.drawable.ic_government_logo, views.groupToolbarAvatarImageView)
-        views.groupToolbarTitleView.text = getString(R.string.cyberia)
-//        }
+        cyChatViewModel = activityViewModelProvider.get(CyCoreViewModel::class.java)
+        setupDomainWithToolbar()
+        cyChatViewModel.domainData.observe(viewLifecycleOwner) {
+            setupDomainWithToolbar()
+            if (it)
+                cyChatViewModel.setDomainLiveData()
+        }
 
         setupBottomNavigationView()
         setupToolbar()
@@ -158,6 +164,17 @@ class HomeDetailFragment @Inject constructor(
                     activeCallViewHolder.updateCall(callManager.getCurrentCall(), callManager.getCalls())
                     invalidateOptionsMenu()
                 })
+    }
+
+    fun setupDomainWithToolbar() {
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
+        val logo = pref.getString(DOMAIN_IMAGE, null)
+        if (logo != null)
+            avatarRenderer.render(GlideApp.with(requireActivity()), logo, views.groupToolbarAvatarImageView)
+        else
+            avatarRenderer.render(GlideApp.with(requireActivity()), R.drawable.ic_government_logo, views.groupToolbarAvatarImageView)
+
+        views.groupToolbarTitleView.text = pref.getString(DOMAIN_NAME, null) ?: getString(R.string.cyberia)
     }
 
     override fun onResume() {

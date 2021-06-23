@@ -19,6 +19,7 @@ package com.cioinfotech.cychat.features.login
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -68,6 +69,8 @@ import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
+import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 
@@ -185,6 +188,13 @@ class LoginViewModel @AssistedInject constructor(
                 if (t.status == "ok") {
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                     signUpSignInData.postValue(t.data)
+                    DefaultSharedPreferences.getInstance(applicationContext).edit {
+                        if (t.data.type == SIGN_UP_SMALL)
+                            putBoolean(SIGNING_MODE, true)
+                        else
+                            putBoolean(SIGNING_MODE, false)
+                        apply()
+                    }
                     setState {
                         copy(
                                 asyncCyLogin = Success(Unit)
@@ -245,6 +255,7 @@ class LoginViewModel @AssistedInject constructor(
                     val prefs = DefaultSharedPreferences.getInstance(applicationContext)
                     prefs.edit().apply {
                         putString(NetworkConstants.USER_ID, t.data.user_id)
+                        putString(NetworkConstants.SECRET_KEY, t.data.secret_key)
                         apply()
                     }
                     handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email.replace("@", "-at-"), t.data.password))

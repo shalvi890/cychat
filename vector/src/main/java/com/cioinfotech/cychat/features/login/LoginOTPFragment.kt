@@ -31,6 +31,8 @@ import com.airbnb.mvrx.Loading
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.databinding.FragmentLoginOTPBinding
+import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_IN_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 
 class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
@@ -40,12 +42,12 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loginViewModel.signUpSignInData.observe(viewLifecycleOwner) {
-            if (it.type == "sign-up") {
+            if (it.type == SIGN_UP_SMALL) {
                 isSignUp = true
                 views.firstNameFieldTil.isVisible = true
                 views.lastNameFieldTil.isVisible = true
                 views.loginTitle.text = getString(R.string.auth_register)
-            } else if (it.type == "sign-in") {
+            } else if (it.type == SIGN_IN_SMALL) {
                 isSignUp = false
                 views.firstNameFieldTil.isVisible = false
                 views.lastNameFieldTil.isVisible = false

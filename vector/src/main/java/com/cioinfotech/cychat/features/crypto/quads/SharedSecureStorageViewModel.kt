@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.crypto.quads
 
+import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.Async
 import com.airbnb.mvrx.Fail
@@ -26,14 +27,16 @@ import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.assisted.AssistedFactory
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.platform.WaitingViewData
 import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.features.home.HomeActivity
+import com.cioinfotech.cychat.features.home.HomeActivityArgs
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -331,9 +334,20 @@ class SharedSecureStorageViewModel @AssistedInject constructor(
 
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: SharedSecureStorageViewState): SharedSecureStorageViewModel? {
-            val activity: SharedSecureStorageActivity = viewModelContext.activity()
-            val args: SharedSecureStorageActivity.Args = activity.intent.getParcelableExtra(MvRx.KEY_ARG) ?: error("Missing args")
-            return activity.viewModelFactory.create(state, args)
+            return when (val activity: Activity = viewModelContext.activity()) {
+                is SharedSecureStorageActivity -> {
+                    val args: SharedSecureStorageActivity.Args = activity.intent.getParcelableExtra(MvRx.KEY_ARG) ?: error("Missing args")
+                    activity.viewModelFactory.create(state, args)
+                }
+                is HomeActivity                -> {
+                    val homeArgs: HomeActivityArgs = activity.intent.getParcelableExtra(MvRx.KEY_ARG) ?: error("Missing args")
+                    val args: SharedSecureStorageActivity.Args = SharedSecureStorageActivity.Args(
+                            homeArgs.keyId, homeArgs.requestedSecrets, homeArgs.resultKeyStoreAlias
+                    )
+                    activity.sharedViewModelFactory.create(state, args)
+                }
+                else                           -> null
+            }
         }
     }
 }

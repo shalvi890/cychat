@@ -30,5 +30,6 @@ data class MatrixLoginData(
         @SerializedName("pwd")
         val password: String,
         val id: String,
-        val user_id: String
+        val user_id: String,
+        val secret_key: String? = null
 )

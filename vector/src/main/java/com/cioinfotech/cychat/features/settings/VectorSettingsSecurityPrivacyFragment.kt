@@ -48,6 +48,8 @@ import com.cioinfotech.cychat.databinding.DialogImportE2eKeysBinding
 import com.cioinfotech.cychat.features.crypto.keys.KeysExporter
 import com.cioinfotech.cychat.features.crypto.keys.KeysImporter
 import com.cioinfotech.cychat.features.crypto.keysbackup.settings.KeysBackupManageActivity
+import com.cioinfotech.cychat.features.crypto.recover.BootstrapBottomSheet
+import com.cioinfotech.cychat.features.crypto.recover.SetupMode
 import com.cioinfotech.cychat.features.navigation.Navigator
 import com.cioinfotech.cychat.features.pin.PinCodeStore
 import com.cioinfotech.cychat.features.pin.PinMode
@@ -63,7 +65,9 @@ import org.matrix.android.sdk.internal.crypto.crosssigning.isVerified
 import org.matrix.android.sdk.internal.crypto.model.ImportRoomKeysResult
 import org.matrix.android.sdk.internal.crypto.model.rest.DeviceInfo
 import org.matrix.android.sdk.internal.crypto.model.rest.DevicesListResponse
+import org.matrix.android.sdk.rx.SecretsSynchronisationInfo
 import org.matrix.android.sdk.rx.rx
+import timber.log.Timber
 import javax.inject.Inject
 
 class VectorSettingsSecurityPrivacyFragment @Inject constructor(
@@ -140,7 +144,7 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
         session.rx().liveSecretSynchronisationInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    refresh4SSection()
+                    refresh4SSection(it)
                     refreshXSigningStatus()
                 }.also {
                     disposables.add(it)
@@ -173,7 +177,8 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
         disposables.clear()
     }
 
-    private fun refresh4SSection() {
+    private fun refresh4SSection(info: SecretsSynchronisationInfo) {
+        Timber.log(0, info.toString())
 //        // it's a lot of if / else if / else
 //        // But it's not yet clear how to manage all cases
 //        if (!info.isCrossSigningEnabled) {
@@ -183,12 +188,12 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
 //            if (!info.isBackupSetup) {
 //                if (info.isCrossSigningEnabled && info.allPrivateKeysKnown) {
 //                    // You can setup recovery!
-//                    secureBackupCategory.isVisible = true
-//                    secureBackupPreference.title = getString(R.string.settings_secure_backup_setup)
-//                    secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-//                        BootstrapBottomSheet.show(parentFragmentManager, SetupMode.NORMAL)
-//                        true
-//                    }
+        secureBackupCategory.isVisible = true
+        secureBackupPreference.title = getString(R.string.settings_secure_backup_setup)
+        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            BootstrapBottomSheet.show(parentFragmentManager, SetupMode.NORMAL)
+            true
+        }
 //                } else {
 //                    // just hide all, you can't setup from here
 //                    // you should synchronize to get gossips
@@ -225,14 +230,14 @@ class VectorSettingsSecurityPrivacyFragment @Inject constructor(
 //                } else {
 //                    // there is a backup, but this session is not trusted, or is missing some secrets
 //                    // you should enter passphrase to get them or verify against another session
-        secureBackupCategory.isVisible = true
-        secureBackupPreference.title = getString(R.string.settings_secure_backup_enter_to_setup)
-        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            vectorActivity.let {
-                it.navigator.requestSelfSessionVerification(it)
-            }
-            true
-        }
+//        secureBackupCategory.isVisible = true
+//        secureBackupPreference.title = getString(R.string.settings_secure_backup_enter_to_setup)
+//        secureBackupPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//            vectorActivity.let {
+//                it.navigator.requestSelfSessionVerification(it)
+//            }
+//            true
+//        }
 //                }
 //            }
 //        }

@@ -46,10 +46,16 @@ object NetworkConstants {
     const val COUNTRY_LIST = "/get-settings"
     const val RESENT_OTP = "/resend-otp"
     const val GET_DOMAIN_DETAILS = "/get-company-name-and-logo"
-
+    const val UPDATE_RECOVERY_KEY = "/setsecretkey"
     const val CY_CHAT_ENV = "CY_CHAT_ENV"
     const val BASE_URL = "BASE_URL"
     const val USER_ID = "USER_ID"
+    const val USER_ID_SMALL = "user_id"
     const val DOMAIN_NAME = "DOMAIN_NAME"
     const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
+    const val SECRET_KEY = "SECRET_KEY"
+    const val SECRET_KEY_SMALL = "secret-key"
+    const val SIGN_UP_SMALL = "sign-up"
+    const val SIGN_IN_SMALL = "sign-in"
+    const val SIGNING_MODE = "SIGNING_MODE" // true - Sign Up & false - Sign In
 }

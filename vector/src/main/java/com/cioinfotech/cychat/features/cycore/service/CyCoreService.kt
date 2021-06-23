@@ -18,7 +18,9 @@ package com.cioinfotech.cychat.features.cycore.service
 
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
 import io.reactivex.Single
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 
 interface CyCoreService {
-    fun cyGetDomainDetails(auth: String, hashMap: HashMap<String, String>, url: String): Single<DomainDetails>
+    fun cyGetDomainDetails(auth: String, userId: String, url: String): Single<DomainDetails>
+    fun cyUpdateRecoveryKey(auth: String, hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
 }

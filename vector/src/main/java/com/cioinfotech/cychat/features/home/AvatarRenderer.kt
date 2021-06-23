@@ -110,6 +110,15 @@ class AvatarRenderer @Inject constructor(private val activeSessionHolder: Active
                 .into(DrawableImageViewTarget(imageView))
     }
 
+    @UiThread
+    fun render(glideRequests: GlideRequests,
+               drawable: String?,
+               imageView: ImageView) {
+        buildGlideRequest(glideRequests, drawable)
+                .apply(RequestOptions.circleCropTransform())
+                .into(DrawableImageViewTarget(imageView))
+    }
+
     @AnyThread
     @Throws
     fun shortcutDrawable(glideRequests: GlideRequests, matrixItem: MatrixItem, iconSize: Int): Bitmap {

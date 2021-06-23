@@ -29,7 +29,7 @@
         android:icon="@drawable/ic_video"
         android:title="@string/action_video_call"
         android:visible="false"
-        app:iconTint="@color/riotx_accent"
+        app:iconTint="@color/white"
         app:showAsAction="always"
         tools:visible="true" />
 
@@ -38,7 +38,7 @@
         android:icon="@drawable/ic_phone"
         android:title="@string/call"
         android:visible="false"
-        app:iconTint="@color/riotx_accent"
+        app:iconTint="@color/white"
         app:showAsAction="always"
         tools:visible="true" />
 
