@@ -19,7 +19,9 @@ package com.cioinfotech.cychat.features.home.room.filtered
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ScreenComponent
 import com.cioinfotech.cychat.core.extensions.replaceFragment
@@ -51,6 +53,8 @@ class FilteredRoomsActivity : VectorBaseActivity<ActivityFilteredRoomsBinding>()
             val params = RoomListParams(RoomListDisplayMode.FILTERED)
             replaceFragment(R.id.filteredRoomsFragmentContainer, RoomListFragment::class.java, params, FRAGMENT_TAG)
         }
+        /** To Change Text Hint Color */
+        views.filteredRoomsSearchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text).setHintTextColor(ContextCompat.getColor(this, R.color.white))
         views.filteredRoomsSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 return true
