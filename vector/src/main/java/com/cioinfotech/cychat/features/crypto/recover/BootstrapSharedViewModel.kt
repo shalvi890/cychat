@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.crypto.recover
 
 import androidx.lifecycle.viewModelScope
+import com.airbnb.mvrx.ActivityViewModelContext
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.Loading
@@ -24,10 +25,6 @@ import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
-import com.nulabinc.zxcvbn.Zxcvbn
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.error.ErrorFormatter
 import com.cioinfotech.cychat.core.extensions.exhaustive
@@ -35,22 +32,27 @@ import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.platform.WaitingViewData
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.features.auth.ReAuthActivity
+import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.login.ReAuthHelper
+import com.nulabinc.zxcvbn.Zxcvbn
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.matrix.android.sdk.api.auth.UIABaseAuth
 import org.matrix.android.sdk.api.auth.UserInteractiveAuthInterceptor
+import org.matrix.android.sdk.api.auth.UserPasswordAuth
 import org.matrix.android.sdk.api.auth.data.LoginFlowTypes
+import org.matrix.android.sdk.api.auth.registration.RegistrationFlowResponse
+import org.matrix.android.sdk.api.auth.registration.nextUncompletedStage
 import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.securestorage.RawBytesKeySpec
-import org.matrix.android.sdk.api.auth.registration.RegistrationFlowResponse
-import org.matrix.android.sdk.api.auth.registration.nextUncompletedStage
 import org.matrix.android.sdk.internal.crypto.crosssigning.fromBase64
 import org.matrix.android.sdk.internal.crypto.keysbackup.model.rest.KeysVersionResult
 import org.matrix.android.sdk.internal.crypto.keysbackup.util.extractCurveKeyFromRecoveryKey
 import org.matrix.android.sdk.internal.crypto.model.rest.DefaultBaseAuth
-import org.matrix.android.sdk.api.auth.UIABaseAuth
-import org.matrix.android.sdk.api.auth.UserPasswordAuth
 import org.matrix.android.sdk.internal.util.awaitCallback
 import java.io.OutputStream
 import kotlin.coroutines.Continuation
@@ -443,6 +445,7 @@ class BootstrapSharedViewModel @AssistedInject constructor(
                         _viewEvents.post(BootstrapViewEvents.Dismiss(true))
                     }
                     is BootstrapResult.Success                 -> {
+                        _viewEvents.post(BootstrapViewEvents.SyncWithServer(bootstrapResult.keyInfo))
                         setState {
                             copy(
                                     recoveryKeyCreationInfo = bootstrapResult.keyInfo,
@@ -583,10 +586,20 @@ class BootstrapSharedViewModel @AssistedInject constructor(
     companion object : MvRxViewModelFactory<BootstrapSharedViewModel, BootstrapViewState> {
 
         override fun create(viewModelContext: ViewModelContext, state: BootstrapViewState): BootstrapSharedViewModel? {
-            val fragment: BootstrapBottomSheet = (viewModelContext as FragmentViewModelContext).fragment()
-            val args: BootstrapBottomSheet.Args = fragment.arguments?.getParcelable(BootstrapBottomSheet.EXTRA_ARGS)
-                    ?: BootstrapBottomSheet.Args(SetupMode.CROSS_SIGNING_ONLY)
-            return fragment.bootstrapViewModelFactory.create(state, args)
+            return when (viewModelContext) {
+                is FragmentViewModelContext -> {
+                    val fragment: BootstrapBottomSheet = viewModelContext.fragment()
+                    val args: BootstrapBottomSheet.Args = fragment.arguments?.getParcelable(BootstrapBottomSheet.EXTRA_ARGS)
+                            ?: BootstrapBottomSheet.Args(SetupMode.CROSS_SIGNING_ONLY)
+                    fragment.bootstrapViewModelFactory.create(state, args)
+                }
+                is ActivityViewModelContext -> {
+                    val activity: HomeActivity = viewModelContext.activity()
+                    val args = BootstrapBottomSheet.Args(SetupMode.NORMAL)
+                    activity.bootstrapViewModelFactory.create(state, args)
+                }
+                else                        -> null
+            }
         }
     }
 }

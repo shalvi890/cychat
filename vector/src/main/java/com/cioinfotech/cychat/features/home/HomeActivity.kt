@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -49,7 +48,11 @@ import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageAction
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageActivity
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageViewEvent
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageViewModel
+import com.cioinfotech.cychat.features.crypto.recover.BootstrapActions
+import com.cioinfotech.cychat.features.crypto.recover.BootstrapSharedViewModel
+import com.cioinfotech.cychat.features.crypto.recover.BootstrapViewEvents
 import com.cioinfotech.cychat.features.crypto.verification.VerificationAction
+import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
 import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
@@ -73,6 +76,7 @@ import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_S
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.api.util.MatrixItem
+import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
@@ -98,17 +102,20 @@ class HomeActivity :
         NavigationInterceptor {
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
-//    private lateinit var cyChatViewModel: CyCoreViewModel
+    private lateinit var cyChatViewModel: CyCoreViewModel
 
     private val homeActivityViewModel: HomeActivityViewModel by viewModel()
 
     @Inject lateinit var viewModelFactory: HomeActivityViewModel.Factory
 
-    //    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by viewModel()
     @Inject lateinit var serverBackupviewModelFactory: ServerBackupStatusViewModel.Factory
 
     private val viewModel: SharedSecureStorageViewModel by viewModel()
     @Inject lateinit var sharedViewModelFactory: SharedSecureStorageViewModel.Factory
+
+    @Inject
+    lateinit var bootstrapViewModelFactory: BootstrapSharedViewModel.Factory
+    private val bootStrapViewModel by viewModel(BootstrapSharedViewModel::class)
 
     @Inject lateinit var activeSessionHolder: ActiveSessionHolder
     @Inject lateinit var vectorUncaughtExceptionHandler: VectorUncaughtExceptionHandler
@@ -149,14 +156,29 @@ class HomeActivity :
         views.tvEnvironment.text = pref.getString(CY_CHAT_ENV, "")
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
-        if (pref.getBoolean(SIGNING_MODE, false))
-            Toast.makeText(this, "Signing Up Completed", Toast.LENGTH_LONG).show()
-//        views.drawerLayout.addDrawerListener(drawerListener)
+
         if (isFirstCreation()) {
             replaceFragment(R.id.homeDetailFragmentContainer, LoadingFragment::class.java)
             replaceFragment(R.id.homeDrawerFragmentContainer, HomeDrawerFragment::class.java)
-//            cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
-//            cyChatViewModel.handleCyGetDetails()
+
+            if (pref.getBoolean(SIGNING_MODE, false)) {
+                cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+                bootStrapViewModel.handle(BootstrapActions.Start(userWantsToEnterPassphrase = false))
+                bootStrapViewModel.observeViewEvents { event ->
+                    when (event) {
+                        is BootstrapViewEvents.SyncWithServer -> {
+                            cyChatViewModel.handleUpdateRecoveryToken(AUTH_KEY, event.key.recoveryKey)
+                            pref.edit().apply {
+                                putBoolean(SIGNING_MODE, false)
+                                apply()
+                            }
+                        }
+                        else                                  -> Unit
+                    }
+                }
+            }
+
+            handleIntent(intent)
         }
 
         sharedActionViewModel
@@ -176,11 +198,8 @@ class HomeActivity :
 
         val args = intent.getParcelableExtra<HomeActivityArgs>(MvRx.KEY_ARG)
 
-        if (args?.clearNotification == true) {
+        if (args?.clearNotification == true)
             notificationDrawerManager.clearAllEvents()
-        }
-
-        viewModel.observeViewEvents { observeViewEvents(it) }
 
         homeActivityViewModel.observeViewEvents {
             when (it) {
@@ -192,12 +211,9 @@ class HomeActivity :
         }
         homeActivityViewModel.subscribe(this) { renderState(it) }
 
-        shortcutsHandler.observeRoomsAndBuildShortcuts()
-                .disposeOnDestroy()
+        shortcutsHandler.observeRoomsAndBuildShortcuts().disposeOnDestroy()
 
-        if (isFirstCreation()) {
-            handleIntent(intent)
-        }
+        viewModel.observeViewEvents { observeViewEvents(it) }
     }
 
     private fun observeViewEvents(it: SharedSecureStorageViewEvent?) {

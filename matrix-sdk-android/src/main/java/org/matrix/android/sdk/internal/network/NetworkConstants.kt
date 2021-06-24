@@ -54,8 +54,9 @@ object NetworkConstants {
     const val DOMAIN_NAME = "DOMAIN_NAME"
     const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
     const val SECRET_KEY = "SECRET_KEY"
-    const val SECRET_KEY_SMALL = "secret-key"
+    const val SECRET_KEY_SMALL = "secret_key"
     const val SIGN_UP_SMALL = "sign-up"
     const val SIGN_IN_SMALL = "sign-in"
     const val SIGNING_MODE = "SIGNING_MODE" // true - Sign Up & false - Sign In
+    const val AUTH_KEY = "Bearer Avdhut"
 }

@@ -31,6 +31,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
@@ -62,7 +63,7 @@ class CyCoreViewModel @Inject constructor(
         var userId = ""
         pref.getString(USER_ID, "")?.let { userId = it }
         url?.let {
-            cyCoreService.cyGetDomainDetails("Bearer Avdhut", userId, it)
+            cyCoreService.cyGetDomainDetails(AUTH_KEY, userId, it)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getDomainDetails())
@@ -110,6 +111,8 @@ class CyCoreViewModel @Inject constructor(
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {
+                if (t.status != "ok")
+                    Timber.log(0, t.toString())
             }
 
             override fun onSubscribe(d: Disposable) {}

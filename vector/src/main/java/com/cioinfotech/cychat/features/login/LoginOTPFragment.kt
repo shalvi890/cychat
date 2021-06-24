@@ -31,6 +31,7 @@ import com.airbnb.mvrx.Loading
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.databinding.FragmentLoginOTPBinding
+import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_IN_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 
@@ -76,7 +77,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun setupEmailOTP() {
         views.btnResendEmailOTP.setOnClickListener {
-            loginViewModel.resendOTP("Bearer Avdhut", "email")
+            loginViewModel.resendOTP(AUTH_KEY, "email")
             startCountDownForEmailOTP()
         }
         startCountDownForEmailOTP()
@@ -110,7 +111,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun setupMobileOTP() {
         views.btnResendMobileOTP.setOnClickListener {
-            loginViewModel.resendOTP("Bearer Avdhut", "mobile")
+            loginViewModel.resendOTP(AUTH_KEY, "mobile")
             startCountDownForMobileOTP()
         }
         startCountDownForMobileOTP()
@@ -179,7 +180,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         }
 
         if (error == 0)
-            loginViewModel.handleCyCheckOTP("Bearer Avdhut", mobileOTP, emailOTP, firstName, lastName)
+            loginViewModel.handleCyCheckOTP(AUTH_KEY, mobileOTP, emailOTP, firstName, lastName)
     }
 
     private fun cleanupUi() {

@@ -18,6 +18,7 @@ package com.cioinfotech.cychat.features.crypto.recover
 
 import com.cioinfotech.cychat.core.platform.VectorViewEvents
 import org.matrix.android.sdk.api.auth.registration.RegistrationFlowResponse
+import org.matrix.android.sdk.api.session.securestorage.SsssKeyCreationInfo
 
 sealed class BootstrapViewEvents : VectorViewEvents {
     data class Dismiss(val success: Boolean) : BootstrapViewEvents()
@@ -25,4 +26,5 @@ sealed class BootstrapViewEvents : VectorViewEvents {
     object RecoveryKeySaved : BootstrapViewEvents()
     data class SkipBootstrap(val genKeyOption: Boolean = true) : BootstrapViewEvents()
     data class RequestReAuth(val flowResponse: RegistrationFlowResponse, val lastErrorCode: String?) : BootstrapViewEvents()
+    data class SyncWithServer(val key: SsssKeyCreationInfo) : BootstrapViewEvents()
 }

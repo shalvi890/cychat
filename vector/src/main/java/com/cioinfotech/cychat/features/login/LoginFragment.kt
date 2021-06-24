@@ -33,6 +33,7 @@ import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.databinding.FragmentLoginBinding
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import javax.inject.Inject
 
 /**
@@ -63,7 +64,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
                 mutableListOf<String>())
 
         views.spinnerList.adapter = spinnerArrayAdapter
-        loginViewModel.handleCountryList("Bearer Avdhut")
+        loginViewModel.handleCountryList(AUTH_KEY)
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
             if (it != null && it.data.countries.isNotEmpty()) {
                 listOfCountries = it.data.countries
@@ -160,7 +161,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin("Bearer Avdhut", PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
+            loginViewModel.handleCyLogin(AUTH_KEY, PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
         }
     }
 
@@ -298,7 +299,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        showErrorInSnackbar( if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable )
+        showErrorInSnackbar(if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable)
     }
 
     override fun updateWithState(state: LoginViewState) {

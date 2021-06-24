@@ -275,35 +275,10 @@ class HomeActivityViewModel @AssistedInject constructor(
                                         }
                                     })
                         }
-
-//                        setState {
-//                            copy(
-//                                    verifyingFrom4S = false,
-//                                    verifiedFromPrivateKeys = true
-//                            )
-//                        }
-
-                        // try the keybackup
                         tentativeRestoreBackup(res)
                     }
-//                    else {
-//                        setState {
-//                            copy(
-//                                    verifyingFrom4S = false
-//                            )
-//                        }
-//                        // POP UP something
-//                        _viewEvents.post(VerificationBottomSheetViewEvents.ModalError(stringProvider.getString(R.string.error_failed_to_import_keys)))
-//                    }
                 }
             } catch (failure: Throwable) {
-//                setState {
-//                    copy(
-//                            verifyingFrom4S = false
-//                    )
-//                }
-//                _viewEvents.post(
-//                        VerificationBottomSheetViewEvents.ModalError(failure.localizedMessage ?: stringProvider.getString(R.string.unexpected_error)))
             }
         }
     }
