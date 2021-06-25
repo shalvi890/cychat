@@ -3288,4 +3288,5 @@
     <string name="uat">UAT</string>
     <string name="feature_is_coming_soon">\"Invite From Other Organization\" feature is coming soon!</string>
     <string name="cant_play_audio">Can\'t Play Audio</string>
+    <string name="environment_connected">Environment Connected</string>
 </resources>

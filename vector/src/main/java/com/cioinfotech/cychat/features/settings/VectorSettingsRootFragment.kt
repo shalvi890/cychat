@@ -16,8 +16,12 @@
 
 package com.cioinfotech.cychat.features.settings
 
+import android.os.Bundle
+import android.view.View
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.preference.VectorPreference
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import javax.inject.Inject
 
 class VectorSettingsRootFragment @Inject constructor() : VectorSettingsBaseFragment() {
@@ -33,5 +37,16 @@ class VectorSettingsRootFragment @Inject constructor() : VectorSettingsBaseFragm
         for (i in 0 until preferenceScreen.preferenceCount) {
             (preferenceScreen.getPreference(i) as? VectorPreference)?.let { it.tintIcon = true }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
+        findPreference<VectorPreference>(ENVIRONMENT)?.summary = pref.getString(NetworkConstants.CY_CHAT_ENV, "")
+    }
+
+    companion object {
+        //Cychat Preference
+        const val ENVIRONMENT = "ENVIRONMENT"
     }
 }

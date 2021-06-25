@@ -48,12 +48,16 @@
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_advanced"
         android:title="@string/settings_advanced_settings"
-        app:isPreferenceVisible="false"
-        app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsAdvancedSettingsFragment" />
+        app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsAdvancedSettingsFragment"
+        app:isPreferenceVisible="false" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_help_about"
         android:title="@string/preference_root_help_about"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsHelpAboutFragment" />
 
+    <com.cioinfotech.cychat.core.preference.VectorPreference
+        android:icon="@drawable/ic_settings_root_flair"
+        android:key="ENVIRONMENT"
+        android:title="@string/environment_connected" />
 </androidx.preference.PreferenceScreen>

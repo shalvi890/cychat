@@ -25,7 +25,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -59,7 +58,6 @@ import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
 import com.cioinfotech.cychat.features.permalink.PermalinkHandler
 import com.cioinfotech.cychat.features.popup.DefaultVectorAlert
 import com.cioinfotech.cychat.features.popup.PopupAlertManager
-import com.cioinfotech.cychat.features.popup.VerificationVectorAlert
 import com.cioinfotech.cychat.features.rageshake.VectorUncaughtExceptionHandler
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.settings.VectorSettingsActivity
@@ -75,9 +73,7 @@ import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_S
 import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
-import org.matrix.android.sdk.api.util.MatrixItem
 import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
-import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
@@ -152,8 +148,6 @@ class HomeActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val pref = DefaultSharedPreferences.getInstance(applicationContext)
-        views.tvEnvironment.isVisible = true
-        views.tvEnvironment.text = pref.getString(CY_CHAT_ENV, "")
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
 
@@ -203,10 +197,10 @@ class HomeActivity :
 
         homeActivityViewModel.observeViewEvents {
             when (it) {
-                is HomeActivityViewEvents.AskPasswordToInitCrossSigning -> handleAskPasswordToInitCrossSigning(it)
-                is HomeActivityViewEvents.OnNewSession                  -> handleOnNewSession(it)
+                is HomeActivityViewEvents.AskPasswordToInitCrossSigning -> Unit //handleAskPasswordToInitCrossSigning(it)
+                is HomeActivityViewEvents.OnNewSession                  -> handleOnNewSession()
                 HomeActivityViewEvents.PromptToEnableSessionPush        -> handlePromptToEnablePush()
-                is HomeActivityViewEvents.OnCrossSignedInvalidated      -> handleCrossSigningInvalidated(it)
+                is HomeActivityViewEvents.OnCrossSignedInvalidated      -> Unit //handleCrossSigningInvalidated(it)
             }.exhaustive
         }
         homeActivityViewModel.subscribe(this) { renderState(it) }
@@ -287,30 +281,29 @@ class HomeActivity :
         }.exhaustive
     }
 
-    private fun handleAskPasswordToInitCrossSigning(events: HomeActivityViewEvents.AskPasswordToInitCrossSigning) {
-        // We need to ask
-        promptSecurityEvent(
-                events.userItem,
-                R.string.upgrade_security,
-                R.string.security_prompt_text
-        ) {
-            it.navigator.upgradeSessionSecurity(it, true)
-        }
-    }
+//    private fun handleAskPasswordToInitCrossSigning(events: HomeActivityViewEvents.AskPasswordToInitCrossSigning) {
+//        // We need to ask
+//        promptSecurityEvent(
+//                events.userItem,
+//                R.string.upgrade_security,
+//                R.string.security_prompt_text
+//        ) {
+//            it.navigator.upgradeSessionSecurity(it, true)
+//        }
+//    }
 
-    private fun handleCrossSigningInvalidated(event: HomeActivityViewEvents.OnCrossSignedInvalidated) {
-        // We need to ask
-        promptSecurityEvent(
-                event.userItem,
-                R.string.crosssigning_verify_this_session,
-                R.string.confirm_your_identity
-        ) {
-            it.navigator.waitSessionVerification(it)
-        }
-    }
+//    private fun handleCrossSigningInvalidated(event: HomeActivityViewEvents.OnCrossSignedInvalidated) {
+//        // We need to ask
+//        promptSecurityEvent(
+//                event.userItem,
+//                R.string.crosssigning_verify_this_session,
+//                R.string.confirm_your_identity
+//        ) {
+//            it.navigator.waitSessionVerification(it)
+//        }
+//    }
 
-    private fun handleOnNewSession(event: HomeActivityViewEvents.OnNewSession) {
-        Timber.log(0, event.toString())
+    private fun handleOnNewSession() {//event: HomeActivityViewEvents.OnNewSession
         DefaultSharedPreferences.getInstance(this).getString(SECRET_KEY, null)?.let {
             viewModel.handle(SharedSecureStorageAction.SubmitKey(it))
         }
@@ -363,25 +356,25 @@ class HomeActivity :
         )
     }
 
-    private fun promptSecurityEvent(userItem: MatrixItem.UserItem?, titleRes: Int, descRes: Int, action: ((VectorBaseActivity<*>) -> Unit)) {
-        popupAlertManager.postVectorAlert(
-                VerificationVectorAlert(
-                        uid = "upgradeSecurity",
-                        title = getString(titleRes),
-                        description = getString(descRes),
-                        iconId = R.drawable.ic_shield_warning
-                ).apply {
-                    viewBinder = VerificationVectorAlert.ViewBinder(userItem, avatarRenderer)
-                    colorInt = ContextCompat.getColor(this@HomeActivity, R.color.riotx_positive_accent)
-                    contentAction = Runnable {
-                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)?.let {
-                            action(it)
-                        }
-                    }
-                    dismissedAction = Runnable {}
-                }
-        )
-    }
+//    private fun promptSecurityEvent(userItem: MatrixItem.UserItem?, titleRes: Int, descRes: Int, action: ((VectorBaseActivity<*>) -> Unit)) {
+//        popupAlertManager.postVectorAlert(
+//                VerificationVectorAlert(
+//                        uid = "upgradeSecurity",
+//                        title = getString(titleRes),
+//                        description = getString(descRes),
+//                        iconId = R.drawable.ic_shield_warning
+//                ).apply {
+//                    viewBinder = VerificationVectorAlert.ViewBinder(userItem, avatarRenderer)
+//                    colorInt = ContextCompat.getColor(this@HomeActivity, R.color.riotx_positive_accent)
+//                    contentAction = Runnable {
+//                        (weakCurrentActivity?.get() as? VectorBaseActivity<*>)?.let {
+//                            action(it)
+//                        }
+//                    }
+//                    dismissedAction = Runnable {}
+//                }
+//        )
+//    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
