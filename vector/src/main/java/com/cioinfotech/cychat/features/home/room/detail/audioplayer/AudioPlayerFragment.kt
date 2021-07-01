@@ -34,7 +34,6 @@ class AudioPlayerFragment(private val url: String? = null, private val fileName:
 
     private val mediaPlayer = MediaPlayer()
 
-    private var isPlaying = false
     private var startTime = 0.0
     private var finalTime = 0.0
 
@@ -71,11 +70,12 @@ class AudioPlayerFragment(private val url: String? = null, private val fileName:
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
+        mediaPlayer.setOnCompletionListener {
+            views.btnSend.setImageResource(R.drawable.ic_play_arrow)
+        }
         views.btnSend.setOnClickListener {
-            if (isPlaying) {
+            if (mediaPlayer.isPlaying) {
                 views.btnSend.setImageResource(R.drawable.ic_play_arrow)
-                isPlaying = false
                 mediaPlayer.pause()
             } else
                 startPlayer()
@@ -87,31 +87,27 @@ class AudioPlayerFragment(private val url: String? = null, private val fileName:
     }
 
     private fun startPlayer() {
-//        views.clWaitingView.waitingView.isVisible = false
-        views.btnSend.setImageResource(R.drawable.ic_pause)
-        isPlaying = true
         mediaPlayer.start()
         finalTime = mediaPlayer.duration.toDouble()
         startTime = mediaPlayer.currentPosition.toDouble()
+        views.btnSend.setImageResource(R.drawable.ic_pause)
 
         if (oneTimeOnly == 0) {
             views.seekBar.max = (finalTime.toInt())
             oneTimeOnly = 1
         }
 
-        views.tvTime.text = (String.format("%d min, %d sec",
+        views.tvTime.text = String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
                 TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())))
-                )
 
-        views.tvTotal.text = (String.format("%d min, %d sec",
+        views.tvTotal.text = String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
                 (TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())).toInt() % 60)
-                )
 
-        views.seekBar.progress = (startTime.toInt())
-        myHandler.postDelayed(updateSongTime, 100)
+        views.seekBar.progress = startTime.toInt()
+        myHandler.postDelayed(updateSongTime, 1)
 
         views.btnPlayAhead.setOnClickListener {
             val temp = startTime
