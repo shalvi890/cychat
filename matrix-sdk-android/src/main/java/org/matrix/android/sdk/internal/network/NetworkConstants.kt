@@ -40,6 +40,14 @@ object NetworkConstants {
     // Federation
     const val URI_FEDERATION_PATH = "_matrix/federation/v1/"
 
+    const val DEV_URL = "https://cychat-dev.cioinfotech.com"
+    const val QA_URL = "https://cyberiaqa-api.cioinfotech.com"
+    const val UAT_URL = "https://cychat-ct.cioinfotech.com"
+
+    const val DEV = "Development"
+    const val QA = "QA"
+    const val UAT = "UAT"
+
     // Cy Chat APIs
     const val USER_LOGIN = "/user-login"
     const val CHECK_OTP = "/check-otp"
@@ -51,6 +59,10 @@ object NetworkConstants {
     const val BASE_URL = "BASE_URL"
     const val USER_ID = "USER_ID"
     const val USER_ID_SMALL = "user_id"
+    const val ACCESS_TOKEN = "ACCESS_TOKEN"
+    const val ACCESS_TOKEN_SMALL = "access_token"
+    const val REQ_ID = "REQ_ID"
+    const val REQ_ID_SMALL = "req_id"
     const val DOMAIN_NAME = "DOMAIN_NAME"
     const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
     const val SECRET_KEY = "SECRET_KEY"

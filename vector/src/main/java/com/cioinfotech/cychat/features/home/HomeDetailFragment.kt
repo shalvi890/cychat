@@ -21,7 +21,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import com.airbnb.mvrx.activityViewModel
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
@@ -42,10 +41,8 @@ import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.home.room.list.RoomListFragment
 import com.cioinfotech.cychat.features.home.room.list.RoomListParams
-import com.cioinfotech.cychat.features.popup.PopupAlertManager
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.themes.ThemeUtils
-import com.cioinfotech.cychat.features.workers.signout.BannerState
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewModel
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.google.android.material.badge.BadgeDrawable
@@ -62,7 +59,6 @@ class HomeDetailFragment @Inject constructor(
         val homeDetailViewModelFactory: HomeDetailViewModel.Factory,
         private val serverBackupStatusViewModelFactory: ServerBackupStatusViewModel.Factory,
         private val avatarRenderer: AvatarRenderer,
-        private val alertManager: PopupAlertManager,
         private val callManager: WebRtcCallManager,
         private val vectorPreferences: VectorPreferences
 ) : VectorBaseFragment<FragmentHomeDetailBinding>(),
@@ -73,7 +69,7 @@ class HomeDetailFragment @Inject constructor(
     private val viewModel: HomeDetailViewModel by fragmentViewModel()
 
     //    private val unknownDeviceDetectorSharedViewModel: UnknownDeviceDetectorSharedViewModel by activityViewModel()
-    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by activityViewModel()
+//    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by activityViewModel()
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
     private lateinit var sharedCallActionViewModel: SharedKnownCallsViewModel
@@ -261,16 +257,16 @@ class HomeDetailFragment @Inject constructor(
 //    }
 
     private fun setupKeysBackupBanner() {
-        serverBackupStatusViewModel
-                .subscribe(this) {
-                    when (val banState = it.bannerState.invoke()) {
-                        is BannerState.Setup  -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Setup(banState.numberOfKeys), false)
-                        BannerState.BackingUp -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.BackingUp, false)
-                        null,
-                        BannerState.Hidden    -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Hidden, false)
-                    }
-                }
-        views.homeKeysBackupBanner.delegate = this
+//        serverBackupStatusViewModel
+//                .subscribe(this) {
+//                    when (val banState = it.bannerState.invoke()) {
+//                        is BannerState.Setup  -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Setup(banState.numberOfKeys), false)
+//                        BannerState.BackingUp -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.BackingUp, false)
+//                        null,
+//                        BannerState.Hidden    -> views.homeKeysBackupBanner.render(KeysBackupBanner.State.Hidden, false)
+//                    }
+//                }
+//        views.homeKeysBackupBanner.delegate = this
     }
 
     private fun setupActiveCallView() {

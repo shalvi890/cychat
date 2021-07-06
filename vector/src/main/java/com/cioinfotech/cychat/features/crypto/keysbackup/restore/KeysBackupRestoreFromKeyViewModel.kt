@@ -55,4 +55,17 @@ class KeysBackupRestoreFromKeyViewModel @Inject constructor(
             }
         }
     }
+
+    fun recoverKeys(sharedViewModel: KeysBackupRestoreSharedViewModel, key: String) {
+        sharedViewModel.loadingEvent.postValue(WaitingViewData(stringProvider.getString(R.string.loading)))
+        recoveryCodeErrorText.value = null
+        viewModelScope.launch(Dispatchers.IO) {
+            val recoveryKey = recoveryCode.value ?: key
+            try {
+                sharedViewModel.recoverUsingBackupRecoveryKey(recoveryKey)
+            } catch (failure: Throwable) {
+                recoveryCodeErrorText.postValue(stringProvider.getString(R.string.keys_backup_recovery_code_error_decrypt))
+            }
+        }
+    }
 }

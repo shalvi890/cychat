@@ -16,6 +16,10 @@
 
 package com.cioinfotech.cychat.features.crypto.recover
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.ActivityViewModelContext
 import com.airbnb.mvrx.Fail
@@ -33,7 +37,6 @@ import com.cioinfotech.cychat.core.platform.WaitingViewData
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.features.auth.ReAuthActivity
 import com.cioinfotech.cychat.features.home.HomeActivity
-import com.cioinfotech.cychat.features.login.ReAuthHelper
 import com.nulabinc.zxcvbn.Zxcvbn
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -59,6 +62,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+@SuppressLint("StaticFieldLeak")
 class BootstrapSharedViewModel @AssistedInject constructor(
         @Assisted initialState: BootstrapViewState,
         @Assisted val args: BootstrapBottomSheet.Args,
@@ -67,7 +71,7 @@ class BootstrapSharedViewModel @AssistedInject constructor(
         private val session: Session,
         private val bootstrapTask: BootstrapCrossSigningTask,
         private val migrationTask: BackupToQuadSMigrationTask,
-        private val reAuthHelper: ReAuthHelper
+        private val context: Context
 ) : VectorViewModel<BootstrapViewState, BootstrapActions, BootstrapViewEvents>(initialState) {
 
     private var doesKeyBackupExist: Boolean = false
@@ -105,36 +109,52 @@ class BootstrapSharedViewModel @AssistedInject constructor(
                 setState {
                     copy(step = BootstrapStep.CheckingMigration)
                 }
-
-                // We need to check if there is an existing backup
-                viewModelScope.launch(Dispatchers.IO) {
-                    val version = awaitCallback<KeysVersionResult?> {
-                        session.cryptoService().keysBackupService().getCurrentVersion(it)
-                    }
-                    if (version == null) {
-                        // we just resume plain bootstrap
-                        doesKeyBackupExist = false
-                        setState {
-                            copy(step = BootstrapStep.FirstForm(keyBackUpExist = doesKeyBackupExist))
+                if (isNetworkConnected(context)) {
+                    // We need to check if there is an existing backup
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val version = awaitCallback<KeysVersionResult?> {
+                            session.cryptoService().keysBackupService().getCurrentVersion(it)
                         }
-                    } else {
-                        // we need to get existing backup passphrase/key and convert to SSSS
-                        val keyVersion = awaitCallback<KeysVersionResult?> {
-                            session.cryptoService().keysBackupService().getVersion(version.version, it)
-                        }
-                        if (keyVersion == null) {
-                            // strange case... just finish?
-                            _viewEvents.post(BootstrapViewEvents.Dismiss(false))
-                        } else {
-                            doesKeyBackupExist = true
-                            isBackupCreatedFromPassphrase = keyVersion.getAuthDataAsMegolmBackupAuthData()?.privateKeySalt != null
+                        if (version == null) {
+                            // we just resume plain bootstrap
+                            doesKeyBackupExist = false
                             setState {
                                 copy(step = BootstrapStep.FirstForm(keyBackUpExist = doesKeyBackupExist))
+                            }
+                        } else {
+                            // we need to get existing backup passphrase/key and convert to SSSS
+
+                            val keyVersion = awaitCallback<KeysVersionResult?> {
+                                session.cryptoService().keysBackupService().getVersion(version.version, it)
+                            }
+                            if (keyVersion == null) {
+                                // strange case... just finish?
+                                _viewEvents.post(BootstrapViewEvents.Dismiss(false))
+                            } else {
+                                doesKeyBackupExist = true
+                                isBackupCreatedFromPassphrase = keyVersion.getAuthDataAsMegolmBackupAuthData()?.privateKeySalt != null
+                                setState {
+                                    copy(step = BootstrapStep.FirstForm(keyBackUpExist = doesKeyBackupExist))
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun isNetworkConnected(context: Context): Boolean {
+        val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)     -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else                                                       -> false
         }
     }
 

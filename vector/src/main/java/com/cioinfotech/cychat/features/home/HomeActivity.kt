@@ -18,6 +18,8 @@ package com.cioinfotech.cychat.features.home
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -66,6 +68,10 @@ import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewMod
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.cioinfotech.cychat.push.fcm.FcmHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.session.crypto.crosssigning.KEYBACKUP_SECRET_SSSS_NAME
 import org.matrix.android.sdk.api.session.crypto.crosssigning.MASTER_KEY_SSSS_NAME
@@ -73,9 +79,8 @@ import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_S
 import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
-import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
-import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
 import org.matrix.android.sdk.internal.session.sync.initialSyncStrategy
 import timber.log.Timber
@@ -108,6 +113,9 @@ class HomeActivity :
 
     private val viewModel: SharedSecureStorageViewModel by viewModel()
     @Inject lateinit var sharedViewModelFactory: SharedSecureStorageViewModel.Factory
+
+//    private lateinit var keyViewModel: KeysBackupRestoreFromKeyViewModel
+//    private lateinit var sharedViewModel: KeysBackupRestoreSharedViewModel
 
     @Inject
     lateinit var bootstrapViewModelFactory: BootstrapSharedViewModel.Factory
@@ -147,31 +155,12 @@ class HomeActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val pref = DefaultSharedPreferences.getInstance(applicationContext)
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
 
         if (isFirstCreation()) {
             replaceFragment(R.id.homeDetailFragmentContainer, LoadingFragment::class.java)
             replaceFragment(R.id.homeDrawerFragmentContainer, HomeDrawerFragment::class.java)
-
-            if (pref.getBoolean(SIGNING_MODE, false)) {
-                cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
-                bootStrapViewModel.handle(BootstrapActions.Start(userWantsToEnterPassphrase = false))
-                bootStrapViewModel.observeViewEvents { event ->
-                    when (event) {
-                        is BootstrapViewEvents.SyncWithServer -> {
-                            cyChatViewModel.handleUpdateRecoveryToken(AUTH_KEY, event.key.recoveryKey)
-                            pref.edit().apply {
-                                putBoolean(SIGNING_MODE, false)
-                                apply()
-                            }
-                        }
-                        else                                  -> Unit
-                    }
-                }
-            }
-
             handleIntent(intent)
         }
 
@@ -208,6 +197,32 @@ class HomeActivity :
         shortcutsHandler.observeRoomsAndBuildShortcuts().disposeOnDestroy()
 
         viewModel.observeViewEvents { observeViewEvents(it) }
+
+        onFirstSession()
+    }
+
+    private fun onFirstSession() {
+        val pref = DefaultSharedPreferences.getInstance(applicationContext)
+        if (pref.getBoolean(NetworkConstants.SIGNING_MODE, false)) {
+            cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+            val job = GlobalScope.launch(Dispatchers.IO) {
+                while (pref.getBoolean(NetworkConstants.SIGNING_MODE, false)) {
+                    delay(2000)
+                    bootStrapViewModel.handle(BootstrapActions.Start(userWantsToEnterPassphrase = false))
+                }
+            }
+
+            bootStrapViewModel.observeViewEvents { event ->
+                if (event is BootstrapViewEvents.SyncWithServer) {
+                    cyChatViewModel.handleUpdateRecoveryToken(event.key.recoveryKey)
+                    pref.edit().apply {
+                        putBoolean(NetworkConstants.SIGNING_MODE, false)
+                        apply()
+                    }
+                    job.cancel()
+                }
+            }
+        }
     }
 
     private fun observeViewEvents(it: SharedSecureStorageViewEvent?) {
@@ -476,6 +491,22 @@ class HomeActivity :
         MatrixToBottomSheet.withLink(deepLink.toString(), listener)
                 .show(supportFragmentManager, "HA#MatrixToBottomSheet")
         return true
+    }
+
+    private fun isNetworkConnected(context: Context): Boolean {
+        val result: Boolean
+        val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw =
+                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)     -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else                                                       -> false
+        }
+        return result
     }
 
     companion object {

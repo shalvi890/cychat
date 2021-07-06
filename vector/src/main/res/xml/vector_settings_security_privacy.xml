@@ -15,8 +15,8 @@
     <!-- ************ Cryptography section ************ -->
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_CRYPTOGRAPHY_PREFERENCE_KEY"
-        app:isPreferenceVisible="false"
-        android:title="@string/settings_cryptography">
+        android:title="@string/settings_cryptography"
+        app:isPreferenceVisible="false">
 
         <com.cioinfotech.cychat.core.preference.VectorPreference
             android:key="SETTINGS_ENCRYPTION_CROSS_SIGNING_PREFERENCE_KEY"
@@ -55,8 +55,8 @@
     <!-- devices list entry point -->
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_DEVICES_LIST_PREFERENCE_KEY"
-        app:isPreferenceVisible="false"
-        android:title="@string/settings_active_sessions_list">
+        android:title="@string/settings_active_sessions_list"
+        app:isPreferenceVisible="false">
 
         <com.cioinfotech.cychat.core.preference.VectorPreference
             android:key="SETTINGS_SHOW_DEVICES_LIST_PREFERENCE_KEY"
@@ -84,7 +84,6 @@
 
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_CRYPTOGRAPHY_MANAGE_PREFERENCE_KEY"
-        app:isPreferenceVisible="false"
         android:title="@string/settings_cryptography_manage_keys">
 
         <com.cioinfotech.cychat.core.preference.VectorPreference
@@ -92,6 +91,7 @@
             android:persistent="false"
             android:summary="@string/encryption_settings_manage_message_recovery_summary"
             android:title="@string/encryption_message_recovery" />
+
         <com.cioinfotech.cychat.core.preference.VectorPreference
             android:key="SETTINGS_ENCRYPTION_EXPORT_E2E_ROOM_KEYS_PREFERENCE_KEY"
             android:summary="@string/encryption_export_room_keys_summary"
@@ -119,8 +119,8 @@
 
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_SECURITY_OTHER_CATEGORY"
-        app:isPreferenceVisible="false"
-        android:title="@string/settings_other">
+        android:title="@string/settings_other"
+        app:isPreferenceVisible="false">
 
         <com.cioinfotech.cychat.core.preference.VectorPreference
             android:key="SETTINGS_SECURITY_PIN"

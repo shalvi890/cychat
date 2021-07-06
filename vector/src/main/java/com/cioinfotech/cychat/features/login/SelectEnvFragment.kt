@@ -24,6 +24,12 @@ import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentSelectEnvBinding
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
+import org.matrix.android.sdk.internal.network.NetworkConstants.DEV
+import org.matrix.android.sdk.internal.network.NetworkConstants.DEV_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.QA
+import org.matrix.android.sdk.internal.network.NetworkConstants.QA_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.UAT
+import org.matrix.android.sdk.internal.network.NetworkConstants.UAT_URL
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 
 class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
@@ -35,30 +41,30 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         super.onViewCreated(view, savedInstanceState)
         val prefs = DefaultSharedPreferences.getInstance(requireContext())
         views.btnDev.setOnClickListener {
-            RetrofitFactory.BASE_URL = "https://cychat-dev.cioinfotech.com"
+            RetrofitFactory.BASE_URL = DEV_URL
             prefs.edit().apply {
                 putString(BASE_URL, RetrofitFactory.BASE_URL)
-                putString(CY_CHAT_ENV, "Development")
+                putString(CY_CHAT_ENV, DEV)
                 apply()
             }
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
         }
 
         views.btnTest.setOnClickListener {
-            RetrofitFactory.BASE_URL = "https://cyberiaqa-api.cioinfotech.com"
+            RetrofitFactory.BASE_URL = QA_URL
             prefs.edit().apply {
                 putString(BASE_URL, RetrofitFactory.BASE_URL)
-                putString(CY_CHAT_ENV, "QA")
+                putString(CY_CHAT_ENV, QA)
                 apply()
             }
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
         }
 
         views.btnUat.setOnClickListener {
-            RetrofitFactory.BASE_URL = "https://cychat-ct.cioinfotech.com"
+            RetrofitFactory.BASE_URL = UAT_URL
             prefs.edit().apply {
                 putString(BASE_URL, RetrofitFactory.BASE_URL)
-                putString(CY_CHAT_ENV, "UAT")
+                putString(CY_CHAT_ENV, UAT)
                 apply()
             }
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
