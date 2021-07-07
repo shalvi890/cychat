@@ -31,12 +31,14 @@ interface CyCoreAPI {
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @GET(NetworkConstants.GET_DOMAIN_DETAILS)
     fun getDomainDetails(
-            @Header("Authorization") auth: String,
-            @Query("user_id") userId: String): Single<DomainDetails>
+            @Header("Authorization") auth: String?,
+            @Header("reqid") reqId: String?,
+            @Query("user_id") userId: String?): Single<DomainDetails>
 
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.UPDATE_RECOVERY_KEY)
     fun updateRecoveryKey(
-            @Header("Authorization") auth: String,
+            @Header("Authorization") auth: String?,
+            @Header("reqid") reqId: String?,
             @Body map: HashMap<String, String>): Single<BaseResponse>
 }

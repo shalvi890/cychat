@@ -62,7 +62,7 @@ object NetworkConstants {
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
     const val ACCESS_TOKEN_SMALL = "access_token"
     const val REQ_ID = "REQ_ID"
-    const val REQ_ID_SMALL = "req_id"
+//    const val REQ_ID_SMALL = "req_id"
     const val DOMAIN_NAME = "DOMAIN_NAME"
     const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
     const val SECRET_KEY = "SECRET_KEY"
@@ -71,4 +71,5 @@ object NetworkConstants {
     const val SIGN_IN_SMALL = "sign-in"
     const val SIGNING_MODE = "SIGNING_MODE" // true - Sign Up & false - Sign In
     const val AUTH_KEY = "Bearer Avdhut"
+    const val BEARER = "Bearer "
 }

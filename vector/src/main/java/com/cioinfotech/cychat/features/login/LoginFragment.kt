@@ -33,7 +33,6 @@ import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.databinding.FragmentLoginBinding
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
-import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import javax.inject.Inject
 
 /**
@@ -64,7 +63,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
                 mutableListOf<String>())
 
         views.spinnerList.adapter = spinnerArrayAdapter
-        loginViewModel.handleCountryList(AUTH_KEY)
+        loginViewModel.handleCountryList()
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
             if (it != null && it.data.countries.isNotEmpty()) {
                 listOfCountries = it.data.countries
@@ -161,7 +160,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin(AUTH_KEY, PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
+            loginViewModel.handleCyLogin(PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
         }
     }
 

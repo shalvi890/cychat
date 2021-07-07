@@ -18,9 +18,7 @@ package org.matrix.android.sdk.internal.auth
 
 import android.net.Uri
 import dagger.Lazy
-import io.reactivex.Single
 import okhttp3.OkHttpClient
-import org.matrix.android.sdk.BuildConfig
 import org.matrix.android.sdk.api.auth.AuthenticationService
 import org.matrix.android.sdk.api.auth.data.Credentials
 import org.matrix.android.sdk.api.auth.data.HomeServerConnectionConfig
@@ -42,10 +40,6 @@ import org.matrix.android.sdk.internal.auth.version.Versions
 import org.matrix.android.sdk.internal.auth.version.isLoginAndRegistrationSupportedBySdk
 import org.matrix.android.sdk.internal.auth.version.isSupportedBySdk
 import org.matrix.android.sdk.internal.cy_auth.CyAuthAPI
-import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
-import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.di.Unauthenticated
@@ -404,11 +398,11 @@ internal class DefaultAuthenticationService @Inject constructor(
 
     override fun cyLogin(auth: String, loginParams: PasswordLoginParams) = buildCyAuthAPI().login(auth, loginParams)
 
-    override fun checkOTP(auth: String, verifyParams: VerifyOTPParams) = buildCyAuthAPI().checkOTP(auth, verifyParams)
+    override fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams) = buildCyAuthAPI().checkOTP(auth, reqId, verifyParams)
 
     override fun getCountryList(auth: String) = buildCyAuthAPI().getCountryList(auth)
 
-    override fun cyResendOTP(auth: String, hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(auth, hashMap)
+    override fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(auth, reqId, hashMap)
 
     private fun buildAuthAPI(homeServerConnectionConfig: HomeServerConnectionConfig): AuthAPI {
         val retrofit = retrofitFactory.create(buildClient(homeServerConnectionConfig), homeServerConnectionConfig.homeServerUri.toString())

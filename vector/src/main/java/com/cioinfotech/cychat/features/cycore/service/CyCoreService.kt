@@ -21,6 +21,6 @@ import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 
 interface CyCoreService {
-    fun cyGetDomainDetails(auth: String, userId: String, url: String): Single<DomainDetails>
-    fun cyUpdateRecoveryKey(auth: String, hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
+    fun cyGetDomainDetails(auth: String?, reqId: String?, userId: String?, url: String): Single<DomainDetails>
+    fun cyUpdateRecoveryKey(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
 }

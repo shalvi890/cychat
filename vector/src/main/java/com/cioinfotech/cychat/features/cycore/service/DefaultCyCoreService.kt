@@ -26,8 +26,8 @@ class DefaultCyCoreService @Inject constructor(
         private val okHttpClient: Lazy<OkHttpClient>,
         private val retrofitFactory: RetrofitFactory) : CyCoreService {
 
-    override fun cyGetDomainDetails(auth: String, userId: String, url: String) = buildCyCoreAPI(url).getDomainDetails(auth, userId)
-    override fun cyUpdateRecoveryKey(auth: String, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(auth, hashMap)
+    override fun cyGetDomainDetails(auth: String?, reqId: String?, userId: String?, url: String) = buildCyCoreAPI(url).getDomainDetails(auth, reqId, userId)
+    override fun cyUpdateRecoveryKey(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(auth, reqId, hashMap)
 
     private fun buildCyCoreAPI(url: String): CyCoreAPI {
         val retrofit = retrofitFactory.createWithBaseURL(buildClient(), url)

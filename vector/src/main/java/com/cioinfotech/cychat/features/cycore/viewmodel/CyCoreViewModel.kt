@@ -31,8 +31,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.network.NetworkConstants
-import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants.ACCESS_TOKEN
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID_SMALL
@@ -47,6 +48,9 @@ class CyCoreViewModel @Inject constructor(
 
     private var pref: SharedPreferences = DefaultSharedPreferences.getInstance(applicationContext)
     private var url = pref.getString(BASE_URL, null)
+    private var userId = pref.getString(USER_ID, null)
+    private var reqId = pref.getString(REQ_ID, null)
+    private var accessToken = pref.getString(ACCESS_TOKEN, null)
 
     init {
         handleCyGetDetails()
@@ -60,10 +64,8 @@ class CyCoreViewModel @Inject constructor(
     }
 
     private fun handleCyGetDetails() {
-        var userId = ""
-        pref.getString(USER_ID, "")?.let { userId = it }
         url?.let {
-            cyCoreService.cyGetDomainDetails(AUTH_KEY, userId, it)
+            cyCoreService.cyGetDomainDetails(accessToken, reqId, userId, it)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getDomainDetails())
@@ -96,11 +98,9 @@ class CyCoreViewModel @Inject constructor(
         }
     }
 
-    fun handleUpdateRecoveryToken(auth: String, text: String) {
-        var userId = ""
-        pref.getString(USER_ID, "")?.let { userId = it }
+    fun handleUpdateRecoveryToken(text: String) {
         url?.let {
-            cyCoreService.cyUpdateRecoveryKey(auth, hashMapOf(USER_ID_SMALL to userId, SECRET_KEY_SMALL to text), it)
+            cyCoreService.cyUpdateRecoveryKey(accessToken, reqId, hashMapOf(USER_ID_SMALL to userId!!, SECRET_KEY_SMALL to text), it)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(updateRecoveryToken())

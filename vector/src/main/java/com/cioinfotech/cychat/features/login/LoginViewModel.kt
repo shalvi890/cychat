@@ -18,6 +18,7 @@ package com.cioinfotech.cychat.features.login
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
@@ -69,6 +70,8 @@ import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants.BEARER
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 import timber.log.Timber
@@ -92,6 +95,18 @@ class LoginViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(initialState: LoginViewState): LoginViewModel
+    }
+
+    private var pref: SharedPreferences = DefaultSharedPreferences.getInstance(applicationContext)
+    private var reqId = pref.getString(NetworkConstants.REQ_ID, null)
+    private var accessToken = pref.getString(NetworkConstants.ACCESS_TOKEN, null).attachBearer()
+
+    fun String?.attachBearer(): String? {
+        return when {
+            this.isNullOrEmpty()  -> return null
+            this.contains(BEARER) -> return this
+            else                  -> BEARER + this
+        }
     }
 
     init {
@@ -168,9 +183,15 @@ class LoginViewModel @AssistedInject constructor(
         }.exhaustive
     }
 
-    fun handleCyLogin(auth: String, passwordLoginParams: PasswordLoginParams) {
+    /** CyChat API- END */
+
+    /** CyChat Login API Implementation-
+     * @param email (Email of User)
+     * @param mobile (Mobile Number of User)
+     * */
+    fun handleCyLogin(passwordLoginParams: PasswordLoginParams) {
         loginParams = passwordLoginParams
-        authenticationService.cyLogin(auth, passwordLoginParams)
+        authenticationService.cyLogin(AUTH_KEY, passwordLoginParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getCyLoginObserver())
@@ -181,6 +202,9 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
+    /** CyChat Login API Implementation-
+     * Function waits for Login API Response
+     * */
     private fun getCyLoginObserver(): SingleObserver<LoginResponse> {
         return object : SingleObserver<LoginResponse> {
 
@@ -188,7 +212,11 @@ class LoginViewModel @AssistedInject constructor(
                 if (t.status == "ok") {
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                     signUpSignInData.postValue(t.data)
-                    DefaultSharedPreferences.getInstance(applicationContext).edit {
+                    pref.edit {
+                        putString(NetworkConstants.REQ_ID, t.data.req_id)
+                        putString(NetworkConstants.ACCESS_TOKEN, t.data.access_token.attachBearer())
+                        reqId = t.data.req_id
+                        accessToken = t.data.access_token.attachBearer()
                         if (t.data.type == SIGN_UP_SMALL)
                             putBoolean(SIGNING_MODE, true)
                         else
@@ -223,19 +251,25 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun handleCyCheckOTP(auth: String, emailOTP: String, mobileOTP: String, firstName: String?, lastName: String?) {
+    /** CyChat Check OTP API Implementation-
+     * @param emailOTP (Email OTP sent to User)
+     * @param mobileOTP (Mobile OTP sent to User)
+     * @param firstName (optional, first name for signup)
+     * @param lastName (optional, first name for signup)
+     * */
+    fun handleCyCheckOTP(emailOTP: String, mobileOTP: String, firstName: String?, lastName: String?) {
         loginParams?.let {
             val checkOTPParams = VerifyOTPParams(it.email,
                     it.mobile,
                     it.imei_no,
                     emailOTP,
                     mobileOTP,
-                    signUpSignInData.value!!.req_id,
+                    reqId!!,
                     signUpSignInData.value!!.type,
                     firstName,
                     lastName
             )
-            authenticationService.checkOTP(auth, checkOTPParams)
+            authenticationService.checkOTP(accessToken, reqId, checkOTPParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getCyCheckOTPObserver(it.email))
@@ -247,13 +281,15 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
+    /** CyChat Check OTP API Implementation-
+     * Function waits for Check OTP API Response
+     * */
     private fun getCyCheckOTPObserver(email: String): SingleObserver<CheckOTPResponse> {
         return object : SingleObserver<CheckOTPResponse> {
 
             override fun onSuccess(t: CheckOTPResponse) {
                 if (t.status == "ok") {
-                    val prefs = DefaultSharedPreferences.getInstance(applicationContext)
-                    prefs.edit().apply {
+                    pref.edit().apply {
                         putString(NetworkConstants.USER_ID, t.data.user_id)
                         putString(NetworkConstants.SECRET_KEY, t.data.secret_key)
                         apply()
@@ -287,9 +323,12 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun handleCountryList(auth: String) {
+    /** CyChat Get Country List API Implementation-
+     * No Params just to get all countries with codes.
+     * */
+    fun handleCountryList() {
         if (countryCodeList.value == null) {
-            authenticationService.getCountryList(auth)
+            authenticationService.getCountryList(AUTH_KEY)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getListOfCountriesObserver())
@@ -301,6 +340,9 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
+    /** CyChat Get Country List API Implementation-
+     * Function waits for Get Country List API Response
+     * */
     fun getListOfCountriesObserver(): SingleObserver<CountryCodeParent> {
         return object : SingleObserver<CountryCodeParent> {
 
@@ -335,29 +377,33 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun resendOTP(auth: String, type: String) {
+    /** CyChat Resend OTP API Implementation-
+     * Function waits for Resend OTP API Response
+     * @param TYPE - this parameter is to differentiate api to send email or mobile otp
+     * */
+    fun resendOTP(type: String) {
         loginParams?.let {
-            signUpSignInData.value?.req_id?.let { reqId ->
-                val map = hashMapOf(
-                        "type" to type,
-                        "mobile" to it.mobile,
-                        "email" to it.email,
-                        "req_id" to reqId
+            val map = hashMapOf(
+                    "type" to type,
+                    "mobile" to it.mobile,
+                    "email" to it.email,
+                    "req_id" to reqId!!
+            )
+            authenticationService.cyResendOTP(accessToken, reqId, map)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getResendOTPObserver())
+            setState {
+                copy(
+                        resendOTP = Loading()
                 )
-                authenticationService.cyResendOTP(auth, map)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(getResendOTPObserver())
-                setState {
-                    copy(
-                            resendOTP = Loading()
-                    )
-                }
             }
-
         }
     }
 
+    /** CyChat Resend OTP API Implementation-
+     * Function waits for Resend OTP API Response
+     * */
     private fun getResendOTPObserver(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
 
@@ -391,6 +437,7 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
+    /** CyChat API- END */
     private fun handleUserAcceptCertificate(action: LoginAction.UserAcceptCertificate) {
         // It happens when we get the login flow, or during direct authentication.
         // So alter the homeserver config and retrieve again the login flow
