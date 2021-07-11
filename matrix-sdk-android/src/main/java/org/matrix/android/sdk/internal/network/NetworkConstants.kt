@@ -60,6 +60,7 @@ object NetworkConstants {
     const val USER_ID = "USER_ID"
     const val USER_ID_SMALL = "user_id"
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
+    const val EMAIL = "EMAIL"
     const val ACCESS_TOKEN_SMALL = "access_token"
     const val REQ_ID = "REQ_ID"
 //    const val REQ_ID_SMALL = "req_id"

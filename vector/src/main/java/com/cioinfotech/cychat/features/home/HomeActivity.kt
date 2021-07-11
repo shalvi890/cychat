@@ -53,6 +53,7 @@ import com.cioinfotech.cychat.features.crypto.recover.BootstrapActions
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapSharedViewModel
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapViewEvents
 import com.cioinfotech.cychat.features.crypto.verification.VerificationAction
+import com.cioinfotech.cychat.features.cycore.AES
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
@@ -80,7 +81,9 @@ import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_S
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
 import org.matrix.android.sdk.internal.session.sync.initialSyncStrategy
 import timber.log.Timber
@@ -214,7 +217,15 @@ class HomeActivity :
 
             bootStrapViewModel.observeViewEvents { event ->
                 if (event is BootstrapViewEvents.SyncWithServer) {
-                    cyChatViewModel.handleUpdateRecoveryToken(event.key.recoveryKey)
+                    val key = AES.encrypt(
+                            event.key.recoveryKey,
+                            AES.createSecretKey(
+                                    pref.getString(USER_ID, "")!!,
+                                    pref.getString(EMAIL, "")!!
+                            )
+                    )
+
+                    cyChatViewModel.handleUpdateRecoveryToken(key)
                     pref.edit().apply {
                         putBoolean(NetworkConstants.SIGNING_MODE, false)
                         apply()
@@ -319,9 +330,12 @@ class HomeActivity :
 //    }
 
     private fun handleOnNewSession() {//event: HomeActivityViewEvents.OnNewSession
-        DefaultSharedPreferences.getInstance(this).getString(SECRET_KEY, null)?.let {
-            viewModel.handle(SharedSecureStorageAction.SubmitKey(it))
-        }
+        val pref = DefaultSharedPreferences.getInstance(this)
+        val key = AES.decrypt(
+                pref.getString(SECRET_KEY, null)!!,
+                AES.createSecretKey(pref.getString(USER_ID, "")!!, pref.getString(EMAIL, "")!!),
+        )
+        viewModel.handle(SharedSecureStorageAction.SubmitKey(key))
 //        promptSecurityEvent(
 //                event.userItem,
 //                R.string.crosssigning_verify_this_session,

@@ -39,6 +39,7 @@ import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.core.utils.ensureTrailingSlash
+import com.cioinfotech.cychat.features.cycore.AES
 import com.cioinfotech.cychat.features.signout.soft.SoftLogoutActivity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -194,7 +195,7 @@ class LoginViewModel @AssistedInject constructor(
         authenticationService.cyLogin(AUTH_KEY, passwordLoginParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getCyLoginObserver())
+                .subscribe(getCyLoginObserver(passwordLoginParams.email))
         setState {
             copy(
                     asyncCyLogin = Loading()
@@ -205,7 +206,7 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Login API Implementation-
      * Function waits for Login API Response
      * */
-    private fun getCyLoginObserver(): SingleObserver<LoginResponse> {
+    private fun getCyLoginObserver(email: String): SingleObserver<LoginResponse> {
         return object : SingleObserver<LoginResponse> {
 
             override fun onSuccess(t: LoginResponse) {
@@ -215,6 +216,7 @@ class LoginViewModel @AssistedInject constructor(
                     pref.edit {
                         putString(NetworkConstants.REQ_ID, t.data.req_id)
                         putString(NetworkConstants.ACCESS_TOKEN, t.data.access_token.attachBearer())
+                        putString(NetworkConstants.EMAIL, email)
                         reqId = t.data.req_id
                         accessToken = t.data.access_token.attachBearer()
                         if (t.data.type == SIGN_UP_SMALL)
@@ -294,7 +296,16 @@ class LoginViewModel @AssistedInject constructor(
                         putString(NetworkConstants.SECRET_KEY, t.data.secret_key)
                         apply()
                     }
-                    handle(LoginAction.UpdateHomeServer("https://" + t.data.api_server, email.replace("@", "-at-"), t.data.password))
+                    handle(
+                            LoginAction.UpdateHomeServer(
+                                    "https://" + t.data.api_server,
+                                    email.replace("@", "-at-"),
+                                    AES.decrypt(
+                                            t.data.password,
+                                            AES.createSecretKey(t.data.user_id, email)
+                                    )
+                            )
+                    )
                     setState {
                         copy(
                                 asyncCyCheckOTP = Success(Unit)
