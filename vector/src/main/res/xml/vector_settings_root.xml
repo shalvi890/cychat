@@ -37,7 +37,8 @@
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_security_privacy"
         android:title="@string/settings_security_and_privacy"
-        app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsSecurityPrivacyFragment" />
+        app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsSecurityPrivacyFragment"
+        app:isPreferenceVisible="false" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_labs"

@@ -18,8 +18,6 @@ package com.cioinfotech.cychat.features.home
 
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -30,6 +28,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import com.airbnb.mvrx.MvRx
 import com.airbnb.mvrx.viewModel
 import com.cioinfotech.cychat.R
@@ -80,9 +79,10 @@ import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_S
 import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
-import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
+import org.matrix.android.sdk.internal.network.NetworkConstants.FULL_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
 import org.matrix.android.sdk.internal.session.sync.initialSyncStrategy
@@ -206,10 +206,20 @@ class HomeActivity :
 
     private fun onFirstSession() {
         val pref = DefaultSharedPreferences.getInstance(applicationContext)
-        if (pref.getBoolean(NetworkConstants.SIGNING_MODE, false)) {
+        if (pref.getBoolean(SIGNING_MODE, false)) {
+            pref.getString(FULL_NAME, null)?.let { name ->
+                lifecycleScope.launch {
+                    val session = activeSessionHolder.getActiveSession()
+                    session.setDisplayName(session.myUserId, name)
+                    pref.edit().apply {
+                        putString(FULL_NAME, null)
+                        apply()
+                    }
+                }
+            }
             cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
             val job = GlobalScope.launch(Dispatchers.IO) {
-                while (pref.getBoolean(NetworkConstants.SIGNING_MODE, false)) {
+                while (pref.getBoolean(SIGNING_MODE, false)) {
                     delay(2000)
                     bootStrapViewModel.handle(BootstrapActions.Start(userWantsToEnterPassphrase = false))
                 }
@@ -227,7 +237,7 @@ class HomeActivity :
 
                     cyChatViewModel.handleUpdateRecoveryToken(key)
                     pref.edit().apply {
-                        putBoolean(NetworkConstants.SIGNING_MODE, false)
+                        putBoolean(SIGNING_MODE, false)
                         apply()
                     }
                     job.cancel()
@@ -336,6 +346,7 @@ class HomeActivity :
                 AES.createSecretKey(pref.getString(USER_ID, "")!!, pref.getString(EMAIL, "")!!),
         )
         viewModel.handle(SharedSecureStorageAction.SubmitKey(key))
+
 //        promptSecurityEvent(
 //                event.userItem,
 //                R.string.crosssigning_verify_this_session,
@@ -507,21 +518,21 @@ class HomeActivity :
         return true
     }
 
-    private fun isNetworkConnected(context: Context): Boolean {
-        val result: Boolean
-        val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkCapabilities = connectivityManager.activeNetwork ?: return false
-        val actNw =
-                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-        result = when {
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)     -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else                                                       -> false
-        }
-        return result
-    }
+//    private fun isNetworkConnected(context: Context): Boolean {
+//        val result: Boolean
+//        val connectivityManager =
+//                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+//        val actNw =
+//                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+//        result = when {
+//            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)     -> true
+//            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+//            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+//            else                                                       -> false
+//        }
+//        return result
+//    }
 
     companion object {
         fun newIntent(context: Context, clearNotification: Boolean = false, accountCreation: Boolean = false): Intent {

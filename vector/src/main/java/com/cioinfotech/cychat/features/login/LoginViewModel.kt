@@ -259,7 +259,7 @@ class LoginViewModel @AssistedInject constructor(
      * @param firstName (optional, first name for signup)
      * @param lastName (optional, first name for signup)
      * */
-    fun handleCyCheckOTP(emailOTP: String, mobileOTP: String, firstName: String?, lastName: String?) {
+    fun handleCyCheckOTP(emailOTP: String, mobileOTP: String, firstName: String, lastName: String) {
         loginParams?.let {
             val checkOTPParams = VerifyOTPParams(it.email,
                     it.mobile,
@@ -274,7 +274,7 @@ class LoginViewModel @AssistedInject constructor(
             authenticationService.checkOTP(accessToken, reqId, checkOTPParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getCyCheckOTPObserver(it.email))
+                    .subscribe(getCyCheckOTPObserver(it.email, firstName, lastName))
             setState {
                 copy(
                         asyncCyCheckOTP = Loading()
@@ -286,7 +286,7 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Check OTP API Implementation-
      * Function waits for Check OTP API Response
      * */
-    private fun getCyCheckOTPObserver(email: String): SingleObserver<CheckOTPResponse> {
+    private fun getCyCheckOTPObserver(email: String, firstName: String, lastName: String): SingleObserver<CheckOTPResponse> {
         return object : SingleObserver<CheckOTPResponse> {
 
             override fun onSuccess(t: CheckOTPResponse) {
@@ -294,6 +294,9 @@ class LoginViewModel @AssistedInject constructor(
                     pref.edit().apply {
                         putString(NetworkConstants.USER_ID, t.data.user_id)
                         putString(NetworkConstants.SECRET_KEY, t.data.secret_key)
+                        if (pref.getBoolean(SIGNING_MODE, false)) {
+                            putString(NetworkConstants.FULL_NAME, "$firstName $lastName")
+                        }
                         apply()
                     }
                     handle(

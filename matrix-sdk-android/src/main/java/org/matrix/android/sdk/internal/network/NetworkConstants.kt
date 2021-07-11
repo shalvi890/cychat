@@ -73,4 +73,5 @@ object NetworkConstants {
     const val SIGNING_MODE = "SIGNING_MODE" // true - Sign Up & false - Sign In
     const val AUTH_KEY = "Bearer Avdhut"
     const val BEARER = "Bearer "
+    const val FULL_NAME = "FULL_NAME"
 }

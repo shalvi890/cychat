@@ -23,8 +23,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.cioinfotech.cychat.BuildConfig
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentLoginSplashBinding
 import com.cioinfotech.cychat.features.settings.VectorPreferences
+import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.RetrofitFactory
 
 import javax.inject.Inject
 
@@ -51,7 +54,18 @@ class LoginSplashFragment @Inject constructor(
     }
 
     private fun getStarted() {
-        loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
+        if (BuildConfig.BUILD_TYPE == "debug")
+            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
+        else {
+            val prefs = DefaultSharedPreferences.getInstance(requireContext())
+            RetrofitFactory.BASE_URL = NetworkConstants.UAT_URL
+            prefs.edit().apply {
+                putString(NetworkConstants.BASE_URL, RetrofitFactory.BASE_URL)
+                putString(NetworkConstants.CY_CHAT_ENV, NetworkConstants.UAT)
+                apply()
+            }
+            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
+        }
     }
 
     override fun resetViewModel() {}
