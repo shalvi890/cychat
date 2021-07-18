@@ -82,6 +82,7 @@ import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
 import org.matrix.android.sdk.internal.network.NetworkConstants.FULL_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
+import org.matrix.android.sdk.internal.network.NetworkConstants.SESSION_UPDATED
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
@@ -204,8 +205,23 @@ class HomeActivity :
         onFirstSession()
     }
 
+    /** This Function has all Cychat functions which we have to call on following events:
+     * -session startup
+     * -register
+     **/
     private fun onFirstSession() {
         val pref = DefaultSharedPreferences.getInstance(applicationContext)
+        if (!::cyChatViewModel.isInitialized)
+            cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+        if (!pref.getBoolean(SESSION_UPDATED, false)) {
+            GlobalScope.launch(Dispatchers.IO) {
+                activeSessionHolder.getActiveSession().sessionParams.deviceId?.let {
+                    if (!::cyChatViewModel.isInitialized)
+                        cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+                    cyChatViewModel.handleDeleteOldSessions(it)
+                }
+            }
+        }
         if (pref.getBoolean(SIGNING_MODE, false)) {
             pref.getString(FULL_NAME, null)?.let { name ->
                 lifecycleScope.launch {
@@ -217,7 +233,8 @@ class HomeActivity :
                     }
                 }
             }
-            cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+            if (!::cyChatViewModel.isInitialized)
+                cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
             val job = GlobalScope.launch(Dispatchers.IO) {
                 while (pref.getBoolean(SIGNING_MODE, false)) {
                     delay(2000)
@@ -341,11 +358,16 @@ class HomeActivity :
 
     private fun handleOnNewSession() {//event: HomeActivityViewEvents.OnNewSession
         val pref = DefaultSharedPreferences.getInstance(this)
-        val key = AES.decrypt(
-                pref.getString(SECRET_KEY, null)!!,
-                AES.createSecretKey(pref.getString(USER_ID, "")!!, pref.getString(EMAIL, "")!!),
-        )
-        viewModel.handle(SharedSecureStorageAction.SubmitKey(key))
+        pref.getString(SECRET_KEY, null)?.let {
+            val key = AES.decrypt(
+                    it,
+                    AES.createSecretKey(
+                            pref.getString(USER_ID, "")!!,
+                            pref.getString(EMAIL, "")!!
+                    )
+            )
+            viewModel.handle(SharedSecureStorageAction.SubmitKey(key))
+        }
 
 //        promptSecurityEvent(
 //                event.userItem,

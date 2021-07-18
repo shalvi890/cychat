@@ -21,11 +21,13 @@ import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface CyCoreAPI {
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
@@ -35,10 +37,17 @@ interface CyCoreAPI {
             @Header("reqid") reqId: String?,
             @Query("user_id") userId: String?): Single<DomainDetails>
 
-    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:N")
     @POST(NetworkConstants.UPDATE_RECOVERY_KEY)
     fun updateRecoveryKey(
             @Header("Authorization") auth: String?,
             @Header("reqid") reqId: String?,
             @Body map: HashMap<String, String>): Single<BaseResponse>
+
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @DELETE(NetworkConstants.DELETE_OLD_SESSION)
+    fun deleteOldSessions(
+            @Header("Authorization") auth: String?,
+            @Header("reqid") reqId: String?,
+            @QueryMap map: HashMap<String, String>): Single<BaseResponse>
 }

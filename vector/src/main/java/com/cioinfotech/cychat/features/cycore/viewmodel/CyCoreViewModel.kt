@@ -33,6 +33,7 @@ import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.ACCESS_TOKEN
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
@@ -110,9 +111,32 @@ class CyCoreViewModel @Inject constructor(
     private fun updateRecoveryToken(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
 
+            override fun onSuccess(t: BaseResponse) {}
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {}
+        }
+    }
+
+    fun handleDeleteOldSessions(deviceId: String) {
+        url?.let {
+            cyCoreService.cyDeleteOldSessions(accessToken, reqId, hashMapOf(DEVICE_ID to deviceId), it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(deleteOldSessions())
+        }
+    }
+
+    private fun deleteOldSessions(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
             override fun onSuccess(t: BaseResponse) {
-                if (t.status != "ok")
-                    Timber.log(0, t.toString())
+                if (t.status != "error")
+                    pref.edit().apply {
+                        putBoolean(NetworkConstants.SESSION_UPDATED, true)
+                        apply()
+                    }
             }
 
             override fun onSubscribe(d: Disposable) {}

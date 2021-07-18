@@ -55,6 +55,7 @@ object NetworkConstants {
     const val RESENT_OTP = "/resend-otp"
     const val GET_DOMAIN_DETAILS = "/get-company-name-and-logo"
     const val UPDATE_RECOVERY_KEY = "/setsecretkey"
+    const val DELETE_OLD_SESSION = "/delete-session"
     const val CY_CHAT_ENV = "CY_CHAT_ENV"
     const val BASE_URL = "BASE_URL"
     const val USER_ID = "USER_ID"
@@ -64,7 +65,7 @@ object NetworkConstants {
     const val ACCESS_TOKEN_SMALL = "access_token"
     const val REQ_ID = "REQ_ID"
 //    const val REQ_ID_SMALL = "req_id"
-    const val DOMAIN_NAME = "DOMAIN_NAME"
+const val DOMAIN_NAME = "DOMAIN_NAME"
     const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
     const val SECRET_KEY = "SECRET_KEY"
     const val SECRET_KEY_SMALL = "secret_key"
@@ -74,4 +75,6 @@ object NetworkConstants {
     const val AUTH_KEY = "Bearer Avdhut"
     const val BEARER = "Bearer "
     const val FULL_NAME = "FULL_NAME"
+    const val DEVICE_ID = "dev_id"
+    const val SESSION_UPDATED = "SESSION_UPDATED"
 }
