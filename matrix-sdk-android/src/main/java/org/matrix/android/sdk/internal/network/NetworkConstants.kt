@@ -64,8 +64,9 @@ object NetworkConstants {
     const val EMAIL = "EMAIL"
     const val ACCESS_TOKEN_SMALL = "access_token"
     const val REQ_ID = "REQ_ID"
-//    const val REQ_ID_SMALL = "req_id"
-const val DOMAIN_NAME = "DOMAIN_NAME"
+
+    //    const val REQ_ID_SMALL = "req_id"
+    const val DOMAIN_NAME = "DOMAIN_NAME"
     const val DOMAIN_IMAGE = "DOMAIN_IMAGE"
     const val SECRET_KEY = "SECRET_KEY"
     const val SECRET_KEY_SMALL = "secret_key"
