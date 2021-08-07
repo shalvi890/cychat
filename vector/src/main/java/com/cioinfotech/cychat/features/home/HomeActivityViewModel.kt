@@ -98,6 +98,9 @@ class HomeActivityViewModel @AssistedInject constructor(
         observeCrossSigningReset()
     }
 
+    /**
+     * Commented when we implemented Voice Recorder & Media Player inside Application.
+     */
 //    private fun cleanupFiles() {
 //        // Mitigation: delete all cached decrypted files each time the application is started.
 //        activeSessionHolder.getSafeActiveSession()?.fileService()?.clearDecryptedCache()
@@ -254,6 +257,9 @@ class HomeActivityViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Function to create Secret Key- Reused as it is from Element
+     */
     fun handleSecretBackFromSSSS(action: VerificationAction.GotResultFromSsss) {
         val session = activeSessionHolder.getActiveSession()
         viewModelScope.launch(Dispatchers.IO) {
@@ -283,6 +289,9 @@ class HomeActivityViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Function to Restoring Secure Backup from Secret Key- Reused as it is from Element
+     */
     private fun tentativeRestoreBackup(res: Map<String, String>?) {
         val session = activeSessionHolder.getActiveSession()
         GlobalScope.launch(Dispatchers.IO) {

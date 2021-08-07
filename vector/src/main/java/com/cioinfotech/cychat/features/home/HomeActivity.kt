@@ -107,12 +107,11 @@ class HomeActivity :
         NavigationInterceptor {
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
+
+    /** Code Added For Our API Calls & Injected Backup factory for auto backup feature*/
     private lateinit var cyChatViewModel: CyCoreViewModel
-
     private val homeActivityViewModel: HomeActivityViewModel by viewModel()
-
     @Inject lateinit var viewModelFactory: HomeActivityViewModel.Factory
-
     @Inject lateinit var serverBackupviewModelFactory: ServerBackupStatusViewModel.Factory
 
     private val viewModel: SharedSecureStorageViewModel by viewModel()
@@ -120,7 +119,7 @@ class HomeActivity :
 
 //    private lateinit var keyViewModel: KeysBackupRestoreFromKeyViewModel
 //    private lateinit var sharedViewModel: KeysBackupRestoreSharedViewModel
-
+    /** Code Added To Recover Secure Backup Automatically*/
     @Inject
     lateinit var bootstrapViewModelFactory: BootstrapSharedViewModel.Factory
     private val bootStrapViewModel by viewModel(BootstrapSharedViewModel::class)
@@ -334,6 +333,7 @@ class HomeActivity :
         }.exhaustive
     }
 
+    /** Code Commented As we have removed cross signing as only supporting single login*/
 //    private fun handleAskPasswordToInitCrossSigning(events: HomeActivityViewEvents.AskPasswordToInitCrossSigning) {
 //        // We need to ask
 //        promptSecurityEvent(
@@ -418,6 +418,7 @@ class HomeActivity :
         )
     }
 
+    /** Code Commented As no security issue can happen as User is verified on first login itself*/
 //    private fun promptSecurityEvent(userItem: MatrixItem.UserItem?, titleRes: Int, descRes: Int, action: ((VectorBaseActivity<*>) -> Unit)) {
 //        popupAlertManager.postVectorAlert(
 //                VerificationVectorAlert(
@@ -483,6 +484,7 @@ class HomeActivity :
         return super.onPrepareOptionsMenu(menu)
     }
 
+    /** Removed Few Options As per requirements*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
 //            R.id.menu_home_suggestion          -> {

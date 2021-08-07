@@ -34,7 +34,7 @@ import timber.log.Timber
  * It has an alter ego in the fdroid variant.
  */
 object FcmHelper {
-    private val PREFS_KEY_FCM_TOKEN = "FCM_TOKEN"
+    private const val PREFS_KEY_FCM_TOKEN = "FCM_TOKEN"
 
     fun isPushSupported(): Boolean = true
 

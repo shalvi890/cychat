@@ -330,6 +330,9 @@ class SharedSecureStorageViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Injected Same ViewModel In HomeActivity Also
+     */
     companion object : MvRxViewModelFactory<SharedSecureStorageViewModel, SharedSecureStorageViewState> {
 
         @JvmStatic

@@ -18,6 +18,7 @@ package com.cioinfotech.cychat.features.settings
 
 import android.os.Bundle
 import android.view.View
+import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.preference.VectorPreference
@@ -39,10 +40,14 @@ class VectorSettingsRootFragment @Inject constructor() : VectorSettingsBaseFragm
         }
     }
 
+    /** Showing Environment for Debug Mode Only*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pref = DefaultSharedPreferences.getInstance(requireContext())
-        findPreference<VectorPreference>(ENVIRONMENT)?.summary = pref.getString(NetworkConstants.CY_CHAT_ENV, "")
+        if (BuildConfig.DEBUG) {
+            val pref = DefaultSharedPreferences.getInstance(requireContext())
+            findPreference<VectorPreference>(ENVIRONMENT)?.summary = pref.getString(NetworkConstants.CY_CHAT_ENV, "")
+        } else
+            findPreference<VectorPreference>(ENVIRONMENT)?.isVisible = false
     }
 
     companion object {

@@ -131,7 +131,9 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //            }.exhaustive
 //        }
 //    }
-
+    /**
+     * Submit & Validation for phone number & email
+     */
     @SuppressLint("HardwareIds")
     private fun submit() {
         cleanupUi()
@@ -244,7 +246,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //            SignMode.SignInWithMatrixId -> R.string.login_signin
 //        })
 //    }
-
+/** UI Logic For Cychat API Calls & after that actual login to Matrix Server*/
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
         views.loginField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -364,8 +366,5 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    /**
-     * Detect if password ends or starts with spaces
-     */
 //    private fun spaceInPassword() = views.passwordField.text.toString().let { it.trim() != it }
 }

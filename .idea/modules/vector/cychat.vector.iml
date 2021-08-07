@@ -91,10 +91,16 @@
     <orderEntry type="module-library">
       <library name="Gradle: kaptGeneratedClasses">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../vector/build/tmp/kapt3/classes/gplayRelease" />
-          <root url="file://$MODULE_DIR$/../../../vector/build/tmp/kapt3/classes/gplayDebugUnitTest" />
           <root url="file://$MODULE_DIR$/../../../vector/build/tmp/kapt3/classes/gplayDebug" />
-          <root url="file://$MODULE_DIR$/../../../vector/build/tmp/kapt3/classes/gplayReleaseUnitTest" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library name="Gradle: kaptGeneratedTestClasses">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../vector/build/tmp/kapt3/classes/gplayDebugUnitTest" />
           <root url="file://$MODULE_DIR$/../../../vector/build/tmp/kapt3/classes/gplayDebugAndroidTest" />
         </CLASSES>
         <JAVADOC />

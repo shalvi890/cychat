@@ -1162,6 +1162,9 @@ class RoomDetailFragment @Inject constructor(
                 attachmentTypeSelector.show(views.composerLayout.views.attachmentButton, keyboardStateUtils.isKeyboardShowing)
             }
 
+            /**
+             * Function to send Recorder Audio
+             */
             override fun onSendAudio() {
                 onTypeSelected(AttachmentTypeSelectorView.Type.RECORD)
             }
@@ -2048,6 +2051,9 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
+    /**
+     * Function to get Recorded file & send it.
+     */
     override fun sendRecordedAudioFile(file: File) {
         if (file.exists()) {
             val uri = Uri.parse(file.absolutePath)

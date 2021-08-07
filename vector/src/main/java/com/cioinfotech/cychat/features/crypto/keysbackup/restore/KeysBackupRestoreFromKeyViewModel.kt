@@ -56,6 +56,9 @@ class KeysBackupRestoreFromKeyViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Code For Secure Key Restore after 2nd Login
+     */
     fun recoverKeys(sharedViewModel: KeysBackupRestoreSharedViewModel, key: String) {
         sharedViewModel.loadingEvent.postValue(WaitingViewData(stringProvider.getString(R.string.loading)))
         recoveryCodeErrorText.value = null

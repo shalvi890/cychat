@@ -81,11 +81,17 @@
     <orderEntry type="module-library">
       <library name="Gradle: kaptGeneratedClasses">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../matrix-sdk-android-rx/build/tmp/kapt3/classes/debugAndroidTest" />
           <root url="file://$MODULE_DIR$/../../../matrix-sdk-android-rx/build/tmp/kapt3/classes/debug" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library name="Gradle: kaptGeneratedTestClasses">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../matrix-sdk-android-rx/build/tmp/kapt3/classes/debugAndroidTest" />
           <root url="file://$MODULE_DIR$/../../../matrix-sdk-android-rx/build/tmp/kapt3/classes/debugUnitTest" />
-          <root url="file://$MODULE_DIR$/../../../matrix-sdk-android-rx/build/tmp/kapt3/classes/releaseUnitTest" />
-          <root url="file://$MODULE_DIR$/../../../matrix-sdk-android-rx/build/tmp/kapt3/classes/release" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

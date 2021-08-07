@@ -114,6 +114,9 @@ interface AuthenticationService {
                                      password: String,
                                      initialDeviceName: String): Session
 
+    /**
+     * Cychat APIs Start Here
+     */
     fun cyLogin(auth: String, loginParams: PasswordLoginParams): Single<LoginResponse>
 
     fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams): Single<CheckOTPResponse>

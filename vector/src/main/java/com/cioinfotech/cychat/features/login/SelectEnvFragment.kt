@@ -32,6 +32,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.UAT
 import org.matrix.android.sdk.internal.network.NetworkConstants.UAT_URL
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 
+/** Fragment Created To Select Environment in debug mode*/
 class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
     override fun resetViewModel() {}
 

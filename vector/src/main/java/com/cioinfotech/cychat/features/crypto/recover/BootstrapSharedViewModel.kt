@@ -71,7 +71,7 @@ class BootstrapSharedViewModel @AssistedInject constructor(
         private val session: Session,
         private val bootstrapTask: BootstrapCrossSigningTask,
         private val migrationTask: BackupToQuadSMigrationTask,
-        private val context: Context
+        context: Context
 ) : VectorViewModel<BootstrapViewState, BootstrapActions, BootstrapViewEvents>(initialState) {
 
     private var doesKeyBackupExist: Boolean = false
@@ -144,6 +144,10 @@ class BootstrapSharedViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Function for continuous Check If Network is connected or not
+     * @param context - Context Of Application
+     * */
     private fun isNetworkConnected(context: Context): Boolean {
         val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -602,7 +606,7 @@ class BootstrapSharedViewModel @AssistedInject constructor(
     // ======================================
     // Companion, view model assisted creation
     // ======================================
-
+    /** Injected Same Companion in HomeActivity So Added ActivityViewModelContext Block*/
     companion object : MvRxViewModelFactory<BootstrapSharedViewModel, BootstrapViewState> {
 
         override fun create(viewModelContext: ViewModelContext, state: BootstrapViewState): BootstrapSharedViewModel? {

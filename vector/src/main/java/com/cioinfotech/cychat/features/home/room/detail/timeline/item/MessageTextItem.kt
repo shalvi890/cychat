@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2021 New Vector Ltd
  *
@@ -93,6 +94,9 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
                 it.bind(holder.messageView)
             }
         }
+        /**
+         * Changes Done To Add Date at the end of message & add space
+         */
         val time = attributes.informationData.time?.replace(Regex(" "), ".")
         val spannable = SpannableString(SpannableStringBuilder().append("    ").append(time)).apply {
             setSpan(

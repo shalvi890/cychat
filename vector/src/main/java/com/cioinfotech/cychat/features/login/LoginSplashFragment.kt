@@ -53,6 +53,7 @@ class LoginSplashFragment @Inject constructor(
         }
     }
 
+    /** Code for Different Screen logic When Release & Debug build is given environment screen is not shown in release */
     private fun getStarted() {
         if (BuildConfig.BUILD_TYPE == "debug")
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))

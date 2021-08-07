@@ -187,8 +187,7 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat API- END */
 
     /** CyChat Login API Implementation-
-     * @param email (Email of User)
-     * @param mobile (Mobile Number of User)
+     * @param passwordLoginParams- Mobile Number & Email of User
      * */
     fun handleCyLogin(passwordLoginParams: PasswordLoginParams) {
         loginParams = passwordLoginParams
@@ -393,7 +392,7 @@ class LoginViewModel @AssistedInject constructor(
 
     /** CyChat Resend OTP API Implementation-
      * Function waits for Resend OTP API Response
-     * @param TYPE - this parameter is to differentiate api to send email or mobile otp
+     * @param type - this parameter is to differentiate api to send email or mobile otp
      * */
     fun resendOTP(type: String) {
         loginParams?.let {
@@ -1089,7 +1088,6 @@ class LoginViewModel @AssistedInject constructor(
                     else                                                                  -> LoginMode.Unsupported
                 }
 
-                // FIXME We should post a view event here normally?
                 setState {
                     copy(
                             asyncHomeServerLoginFlowRequest = Uninitialized,
