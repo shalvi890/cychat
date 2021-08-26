@@ -1861,6 +1861,8 @@ class RoomDetailFragment @Inject constructor(
                     startActivity(KeysBackupRestoreActivity.intent(it))
                 }
             }
+            else                                     -> {
+            }
         }
     }
 

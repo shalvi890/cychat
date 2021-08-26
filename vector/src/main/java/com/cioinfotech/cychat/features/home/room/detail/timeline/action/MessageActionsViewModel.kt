@@ -18,11 +18,6 @@ package com.cioinfotech.cychat.features.home.room.detail.timeline.action
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.ViewModelContext
-import com.jakewharton.rxrelay2.BehaviorRelay
-import dagger.Lazy
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.error.ErrorFormatter
 import com.cioinfotech.cychat.core.extensions.canReact
@@ -36,6 +31,11 @@ import com.cioinfotech.cychat.features.html.VectorHtmlCompressor
 import com.cioinfotech.cychat.features.powerlevel.PowerLevelsObservableFactory
 import com.cioinfotech.cychat.features.reactions.data.EmojiDataSource
 import com.cioinfotech.cychat.features.settings.VectorPreferences
+import com.jakewharton.rxrelay2.BehaviorRelay
+import dagger.Lazy
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.crypto.keysbackup.KeysBackupState
 import org.matrix.android.sdk.api.session.events.model.EventType
@@ -326,7 +326,7 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
                 add(EventSharedAction.Edit(eventId))
             }
 
-            if (canRedact(timelineEvent, actionPermissions)) {
+            if (canRedact(timelineEvent)) {
                 add(EventSharedAction.Redact(eventId, askForReason = informationData.senderId != session.myUserId))
             }
 
@@ -378,7 +378,7 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
         }
         add(EventSharedAction.CopyPermalink(eventId))
 //        if (session.myUserId != timelineEvent.root.senderId) {
-            // not sent by me
+        // not sent by me
 //            if (timelineEvent.root.getClearType() == EventType.MESSAGE) {
 //                add(EventSharedAction.ReportContent(eventId, timelineEvent.root.senderId))
 //            }
@@ -423,14 +423,15 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
         }
     }
 
-    private fun canRedact(event: TimelineEvent, actionPermissions: ActionPermissions): Boolean {
-        // Only event of type Event.EVENT_TYPE_MESSAGE are supported for the moment
-        if (event.root.getClearType() != EventType.MESSAGE) return false
-        // Message sent by the current user can always be redacted
-        if (event.root.senderId == session.myUserId) return true
-        // Check permission for messages sent by other users
-        return actionPermissions.canRedact
-    }
+    private fun canRedact(event: TimelineEvent) = event.root.senderId == session.myUserId
+//    {
+    // Only event of type Event.EVENT_TYPE_MESSAGE are supported for the moment
+//        if (event.root.getClearType() != EventType.MESSAGE) return false
+    // Message sent by the current user can always be redacted
+//        if (event.root.senderId == session.myUserId) return true
+    // Check permission for messages sent by other users
+//        return actionPermissions.canRedact
+//    }
 
     private fun canRetry(event: TimelineEvent, actionPermissions: ActionPermissions): Boolean {
         return event.root.sendState.hasFailed()
