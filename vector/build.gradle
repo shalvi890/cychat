@@ -14,7 +14,7 @@ kapt {
 // Note: 2 digits max for each value
 ext.versionMajor = 0
 ext.versionMinor = 0
-ext.versionPatch = 19
+ext.versionPatch = 20
 //
 //static def getGitTimestamp() {
 //    def cmd = 'git show -s --format=%ct'
@@ -104,7 +104,7 @@ ext.abiVersionCodes = ["armeabi-v7a": 0, "arm64-v8a": 1, "x86": 2, "x86_64": 3].
 android {
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\tejab\\Documents\\cychat.jks')
+            storeFile file('C:\\Users\\tejab\\AndroidStudioProjects\\cychat\\playstore\\cychat.jks')
             storePassword 'Qwerty@12345'
             keyPassword 'Qwerty@12345'
             keyAlias 'key'
@@ -177,7 +177,7 @@ android {
 
         applicationVariants.all { variant ->
             // assign different version code for each output
-            def baseVariantVersion = variant.versionCode * 35
+            def baseVariantVersion = variant.versionCode * 40
             variant.outputs.each { output ->
                 def baseAbiVersionCode = project.ext.abiVersionCodes.get(output.getFilter(OutputFile.ABI))
                 // Known limitation: it does not modify the value in the BuildConfig.java generated file
