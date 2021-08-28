@@ -16,10 +16,14 @@
 
 package org.matrix.android.sdk.internal.cy_auth.data
 
+import com.google.gson.annotations.SerializedName
+
 data class CountryCodeParent(
         val data: CountryData
 ) : BaseResponse()
 
 data class CountryData(
-        val countries: MutableList<CountryCode>
+        val countries: MutableList<CountryCode>,
+        @SerializedName("secr_code_domains")
+        val secCodeDomains:MutableList<String>
 )
