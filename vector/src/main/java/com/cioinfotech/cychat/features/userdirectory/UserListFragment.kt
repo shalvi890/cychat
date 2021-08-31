@@ -149,14 +149,12 @@ class UserListFragment @Inject constructor(
                 .startWith(views.userListSearch.text)
                 .subscribe { text ->
                     val searchValue = text.trim()
-                    val action = if (searchValue.isBlank()) {
+                    val action = if (searchValue.isBlank())
                         UserListAction.ClearSearchUsers
-                    } else {
+                    else
                         UserListAction.SearchUsers(searchValue.toString())
-                    }
                     viewModel.handle(action)
-                }
-                .disposeOnDestroyView()
+                }.disposeOnDestroyView()
 
         views.userListSearch.setupAsSearch()
         views.userListSearch.requestFocus()

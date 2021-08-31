@@ -246,7 +246,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //            SignMode.SignInWithMatrixId -> R.string.login_signin
 //        })
 //    }
-/** UI Logic For Cychat API Calls & after that actual login to Matrix Server*/
+    /** UI Logic For Cychat API Calls & after that actual login to Matrix Server*/
     private fun setupSubmitButton() {
         views.loginSubmit.setOnClickListener { submit() }
         views.loginField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->

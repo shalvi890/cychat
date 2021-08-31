@@ -20,13 +20,13 @@ import com.airbnb.mvrx.ActivityViewModelContext
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.ViewModelContext
-import com.jakewharton.rxrelay2.BehaviorRelay
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.assisted.AssistedFactory
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.extensions.toggle
 import com.cioinfotech.cychat.core.platform.VectorViewModel
+import com.jakewharton.rxrelay2.BehaviorRelay
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -59,7 +59,7 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
 
     companion object : MvRxViewModelFactory<UserListViewModel, UserListViewState> {
 
-        override fun create(viewModelContext: ViewModelContext, state: UserListViewState): UserListViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: UserListViewState): UserListViewModel {
             val factory = when (viewModelContext) {
                 is FragmentViewModelContext -> viewModelContext.fragment as? Factory
                 is ActivityViewModelContext -> viewModelContext.activity as? Factory
@@ -74,10 +74,10 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
 
     override fun handle(action: UserListAction) {
         when (action) {
-            is UserListAction.SearchUsers -> handleSearchUsers(action.value)
-            is UserListAction.ClearSearchUsers -> handleClearSearchUsers()
-            is UserListAction.AddPendingSelection -> handleSelectUser(action)
-            is UserListAction.RemovePendingSelection -> handleRemoveSelectedUser(action)
+            is UserListAction.SearchUsers                -> handleSearchUsers(action.value)
+            is UserListAction.ClearSearchUsers           -> handleClearSearchUsers()
+            is UserListAction.AddPendingSelection        -> handleSelectUser(action)
+            is UserListAction.RemovePendingSelection     -> handleRemoveSelectedUser(action)
             UserListAction.ComputeMatrixToLinkForSharing -> handleShareMyMatrixToLink()
         }.exhaustive
     }
@@ -147,11 +147,10 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
                             Single.zip(searchObservable, profileObservable, { searchResults, optionalProfile ->
                                 val profile = optionalProfile.getOrNull() ?: return@zip searchResults
                                 val searchContainsProfile = searchResults.indexOfFirst { it.userId == profile.userId } != -1
-                                if (searchContainsProfile) {
+                                if (searchContainsProfile)
                                     searchResults
-                                } else {
+                                else
                                     listOf(profile) + searchResults
-                                }
                             })
                         }
                     }

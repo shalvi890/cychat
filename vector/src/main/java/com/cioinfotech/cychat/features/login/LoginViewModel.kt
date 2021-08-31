@@ -336,7 +336,7 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    /** CyChat Get Country List API Implementation-
+    /** CyChat Get Country List / Get Settings API Implementation-
      * No Params just to get all countries with codes.
      * */
     fun handleCountryList() {

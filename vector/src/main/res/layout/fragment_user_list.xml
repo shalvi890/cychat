@@ -46,7 +46,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@string/fab_menu_create_chat"
-                    android:textColor="?riotx_text_primary"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -79,6 +79,18 @@
 
         </com.cioinfotech.cychat.core.platform.MaxHeightScrollView>
 
+        <TextView
+            android:id="@+id/tv_searching_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            tools:text="@string/you_are_searching_in"
+            android:textColor="?colorPrimary"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/chipGroupScrollView"
+            tools:visibility="visible" />
+
         <EditText
             android:id="@+id/userListSearch"
             android:layout_width="0dp"
@@ -97,7 +109,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroupScrollView" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_searching_in" />
 
         <View
             android:id="@+id/userListFilterDivider"

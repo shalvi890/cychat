@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: me.gujun.android:span:1.7@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5955818344fdd1577a039fe723cd2408/jetified-span-1.7/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5955818344fdd1577a039fe723cd2408/jetified-span-1.7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5955818344fdd1577a039fe723cd2408/jetified-span-1.7/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f96025de7d4fc89ce8272150552dfb85/jetified-span-1.7/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f96025de7d4fc89ce8272150552dfb85/jetified-span-1.7/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f96025de7d4fc89ce8272150552dfb85/jetified-span-1.7/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.gujun.android/span/1.7/14d0ecd0a278979910e85801649c2ac69a45190f/span-1.7-javadoc.jar!/" />
