@@ -17,12 +17,14 @@
 package com.cioinfotech.cychat.features.home.room.detail.composer
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.text.Editable
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.core.widget.doOnTextChanged
 import androidx.transition.ChangeBounds
@@ -59,6 +61,7 @@ class TextComposerView @JvmOverloads constructor(
     private var isExpanded = false
     val text: Editable?
         get() = views.composerEditText.text
+    private var isKeyboardTouchable = false
 
     init {
         inflate(context, R.layout.composer_layout, this)
@@ -72,21 +75,26 @@ class TextComposerView @JvmOverloads constructor(
             }
         }
         views.composerRelatedMessageCloseButton.setOnClickListener {
-            collapse()
-            callback?.onCloseRelatedMessage()
+            if (isKeyboardTouchable) {
+                collapse()
+                callback?.onCloseRelatedMessage()
+            }
         }
 
         views.sendButton.setOnClickListener {
-            if (text.isNullOrEmpty() && !isExpanded) {
-                callback?.onSendAudio()
-            } else {
-                val textMessage = text?.toString()?.trim()?.toSpannable() ?: ""
-                callback?.onSendMessage(textMessage)
+            if (isKeyboardTouchable) {
+                if (text.isNullOrEmpty() && !isExpanded) {
+                    callback?.onSendAudio()
+                } else {
+                    val textMessage = text?.toString()?.trim()?.toSpannable() ?: ""
+                    callback?.onSendMessage(textMessage)
+                }
             }
         }
 
         views.attachmentButton.setOnClickListener {
-            callback?.onAddAttachment()
+            if (isKeyboardTouchable)
+                callback?.onAddAttachment()
         }
 
         views.composerEditText.doOnTextChanged { text, _, _, _ ->
@@ -160,12 +168,24 @@ class TextComposerView @JvmOverloads constructor(
     }
 
     fun setRoomEncrypted(isEncrypted: Boolean) {
-        if (isEncrypted) {
-            views.composerEditText.setHint(R.string.room_message_placeholder)
+        if (isKeyboardTouchable)
+            if (isEncrypted) {
+                views.composerEditText.setHint(R.string.room_message_placeholder)
 //            views.composerShieldImageView.render(roomEncryptionTrustLevel)
-        } else {
-            views.composerEditText.setHint(R.string.room_message_placeholder)
+            } else {
+                views.composerEditText.setHint(R.string.room_message_placeholder)
 //            views.composerShieldImageView.render(null)
-        }
+            }
+        else
+            views.composerEditText.setHint(R.string.no_one_present_in_chat)
+    }
+
+    fun setKeyBoardTouch(isEnabled: Boolean) {
+        isKeyboardTouchable = isEnabled
+        views.composerEditText.isFocusable = isEnabled
+        views.composerEditText.isClickable = isEnabled
+
+        if (!isEnabled)
+            views.sendButton.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this.context, R.color.emoji_gray70))
     }
 }

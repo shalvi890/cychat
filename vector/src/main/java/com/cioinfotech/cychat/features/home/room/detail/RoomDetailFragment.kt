@@ -266,7 +266,7 @@ class RoomDetailFragment @Inject constructor(
     }
 
     private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
-
+    var summary: RoomSummary? = null
     private val roomDetailArgs: RoomDetailArgs by args()
     private val glideRequests by lazy {
         GlideApp.with(this)
@@ -568,9 +568,11 @@ class RoomDetailFragment @Inject constructor(
                     }
                 }
                 .build(views.composerLayout.views.composerEditText)
-
         views.composerLayout.views.composerEmojiButton.debouncedClicks {
-            emojiPopup.toggle()
+            if (summary?.isDirect != true
+                    || (summary?.isDirect == true && summary?.joinedMembersCount!! > 1)
+                    || (summary?.isDirect == true && summary?.joinedMembersCount!! == 1 && summary?.invitedMembersCount!! > 0))
+                emojiPopup.toggle()
         }
     }
 
@@ -1229,20 +1231,23 @@ class RoomDetailFragment @Inject constructor(
 
     override fun invalidate() = withState(roomDetailViewModel) { state ->
         invalidateOptionsMenu()
-        val summary = state.asyncRoomSummary()
+        summary = state.asyncRoomSummary()
+        views.composerLayout.setKeyBoardTouch(summary?.isDirect != true
+                || (summary?.isDirect == true && summary?.joinedMembersCount!! > 1)
+                || (summary?.isDirect == true && summary?.joinedMembersCount!! == 1 && summary?.invitedMembersCount!! > 0))
         renderToolbar(summary, state.typingMessage)
         views.activeConferenceView.render(state)
         views.failedMessagesWarningView.render(state.hasFailedSending)
         val inviter = state.asyncInviter()
         if (summary?.membership == Membership.JOIN) {
-            views.jumpToBottomView.count = summary.notificationCount
-            views.jumpToBottomView.drawBadge = summary.hasUnreadMessages
+            views.jumpToBottomView.count = summary?.notificationCount!!
+            views.jumpToBottomView.drawBadge = summary?.hasUnreadMessages!!
             timelineEventController.update(state)
             views.inviteView.visibility = View.GONE
             if (state.tombstoneEvent == null) {
                 if (state.canSendMessage) {
                     views.composerLayout.visibility = View.VISIBLE
-                    views.composerLayout.setRoomEncrypted(summary.isEncrypted)
+                    views.composerLayout.setRoomEncrypted(summary?.isEncrypted!!)
                     views.notificationAreaView.render(NotificationAreaView.State.Hidden)
                 } else {
                     views.composerLayout.visibility = View.GONE
@@ -1252,7 +1257,7 @@ class RoomDetailFragment @Inject constructor(
                 views.composerLayout.visibility = View.GONE
                 views.notificationAreaView.render(NotificationAreaView.State.Tombstone(state.tombstoneEvent))
             }
-        } else if (summary?.membership == Membership.INVITE && inviter != null && !summary.isDirect) {
+        } else if (summary?.membership == Membership.INVITE && inviter != null && !summary?.isDirect!!) {
             views.inviteView.visibility = View.VISIBLE
             views.inviteView.render(inviter, VectorInviteView.Mode.LARGE, state.changeMembershipState)
             // Intercept click event
@@ -1304,6 +1309,7 @@ class RoomDetailFragment @Inject constructor(
                 vectorBaseActivity.hideWaitingView()
                 vectorBaseActivity.toast(errorFormatter.toHumanReadable(async.error))
             }
+            else       -> Unit
         }
     }
 

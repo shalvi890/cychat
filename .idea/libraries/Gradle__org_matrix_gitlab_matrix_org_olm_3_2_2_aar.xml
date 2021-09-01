@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: org.matrix.gitlab.matrix-org:olm:3.2.2@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/da824b50df41204ac0d8f50fae532993/jetified-olm-3.2.2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/da824b50df41204ac0d8f50fae532993/jetified-olm-3.2.2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/da824b50df41204ac0d8f50fae532993/jetified-olm-3.2.2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fcb24e213c559b4e8fb976307d61fce2/jetified-olm-3.2.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fcb24e213c559b4e8fb976307d61fce2/jetified-olm-3.2.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fcb24e213c559b4e8fb976307d61fce2/jetified-olm-3.2.2/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

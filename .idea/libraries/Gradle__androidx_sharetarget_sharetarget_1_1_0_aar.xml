@@ -1,10 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.sharetarget:sharetarget:1.1.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bffb44c380023d7cd40174b7de5869d2/jetified-sharetarget-1.1.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7014a00a08ead2222d7614ef30033a2/jetified-sharetarget-1.1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7014a00a08ead2222d7614ef30033a2/jetified-sharetarget-1.1.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7014a00a08ead2222d7614ef30033a2/jetified-sharetarget-1.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bffb44c380023d7cd40174b7de5869d2/jetified-sharetarget-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bffb44c380023d7cd40174b7de5869d2/jetified-sharetarget-1.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bffb44c380023d7cd40174b7de5869d2/jetified-sharetarget-1.1.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

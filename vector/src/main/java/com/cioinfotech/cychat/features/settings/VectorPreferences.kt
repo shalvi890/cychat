@@ -20,13 +20,13 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.content.edit
-import com.squareup.seismic.ShakeDetector
 import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.features.disclaimer.SHARED_PREF_KEY
 import com.cioinfotech.cychat.features.homeserver.ServerUrlsRepository
 import com.cioinfotech.cychat.features.themes.ThemeUtils
+import com.squareup.seismic.ShakeDetector
 import org.matrix.android.sdk.api.extensions.tryOrNull
 import timber.log.Timber
 import javax.inject.Inject
@@ -283,7 +283,7 @@ class VectorPreferences @Inject constructor(private val context: Context) {
     }
 
     fun developerMode(): Boolean {
-        return defaultPrefs.getBoolean(SETTINGS_DEVELOPER_MODE_PREFERENCE_KEY, false)
+        return false//defaultPrefs.getBoolean(SETTINGS_DEVELOPER_MODE_PREFERENCE_KEY, false)
     }
 
     fun shouldShowHiddenEvents(): Boolean {

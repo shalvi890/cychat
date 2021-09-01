@@ -1,10 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.facebook.react:react-native-svg:12.1.0-jitsi-6622688@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fda6429828e8d90fea9deb189c2a202b/jetified-react-native-svg-12.1.0-jitsi-6622688/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0d28354882a6081b90d068d4a4e40068/jetified-react-native-svg-12.1.0-jitsi-6622688/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0d28354882a6081b90d068d4a4e40068/jetified-react-native-svg-12.1.0-jitsi-6622688/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0d28354882a6081b90d068d4a4e40068/jetified-react-native-svg-12.1.0-jitsi-6622688/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fda6429828e8d90fea9deb189c2a202b/jetified-react-native-svg-12.1.0-jitsi-6622688/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fda6429828e8d90fea9deb189c2a202b/jetified-react-native-svg-12.1.0-jitsi-6622688/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fda6429828e8d90fea9deb189c2a202b/jetified-react-native-svg-12.1.0-jitsi-6622688/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

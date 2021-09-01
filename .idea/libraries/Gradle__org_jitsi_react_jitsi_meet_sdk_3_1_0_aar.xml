@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: org.jitsi.react:jitsi-meet-sdk:3.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a052b26ad88e8f6be0e4d11e0f508a71/jetified-jitsi-meet-sdk-3.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a052b26ad88e8f6be0e4d11e0f508a71/jetified-jitsi-meet-sdk-3.1.0/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a052b26ad88e8f6be0e4d11e0f508a71/jetified-jitsi-meet-sdk-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e3322773b98f9f63ee7b93f1b2a62f1e/jetified-jitsi-meet-sdk-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e3322773b98f9f63ee7b93f1b2a62f1e/jetified-jitsi-meet-sdk-3.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e3322773b98f9f63ee7b93f1b2a62f1e/jetified-jitsi-meet-sdk-3.1.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
