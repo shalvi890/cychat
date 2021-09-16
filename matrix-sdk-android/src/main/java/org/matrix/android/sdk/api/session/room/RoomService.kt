@@ -201,8 +201,8 @@ interface RoomService {
     private val defaultPagedListConfig
         get() = PagedList.Config.Builder()
                 .setPageSize(300)
-                .setInitialLoadSizeHint(20)
+                .setInitialLoadSizeHint(300)
                 .setEnablePlaceholders(false)
-                .setPrefetchDistance(10)
+                .setPrefetchDistance(300)
                 .build()
 }

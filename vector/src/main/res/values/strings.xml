@@ -3294,4 +3294,5 @@
     <string name="please_enter_security_code">Please, Enter Verification Code</string>
     <string name="change_org"><u>Change Organization</u></string>
     <string name="search_company_name">Search Organization Name</string>
+    <string name="logo">Logo</string>
 </resources>

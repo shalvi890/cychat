@@ -110,6 +110,6 @@ sealed class EventSharedAction(@StringRes val titleRes: Int,
     data class ReRequestKey(val eventId: String) :
             EventSharedAction(R.string.e2e_re_request_encryption_key, R.drawable.key_small)
 
-    object UseKeyBackup :
-            EventSharedAction(R.string.e2e_use_keybackup, R.drawable.shield)
+//    object UseKeyBackup :
+//            EventSharedAction(R.string.e2e_use_keybackup, R.drawable.shield)
 }

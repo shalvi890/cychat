@@ -37,7 +37,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import org.matrix.android.sdk.api.session.Session
-import org.matrix.android.sdk.api.session.crypto.keysbackup.KeysBackupState
 import org.matrix.android.sdk.api.session.events.model.EventType
 import org.matrix.android.sdk.api.session.events.model.isAttachmentMessage
 import org.matrix.android.sdk.api.session.events.model.isTextMessage
@@ -362,13 +361,13 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
 
         if (vectorPreferences.developerMode()) {
             if (timelineEvent.isEncrypted() && timelineEvent.root.mCryptoError != null) {
-                val keysBackupService = session.cryptoService().keysBackupService()
-                if (keysBackupService.state == KeysBackupState.NotTrusted
-                        || (keysBackupService.state == KeysBackupState.ReadyToBackUp
-                                && keysBackupService.canRestoreKeys())
-                ) {
-                    add(EventSharedAction.UseKeyBackup)
-                }
+//                val keysBackupService = session.cryptoService().keysBackupService()
+//                if (keysBackupService.state == KeysBackupState.NotTrusted
+//                        || (keysBackupService.state == KeysBackupState.ReadyToBackUp
+//                                && keysBackupService.canRestoreKeys())
+//                ) {
+//                    add(EventSharedAction.UseKeyBackup)
+//                }
                 if (session.cryptoService().getCryptoDeviceInfo(session.myUserId).size > 1
                         || timelineEvent.senderInfo.userId != session.myUserId) {
                     add(EventSharedAction.ReRequestKey(timelineEvent.eventId))

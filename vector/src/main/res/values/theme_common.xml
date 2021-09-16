@@ -2,10 +2,10 @@
 <resources>
 
     <!-- Launcher Theme, only used for VectorLauncherActivity (will be use even before the Activity is started) -->
-    <style name="AppTheme.Launcher" parent="AppTheme.Launcher.Base"/>
+    <style name="AppTheme.Launcher" parent="AppTheme.Launcher.Base" />
 
     <style name="AppTheme.Launcher.Base" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowBackground">@color/riotx_accent</item>
         <item name="android:statusBarColor">@color/primary_color_light</item>
         <item name="android:navigationBarColor">@color/riotx_accent</item>
         <item name="android:windowLightStatusBar">false</item>

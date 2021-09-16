@@ -1871,11 +1871,11 @@ class RoomDetailFragment @Inject constructor(
             is EventSharedAction.ReRequestKey        -> {
                 roomDetailViewModel.handle(RoomDetailAction.ReRequestKeys(action.eventId))
             }
-            is EventSharedAction.UseKeyBackup        -> {
-                context?.let {
-                    startActivity(KeysBackupRestoreActivity.intent(it))
-                }
-            }
+//            is EventSharedAction.UseKeyBackup        -> {
+//                context?.let {
+//                    startActivity(KeysBackupRestoreActivity.intent(it))
+//                }
+//            }
             else                                     -> {
             }
         }
