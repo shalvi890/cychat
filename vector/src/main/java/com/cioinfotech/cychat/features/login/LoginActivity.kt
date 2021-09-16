@@ -205,6 +205,13 @@ open class LoginActivity : VectorBaseActivity<ActivityLoginBinding>(), ToolbarCo
                         tag = FRAGMENT_REGISTRATION_STAGE_TAG,
                         option = commonOption)
             is LoginViewEvents.OnOTPSendSuccess                           -> Unit
+//            is LoginViewEvents.OnValidateSecurityCode                     -> {
+//                addFragmentToBackstack(R.id.loginFragmentContainer,
+//                        ValidateSecurityCodeFragment::class.java,
+//                        null,
+//                        tag = FRAGMENT_REGISTRATION_STAGE_TAG,
+//                        option = commonOption)
+//            }
             is LoginViewEvents.Failure,
             is LoginViewEvents.Loading                                    ->
                 // This is handled by the Fragments

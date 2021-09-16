@@ -21,6 +21,7 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.squareup.moshi.Moshi
 import dagger.Lazy
 import okhttp3.OkHttpClient
+import org.matrix.android.sdk.internal.util.ensureProtocol
 import org.matrix.android.sdk.internal.util.ensureTrailingSlash
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -57,7 +58,17 @@ class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
 
     fun createWithBaseURL(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(baseUrl.ensureTrailingSlash().ensureProtocol())
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .build()
+    }
+
+    fun createWithBaseURL(okHttpClient: OkHttpClient, baseUrl: String, authToken: String): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(baseUrl.ensureTrailingSlash().ensureProtocol())
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -67,7 +78,7 @@ class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
 
     fun create(okHttpClient: Lazy<OkHttpClient>, baseUrl: String): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(baseUrl.ensureTrailingSlash())
+                .baseUrl(baseUrl.ensureTrailingSlash().ensureProtocol())
                 .callFactory { request -> okHttpClient.get().newCall(request) }
                 .addConverterFactory(UnitConverterFactory)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))

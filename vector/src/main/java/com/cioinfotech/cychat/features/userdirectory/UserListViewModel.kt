@@ -37,6 +37,7 @@ import org.matrix.android.sdk.api.session.user.model.User
 import org.matrix.android.sdk.api.util.Optional
 import org.matrix.android.sdk.api.util.toMatrixItem
 import org.matrix.android.sdk.api.util.toOptional
+import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomain
 import org.matrix.android.sdk.rx.rx
 import java.util.concurrent.TimeUnit
 
@@ -124,7 +125,8 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
                         Single.just(emptyList())
                     } else {
                         val searchObservable = session.rx()
-                                .searchUsersDirectory(search, 50, state.excludedUserIds ?: emptySet())
+                                .searchUsersDirectory(search, 50, state.excludedUserIds
+                                        ?: emptySet(), selectedDomain?.domain_name, selectedDomain?.access_token)
                                 .map { users ->
                                     users.sortedBy { it.toMatrixItem().firstLetterOfDisplayName() }
                                 }
@@ -170,5 +172,13 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
     private fun handleRemoveSelectedUser(action: UserListAction.RemovePendingSelection) = withState { state ->
         val selections = state.pendingSelections.minus(action.pendingSelection)
         setState { copy(pendingSelections = selections) }
+    }
+
+    private var selectedDomain: FederatedDomain? = null
+
+    fun setDomain(item: FederatedDomain? = null, defaultDomain: String? = null) {
+        selectedDomain = if (defaultDomain?.contains(item?.domain_name.toString()) == true
+                || item?.domain_name?.contains(defaultDomain.toString()) == true)
+            null else item
     }
 }

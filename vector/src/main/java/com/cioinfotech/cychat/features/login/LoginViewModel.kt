@@ -22,6 +22,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.ActivityViewModelContext
@@ -184,21 +185,26 @@ class LoginViewModel @AssistedInject constructor(
         }.exhaustive
     }
 
-    /** CyChat API- END */
+    /** CyChat API- Start */
+
+    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     /** CyChat Login API Implementation-
      * @param passwordLoginParams- Mobile Number & Email of User
      * */
-    fun handleCyLogin(passwordLoginParams: PasswordLoginParams) {
+    fun handleCyLogin(passwordLoginParams: PasswordLoginParams, secCodeDomains: MutableList<String>?) {
         loginParams = passwordLoginParams
-        authenticationService.cyLogin(AUTH_KEY, passwordLoginParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getCyLoginObserver(passwordLoginParams.email))
-        setState {
-            copy(
-                    asyncCyLogin = Loading()
-            )
+        if (secCodeDomains?.contains(loginParams?.email.getEmailDomain()) != true
+                || (secCodeDomains.contains(loginParams?.email.getEmailDomain()) && isUserValidated.value == true ) ){
+            authenticationService.cyLogin(AUTH_KEY, passwordLoginParams)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getCyLoginObserver(passwordLoginParams.email))
+            setState {
+                copy(
+                        asyncCyLogin = Loading()
+                )
+            }
         }
     }
 
@@ -210,6 +216,7 @@ class LoginViewModel @AssistedInject constructor(
 
             override fun onSuccess(t: LoginResponse) {
                 if (t.status == "ok") {
+                    isUserValidated.postValue(true)
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                     signUpSignInData.postValue(t.data)
                     pref.edit {
@@ -230,6 +237,7 @@ class LoginViewModel @AssistedInject constructor(
                         )
                     }
                 } else {
+                    isUserValidated.postValue(true)
                     _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                     setState {
                         copy(
@@ -293,6 +301,7 @@ class LoginViewModel @AssistedInject constructor(
                     pref.edit().apply {
                         putString(NetworkConstants.USER_ID, t.data.user_id)
                         putString(NetworkConstants.SECRET_KEY, t.data.secret_key)
+                        putString(NetworkConstants.API_SERVER, t.data.api_server)
                         if (pref.getBoolean(SIGNING_MODE, false)) {
                             putString(NetworkConstants.FULL_NAME, "$firstName $lastName")
                         }
@@ -356,7 +365,7 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Get Country List API Implementation-
      * Function waits for Get Country List API Response
      * */
-    fun getListOfCountriesObserver(): SingleObserver<CountryCodeParent> {
+    private fun getListOfCountriesObserver(): SingleObserver<CountryCodeParent> {
         return object : SingleObserver<CountryCodeParent> {
 
             override fun onSuccess(t: CountryCodeParent) {
@@ -384,6 +393,68 @@ class LoginViewModel @AssistedInject constructor(
                 setState {
                     copy(
                             asyncGetCountryList = Fail(e)
+                    )
+                }
+            }
+        }
+    }
+
+    private val isUserValidated: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isUserValidatedLiveData: LiveData<Boolean> get() = isUserValidated
+
+    /** CyChat Validate Security Code API Implementation-
+     * Function waits for Resend OTP API Response
+     * @param code - this parameter is code for that domain
+     * */
+    fun validateSecurityCode(code: String) {
+        val map = hashMapOf(
+                "secr_code" to code,
+                "email_domain" to loginParams?.email.getEmailDomain()
+        )
+        authenticationService.cyValidateSecurityCode(AUTH_KEY, map)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(postValidateSecurityCode())
+        setState {
+            copy(
+                    asyncCyValidateSecurityCode = Loading()
+            )
+        }
+    }
+
+    /** CyChat Validate Security Code API Implementation-
+     * Function waits for Security Code API Response
+     * */
+    private fun postValidateSecurityCode(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok") {
+                    setState {
+                        copy(
+                                asyncCyValidateSecurityCode = Success(Unit)
+                        )
+                    }
+                    authenticationService.cyLogin(AUTH_KEY, loginParams!!)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getCyLoginObserver(loginParams!!.email))
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                    setState {
+                        copy(
+                                asyncCyValidateSecurityCode = Fail(Throwable(t.message))
+                        )
+                    }
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                setState {
+                    copy(
+                            resendOTP = Fail(e)
                     )
                 }
             }

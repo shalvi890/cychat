@@ -2482,6 +2482,7 @@
     <string name="login_signup_username_hint">Username</string>
     <string name="login_signup_password_hint">Password</string>
     <string name="login_signup_mobile_hint">Mobile No*</string>
+    <string name="login_security_code">Security Code*</string>
     <string name="login_signup_submit">Next</string>
     <string name="login_signup_error_user_in_use">That username is taken</string>
     <string name="login_signup_cancel_confirmation_title">Warning</string>
@@ -3283,9 +3284,14 @@
     <string name="development">Development</string>
     <string name="testing">QA</string>
     <string name="uat">UAT</string>
-    <string name="feature_is_coming_soon">\"Invite From Other Organization\" feature is coming soon!</string>
     <string name="cant_play_audio">Can\'t Play Audio</string>
     <string name="environment_connected">Environment Connected</string>
     <string name="you_are_searching_in">You are searching in %s:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
+    <string name="hello_blank_fragment"> </string>
+    <string name="please_select_server_to_search">Please, Select Server To Search</string>
+    <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
+    <string name="please_enter_security_code">Please, Enter Verification Code</string>
+    <string name="change_org"><u>Change Organization</u></string>
+    <string name="search_company_name">Search Organization Name</string>
 </resources>

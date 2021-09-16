@@ -32,16 +32,17 @@ import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.extensions.cleanup
 import com.cioinfotech.cychat.core.extensions.configureWith
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
-import com.cioinfotech.cychat.core.extensions.setupAsSearch
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.core.utils.startSharePlainTextIntent
 import com.cioinfotech.cychat.databinding.FragmentUserListBinding
 import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.homeserver.HomeServerCapabilitiesViewModel
+import com.cioinfotech.cychat.features.userdirectory.adapter.ServerListAdapter
 import com.google.android.material.chip.Chip
 import com.jakewharton.rxbinding3.widget.textChanges
 import org.matrix.android.sdk.api.session.identity.ThreePid
@@ -49,6 +50,8 @@ import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import org.matrix.android.sdk.api.session.room.roomSummaryQueryParams
 import org.matrix.android.sdk.api.session.user.model.User
+import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomain
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import javax.inject.Inject
 
 class UserListFragment @Inject constructor(
@@ -59,6 +62,10 @@ class UserListFragment @Inject constructor(
         UserListController.Callback {
     private var roomList = listOf<RoomSummary>()
     @Inject lateinit var sessionHolder: ActiveSessionHolder
+
+    companion object {
+        var selectedDomain: FederatedDomain? = null
+    }
 
     private val args: UserListFragmentArgs by args()
     private val viewModel: UserListViewModel by activityViewModel()
@@ -112,6 +119,22 @@ class UserListFragment @Inject constructor(
                 }
             }
         }
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
+        views.btnChangeOrg.setOnClickListener {
+            ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
+                override fun onClick(item: FederatedDomain) {
+                    views.tvSearchingIn.text = getString(R.string.you_are_searching_in, item.name)
+                    selectedDomain = item
+                    viewModel.setDomain(item, pref.getString(NetworkConstants.API_SERVER, null))
+                }
+            }).show(childFragmentManager, "")
+        }
+
+        views.tvSearchingIn.text = if (selectedDomain != null) {
+            viewModel.setDomain(selectedDomain!!, pref.getString(NetworkConstants.API_SERVER, null))
+            getString(R.string.you_are_searching_in, selectedDomain!!.name)
+        } else
+            getString(R.string.you_are_searching_in, "Your Company")
     }
 
     override fun onDestroyView() {
@@ -119,12 +142,16 @@ class UserListFragment @Inject constructor(
         super.onDestroyView()
     }
 
+    override fun onDestroy() {
+        selectedDomain = null
+        viewModel.setDomain()
+        super.onDestroy()
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         withState(viewModel) {
             val showMenuItem = it.pendingSelections.isNotEmpty()
-            menu.forEach { menuItem ->
-                menuItem.isVisible = showMenuItem
-            }
+            menu.forEach { menuItem -> menuItem.isVisible = showMenuItem }
         }
         super.onPrepareOptionsMenu(menu)
     }
@@ -152,11 +179,11 @@ class UserListFragment @Inject constructor(
                     val action = if (searchValue.isBlank())
                         UserListAction.ClearSearchUsers
                     else
-                        UserListAction.SearchUsers(searchValue.toString())
+                        UserListAction.SearchUsers(searchValue.toString(), selectedDomain?.domain_name, selectedDomain?.access_token)
                     viewModel.handle(action)
                 }.disposeOnDestroyView()
 
-        views.userListSearch.setupAsSearch()
+//        views.userListSearch.setupAsSearch()
         views.userListSearch.requestFocus()
     }
 

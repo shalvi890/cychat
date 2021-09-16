@@ -55,8 +55,8 @@ class AudioRecorderFragment : VectorBaseBottomSheetDialogFragment<FragmentAudioR
         mFileName = requireContext().getExternalFilesDir(null)!!.absolutePath + "/recording_$timeStamp.mp3"
         mRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile(mFileName)
             try {
                 prepare()
@@ -109,20 +109,20 @@ class AudioRecorderFragment : VectorBaseBottomSheetDialogFragment<FragmentAudioR
 
     fun deleteFile() {
         mFileName?.let {
-            val fdelete = File(it)
-            if (fdelete.exists()) {
-                fdelete.delete()
+            File(it).apply {
+                if (this.exists())
+                    this.delete()
             }
         }
     }
 
-    fun stopRecorderAndSendAudio() {
+    private fun stopRecorderAndSendAudio() {
         stopRecorder()
         sendFile()
         dismiss()
     }
 
-    fun sendFile() {
+    private fun sendFile() {
         mFileName?.let {
             recordAudio?.sendRecordedAudioFile(File(it))
         }

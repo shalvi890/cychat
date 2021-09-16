@@ -30,6 +30,7 @@ data class LoginViewState(
         val asyncResetMailConfirmed: Async<Unit> = Uninitialized,
         val asyncRegistration: Async<Unit> = Uninitialized,
         val asyncCyLogin: Async<Unit> = Uninitialized,
+        val asyncCyValidateSecurityCode: Async<Unit> = Uninitialized,
         val asyncCyCheckOTP: Async<Unit> = Uninitialized,
         val asyncGetCountryList: Async<Unit> = Uninitialized,
         val resendOTP: Async<Unit> = Uninitialized,
@@ -67,6 +68,7 @@ data class LoginViewState(
                 || asyncCyCheckOTP is Loading
                 || asyncCyLogin is Loading
                 || asyncGetCountryList is Loading
+                || asyncCyValidateSecurityCode is Loading
     }
 
     fun isUserLogged(): Boolean {

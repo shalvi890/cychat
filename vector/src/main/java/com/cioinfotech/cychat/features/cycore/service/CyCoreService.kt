@@ -19,9 +19,11 @@ package com.cioinfotech.cychat.features.cycore.service
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
 import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 
 interface CyCoreService {
     fun cyGetDomainDetails(auth: String?, reqId: String?, userId: String?, url: String): Single<DomainDetails>
     fun cyUpdateRecoveryKey(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
     fun cyDeleteOldSessions(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
+    fun cyGetFederatedDomains(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String): Single<FederatedDomainList>
 }

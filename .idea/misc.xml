@@ -4,16 +4,24 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_attachment.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_delete.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_x_18dp.xml" value="0.11927083333333334" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_room_detail.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/composer_layout.xml" value="0.21422101449275363" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_audio_recorder.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_home_detail.xml" value="0.21422101449275363" />
-        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login.xml" value="0.4" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login.xml" value="0.29398148148148145" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_my_dialog.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_detail.xml" value="0.21422101449275363" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_select_env.xml" value="0.176" />
-        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_list.xml" value="0.2" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_server_list.xml" value="0.2" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_list.xml" value="0.1" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_validate_security_code.xml" value="0.176" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_category.xml" value="0.536" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_server_list.xml" value="0.21666666666666667" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/menu/home.xml" value="0.212461695607763" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/menu/menu_timeline.xml" value="0.21666666666666667" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/xml/vector_settings_notifications.xml" value="0.10494450050454086" />
       </map>
     </option>
   </component>

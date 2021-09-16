@@ -21,7 +21,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -42,8 +41,6 @@ import com.cioinfotech.cychat.core.platform.ToolbarConfigurable
 import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.core.pushers.PushersManager
 import com.cioinfotech.cychat.databinding.ActivityHomeBinding
-import com.cioinfotech.cychat.features.MainActivity
-import com.cioinfotech.cychat.features.MainActivityArgs
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageAction
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageActivity
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecureStorageViewEvent
@@ -85,8 +82,6 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.SESSION_UPDATED
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
-import org.matrix.android.sdk.internal.session.sync.InitialSyncStrategy
-import org.matrix.android.sdk.internal.session.sync.initialSyncStrategy
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -210,8 +205,10 @@ class HomeActivity :
      **/
     private fun onFirstSession() {
         val pref = DefaultSharedPreferences.getInstance(applicationContext)
-        if (!::cyChatViewModel.isInitialized)
+        if (!::cyChatViewModel.isInitialized) {
             cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+            cyChatViewModel.handleCyGetDetails()
+        }
         if (!pref.getBoolean(SESSION_UPDATED, false)) {
             GlobalScope.launch(Dispatchers.IO) {
                 activeSessionHolder.getActiveSession().sessionParams.deviceId?.let {
@@ -495,25 +492,25 @@ class HomeActivity :
 //                bugReporter.openBugReportScreen(this, false)
 //                return true
 //            }
-            R.id.menu_home_init_sync_legacy    -> {
-                // Configure the SDK
-                initialSyncStrategy = InitialSyncStrategy.Legacy
-                // And clear cache
-                MainActivity.restartApp(this, MainActivityArgs(clearCache = true))
-                return true
-            }
-            R.id.menu_home_init_sync_optimized -> {
-                // Configure the SDK
-                initialSyncStrategy = InitialSyncStrategy.Optimized()
-                // And clear cache
-                MainActivity.restartApp(this, MainActivityArgs(clearCache = true))
-                return true
-            }
-            R.id.menu_home_filter              -> {
+//            R.id.menu_home_init_sync_legacy    -> {
+//                // Configure the SDK
+//                initialSyncStrategy = InitialSyncStrategy.Legacy
+//                // And clear cache
+//                MainActivity.restartApp(this, MainActivityArgs(clearCache = true))
+//                return true
+//            }
+//            R.id.menu_home_init_sync_optimized -> {
+//                // Configure the SDK
+//                initialSyncStrategy = InitialSyncStrategy.Optimized()
+//                // And clear cache
+//                MainActivity.restartApp(this, MainActivityArgs(clearCache = true))
+//                return true
+//            }
+            R.id.menu_home_filter  -> {
                 navigator.openRoomsFiltering(this)
                 return true
             }
-            R.id.menu_home_setting             -> {
+            R.id.menu_home_setting -> {
                 navigator.openSettings(this)
                 return true
             }

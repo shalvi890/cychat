@@ -404,6 +404,8 @@ internal class DefaultAuthenticationService @Inject constructor(
 
     override fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(auth, reqId, hashMap)
 
+    override fun cyValidateSecurityCode(auth: String?, hashMap: HashMap<String, String>) = buildCyAuthAPI().validateSecurityCode(auth, hashMap)
+
     private fun buildAuthAPI(homeServerConnectionConfig: HomeServerConnectionConfig): AuthAPI {
         val retrofit = retrofitFactory.create(buildClient(homeServerConnectionConfig), homeServerConnectionConfig.homeServerUri.toString())
         return retrofit.create(AuthAPI::class.java)

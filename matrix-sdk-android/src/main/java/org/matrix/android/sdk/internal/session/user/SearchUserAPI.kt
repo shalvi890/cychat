@@ -20,6 +20,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.session.user.model.SearchUsersParams
 import org.matrix.android.sdk.internal.session.user.model.SearchUsersResponse
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 internal interface SearchUserAPI {

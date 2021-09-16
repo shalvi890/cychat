@@ -38,12 +38,12 @@ internal class DefaultUserService @Inject constructor(private val userDataSource
 
     override suspend fun resolveUser(userId: String): User {
         val known = getUser(userId)
-        if (known != null) {
-            return known
-        } else {
+        return if (known != null)
+            known
+        else {
             val params = GetProfileInfoTask.Params(userId)
             val data = getProfileInfoTask.execute(params)
-            return User(
+            User(
                     userId,
                     data[ProfileService.DISPLAY_NAME_KEY] as? String,
                     data[ProfileService.AVATAR_URL_KEY] as? String)
@@ -66,10 +66,8 @@ internal class DefaultUserService @Inject constructor(private val userDataSource
         return userDataSource.getIgnoredUsersLive()
     }
 
-    override suspend fun searchUsersDirectory(search: String,
-                                              limit: Int,
-                                              excludedUserIds: Set<String>): List<User> {
-        val params = SearchUserTask.Params(limit, search, excludedUserIds)
+    override suspend fun searchUsersDirectory(search: String, limit: Int, excludedUserIds: Set<String>, baseURL: String?, authKey: String?): List<User> {
+        val params = SearchUserTask.Params(limit, search, excludedUserIds, baseURL, authKey)
         return searchUserTask.execute(params)
     }
 

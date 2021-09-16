@@ -81,24 +81,36 @@
 
         <TextView
             android:id="@+id/tv_searching_in"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            tools:text="@string/you_are_searching_in"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/userListSearch"
+            app:layout_constraintEnd_toStartOf="@id/btn_change_org"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/you_are_searching_in" />
+
+        <TextView
+            android:id="@+id/btn_change_org"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:padding="4dp"
+            android:textStyle="bold"
+            android:text="@string/change_org"
+            android:textAllCaps="false"
             android:textColor="?colorPrimary"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/chipGroupScrollView"
-            tools:visibility="visible" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chipGroupScrollView" />
 
         <EditText
             android:id="@+id/userListSearch"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_horizontal_margin"
             android:layout_marginEnd="@dimen/layout_horizontal_margin"
             android:background="@null"
-            android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:hint="@string/user_directory_search_hint"
             android:importantForAutofill="no"
@@ -107,9 +119,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_searching_in" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_change_org" />
 
         <View
             android:id="@+id/userListFilterDivider"

@@ -17,9 +17,12 @@
 package org.matrix.android.sdk.internal.session.user
 
 import dagger.Binds
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import org.matrix.android.sdk.api.session.user.UserService
+import org.matrix.android.sdk.internal.network.RetrofitFactory
 import org.matrix.android.sdk.internal.session.SessionScope
 import org.matrix.android.sdk.internal.session.user.accountdata.DefaultSaveIgnoredUsersTask
 import org.matrix.android.sdk.internal.session.user.accountdata.DefaultUpdateIgnoredUserIdsTask
@@ -32,15 +35,15 @@ import retrofit2.Retrofit
 @Module
 internal abstract class UserModule {
 
-    @Module
-    companion object {
-        @Provides
-        @JvmStatic
-        @SessionScope
-        fun providesSearchUserAPI(retrofit: Retrofit): SearchUserAPI {
-            return retrofit.create(SearchUserAPI::class.java)
-        }
-    }
+//    @Module
+//    companion object {
+//        @Provides
+//        @JvmStatic
+//        @SessionScope
+//        fun providesSearchUserAPI(retrofit: Retrofit): SearchUserAPI {
+//            return retrofit.create(SearchUserAPI::class.java)
+//        }
+//    }
 
     @Binds
     abstract fun bindUserService(service: DefaultUserService): UserService

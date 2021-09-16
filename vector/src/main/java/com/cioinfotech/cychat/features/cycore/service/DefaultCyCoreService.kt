@@ -29,6 +29,7 @@ class DefaultCyCoreService @Inject constructor(
     override fun cyGetDomainDetails(auth: String?, reqId: String?, userId: String?, url: String) = buildCyCoreAPI(url).getDomainDetails(auth, reqId, userId)
     override fun cyUpdateRecoveryKey(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(auth, reqId, hashMap)
     override fun cyDeleteOldSessions(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).deleteOldSessions(auth, reqId, hashMap)
+    override fun cyGetFederatedDomains(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getFederatedDomains(auth, reqId, hashMap)
 
     private fun buildCyCoreAPI(url: String): CyCoreAPI {
         val retrofit = retrofitFactory.createWithBaseURL(buildClient(), url)

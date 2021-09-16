@@ -124,4 +124,7 @@ interface AuthenticationService {
     fun getCountryList(auth: String): Single<CountryCodeParent>
 
     fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
+
+    fun cyValidateSecurityCode(auth: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
+
 }

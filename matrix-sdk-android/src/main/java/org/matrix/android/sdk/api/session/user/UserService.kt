@@ -45,7 +45,7 @@ interface UserService {
      * @param excludedUserIds the user ids to filter from the search
      * @return Cancelable
      */
-    suspend fun searchUsersDirectory(search: String, limit: Int, excludedUserIds: Set<String>): List<User>
+    suspend fun searchUsersDirectory(search: String, limit: Int, excludedUserIds: Set<String>,baseURL:String?, authKey:String?): List<User>
 
     /**
      * Observe a live user from a userId

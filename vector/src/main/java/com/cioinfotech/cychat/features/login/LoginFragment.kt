@@ -17,11 +17,15 @@
 package com.cioinfotech.cychat.features.login
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -30,8 +34,11 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
+import com.cioinfotech.cychat.core.platform.showOptimizedSnackbar
 import com.cioinfotech.cychat.databinding.FragmentLoginBinding
+import com.cioinfotech.cychat.databinding.FragmentValidateSecurityCodeBinding
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
+import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import javax.inject.Inject
 
@@ -44,10 +51,13 @@ import javax.inject.Inject
  * - the user is asked for login and password
  */
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>(), AdapterView.OnItemSelectedListener {
-    val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
-    var listOfCountries = mutableListOf<CountryCode>()
-    var selectedCountry: CountryCode? = null
+    private val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+    private var allSettings: CountryCodeParent? = null
+    private var selectedCountry: CountryCode? = null
     private var firstTime = true
+    private var isUserValidated = false
+    private var securityCodeDialogShowing = false
+    private var dialogBinding: FragmentValidateSecurityCodeBinding? = null
     //    private var passwordShown = false
 //    private var isSignupMode = false
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
@@ -66,7 +76,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         loginViewModel.handleCountryList()
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
             if (it != null && it.data.countries.isNotEmpty()) {
-                listOfCountries = it.data.countries
+                allSettings = it
                 val list = mutableListOf<String>()
                 it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
@@ -96,7 +106,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //        }
     }
 
-    fun invalidMobileNumber(): Boolean {
+    private fun invalidMobileNumber(): Boolean {
         return if (views.mobileNumberField.text.toString().isNotBlank()) {
             if (selectedCountry != null && views.mobileNumberField.text?.length != selectedCountry?.mobile_size) {
                 views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size ?: 10
@@ -162,9 +172,53 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin(PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"))
+            loginViewModel.handleCyLogin(PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"), allSettings?.data?.secCodeDomains)
+
+            if ((allSettings?.data?.secCodeDomains?.contains(login.getEmailDomain()) == true) && !isUserValidated) {
+                val dialog = Dialog(requireContext())
+                FragmentValidateSecurityCodeBinding.inflate(
+                        layoutInflater,
+                        views.root,
+                        false
+                ).apply {
+                    dialogBinding = this
+                    dialog.setContentView(this.root)
+                    dialog.window?.setLayout(
+                            WindowManager.LayoutParams.MATCH_PARENT,
+                            WindowManager.LayoutParams.MATCH_PARENT
+                    )
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    this.btnValidate.setOnClickListener {
+                        this.otpTil.error = null
+                        this.btnValidate.hideKeyboard()
+
+                        if (this.otpField.text.toString().isEmpty())
+                            this.otpTil.error = getString(R.string.please_enter_security_code)
+                        else {
+                            dialogBinding?.btnValidate?.isEnabled = false
+                            pbProgress.isVisible = true
+                            loginViewModel.validateSecurityCode(this.otpField.text.toString())
+                        }
+                    }
+                    this.tvTitle.setOnClickListener {
+                        securityCodeDialogShowing = false
+                        dialog.dismiss()
+                    }
+                    securityCodeDialogShowing = true
+                    dialog.show()
+                }
+                loginViewModel.isUserValidatedLiveData.observe(viewLifecycleOwner) {
+                    if (it) {
+                        securityCodeDialogShowing = false
+                        isUserValidated = true
+                        dialog.dismiss()
+                    }
+                }
+            }
         }
     }
+
+    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     private fun cleanupUi() {
         views.loginSubmit.hideKeyboard()
@@ -300,7 +354,12 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     override fun resetViewModel() = loginViewModel.handle(LoginAction.ResetLogin)
 
     override fun onError(throwable: Throwable) {
-        showErrorInSnackbar(if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable)
+        if (securityCodeDialogShowing) {
+            dialogBinding?.pbProgress?.isVisible = false
+            dialogBinding?.btnValidate?.isEnabled = true
+            dialogBinding?.root?.showOptimizedSnackbar(errorFormatter.toHumanReadable(throwable))
+        } else
+            showErrorInSnackbar(if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable)
     }
 
     override fun updateWithState(state: LoginViewState) {
@@ -350,7 +409,9 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        selectedCountry = listOfCountries[position]
+        allSettings?.data?.countries?.let {
+            selectedCountry = it[position]
+        }
         if (firstTime)
             firstTime = false
         else
@@ -360,7 +421,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             views.optionalDigit.isVisible = false
         } else {
             views.optionalDigit.isVisible = true
-            views.optionalDigit.text = selectedCountry!!.local_code
+            views.optionalDigit.text = selectedCountry?.local_code
         }
     }
 

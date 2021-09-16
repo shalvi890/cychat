@@ -16,11 +16,20 @@
 
 package org.matrix.android.sdk.internal.session.user.model
 
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.matrix.android.sdk.api.session.user.model.User
 import org.matrix.android.sdk.internal.network.GlobalErrorReceiver
+import org.matrix.android.sdk.internal.network.HttpHeaders
+import org.matrix.android.sdk.internal.network.RetrofitFactory
 import org.matrix.android.sdk.internal.network.executeRequest
 import org.matrix.android.sdk.internal.session.user.SearchUserAPI
 import org.matrix.android.sdk.internal.task.Task
+import org.matrix.android.sdk.internal.util.ensureProtocol
+import org.matrix.android.sdk.internal.util.ensureTrailingSlash
+import retrofit2.Retrofit
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 internal interface SearchUserTask : Task<SearchUserTask.Params, List<User>> {
@@ -28,21 +37,47 @@ internal interface SearchUserTask : Task<SearchUserTask.Params, List<User>> {
     data class Params(
             val limit: Int,
             val search: String,
-            val excludedUserIds: Set<String>
+            val excludedUserIds: Set<String>,
+            val baseURL: String?,
+            val authKey: String?
     )
 }
 
 internal class DefaultSearchUserTask @Inject constructor(
-        private val searchUserAPI: SearchUserAPI,
-        private val globalErrorReceiver: GlobalErrorReceiver
+        private val globalErrorReceiver: GlobalErrorReceiver,
+        private val retrofitFactory: RetrofitFactory,
+        private val retrofit: Retrofit
 ) : SearchUserTask {
 
     override suspend fun execute(params: SearchUserTask.Params): List<User> {
 
         val response = executeRequest(globalErrorReceiver) {
             try {
+                val searchUserAPI = if (params.baseURL.isNullOrEmpty())
+                    retrofit.create(SearchUserAPI::class.java)
+                else {
+                    val interceptor = HttpLoggingInterceptor().apply {
+                        this.level = HttpLoggingInterceptor.Level.BODY
+                    }
+                    val okHttpClient = OkHttpClient.Builder()
+                            .connectTimeout(30, TimeUnit.SECONDS)
+                            .readTimeout(60, TimeUnit.SECONDS)
+                            .writeTimeout(60, TimeUnit.SECONDS)
+                            .addInterceptor { chain ->
+                                var request = chain.request()
+                                val newRequestBuilder = request.newBuilder()
+                                newRequestBuilder.header(HttpHeaders.Authorization, "Bearer ${params.authKey}")
+                                request = newRequestBuilder.build()
+                                chain.proceed(request)
+                            }
+                            .addInterceptor(interceptor)
+                            .build()
+
+                    retrofitFactory.create(okHttpClient, params.baseURL.ensureTrailingSlash().ensureProtocol()).create(SearchUserAPI::class.java)
+                }
                 searchUserAPI.searchUsers(SearchUsersParams(params.search, params.limit))
             } catch (ex: Exception) {
+                Timber.d(ex)
                 SearchUsersResponse(false, mutableListOf())
             }
         }

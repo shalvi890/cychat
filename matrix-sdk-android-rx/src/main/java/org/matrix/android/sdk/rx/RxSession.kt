@@ -130,8 +130,10 @@ class RxSession(private val session: Session) {
 
     fun searchUsersDirectory(search: String,
                              limit: Int,
-                             excludedUserIds: Set<String>): Single<List<User>> = rxSingle {
-        session.searchUsersDirectory(search, limit, excludedUserIds)
+                             excludedUserIds: Set<String>,
+                             baseURL: String?,
+                             authKey: String?): Single<List<User>> = rxSingle {
+        session.searchUsersDirectory(search, limit, excludedUserIds, baseURL, authKey)
     }
 
     fun joinRoom(roomIdOrAlias: String,

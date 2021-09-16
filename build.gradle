@@ -2,7 +2,7 @@
 
 buildscript {
     // Ref: https://kotlinlang.org/releases.html
-    ext.kotlin_version = '1.5.0'
+    ext.kotlin_version = '1.5.30'
     ext.kotlin_coroutines_version = "1.4.3"
     repositories {
         google()
@@ -14,7 +14,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
         classpath 'com.google.gms:google-services:4.3.5'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1'
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.3'
         classpath "com.likethesalad.android:string-reference:1.2.1"
@@ -73,7 +73,7 @@ allprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         // Warnings are potential errors, so stop ignoring them
         // You can override by passing `-PallWarningsAsErrors=false` in the command line
-        kotlinOptions.allWarningsAsErrors = project.getProperties().getOrDefault("allWarningsAsErrors", "true").toBoolean()
+        kotlinOptions.allWarningsAsErrors = project.getProperties().getOrDefault("allWarningsAsErrors", "false").toBoolean()
     }
 }
 
