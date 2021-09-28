@@ -84,25 +84,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/userListSearch"
-            app:layout_constraintEnd_toStartOf="@id/btn_change_org"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="@string/you_are_searching_in" />
-
-        <TextView
-            android:id="@+id/btn_change_org"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:padding="4dp"
-            android:textStyle="bold"
-            android:text="@string/change_org"
-            android:textAllCaps="false"
-            android:textColor="?colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chipGroupScrollView" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chipGroupScrollView"
+            tools:text="@string/you_are_searching_in" />
 
         <EditText
             android:id="@+id/userListSearch"
@@ -119,7 +106,21 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@+id/btn_change_org" />
+            app:layout_constraintTop_toBottomOf="@id/tv_searching_in" />
+
+        <Button
+            android:id="@+id/btn_change_org"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:padding="4dp"
+            android:text="@string/change_org"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userListSearch" />
 
         <View
             android:id="@+id/userListFilterDivider"
@@ -128,7 +129,7 @@
             android:background="?attr/vctr_list_divider_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userListSearch" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_change_org" />
 
 
         <TextView

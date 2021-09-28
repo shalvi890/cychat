@@ -264,16 +264,16 @@ class RoomProfileFragment @Inject constructor(
     override fun onLeaveRoomClicked() {
         val isPublicRoom = roomProfileViewModel.isPublicRoom()
         val message = buildString {
-            append(getString(R.string.room_participants_leave_prompt_msg))
+            append(getString(if (isOneToOneChatOpen) R.string.room_participants_delete_prompt_msg else R.string.room_participants_leave_prompt_msg))
             if (!isPublicRoom) {
                 append("\n\n")
                 append(getString(R.string.room_participants_leave_private_warning))
             }
         }
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.room_participants_leave_prompt_title)
+                .setTitle(if (isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_participants_leave_prompt_title)
                 .setMessage(message)
-                .setPositiveButton(R.string.leave) { _, _ ->
+                .setPositiveButton(if (isOneToOneChatOpen) R.string.delete else R.string.leave) { _, _ ->
                     roomProfileViewModel.handle(RoomProfileAction.LeaveRoom)
                 }
                 .setNegativeButton(R.string.cancel, null)

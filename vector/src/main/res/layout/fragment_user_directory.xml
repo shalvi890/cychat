@@ -47,7 +47,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@string/direct_chats_header"
-                    android:textColor="?riotx_text_primary"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -42,6 +42,7 @@ import com.cioinfotech.cychat.core.platform.StateView
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.resources.UserPreferencesProvider
 import com.cioinfotech.cychat.databinding.FragmentRoomListBinding
+import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.home.RoomListDisplayMode
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListActionsArgs
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsBottomSheet
@@ -95,7 +96,7 @@ class RoomListFragment @Inject constructor(
     )
 
     private val adapterInfosList = mutableListOf<SectionAdapterInfo>()
-    private var concatAdapter : ConcatAdapter? = null
+    private var concatAdapter: ConcatAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -165,7 +166,6 @@ class RoomListFragment @Inject constructor(
         modelBuildListener = null
         views.roomListView.cleanup()
         footerController.listener = null
-        // TODO Cleanup listener on the ConcatAdapter's adapters?
         stateRestorer.clear()
         views.createChatFabMenu.listener = null
         concatAdapter = null
@@ -261,7 +261,7 @@ class RoomListFragment @Inject constructor(
                                     isHighlighted = counts.isHighlight
                             ))
                         }
-                        section.isExpanded.observe(viewLifecycleOwner) { _ ->
+                        section.isExpanded.observe(viewLifecycleOwner) {
                             refreshCollapseStates()
                         }
                         controller.listener = this
@@ -332,16 +332,16 @@ class RoomListFragment @Inject constructor(
     private fun promptLeaveRoom(roomId: String) {
         val isPublicRoom = roomListViewModel.isPublicRoom(roomId)
         val message = buildString {
-            append(getString(R.string.room_participants_leave_prompt_msg))
+            append(getString(if (HomeActivity.isOneToOneChatOpen) R.string.room_participants_delete_prompt_msg else R.string.room_participants_leave_prompt_msg))
             if (!isPublicRoom) {
                 append("\n\n")
                 append(getString(R.string.room_participants_leave_private_warning))
             }
         }
         AlertDialog.Builder(requireContext())
-                .setTitle(R.string.room_participants_leave_prompt_title)
+                .setTitle(if (HomeActivity.isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_participants_leave_prompt_title)
                 .setMessage(message)
-                .setPositiveButton(R.string.leave) { _, _ ->
+                .setPositiveButton(if (HomeActivity.isOneToOneChatOpen) R.string.delete else R.string.leave) { _, _ ->
                     roomListViewModel.handle(RoomListAction.LeaveRoom(roomId))
                 }
                 .setNegativeButton(R.string.cancel, null)

@@ -325,7 +325,7 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
                 add(EventSharedAction.Edit(eventId))
             }
 
-            if (canRedact(timelineEvent)) {
+            if (canRedact(timelineEvent, actionPermissions)) {
                 add(EventSharedAction.Redact(eventId, askForReason = informationData.senderId != session.myUserId))
             }
 
@@ -359,8 +359,8 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
             }
         }
 
-        if (vectorPreferences.developerMode()) {
-            if (timelineEvent.isEncrypted() && timelineEvent.root.mCryptoError != null) {
+//        if (vectorPreferences.developerMode()) {
+//            if (timelineEvent.isEncrypted() && timelineEvent.root.mCryptoError != null) {
 //                val keysBackupService = session.cryptoService().keysBackupService()
 //                if (keysBackupService.state == KeysBackupState.NotTrusted
 //                        || (keysBackupService.state == KeysBackupState.ReadyToBackUp
@@ -368,13 +368,13 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
 //                ) {
 //                    add(EventSharedAction.UseKeyBackup)
 //                }
-                if (session.cryptoService().getCryptoDeviceInfo(session.myUserId).size > 1
-                        || timelineEvent.senderInfo.userId != session.myUserId) {
-                    add(EventSharedAction.ReRequestKey(timelineEvent.eventId))
-                }
-            }
-            addViewSourceItems(timelineEvent)
-        }
+//                if (session.cryptoService().getCryptoDeviceInfo(session.myUserId).size > 1
+//                        || timelineEvent.senderInfo.userId != session.myUserId) {
+//                    add(EventSharedAction.ReRequestKey(timelineEvent.eventId))
+//                }
+//            }
+//            addViewSourceItems(timelineEvent)
+//        }
         add(EventSharedAction.CopyPermalink(eventId))
 //        if (session.myUserId != timelineEvent.root.senderId) {
         // not sent by me
@@ -422,15 +422,15 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
         }
     }
 
-    private fun canRedact(event: TimelineEvent) = event.root.senderId == session.myUserId
-//    {
-    // Only event of type Event.EVENT_TYPE_MESSAGE are supported for the moment
-//        if (event.root.getClearType() != EventType.MESSAGE) return false
-    // Message sent by the current user can always be redacted
-//        if (event.root.senderId == session.myUserId) return true
-    // Check permission for messages sent by other users
-//        return actionPermissions.canRedact
-//    }
+    /** Recovered old Delete for everyone code */
+    private fun canRedact(event: TimelineEvent, actionPermissions: ActionPermissions): Boolean {
+        // Only event of type Event.EVENT_TYPE_MESSAGE are supported for the moment
+        if (event.root.getClearType() != EventType.MESSAGE) return false
+        // Message sent by the current user can always be redacted
+        if (event.root.senderId == session.myUserId) return true
+        // Check permission for messages sent by other users
+        return actionPermissions.canRedact
+    }
 
     private fun canRetry(event: TimelineEvent, actionPermissions: ActionPermissions): Boolean {
         return event.root.sendState.hasFailed()

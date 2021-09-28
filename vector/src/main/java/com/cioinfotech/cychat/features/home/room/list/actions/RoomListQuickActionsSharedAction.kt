@@ -20,6 +20,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.platform.VectorSharedAction
+import com.cioinfotech.cychat.features.home.HomeActivity
 
 sealed class RoomListQuickActionsSharedAction(
         @StringRes val titleRes: Int,
@@ -61,7 +62,7 @@ sealed class RoomListQuickActionsSharedAction(
             R.drawable.ic_star_24dp)
 
     data class Leave(val roomId: String) : RoomListQuickActionsSharedAction(
-            R.string.room_list_quick_actions_leave,
+            if (HomeActivity.isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_list_quick_actions_leave,
             R.drawable.ic_room_actions_leave,
             true
     )

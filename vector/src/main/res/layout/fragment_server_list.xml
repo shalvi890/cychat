@@ -17,17 +17,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.8">
 
+        <ImageView
+            android:id="@+id/iv_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?riotx_text_primary" />
+
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="@dimen/alerter_padding_default"
             android:text="@string/please_select_server_to_search"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            app:drawableEndCompat="@drawable/ic_delete"
-            app:drawableTint="?riotx_text_primary"
+            app:layout_constraintEnd_toStartOf="@id/iv_dismiss"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText

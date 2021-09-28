@@ -63,7 +63,7 @@ class ServerListFragment(private val tempItemClickListener: ServerListAdapter.It
                 adapter.updateData(federatedDomainList.filter { it.name.lowercase().contains(text) }.toMutableList())
         }
 
-        views.tvTitle.setOnClickListener { dismiss() }
+        views.ivDismiss.setOnClickListener { dismiss() }
     }
 
     override fun onClick(item: FederatedDomain) {

@@ -126,15 +126,16 @@ class UserListFragment @Inject constructor(
                     views.tvSearchingIn.text = getString(R.string.you_are_searching_in, item.name)
                     selectedDomain = item
                     viewModel.setDomain(item, pref.getString(NetworkConstants.API_SERVER, null))
+                    views.tvSearchingIn.isVisible = selectedDomain != null
                 }
             }).show(childFragmentManager, "")
         }
 
-        views.tvSearchingIn.text = if (selectedDomain != null) {
+        if (selectedDomain != null) {
             viewModel.setDomain(selectedDomain!!, pref.getString(NetworkConstants.API_SERVER, null))
-            getString(R.string.you_are_searching_in, selectedDomain!!.name)
-        } else
-            getString(R.string.you_are_searching_in, "Your Company")
+            views.tvSearchingIn.text = getString(R.string.you_are_searching_in, selectedDomain!!.name)
+        }
+        views.tvSearchingIn.isVisible = selectedDomain != null
     }
 
     override fun onDestroyView() {

@@ -832,7 +832,8 @@
     <!--  Chat participants -->
     <string name="room_participants_leave_prompt_title">Leave room</string>
     <string name="room_participants_leave_prompt_msg">Are you sure you want to leave the room?</string>
-    <string name="room_participants_leave_private_warning">This room is not public. You will not be able to rejoin without an invite.</string>
+    <string name="room_participants_delete_prompt_msg">Are you sure you want to delete this chat?</string>
+    <string name="room_participants_leave_private_warning">This chat is not public. You will not be able to rejoin without an invite.</string>
     <string name="room_participants_remove_prompt_msg">Are you sure you want to remove %s from this chat?</string>
     <string name="room_participants_create">Create</string>
 
@@ -2648,7 +2649,7 @@
     </plurals>
     <string name="room_profile_section_more_uploads">Uploads</string>
     <string name="room_profile_section_more_leave">Leave Room</string>
-    <string name="direct_room_profile_section_more_leave">Delete Chat</string>
+    <string name="direct_room_profile_section_more_leave">Delete Contact</string>
     <string name="room_profile_leaving_room">"Leaving the room…"</string>
 
     <string name="room_member_power_level_admins">Admins</string>
@@ -3289,10 +3290,10 @@
     <string name="you_are_searching_in">You are searching in %s:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
     <string name="hello_blank_fragment"> </string>
-    <string name="please_select_server_to_search">Please, Select Server To Search</string>
+    <string name="please_select_server_to_search">Please, Select Organization To Search</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
     <string name="please_enter_security_code">Please, Enter Verification Code</string>
-    <string name="change_org"><u>Change Organization</u></string>
+    <string name="change_org">Invite from Other Organization</string>
     <string name="search_company_name">Search Organization Name</string>
     <string name="logo">Logo</string>
 </resources>
