@@ -208,7 +208,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                 })
     }
 
-    fun getChannel(channelId: String): NotificationChannel? {
+    private fun getChannel(channelId: String): NotificationChannel? {
         return notificationManager.getNotificationChannel(channelId)
     }
 

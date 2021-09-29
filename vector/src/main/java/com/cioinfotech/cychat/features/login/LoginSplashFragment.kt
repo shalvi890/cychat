@@ -61,7 +61,7 @@ class LoginSplashFragment @Inject constructor(
             val prefs = DefaultSharedPreferences.getInstance(requireContext())
             RetrofitFactory.BASE_URL = NetworkConstants.UAT_URL
             prefs.edit().apply {
-                putString(NetworkConstants.BASE_URL, RetrofitFactory.BASE_URL)
+                putString(NetworkConstants.BASE_URL, NetworkConstants.UAT_URL)
                 putString(NetworkConstants.CY_CHAT_ENV, NetworkConstants.UAT)
                 apply()
             }

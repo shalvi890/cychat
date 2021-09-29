@@ -195,7 +195,7 @@ class LoginViewModel @AssistedInject constructor(
     fun handleCyLogin(passwordLoginParams: PasswordLoginParams, secCodeDomains: MutableList<String>?) {
         loginParams = passwordLoginParams
         if (secCodeDomains?.contains(loginParams?.email.getEmailDomain()) != true
-                || (secCodeDomains.contains(loginParams?.email.getEmailDomain()) && isUserValidated.value == true ) ){
+                || (secCodeDomains.contains(loginParams?.email.getEmailDomain()) && isUserValidated.value == true)) {
             authenticationService.cyLogin(AUTH_KEY, passwordLoginParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -349,16 +349,12 @@ class LoginViewModel @AssistedInject constructor(
      * No Params just to get all countries with codes.
      * */
     fun handleCountryList() {
-        if (countryCodeList.value == null) {
-            authenticationService.getCountryList(AUTH_KEY)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getListOfCountriesObserver())
-            setState {
-                copy(
-                        asyncGetCountryList = Loading()
-                )
-            }
+        authenticationService.getCountryList(AUTH_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getListOfCountriesObserver())
+        setState {
+            copy(asyncGetCountryList = Loading())
         }
     }
 

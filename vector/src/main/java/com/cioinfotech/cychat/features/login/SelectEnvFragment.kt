@@ -44,7 +44,7 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnDev.setOnClickListener {
             RetrofitFactory.BASE_URL = DEV_URL
             prefs.edit().apply {
-                putString(BASE_URL, RetrofitFactory.BASE_URL)
+                putString(BASE_URL, DEV_URL)
                 putString(CY_CHAT_ENV, DEV)
                 apply()
             }
@@ -54,7 +54,7 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnTest.setOnClickListener {
             RetrofitFactory.BASE_URL = QA_URL
             prefs.edit().apply {
-                putString(BASE_URL, RetrofitFactory.BASE_URL)
+                putString(BASE_URL, QA_URL)
                 putString(CY_CHAT_ENV, QA)
                 apply()
             }
@@ -64,7 +64,7 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
         views.btnUat.setOnClickListener {
             RetrofitFactory.BASE_URL = UAT_URL
             prefs.edit().apply {
-                putString(BASE_URL, RetrofitFactory.BASE_URL)
+                putString(BASE_URL, UAT_URL)
                 putString(CY_CHAT_ENV, UAT)
                 apply()
             }
