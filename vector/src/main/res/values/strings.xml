@@ -2647,7 +2647,7 @@
         <item quantity="one">"One person"</item>
         <item quantity="other">"%1$d people"</item>
     </plurals>
-    <string name="room_profile_section_more_uploads">Uploads</string>
+    <string name="room_profile_section_more_uploads">Media</string>
     <string name="room_profile_section_more_leave">Leave Room</string>
     <string name="direct_room_profile_section_more_leave">Delete Contact</string>
     <string name="room_profile_leaving_room">"Leaving the room…"</string>
@@ -3296,4 +3296,7 @@
     <string name="change_org">Invite from Other Organization</string>
     <string name="search_company_name">Search Organization Name</string>
     <string name="logo">Logo</string>
+    <string name="select_wallpaper">Select Wallpaper</string>
+    <string name="set_default_wallpaper">Set Default Wallpaper</string>
+    <string name="wallpaper">Wallpaper</string>
 </resources>

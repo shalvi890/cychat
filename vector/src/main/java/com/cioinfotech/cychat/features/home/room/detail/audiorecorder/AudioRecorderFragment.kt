@@ -52,7 +52,7 @@ class AudioRecorderFragment : VectorBaseBottomSheetDialogFragment<FragmentAudioR
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.getDefault()).format(
                 Date()
         )
-        mFileName = requireContext().getExternalFilesDir(null)!!.absolutePath + "/recording_$timeStamp.mp3"
+        mFileName = requireContext().getExternalFilesDir(null)!!.absolutePath + "/recording_$timeStamp.mp4"
         mRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)

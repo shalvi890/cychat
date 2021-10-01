@@ -54,7 +54,7 @@ abstract class CallTileTimelineItem : AbsBaseMessageItem<CallTileTimelineItem.Ho
             this.marginEnd = leftGuideline
         }
         holder.creatorNameView.text = attributes.userOfInterest.getBestName()
-        attributes.avatarRenderer.render(attributes.userOfInterest, holder.creatorAvatarView)
+//        attributes.avatarRenderer.render(attributes.userOfInterest, holder.creatorAvatarView)
         if (attributes.callKind != CallKind.UNKNOWN) {
             holder.callKindView.isVisible = true
             holder.callKindView.setText(attributes.callKind.title)
@@ -102,20 +102,18 @@ abstract class CallTileTimelineItem : AbsBaseMessageItem<CallTileTimelineItem.Ho
 
     private fun TextView.setCallStatus(attributes: Attributes) {
         when (attributes.callStatus) {
-            CallStatus.INVITED  -> if (attributes.informationData.sentByMe) {
+            CallStatus.INVITED  -> if (attributes.informationData.sentByMe)
                 setText(R.string.call_tile_you_started_call)
-            } else {
+            else
                 text = context.getString(R.string.call_tile_other_started_call, attributes.userOfInterest.getBestName())
-            }
             CallStatus.IN_CALL  -> setText(R.string.call_tile_in_call)
             CallStatus.REJECTED -> if (attributes.informationData.sentByMe) {
                 setTextWithColoredPart(R.string.call_tile_you_declined, R.string.call_tile_call_back) {
                     val callbackAction = RoomDetailAction.StartCall(attributes.callKind == CallKind.VIDEO)
                     attributes.callback?.onTimelineItemAction(callbackAction)
                 }
-            } else {
+            } else
                 text = context.getString(R.string.call_tile_other_declined, attributes.userOfInterest.getBestName())
-            }
             CallStatus.ENDED    -> setText(R.string.call_tile_ended)
         }
     }
@@ -125,7 +123,7 @@ abstract class CallTileTimelineItem : AbsBaseMessageItem<CallTileTimelineItem.Ho
         val rejectView by bind<Button>(R.id.itemCallRejectView)
         val acceptRejectViewGroup by bind<ViewGroup>(R.id.itemCallAcceptRejectViewGroup)
         val callKindView by bind<TextView>(R.id.itemCallKindTextView)
-        val creatorAvatarView by bind<ImageView>(R.id.itemCallCreatorAvatar)
+//        val creatorAvatarView by bind<ImageView>(R.id.itemCallCreatorAvatar)
         val creatorNameView by bind<TextView>(R.id.itemCallCreatorNameTextView)
         val statusView by bind<TextView>(R.id.itemCallStatusTextView)
         val endGuideline by bind<View>(R.id.messageEndGuideline)

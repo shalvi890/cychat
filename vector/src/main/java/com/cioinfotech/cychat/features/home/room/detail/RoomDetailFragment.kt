@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
@@ -68,6 +69,7 @@ import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.dialogs.ConfirmationDialogBuilder
 import com.cioinfotech.cychat.core.dialogs.GalleryOrCameraDialogHelper
 import com.cioinfotech.cychat.core.dialogs.withColoredButton
@@ -122,9 +124,10 @@ import com.cioinfotech.cychat.features.call.VectorCallActivity
 import com.cioinfotech.cychat.features.call.conference.JitsiCallViewModel
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.command.Command
-import com.cioinfotech.cychat.features.crypto.keysbackup.restore.KeysBackupRestoreActivity
 import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomSheet
 import com.cioinfotech.cychat.features.home.AvatarRenderer
+import com.cioinfotech.cychat.features.home.room.RoomWallpaperFragment
+import com.cioinfotech.cychat.features.home.room.adapter.RoomWallpaperAdapter
 import com.cioinfotech.cychat.features.home.room.detail.audioplayer.AudioPlayerFragment
 import com.cioinfotech.cychat.features.home.room.detail.audiorecorder.AudioRecorderFragment
 import com.cioinfotech.cychat.features.home.room.detail.composer.TextComposerView
@@ -270,7 +273,7 @@ class RoomDetailFragment @Inject constructor(
     }
 
     private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
-    var summary: RoomSummary? = null
+    private var summary: RoomSummary? = null
     private val roomDetailArgs: RoomDetailArgs by args()
     private val glideRequests by lazy {
         GlideApp.with(this)
@@ -339,7 +342,6 @@ class RoomDetailFragment @Inject constructor(
         setupConfBannerView()
         setupEmojiPopup()
         setupFailedMessagesWarningView()
-
         views.roomToolbarContentView.debouncedClicks {
             navigator.openRoomProfile(requireActivity(), roomDetailArgs.roomId)
         }
@@ -418,6 +420,14 @@ class RoomDetailFragment @Inject constructor(
 
         if (savedInstanceState == null) {
             handleShareData()
+        }
+    }
+
+    private fun setWallpaper() {
+        summary?.let {
+            val resource = DefaultSharedPreferences.getInstance(requireContext()).getInt(it.roomId, 0)
+            if (resource > 0)
+                views.rootConstraintLayout.setBackgroundResource(resource)
         }
     }
 
@@ -609,12 +619,9 @@ class RoomDetailFragment @Inject constructor(
 
     private fun startOpenFileIntent(action: RoomDetailViewEvents.OpenFile) {
         if (action.mimeType?.contains("audio/") == true) {
-            if (action.uri != null) {
-//            val url = messageAudioContent.url!!
-//            val domain = url.substring(6, url.length).substringBefore("/")
-//            val finalUrl = "https://" + domain + "/_matrix/media/r0/download/" + url.substring(6, url.length)
+            if (action.uri != null)
                 AudioPlayerFragment(null, action.fileName, action.uri).show(parentFragmentManager, "Audio Player")
-            } else
+            else
                 Toast.makeText(requireContext(), getString(R.string.cant_play_audio), Toast.LENGTH_LONG).show()
         } else if (action.uri != null) {
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -745,21 +752,6 @@ class RoomDetailFragment @Inject constructor(
         if (action.throwable != null) {
             activity.toast(errorFormatter.toHumanReadable(action.throwable))
         }
-//        else if (action.file != null) {
-//            addEntryToDownloadManager(activity, action.file, action.mimeType ?: "application/octet-stream")?.let {
-//                // This is a temporary solution to help users find downloaded files
-//                // there is a better way to do that
-//                // On android Q+ this method returns the file URI, on older
-//                // it returns null, and the download manager handles the notification
-//                notificationUtils.buildDownloadFileNotification(
-//                        it,
-//                        action.file.name ?: "file",
-//                        action.mimeType ?: "application/octet-stream"
-//                ).let { notification ->
-//                    notificationUtils.showNotificationMessage("DL", action.file.absolutePath.hashCode(), notification)
-//                }
-//            }
-//        }
     }
 
     private fun setupNotificationView() {
@@ -831,6 +823,18 @@ class RoomDetailFragment @Inject constructor(
                     override fun onClick(item: FederatedDomain) {
                         UserListFragment.selectedDomain = item
                         navigator.openInviteUsersToRoom(requireActivity(), roomDetailArgs.roomId)
+                    }
+                }).show(childFragmentManager, "")
+                true
+            }
+            R.id.wallpaper        -> {
+                RoomWallpaperFragment(summary!!.roomId, object : RoomWallpaperAdapter.ClickListener {
+                    override fun onItemClicked(resource: Int) {
+                        if (resource == -1) {
+                            views.rootConstraintLayout.setBackgroundResource(0)
+                            views.rootConstraintLayout.backgroundTintList = ColorStateList.valueOf(ThemeUtils.getColor(requireContext(), R.attr.cy_chat_bg_receive))
+                        } else
+                            views.rootConstraintLayout.setBackgroundResource(resource)
                     }
                 }).show(childFragmentManager, "")
                 true
@@ -1240,6 +1244,7 @@ class RoomDetailFragment @Inject constructor(
 
     override fun invalidate() = withState(roomDetailViewModel) { state ->
         invalidateOptionsMenu()
+        setWallpaper()
         summary = state.asyncRoomSummary()
         views.composerLayout.setKeyBoardTouch(summary?.isDirect != true
                 || (summary?.isDirect == true && summary?.joinedMembersCount!! > 1)

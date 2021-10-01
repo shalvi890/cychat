@@ -669,16 +669,16 @@ class RoomDetailViewModel @AssistedInject constructor(
             return@withState false
         }
         when (itemId) {
-            R.id.timeline_setting -> true
-            R.id.invite           -> state.canInvite && !HomeActivity.isOneToOneChatOpen
+            R.id.timeline_setting       -> true
+            R.id.invite                 -> state.canInvite && !HomeActivity.isOneToOneChatOpen
 //            R.id.open_matrix_apps -> true
             R.id.voice_call,
-            R.id.video_call       -> callManager.getCallsByRoomId(state.roomId).isEmpty() && HomeActivity.isOneToOneChatOpen
-            R.id.hangup_call      -> callManager.getCallsByRoomId(state.roomId).isNotEmpty() && HomeActivity.isOneToOneChatOpen
-            R.id.search           -> true
-            R.id.invite_from_orgs -> !HomeActivity.isOneToOneChatOpen
+            R.id.video_call             -> callManager.getCallsByRoomId(state.roomId).isEmpty() && HomeActivity.isOneToOneChatOpen
+            R.id.hangup_call            -> callManager.getCallsByRoomId(state.roomId).isNotEmpty() && HomeActivity.isOneToOneChatOpen
+            R.id.search, R.id.wallpaper -> true
+            R.id.invite_from_orgs       -> !HomeActivity.isOneToOneChatOpen
 //            R.id.dev_tools        -> vectorPreferences.developerMode()
-            else                  -> false
+            else                        -> false
         }
     }
 
