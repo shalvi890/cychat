@@ -18,9 +18,9 @@ package com.cioinfotech.cychat.features.settings
 
 object VectorSettingsUrls {
 
-    const val COPYRIGHT = "http://dialoog.co.za/legal/copyrights.html"
-    const val TAC = "http://dialoog.co.za/legal/terms.html"
-    const val PRIVACY_POLICY = "http://dialoog.co.za/legal/privacy.html"
+    const val COPYRIGHT = "http://cyverse.co.za/legal/copyrights.html"
+    const val TAC = "http://cyverse.co.za/legal/terms.html"
+    const val PRIVACY_POLICY = "http://cyverse.co.za/legal/privacy.html"
     const val DISCLAIMER_URL = "https://element.io/previously-riot"
     const val THIRD_PARTY_LICENSES = "file:///android_asset/open_source_licenses.html"
 }
