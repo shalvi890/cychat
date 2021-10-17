@@ -20,8 +20,14 @@ import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.annotation.AttrRes
+import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.features.themes.ThemeUtils
 
 /**
  * Remove left margin of a SearchView
@@ -47,6 +53,12 @@ fun EditText.showPassword(visible: Boolean, updateCursor: Boolean = true) {
         inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
     }
     if (updateCursor) setSelection(text?.length ?: 0)
+}
+
+fun ImageView.setAttributeTintedImageResource(@DrawableRes drawableRes: Int, @AttrRes tint: Int) {
+    val drawable = ContextCompat.getDrawable(context, drawableRes)!!
+    DrawableCompat.setTint(drawable, ThemeUtils.getColor(context, tint))
+    setImageDrawable(drawable)
 }
 
 fun View.getMeasurements(): Pair<Int, Int> {

@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: net.lachlanmckee:timber-junit-rule:1.0.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e2fe14be98d10f4e2298707d6b9b7991/jetified-timber-junit-rule-1.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e2fe14be98d10f4e2298707d6b9b7991/jetified-timber-junit-rule-1.0.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e2fe14be98d10f4e2298707d6b9b7991/jetified-timber-junit-rule-1.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b275ff1ba94bdb5def688d657a948504/jetified-timber-junit-rule-1.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b275ff1ba94bdb5def688d657a948504/jetified-timber-junit-rule-1.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b275ff1ba94bdb5def688d657a948504/jetified-timber-junit-rule-1.0.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.lachlanmckee/timber-junit-rule/1.0.1/2e4cf24e31bf6526a862dc1b4dec0ab8dcbff68b/timber-junit-rule-1.0.1-javadoc.jar!/" />

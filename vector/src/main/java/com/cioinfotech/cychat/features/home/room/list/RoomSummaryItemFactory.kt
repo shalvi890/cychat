@@ -23,6 +23,7 @@ import com.cioinfotech.cychat.core.epoxy.VectorEpoxyModel
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.core.utils.DebouncedClickListener
 import com.cioinfotech.cychat.features.home.AvatarRenderer
+import com.cioinfotech.cychat.features.home.RoomListDisplayMode
 import com.cioinfotech.cychat.features.home.room.detail.timeline.format.DisplayableEventFormatter
 import com.cioinfotech.cychat.features.home.room.typing.TypingHelper
 import org.matrix.android.sdk.api.session.room.members.ChangeMembershipState
@@ -40,13 +41,17 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
     fun create(roomSummary: RoomSummary,
                roomChangeMembershipStates: Map<String, ChangeMembershipState>,
                selectedRoomIds: Set<String>,
-               listener: RoomListListener?): VectorEpoxyModel<*> {
+               listener: RoomListListener?,
+               displayMode: RoomListDisplayMode): VectorEpoxyModel<*> {
         return when (roomSummary.membership) {
             Membership.INVITE -> {
                 val changeMembershipState = roomChangeMembershipStates[roomSummary.roomId] ?: ChangeMembershipState.Unknown
                 createInvitationItem(roomSummary, changeMembershipState, listener)
             }
-            else              -> createRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked })
+            else              ->  if (displayMode != RoomListDisplayMode.HOME)
+                createRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked })
+            else
+                createHomeRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked })
         }
     }
 
@@ -105,6 +110,38 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
                 .unreadNotificationCount(unreadCount)
                 .hasUnreadMessage(roomSummary.hasUnreadMessages)
                 .hasDraft(roomSummary.userDrafts.isNotEmpty())
+                .itemLongClickListener { _ ->
+                    onLongClick?.invoke(roomSummary) ?: false
+                }
+                .itemClickListener(
+                        DebouncedClickListener({
+                            onClick?.invoke(roomSummary)
+                        })
+                )
+    }
+
+    fun createHomeRoomItem(
+            roomSummary: RoomSummary,
+            selectedRoomIds: Set<String>,
+            onClick: ((RoomSummary) -> Unit)?,
+            onLongClick: ((RoomSummary) -> Boolean)?
+    ): VectorEpoxyModel<*> {
+        val unreadCount = roomSummary.notificationCount
+        val showHighlighted = roomSummary.highlightCount > 0
+        val showSelected = selectedRoomIds.contains(roomSummary.roomId)
+        var latestFormattedEvent: CharSequence = ""
+        val latestEvent = roomSummary.latestPreviewableEvent
+        if (latestEvent != null) {
+            latestFormattedEvent = displayableEventFormatter.format(latestEvent, roomSummary.isDirect.not())
+        }
+        return RoomHomeSummaryItem_()
+                .id(roomSummary.roomId)
+                .avatarRenderer(avatarRenderer)
+                .matrixItem(roomSummary.toMatrixItem())
+                .lastEvent(latestFormattedEvent.toString())
+                .showHighlighted(showHighlighted)
+                .showSelected(showSelected)
+                .unreadNotificationCount(unreadCount)
                 .itemLongClickListener { _ ->
                     onLongClick?.invoke(roomSummary) ?: false
                 }

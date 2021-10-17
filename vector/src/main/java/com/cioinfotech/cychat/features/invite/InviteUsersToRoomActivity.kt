@@ -50,6 +50,9 @@ import org.matrix.android.sdk.api.failure.Failure
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import com.airbnb.mvrx.viewModel
+import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_TAKING_PHOTO
+import com.cioinfotech.cychat.core.utils.PERMISSION_REQUEST_CODE_LAUNCH_CAMERA
+import com.cioinfotech.cychat.features.createdirect.CreateDirectRoomByQrCodeFragment
 
 @Parcelize
 data class InviteUsersToRoomArgs(val roomId: String) : Parcelable
@@ -88,6 +91,7 @@ class InviteUsersToRoomActivity : SimpleFragmentActivity(), UserListViewModel.Fa
                         UserListSharedAction.GoBack                -> onBackPressed()
                         is UserListSharedAction.OnMenuItemSelected -> onMenuItemSelected(sharedAction)
                         UserListSharedAction.OpenPhoneBook         -> openPhoneBook()
+                        UserListSharedAction.AddByQrCode           -> openAddByQrCode()
                         // not exhaustive because it's a sharedAction
                         else                                       -> {
                         }
@@ -102,12 +106,18 @@ class InviteUsersToRoomActivity : SimpleFragmentActivity(), UserListViewModel.Fa
                             title = getString(R.string.invite_users_to_room_title),
                             menuResId = R.menu.vector_invite_users_to_room,
                             excludedUserIds = viewModel.getUserIdsOfRoomMembers(),
-                            showInviteActions = false
+                            showInviteActions = true
                     )
             )
         }
 
         viewModel.observeViewEvents { renderInviteEvents(it) }
+    }
+
+    private fun openAddByQrCode() {
+        if (checkPermissions(PERMISSIONS_FOR_TAKING_PHOTO, this, PERMISSION_REQUEST_CODE_LAUNCH_CAMERA, 0)) {
+            addFragment(R.id.container, CreateDirectRoomByQrCodeFragment::class.java)
+        }
     }
 
     private fun onMenuItemSelected(action: UserListSharedAction.OnMenuItemSelected) {

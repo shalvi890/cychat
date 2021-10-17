@@ -20,15 +20,15 @@ import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.ViewModelContext
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import com.cioinfotech.cychat.core.di.HasScreenInjector
 import com.cioinfotech.cychat.core.platform.EmptyViewEvents
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.features.grouplist.SelectedGroupDataSource
 import com.cioinfotech.cychat.features.ui.UiStateRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.matrix.android.sdk.api.query.RoomCategoryFilter
@@ -59,7 +59,7 @@ class HomeDetailViewModel @AssistedInject constructor(@Assisted initialState: Ho
 
     companion object : MvRxViewModelFactory<HomeDetailViewModel, HomeDetailViewState> {
 
-        override fun initialState(viewModelContext: ViewModelContext): HomeDetailViewState{
+        override fun initialState(viewModelContext: ViewModelContext): HomeDetailViewState {
             val uiStateRepository = (viewModelContext.activity as HasScreenInjector).injector().uiStateRepository()
             return HomeDetailViewState(
                     displayMode = uiStateRepository.getDisplayMode()

@@ -818,15 +818,15 @@ class RoomDetailFragment @Inject constructor(
                 navigator.openRoomProfile(requireActivity(), roomDetailArgs.roomId)
                 true
             }
-            R.id.invite_from_orgs -> {
-                ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
-                    override fun onClick(item: FederatedDomain) {
-                        UserListFragment.selectedDomain = item
-                        navigator.openInviteUsersToRoom(requireActivity(), roomDetailArgs.roomId)
-                    }
-                }).show(childFragmentManager, "")
-                true
-            }
+//            R.id.invite_from_orgs -> {
+//                ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
+//                    override fun onClick(item: FederatedDomain) {
+//                        UserListFragment.selectedDomain = item
+//                        navigator.openInviteUsersToRoom(requireActivity(), roomDetailArgs.roomId)
+//                    }
+//                }).show(childFragmentManager, "")
+//                true
+//            }
             R.id.wallpaper        -> {
                 RoomWallpaperFragment(summary!!.roomId, object : RoomWallpaperAdapter.ClickListener {
                     override fun onItemClicked(resource: Int) {

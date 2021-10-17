@@ -20,6 +20,7 @@ import com.airbnb.epoxy.TypedEpoxyController
 import com.cioinfotech.cychat.core.epoxy.bottomsheet.bottomSheetActionItem
 import com.cioinfotech.cychat.core.epoxy.dividerItem
 import com.cioinfotech.cychat.core.epoxy.profiles.profileActionItem
+import org.matrix.android.sdk.api.session.room.notification.RoomNotificationState
 import javax.inject.Inject
 
 /**

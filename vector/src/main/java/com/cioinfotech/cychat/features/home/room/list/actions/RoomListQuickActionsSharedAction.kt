@@ -61,7 +61,7 @@ sealed class RoomListQuickActionsSharedAction(
             R.string.room_list_quick_actions_favorite_add,
             R.drawable.ic_star_24dp)
 
-    data class Leave(val roomId: String) : RoomListQuickActionsSharedAction(
+    data class Leave(val roomId: String, val showIcon: Boolean = true) : RoomListQuickActionsSharedAction(
             if (HomeActivity.isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_list_quick_actions_leave,
             R.drawable.ic_room_actions_leave,
             true

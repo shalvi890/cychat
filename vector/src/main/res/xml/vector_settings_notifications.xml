@@ -34,8 +34,7 @@
 
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
         android:persistent="false"
-        android:title="@string/settings_notification_configuration"
-        app:isPreferenceVisible="false">
+        android:title="@string/settings_notification_configuration">
 
         <!-- For API < 26 -->
         <com.cioinfotech.cychat.core.preference.VectorPreference

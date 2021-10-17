@@ -343,7 +343,8 @@ class SharedSecureStorageViewModel @AssistedInject constructor(
                     activity.viewModelFactory.create(state, args)
                 }
                 is HomeActivity                -> {
-                    val homeArgs: HomeActivityArgs = activity.intent.getParcelableExtra(MvRx.KEY_ARG) ?: error("Missing args")
+                    val homeArgs: HomeActivityArgs = activity.intent.getParcelableExtra(MvRx.KEY_ARG)
+                            ?: HomeActivityArgs(clearNotification = false, accountCreation = false)
                     val args: SharedSecureStorageActivity.Args = SharedSecureStorageActivity.Args(
                             homeArgs.keyId, homeArgs.requestedSecrets, homeArgs.resultKeyStoreAlias
                     )

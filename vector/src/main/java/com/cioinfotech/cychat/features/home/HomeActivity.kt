@@ -89,6 +89,7 @@ import javax.inject.Inject
 data class HomeActivityArgs(
         val clearNotification: Boolean,
         val accountCreation: Boolean,
+        val inviteNotificationRoomId: String? = null,
         val keyId: String? = null,
         val requestedSecrets: List<String> = listOf(MASTER_KEY_SSSS_NAME, USER_SIGNING_KEY_SSSS_NAME, SELF_SIGNING_KEY_SSSS_NAME, KEYBACKUP_SECRET_SSSS_NAME),
         val resultKeyStoreAlias: String = SharedSecureStorageActivity.DEFAULT_RESULT_KEYSTORE_ALIAS
@@ -112,8 +113,6 @@ class HomeActivity :
     private val viewModel: SharedSecureStorageViewModel by viewModel()
     @Inject lateinit var sharedViewModelFactory: SharedSecureStorageViewModel.Factory
 
-//    private lateinit var keyViewModel: KeysBackupRestoreFromKeyViewModel
-//    private lateinit var sharedViewModel: KeysBackupRestoreSharedViewModel
     /** Code Added To Recover Secure Backup Automatically*/
     @Inject
     lateinit var bootstrapViewModelFactory: BootstrapSharedViewModel.Factory
@@ -514,6 +513,18 @@ class HomeActivity :
                 navigator.openSettings(this)
                 return true
             }
+//            R.id.menu_invite_by_qr -> {
+//                UserCodeActivity.newIntent(this, sharedActionViewModel.session.myUserId).let {
+//                    val options =
+//                            ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                                    this,
+//                                    views.root,
+//                                    ViewCompat.getTransitionName(views.root) ?: ""
+//                            )
+//                    startActivity(it, options.toBundle())
+//                }
+//                return true
+//            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -556,10 +567,14 @@ class HomeActivity :
 //    }
 
     companion object {
-        fun newIntent(context: Context, clearNotification: Boolean = false, accountCreation: Boolean = false): Intent {
+        fun newIntent(context: Context, clearNotification: Boolean = false,
+                      accountCreation: Boolean = false,
+                      inviteNotificationRoomId: String? = null
+        ): Intent {
             val args = HomeActivityArgs(
                     clearNotification = clearNotification,
-                    accountCreation = accountCreation
+                    accountCreation = accountCreation,
+                    inviteNotificationRoomId = inviteNotificationRoomId
             )
 
             return Intent(context, HomeActivity::class.java)
@@ -571,6 +586,6 @@ class HomeActivity :
         private const val MATRIX_TO_CUSTOM_SCHEME_URL_BASE = "element://"
         private const val ROOM_LINK_PREFIX = "${MATRIX_TO_CUSTOM_SCHEME_URL_BASE}room/"
         private const val USER_LINK_PREFIX = "${MATRIX_TO_CUSTOM_SCHEME_URL_BASE}user/"
-        var isOneToOneChatOpen = false
+        var isOneToOneChatOpen = true
     }
 }

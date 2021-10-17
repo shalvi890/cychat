@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/headerText"
+    style="@style/TextAppearance.Vector.Subtitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_horizontal_margin"
+    android:paddingTop="@dimen/layout_vertical_margin"
+    android:paddingEnd="@dimen/layout_horizontal_margin"
+    android:paddingBottom="@dimen/layout_vertical_margin"
+    android:textColor="?riotx_text_secondary"
+    android:textStyle="bold" />

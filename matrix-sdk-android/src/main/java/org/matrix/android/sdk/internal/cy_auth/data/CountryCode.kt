@@ -21,5 +21,5 @@ data class CountryCode(
         val code: String,
         val calling_code: String?,
         val local_code: String,
-        var mobile_size: Int
+        var mobile_size: String
 )

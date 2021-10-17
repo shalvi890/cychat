@@ -144,21 +144,21 @@
         <activity android:name=".features.createdirect.CreateDirectRoomActivity" />
         <activity android:name=".features.invite.InviteUsersToRoomActivity" />
         <activity android:name=".features.webview.VectorWebViewActivity" />
-        <activity android:name=".features.link.LinkHandlerActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+<!--        <activity android:name=".features.link.LinkHandlerActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data android:scheme="https" />
-                <data android:host="riot.im" />
-                <data android:host="app.element.io" />
-                <data android:host="mobile.element.io" />
-                <data android:host="develop.element.io" />
-                <data android:host="staging.element.io" />
-            </intent-filter>
-        </activity>
+<!--                <data android:scheme="https" />-->
+<!--                <data android:host="riot.im" />-->
+<!--                <data android:host="app.element.io" />-->
+<!--                <data android:host="mobile.element.io" />-->
+<!--                <data android:host="develop.element.io" />-->
+<!--                <data android:host="staging.element.io" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
 
         <activity
             android:name=".features.share.IncomingShareActivity"
@@ -204,7 +204,7 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="matrix.to" />
+                <data android:host="cyverse.co.za" />
                 <data
                     android:host="user"
                     android:scheme="element" />
@@ -327,10 +327,10 @@
         <!-- Providers -->
 
         <!-- Remove WorkManagerInitializer Provider because we are using on-demand initialization of WorkManager-->
-        <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove" />
+<!--        <provider-->
+<!--            android:name="androidx.work.impl.WorkManagerInitializer"-->
+<!--            android:authorities="${applicationId}.workmanager-init"-->
+<!--            tools:node="remove" />-->
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -22,15 +22,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
+import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ScreenComponent
+import com.cioinfotech.cychat.core.error.ErrorFormatter
 import com.cioinfotech.cychat.core.extensions.cleanup
 import com.cioinfotech.cychat.core.extensions.configureWith
 import com.cioinfotech.cychat.core.platform.VectorBaseBottomSheetDialogFragment
 import com.cioinfotech.cychat.databinding.BottomSheetGenericListBinding
 import com.cioinfotech.cychat.features.navigation.Navigator
+import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsAction
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsViewEvents
+import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsViewModel
 import kotlinx.parcelize.Parcelize
+import org.matrix.android.sdk.api.session.room.notification.RoomNotificationState
 import javax.inject.Inject
 
 @Parcelize
@@ -54,11 +62,13 @@ class RoomListQuickActionsBottomSheet :
 
     private lateinit var sharedActionViewModel: RoomListQuickActionsSharedActionViewModel
     @Inject lateinit var sharedViewPool: RecyclerView.RecycledViewPool
-    @Inject lateinit var roomListActionsViewModelFactory: RoomListQuickActionsViewModel.Factory
+    @Inject lateinit var roomNotificationSettingsViewModelFactory: RoomNotificationSettingsViewModel.Factory
     @Inject lateinit var roomListActionsEpoxyController: RoomListQuickActionsEpoxyController
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var errorFormatter: ErrorFormatter
 
-    private val viewModel: RoomListQuickActionsViewModel by fragmentViewModel(RoomListQuickActionsViewModel::class)
+    private val roomListActionsArgs: RoomListActionsArgs by args()
+    private val viewModel: RoomNotificationSettingsViewModel by fragmentViewModel(RoomNotificationSettingsViewModel::class)
 
     override val showExpanded = true
 
@@ -80,6 +90,12 @@ class RoomListQuickActionsBottomSheet :
                 disableItemAnimation = true
         )
         roomListActionsEpoxyController.listener = this
+
+        viewModel.observeViewEvents {
+            when (it) {
+                is RoomNotificationSettingsViewEvents.Failure -> displayErrorDialog(it.throwable)
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -89,7 +105,11 @@ class RoomListQuickActionsBottomSheet :
     }
 
     override fun invalidate() = withState(viewModel) {
-        roomListActionsEpoxyController.setData(it)
+        val roomListViewState = RoomListQuickActionsState(
+                roomListActionsArgs,
+                it
+        )
+        roomListActionsEpoxyController.setData(roomListViewState)
         super.invalidate()
     }
 
@@ -103,11 +123,23 @@ class RoomListQuickActionsBottomSheet :
         }
     }
 
+    override fun didSelectRoomNotificationState(roomNotificationState: RoomNotificationState) {
+        viewModel.handle(RoomNotificationSettingsAction.SelectNotificationState(roomNotificationState))
+    }
+
     companion object {
         fun newInstance(roomId: String, mode: RoomListActionsArgs.Mode): RoomListQuickActionsBottomSheet {
             return RoomListQuickActionsBottomSheet().apply {
                 setArguments(RoomListActionsArgs(roomId, mode))
             }
         }
+    }
+
+    private fun displayErrorDialog(throwable: Throwable) {
+        MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.dialog_title_error)
+                .setMessage(errorFormatter.toHumanReadable(throwable))
+                .setPositiveButton(R.string.ok, null)
+                .show()
     }
 }

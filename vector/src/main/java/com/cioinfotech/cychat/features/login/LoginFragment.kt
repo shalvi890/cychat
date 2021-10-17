@@ -40,6 +40,7 @@ import com.cioinfotech.cychat.databinding.FragmentValidateSecurityCodeBinding
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -108,15 +109,29 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 
     private fun invalidMobileNumber(): Boolean {
         return if (views.mobileNumberField.text.toString().isNotBlank()) {
-            if (selectedCountry != null && views.mobileNumberField.text?.length != selectedCountry?.mobile_size) {
-                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size ?: 10
+            if (selectedCountry != null && isMobileLengthInvalid()) {
+                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size?.replace(",", " or ") ?: "10"
                 )
                 return true
             }
             false
         } else {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size)
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size?.replace(",", "\\"))
             true
+        }
+    }
+
+    private fun isMobileLengthInvalid(): Boolean {
+        try {
+            val list = selectedCountry?.mobile_size?.split(",") ?: mutableListOf()
+            for (item in list) {
+                if (views.mobileNumberField.text?.trim()?.length == Integer.parseInt(item))
+                    return false
+            }
+            return true
+        } catch (ex: Exception) {
+            Timber.d(ex)
+            return true
         }
     }
 //    private fun setupForgottenPasswordButton() {
@@ -172,7 +187,8 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin(PasswordLoginParams(login, mobileNo, deviceId, selectedCountry?.code ?: "IN"), allSettings?.data?.secCodeDomains)
+            loginViewModel.handleCyLogin(PasswordLoginParams(login.lowercase(), mobileNo, deviceId, selectedCountry?.code
+                    ?: "IN"), allSettings?.data?.secCodeDomains)
 
             if ((allSettings?.data?.secCodeDomains?.contains(login.getEmailDomain()) == true) && !isUserValidated) {
                 val dialog = Dialog(requireContext())
@@ -325,7 +341,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
                     views.mobileNumberTil.error = null
         }
         views.mobileNumberField.doOnTextChanged { _, _, _, _ ->
-            if (selectedCountry != null && views.mobileNumberField.text.toString().length == selectedCountry!!.mobile_size)
+            if (selectedCountry != null && isMobileLengthInvalid())
                 views.mobileNumberTil.error = null
         }
     }

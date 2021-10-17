@@ -532,7 +532,6 @@
 
     <string name="join_room">Join Room</string>
     <string name="username">Username</string>
-    <string name="create_account">Create Account</string>
     <string name="login">Log in</string>
     <string name="logout">Sign out</string>
     <string name="hs_url">Home Server URL</string>
@@ -2540,7 +2539,7 @@
     <!-- Note to translators: the translation MUST contain the string "${app_name}", which will be replaced by the application name -->
     <string name="template_soft_logout_sso_not_same_user_error">The current session is for user %1$s and you provide credentials for user %2$s. This is not supported by ${app_name}.\nPlease first clear data, then sign in again on another account.</string>
 
-    <string name="permalink_malformed">Your matrix.to link was malformed</string>
+    <string name="permalink_malformed">Your CyVerse link was malformed</string>
     <string name="bug_report_error_too_short">The description is too short</string>
 
     <string name="notification_initial_sync">Initial Sync…</string>
@@ -2759,7 +2758,7 @@
     <string name="reset_cross_signing">Reset Keys</string>
 
     <string name="a11y_qr_code_for_verification">QR code</string>
-
+    <string name="a11y_unchecked">Unchecked</string>
     <string name="qr_code_scanned_by_other_notice">Almost there! Is %s showing the same shield?</string>
     <string name="qr_code_scanned_by_other_yes">Yes</string>
     <string name="qr_code_scanned_by_other_no">No</string>
@@ -3021,7 +3020,7 @@
     <string name="error_empty_field_choose_user_name">Please choose a username</string>
     <string name="error_empty_field_choose_password">Please choose a password</string>
     <string name="error_empty_field_enter_mobile">Please enter valid mobile number</string>
-    <string name="error_empty_field_enter_digit_mobile">Please enter %d digit mobile number </string>
+    <string name="error_empty_field_enter_digit_mobile">Please enter %s digit mobile number </string>
     <string name="external_link_confirmation_title">Double-check this link</string>
     <string name="external_link_confirmation_message">The link %1$s is taking you to another site: %2$s.\n\nAre you sure you want to continue?</string>
 
@@ -3107,7 +3106,9 @@
     <string name="room_settings_topic_hint">Topic</string>
     <string name="room_settings_save_success">You changed room settings successfully</string>
     <string name="room_settings_set_avatar">Set avatar</string>
-
+    <string name="room_settings_room_notifications_account_settings">Account settings</string>
+    <string name="room_settings_room_notifications_manage_notifications">You can manage notifications in %1$s.</string>
+    <string name="room_settings_room_notifications_encryption_notice">Please note that mentions &amp; keyword notifications are not available in encrypted rooms on mobile.</string>
 
     <string name="notice_crypto_unable_to_decrypt_final">You cannot access this message</string>
     <string name="notice_crypto_unable_to_decrypt_friendly">Waiting for this message, this may take a while</string>
@@ -3279,7 +3280,7 @@
     <string name="event_status_failed_messages_warning">Messages failed to send</string>
     <string name="event_status_delete_all_failed_dialog_title">Delete unsent messages</string>
     <string name="event_status_delete_all_failed_dialog_message">Are you sure you want to delete all unsent messages in this room?</string>
-    <string name="you_are_signing_up_for_your_organization_s_secure_instant_messenger">You are using secure Instant messenger for your organization.</string>
+    <string name="you_are_signing_up_for_your_organization_s_secure_instant_messenger">You are using a secure, trusted communications to for your organisation.</string>
     <string name="welcome_back">Welcome Back %s %s</string>
     <string name="please_select_environment">Please Select Environment</string>
     <string name="development">Development</string>
@@ -3299,4 +3300,9 @@
     <string name="select_wallpaper">Select Wallpaper</string>
     <string name="set_default_wallpaper">Set Default Wallpaper</string>
     <string name="wallpaper">Wallpaper</string>
+    <string name="invite_using_qr">Connect Using QR Code</string>
+    <string name="room_settings_mention_and_keyword_only"><![CDATA[Mentions &amp; Keywords only]]></string>
+    <string name="room_settings_none">None</string>
+    <string name="room_settings_room_notifications_notify_me">Notify me for</string>
+    <string name="notifications">Notifications</string>
 </resources>

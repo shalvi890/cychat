@@ -7,7 +7,6 @@
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingStart="8dp"
-    android:visibility="gone"
     android:paddingEnd="8dp">
 
     <ImageView

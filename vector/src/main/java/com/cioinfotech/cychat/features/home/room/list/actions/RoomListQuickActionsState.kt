@@ -16,18 +16,10 @@
 
 package com.cioinfotech.cychat.features.home.room.list.actions
 
-import com.airbnb.mvrx.Async
-import com.airbnb.mvrx.MvRxState
-import com.airbnb.mvrx.Uninitialized
-import org.matrix.android.sdk.api.session.room.model.RoomSummary
-import org.matrix.android.sdk.api.session.room.notification.RoomNotificationState
+import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsViewState
 
 data class RoomListQuickActionsState(
-        val roomId: String,
-        val mode: RoomListActionsArgs.Mode,
-        val roomSummary: Async<RoomSummary> = Uninitialized,
-        val roomNotificationState: Async<RoomNotificationState> = Uninitialized
-) : MvRxState {
+        val roomListActionsArgs: RoomListActionsArgs,
+        val notificationSettingsViewState: RoomNotificationSettingsViewState
+)
 
-    constructor(args: RoomListActionsArgs) : this(roomId = args.roomId, mode = args.mode)
-}

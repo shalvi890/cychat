@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.airbnb.android:epoxy-glide-preloading:4.4.4@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f594fecef0e82ee53e410cf2c52ee333/jetified-epoxy-glide-preloading-4.4.4/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f594fecef0e82ee53e410cf2c52ee333/jetified-epoxy-glide-preloading-4.4.4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f594fecef0e82ee53e410cf2c52ee333/jetified-epoxy-glide-preloading-4.4.4/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e27ecbfc28feec1cddf9f6d66753eab7/jetified-epoxy-glide-preloading-4.4.4/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e27ecbfc28feec1cddf9f6d66753eab7/jetified-epoxy-glide-preloading-4.4.4/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e27ecbfc28feec1cddf9f6d66753eab7/jetified-epoxy-glide-preloading-4.4.4/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.airbnb.android/epoxy-glide-preloading/4.4.4/c4d5db777533528b5cf53a4ce3b239291c0e41cc/epoxy-glide-preloading-4.4.4-javadoc.jar!/" />

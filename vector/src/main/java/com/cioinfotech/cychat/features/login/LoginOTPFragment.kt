@@ -35,7 +35,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_IN_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 
 class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
-    val nameRegex = Regex("[a-zA-Z]+(\\s+[a-zA-Z]+)*")
+    private val nameRegex = Regex("[a-zA-Z'.]+(\\s+[a-zA-Z'.]+)*")
     private var isSignUp = true
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentLoginOTPBinding.inflate(inflater, container, false)
 
@@ -253,8 +253,8 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         views.lastNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus)
                 views.lastNameFieldTil.error = when {
-                    views.lastNameField.text.toString().isEmpty()           -> getString(R.string.error_empty_field_enter_first_name)
-                    !views.lastNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_first_name)
+                    views.lastNameField.text.toString().isEmpty()           -> getString(R.string.error_empty_field_enter_last_name)
+                    !views.lastNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_last_name)
                     else                                                    -> null
                 }
         }

@@ -95,6 +95,50 @@ fun TextView.setTextWithColoredPart(@StringRes fullTextRes: Int,
             }
 }
 
+
+/**
+ * Set text with a colored part
+ * @param fullText The full text.
+ * @param coloredPart The colored part of the text
+ * @param colorAttribute attribute of the color. Default to colorPrimary
+ * @param underline true to also underline the text. Default to false
+ * @param onClick attributes to handle click on the colored part if needed
+ */
+fun TextView.setTextWithColoredPart(fullText: String,
+                                    coloredPart: String,
+                                    @AttrRes colorAttribute: Int = R.attr.colorPrimary,
+                                    underline: Boolean = false,
+                                    onClick: (() -> Unit)? = null) {
+    val color = ThemeUtils.getColor(context, colorAttribute)
+
+    val foregroundSpan = ForegroundColorSpan(color)
+
+    val index = fullText.indexOf(coloredPart)
+
+    text = SpannableString(fullText)
+            .apply {
+                setSpan(foregroundSpan, index, index + coloredPart.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (onClick != null) {
+                    val clickableSpan = object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            onClick()
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.color = color
+                            ds.isUnderlineText = !underline
+                        }
+                    }
+                    setSpan(clickableSpan, index, index + coloredPart.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    movementMethod = LinkMovementMethod.getInstance()
+                }
+                if (underline) {
+                    setSpan(UnderlineSpan(), index, index + coloredPart.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+            }
+}
+
+
 fun TextView.setLeftDrawable(@DrawableRes iconRes: Int, @ColorRes tintColor: Int? = null) {
     val icon = if (tintColor != null) {
         val tint = ContextCompat.getColor(context, tintColor)

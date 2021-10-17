@@ -114,19 +114,19 @@ class CallService : VectorService() {
                 callRingPlayerOutgoing?.start()
                 displayOutgoingRingingCallNotification(intent)
             }
-            ACTION_ONGOING_CALL -> {
+            ACTION_ONGOING_CALL          -> {
                 callRingPlayerIncoming?.stop()
                 callRingPlayerOutgoing?.stop()
                 displayCallInProgressNotification(intent)
             }
-            ACTION_CALL_CONNECTING -> {
+            ACTION_CALL_CONNECTING       -> {
                 // lower notification priority
                 displayCallInProgressNotification(intent)
                 // stop ringing
                 callRingPlayerIncoming?.stop()
                 callRingPlayerOutgoing?.stop()
             }
-            ACTION_CALL_TERMINATED -> {
+            ACTION_CALL_TERMINATED       -> {
                 handleCallTerminated(intent)
             }
             else                         -> {
@@ -195,7 +195,7 @@ class CallService : VectorService() {
             handleUnexpectedState(callId)
             return
         }
-        val notification = notificationUtils.buildCallEndedNotification()
+        val notification = notificationUtils.buildCallEndedNotification(false)
         notificationManager.notify(callId.hashCode(), notification)
         if (knownCalls.isEmpty()) {
             mediaSession?.isActive = false
@@ -261,7 +261,7 @@ class CallService : VectorService() {
         if (callId != null) {
             notificationManager.cancel(callId.hashCode())
         }
-        val notification = notificationUtils.buildCallEndedNotification()
+        val notification = notificationUtils.buildCallEndedNotification(false)
         startForeground(DEFAULT_NOTIFICATION_ID, notification)
         if (knownCalls.isEmpty()) {
             mediaSession?.isActive = false

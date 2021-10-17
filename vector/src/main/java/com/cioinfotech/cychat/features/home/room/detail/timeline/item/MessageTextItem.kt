@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2021 New Vector Ltd
  *
@@ -83,11 +82,11 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
 //        }
 //        holder.previewUrlView.delegate = previewUrlCallback
 
-        if (useBigFont) {
+        if (useBigFont)
             holder.messageView.textSize = 44F
-        } else {
-            holder.messageView.textSize = 15F
-        }
+        else
+            holder.messageView.textSize = 17F
+
         if (searchForPills) {
             message?.findPillsAndProcess(coroutineScope) {
                 // mmm.. not sure this is so safe in regards to cell reuse

@@ -92,7 +92,6 @@ class HomeDetailFragment @Inject constructor(
 //                return true
 //            }
 //        }
-//
 //        return super.onOptionsItemSelected(item)
 //    }
 
@@ -162,7 +161,7 @@ class HomeDetailFragment @Inject constructor(
                 })
     }
 
-    fun setupDomainWithToolbar() {
+    private fun setupDomainWithToolbar() {
         val pref = DefaultSharedPreferences.getInstance(requireContext())
         val logo = pref.getString(DOMAIN_IMAGE, null)
         if (logo != null)
@@ -295,6 +294,8 @@ class HomeDetailFragment @Inject constructor(
             val displayMode = when (it.itemId) {
                 R.id.bottom_action_people -> RoomListDisplayMode.PEOPLE
                 R.id.bottom_action_rooms  -> RoomListDisplayMode.ROOMS
+                R.id.bottom_fav           -> RoomListDisplayMode.FAV
+                R.id.bottom_home          -> RoomListDisplayMode.HOME
                 else                      -> RoomListDisplayMode.NOTIFICATIONS
             }
             viewModel.handle(HomeDetailAction.SwitchDisplayMode(displayMode))
@@ -320,7 +321,7 @@ class HomeDetailFragment @Inject constructor(
 
     private fun updateSelectedFragment(displayMode: RoomListDisplayMode) {
         val fragmentTag = "FRAGMENT_TAG_${displayMode.name}"
-        isOneToOneChatOpen = displayMode == RoomListDisplayMode.PEOPLE
+//        isOneToOneChatOpen = displayMode == RoomListDisplayMode.PEOPLE
         val fragmentToShow = childFragmentManager.findFragmentByTag(fragmentTag)
         childFragmentManager.commitTransaction {
             childFragmentManager.fragments

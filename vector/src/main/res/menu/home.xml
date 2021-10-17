@@ -9,6 +9,12 @@
         android:title="@string/settings"
         app:showAsAction="never" />
 
+<!--    <item-->
+<!--        android:id="@+id/menu_invite_by_qr"-->
+<!--        android:icon="@drawable/ic_invite_people"-->
+<!--        android:title="@string/invite_using_qr"-->
+<!--        app:showAsAction="never" />-->
+
     <!--    <item-->
     <!--        android:id="@+id/menu_home_suggestion"-->
     <!--        android:icon="@drawable/ic_material_bug_report"-->

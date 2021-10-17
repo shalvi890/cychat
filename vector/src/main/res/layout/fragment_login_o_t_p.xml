@@ -25,22 +25,23 @@
             <TextView
                 android:id="@+id/loginWelcome"
                 android:layout_width="wrap_content"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
-                tools:text="Welcome Back Tejas Bhagwat!" />
+                android:visibility="gone"
+                tools:text="Welcome Back Tejas Bhagwat!"
+                tools:visibility="visible" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/firstNameFieldTil"
                 style="@style/VectorTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:layout_marginTop="16dp"
                 android:hint="@string/login_signin_first_name_hint"
-                app:errorEnabled="true">
+                android:visibility="gone"
+                app:errorEnabled="true"
+                tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/firstNameField"
@@ -56,8 +57,8 @@
                 style="@style/VectorTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:hint="@string/login_signin_last_name_hint"
+                android:visibility="gone"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText

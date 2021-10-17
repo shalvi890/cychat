@@ -18,6 +18,7 @@ package com.cioinfotech.cychat.features.permalink
 
 import android.content.Intent
 import android.os.Bundle
+import com.airbnb.mvrx.MvRx
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.di.ScreenComponent
@@ -25,6 +26,7 @@ import com.cioinfotech.cychat.core.extensions.replaceFragment
 import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.databinding.FragmentProgressBinding
 import com.cioinfotech.cychat.features.home.HomeActivity
+import com.cioinfotech.cychat.features.home.HomeActivityArgs
 import com.cioinfotech.cychat.features.home.LoadingFragment
 import com.cioinfotech.cychat.features.login.LoginActivity
 import javax.inject.Inject
@@ -58,7 +60,9 @@ class PermalinkHandlerActivity : VectorBaseActivity<FragmentProgressBinding>() {
         }
         // We forward intent to HomeActivity (singleTask) to avoid the dueling app problem
         // https://stackoverflow.com/questions/25884954/deep-linking-and-multiple-app-instances
-        intent.setClass(this, HomeActivity::class.java)
+        intent.setClass(this, HomeActivity::class.java).apply {
+            putExtra(MvRx.KEY_ARG, HomeActivityArgs(clearNotification = false,false))
+        }
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
 

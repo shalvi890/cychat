@@ -19,6 +19,7 @@ package com.cioinfotech.cychat.features.home.room.list
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.paging.PagedListEpoxyController
 import com.cioinfotech.cychat.core.utils.createUIHandler
+import com.cioinfotech.cychat.features.home.RoomListDisplayMode
 import org.matrix.android.sdk.api.session.room.members.ChangeMembershipState
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import javax.inject.Inject
@@ -27,13 +28,14 @@ class RoomSummaryPagedControllerFactory @Inject constructor(
         private val roomSummaryItemFactory: RoomSummaryItemFactory
 ) {
 
-    fun createRoomSummaryPagedController(): RoomSummaryPagedController {
-        return RoomSummaryPagedController(roomSummaryItemFactory)
+    fun createRoomSummaryPagedController(displayMode: RoomListDisplayMode): RoomSummaryPagedController {
+        return RoomSummaryPagedController(roomSummaryItemFactory, displayMode)
     }
 }
 
 class RoomSummaryPagedController(
-        private val roomSummaryItemFactory: RoomSummaryItemFactory
+        private val roomSummaryItemFactory: RoomSummaryItemFactory,
+        private val displayMode: RoomListDisplayMode
 ) : PagedListEpoxyController<RoomSummary>(
         // Important it must match the PageList builder notify Looper
         modelBuildingHandler = createUIHandler()
@@ -41,7 +43,7 @@ class RoomSummaryPagedController(
 
     var listener: RoomListListener? = null
 
-    var roomChangeMembershipStates: Map<String, ChangeMembershipState>? = null
+    private var roomChangeMembershipStates: Map<String, ChangeMembershipState>? = null
         set(value) {
             field = value
             // ideally we could search for visible models and update only those
@@ -63,6 +65,6 @@ class RoomSummaryPagedController(
                 onLongClick = null
         )
 
-        return roomSummaryItemFactory.create(item, roomChangeMembershipStates.orEmpty(), emptySet(), listener)
+        return roomSummaryItemFactory.create(item, roomChangeMembershipStates.orEmpty(), emptySet(), listener, displayMode)
     }
 }

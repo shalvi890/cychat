@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.userdirectory
 
+import android.view.View
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
@@ -52,40 +53,38 @@ class UserListController @Inject constructor(private val session: Session,
         val currentState = state ?: return
 
         // Build generic items
-//        if (currentState.searchTerm.isBlank()) {
-//            if (false) {
-////                if (currentState.showInviteActions()) {
+        if (currentState.searchTerm.isBlank()) {
+            if (currentState.showInviteActions()) {
+                actionItem {
+                    id(R.drawable.ic_share)
+                    title(stringProvider.getString(R.string.invite_friends))
+                    actionIconRes(R.drawable.ic_share)
+                    clickAction(View.OnClickListener {
+                        callback?.onInviteFriendClick()
+                    })
+                }
+            }
+            if (currentState.showContactBookAction) {
+                actionItem {
+                    id(R.drawable.ic_baseline_perm_contact_calendar_24)
+                    title(stringProvider.getString(R.string.contacts_book_title))
+                    actionIconRes(R.drawable.ic_baseline_perm_contact_calendar_24)
+                    clickAction(View.OnClickListener {
+                        callback?.onContactBookClick()
+                    })
+                }
+            }
+//            if (currentState.showInviteActions()) {
 //                actionItem {
-//                    id(R.drawable.ic_share)
-//                    title(stringProvider.getString(R.string.invite_friends))
-//                    actionIconRes(R.drawable.ic_share)
-//                    clickAction(View.OnClickListener {
-//                        callback?.onInviteFriendClick()
-//                    })
-//                }
-//            }
-////            if (currentState.showContactBookAction) {
-//            if (false) {
-//                actionItem {
-//                    id(R.drawable.ic_baseline_perm_contact_calendar_24)
-//                    title(stringProvider.getString(R.string.contacts_book_title))
-//                    actionIconRes(R.drawable.ic_baseline_perm_contact_calendar_24)
-//                    clickAction(View.OnClickListener {
-//                        callback?.onContactBookClick()
-//                    })
-//                }
-//            }
-//            if (false) {
-////                if (currentState.showInviteActions()) {
-//                actionItem {
-//                    id(R.drawable.ic_qr_code_add).title(stringProvider.getString(R.string.qr_code))
+//                    id(R.drawable.ic_qr_code_add)
+//                    title(stringProvider.getString(R.string.qr_code))
 //                    actionIconRes(R.drawable.ic_qr_code_add)
 //                    clickAction(View.OnClickListener {
 //                        callback?.onUseQRCode()
 //                    })
 //                }
 //            }
-//        }
+        }
 
         when (currentState.knownUsers) {
             is Uninitialized -> renderEmptyState()

@@ -20,9 +20,9 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.isVisible
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.databinding.MotionNotifsFabMenuMergeBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class NotifsFabMenuView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                                   defStyleAttr: Int = 0) : MotionLayout(context, attrs, defStyleAttr) {
@@ -43,14 +43,14 @@ class NotifsFabMenuView @JvmOverloads constructor(context: Context, attrs: Attri
                 .forEach {
                     it.setOnClickListener {
                         closeFabMenu()
-                        listener?.createDirectChat()
+                        listener?.fabCreateDirectChat()
                     }
                 }
         listOf(views.createRoomItemGroup, views.createRoomItemGroupLabel)
                 .forEach {
                     it.setOnClickListener {
                         closeFabMenu()
-                        listener?.openRoomDirectory()
+                        listener?.fabOpenRoomDirectory()
                     }
                 }
 
@@ -99,7 +99,7 @@ class NotifsFabMenuView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     interface Listener {
-        fun createDirectChat()
-        fun openRoomDirectory(initialFilter: String = "")
+        fun fabCreateDirectChat()
+        fun fabOpenRoomDirectory()
     }
 }

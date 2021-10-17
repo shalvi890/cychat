@@ -51,7 +51,7 @@ class CreateDirectRoomViewModel @AssistedInject constructor(@Assisted
     companion object : MvRxViewModelFactory<CreateDirectRoomViewModel, CreateDirectRoomViewState> {
 
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: CreateDirectRoomViewState): CreateDirectRoomViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: CreateDirectRoomViewState): CreateDirectRoomViewModel {
             val factory = when (viewModelContext) {
                 is FragmentViewModelContext -> viewModelContext.fragment as? Factory
                 is ActivityViewModelContext -> viewModelContext.activity as? Factory

@@ -74,7 +74,7 @@ class RoomListViewModel @Inject constructor(
     companion object : MvRxViewModelFactory<RoomListViewModel, RoomListViewState> {
 
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: RoomListViewState): RoomListViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: RoomListViewState): RoomListViewModel {
             val fragment: RoomListFragment = (viewModelContext as FragmentViewModelContext).fragment()
             return fragment.roomListViewModelFactory.create(state)
         }
@@ -82,74 +82,97 @@ class RoomListViewModel @Inject constructor(
 
     val sections: List<RoomsSection> by lazy {
         val sections = mutableListOf<RoomsSection>()
-        if (initialState.displayMode == RoomListDisplayMode.PEOPLE) {
-            addSection(sections, R.string.invitations_header, true) {
-                it.memberships = listOf(Membership.INVITE)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
-            }
+        when (initialState.displayMode) {
+            RoomListDisplayMode.PEOPLE        -> {
+                addSection(sections, R.string.invitations_header, true) {
+                    it.memberships = listOf(Membership.INVITE)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                }
 
-            addSection(sections, R.string.bottom_action_favourites) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
-                it.roomTagQueryFilter = RoomTagQueryFilter(true, null, null)
-            }
+                addSection(sections, R.string.bottom_action_favourites) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                    it.roomTagQueryFilter = RoomTagQueryFilter(true, null, null)
+                }
 
-            addSection(sections, R.string.bottom_action_people_x) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                addSection(sections, R.string.bottom_action_people_x) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                }
             }
-        } else if (initialState.displayMode == RoomListDisplayMode.ROOMS) {
-            addSection(sections, R.string.invitations_header, true) {
-                it.memberships = listOf(Membership.INVITE)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
-            }
+            RoomListDisplayMode.ROOMS         -> {
+                addSection(sections, R.string.invitations_header, true) {
+                    it.memberships = listOf(Membership.INVITE)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
+                }
 
-            addSection(sections, R.string.bottom_action_favourites) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
-                it.roomTagQueryFilter = RoomTagQueryFilter(true, null, null)
-            }
+                addSection(sections, R.string.bottom_action_favourites) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
+                    it.roomTagQueryFilter = RoomTagQueryFilter(true, null, null)
+                }
 
-            addSection(sections, R.string.bottom_action_rooms) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
-                it.roomTagQueryFilter = RoomTagQueryFilter(false, false, false)
-            }
+                addSection(sections, R.string.bottom_action_rooms) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
+                    it.roomTagQueryFilter = RoomTagQueryFilter(false, false, false)
+                }
 
-            addSection(sections, R.string.low_priority_header) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
-                it.roomTagQueryFilter = RoomTagQueryFilter(null, true, null)
-            }
+                addSection(sections, R.string.low_priority_header) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
+                    it.roomTagQueryFilter = RoomTagQueryFilter(null, true, null)
+                }
 
-            addSection(sections, R.string.system_alerts_header) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
-                it.roomTagQueryFilter = RoomTagQueryFilter(null, null, true)
+                addSection(sections, R.string.system_alerts_header) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
+                    it.roomTagQueryFilter = RoomTagQueryFilter(null, null, true)
+                }
             }
-        } else if (initialState.displayMode == RoomListDisplayMode.FILTERED) {
-            withQueryParams(
-                    {
-                        it.memberships = Membership.activeMemberships()
-                    },
-                    { qpm ->
-                        val name = stringProvider.getString(R.string.bottom_action_rooms)
-                        session.getFilteredPagedRoomSummariesLive(qpm)
-                                .let { updatableFilterLivePageResult ->
-                                    updatableQuery = updatableFilterLivePageResult
-                                    sections.add(RoomsSection(name, updatableFilterLivePageResult.livePagedList))
-                                }
-                    }
-            )
-        } else if (initialState.displayMode == RoomListDisplayMode.NOTIFICATIONS) {
-            addSection(sections, R.string.invitations_header, true) {
-                it.memberships = listOf(Membership.INVITE)
-                it.roomCategoryFilter = RoomCategoryFilter.ALL
+            RoomListDisplayMode.FILTERED      -> {
+                withQueryParams(
+                        {
+                            it.memberships = Membership.activeMemberships()
+                        },
+                        { qpm ->
+                            val name = stringProvider.getString(R.string.bottom_action_rooms)
+                            session.getFilteredPagedRoomSummariesLive(qpm)
+                                    .let { updatableFilterLivePageResult ->
+                                        updatableQuery = updatableFilterLivePageResult
+                                        sections.add(RoomsSection(name, updatableFilterLivePageResult.livePagedList))
+                                    }
+                        }
+                )
             }
+            RoomListDisplayMode.NOTIFICATIONS -> {
+                addSection(sections, R.string.invitations_header, true) {
+                    it.memberships = listOf(Membership.INVITE)
+                    it.roomCategoryFilter = RoomCategoryFilter.ALL
+                }
 
-            addSection(sections, R.string.bottom_action_rooms, true) {
-                it.memberships = listOf(Membership.JOIN)
-                it.roomCategoryFilter = RoomCategoryFilter.ONLY_WITH_NOTIFICATIONS
+                addSection(sections, R.string.bottom_action_rooms, true) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_WITH_NOTIFICATIONS
+                }
+            }
+            RoomListDisplayMode.FAV           -> {
+                addSection(sections, R.string.bottom_action_favourites) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ALL
+                    it.roomTagQueryFilter = RoomTagQueryFilter(true, null, null)
+                }
+            }
+            RoomListDisplayMode.HOME          -> {
+                addSection(sections, R.string.invitations_header, true) {
+                    it.memberships = listOf(Membership.INVITE)
+                    it.roomCategoryFilter = RoomCategoryFilter.ALL
+                }
+
+                addSection(sections, R.string.direct_chats_header) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_WITH_NOTIFICATIONS
+                }
             }
         }
 
@@ -222,12 +245,9 @@ class RoomListViewModel @Inject constructor(
 
     private fun handleToggleSection(roomSection: RoomsSection) {
         roomSection.isExpanded.postValue(!roomSection.isExpanded.value.orFalse())
-        /* TODO Cleanup if it is working
-        sections.find { it.sectionName == roomSection.sectionName }
-                ?.let { section ->
-                    section.isExpanded.postValue(!section.isExpanded.value.orFalse())
-                }
-         */
+        sections.find { it.sectionName == roomSection.sectionName }?.let { section ->
+            section.isExpanded.postValue(!section.isExpanded.value.orFalse())
+        }
     }
 
     private fun handleFilter(action: RoomListAction.FilterWith) {

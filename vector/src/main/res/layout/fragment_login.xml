@@ -74,10 +74,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginTop="5dp"
-                    app:layout_constraintHeight_percent="0.68"
                     android:background="@drawable/item_optional_digit_border"
                     android:gravity="center"
                     android:paddingHorizontal="4dp"
+                    app:layout_constraintHeight_percent="0.68"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/mobileNumberTil"
                     tools:listitem="@layout/item_spinner_country" />
@@ -91,8 +91,8 @@
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/item_optional_digit_border"
                     android:gravity="center"
-                    app:layout_constraintHeight_percent="0.68"
                     android:padding="8dp"
+                    app:layout_constraintHeight_percent="0.68"
                     app:layout_constraintStart_toEndOf="@id/spinner_list"
                     app:layout_constraintTop_toTopOf="@id/mobileNumberTil"
                     tools:text="0" />
@@ -114,9 +114,10 @@
                         android:id="@+id/mobileNumberField"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="1234567890"
                         android:ems="10"
                         android:imeOptions="actionDone"
-                        android:inputType="phone"
+                        android:inputType="textFilter"
                         android:maxLines="1"
                         android:paddingEnd="48dp"
                         tools:ignore="RtlSymmetry" />

@@ -16,7 +16,6 @@
 
 package com.cioinfotech.cychat.features.home.room.list
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -33,7 +32,6 @@ import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
-import com.cioinfotech.cychat.core.dialogs.withColoredButton
 import com.cioinfotech.cychat.core.epoxy.LayoutManagerStateRestorer
 import com.cioinfotech.cychat.core.extensions.cleanup
 import com.cioinfotech.cychat.core.extensions.exhaustive
@@ -42,8 +40,10 @@ import com.cioinfotech.cychat.core.platform.StateView
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.resources.UserPreferencesProvider
 import com.cioinfotech.cychat.databinding.FragmentRoomListBinding
-import com.cioinfotech.cychat.features.home.HomeActivity
+import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.home.RoomListDisplayMode
+import com.cioinfotech.cychat.features.home.room.adapter.RoomHomeConcatAdapter
+import com.cioinfotech.cychat.features.home.room.filtered.FilteredRoomFooterItem
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListActionsArgs
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsBottomSheet
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedAction
@@ -71,6 +71,7 @@ class RoomListFragment @Inject constructor(
 ) : VectorBaseFragment<FragmentRoomListBinding>(),
         RoomListListener,
         OnBackPressed,
+        FilteredRoomFooterItem.Listener,
         NotifsFabMenuView.Listener {
 
     private var modelBuildListener: OnModelBuildFinishedListener? = null
@@ -92,7 +93,7 @@ class RoomListFragment @Inject constructor(
     data class SectionAdapterInfo(
             var section: SectionKey,
             val headerHeaderAdapter: SectionHeaderAdapter,
-            val contentAdapter: RoomSummaryPagedController
+            val contentAdapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>
     )
 
     private val adapterInfosList = mutableListOf<SectionAdapterInfo>()
@@ -121,13 +122,13 @@ class RoomListFragment @Inject constructor(
                 .subscribe { handleQuickActions(it) }
                 .disposeOnDestroyView()
 
-        roomListViewModel.selectSubscribe(viewLifecycleOwner, RoomListViewState::roomMembershipChanges) { ms ->
-            // it's for invites local echo
-            adapterInfosList.filter { it.section.notifyOfLocalEcho }
-                    .onEach {
-                        it.contentAdapter.roomChangeMembershipStates = ms
-                    }
-        }
+//        roomListViewModel.selectSubscribe(viewLifecycleOwner, RoomListViewState::roomMembershipChanges) { ms ->
+//            // it's for invites local echo
+//            adapterInfosList.filter { it.section.notifyOfLocalEcho }
+//                    .onEach {
+//                        it.roomChangeMembershipStates = ms
+//                    }
+//        }
     }
 
     private fun refreshCollapseStates() {
@@ -137,10 +138,10 @@ class RoomListFragment @Inject constructor(
             val isRoomSectionExpanded = roomsSection.isExpanded.value.orTrue()
             if (actualBlock.section.isExpanded && !isRoomSectionExpanded) {
                 // we have to remove the content adapter
-                concatAdapter?.removeAdapter(actualBlock.contentAdapter.adapter)
+                concatAdapter?.removeAdapter(actualBlock.contentAdapter)
             } else if (!actualBlock.section.isExpanded && isRoomSectionExpanded) {
                 // we must add it back!
-                concatAdapter?.addAdapter(contentInsertIndex, actualBlock.contentAdapter.adapter)
+                concatAdapter?.addAdapter(contentInsertIndex, actualBlock.contentAdapter)
             }
             contentInsertIndex = if (isRoomSectionExpanded) {
                 contentInsertIndex + 2
@@ -161,7 +162,7 @@ class RoomListFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        adapterInfosList.onEach { it.contentAdapter.removeModelBuildListener(modelBuildListener) }
+//        adapterInfosList.onEach { it.removeModelBuildListener(modelBuildListener) }
         adapterInfosList.clear()
         modelBuildListener = null
         views.roomListView.cleanup()
@@ -178,17 +179,18 @@ class RoomListFragment @Inject constructor(
 
     private fun setupCreateRoomButton() {
         when (roomListParams.displayMode) {
-            RoomListDisplayMode.NOTIFICATIONS -> views.createChatFabMenu.isVisible = true
-            RoomListDisplayMode.PEOPLE        -> views.createChatRoomButton.isVisible = true
-            RoomListDisplayMode.ROOMS         -> views.createGroupRoomButton.isVisible = true
-            else                              -> Unit // No button in this mode
+            RoomListDisplayMode.NOTIFICATIONS,
+            RoomListDisplayMode.HOME   -> views.createChatFabMenu.isVisible = true
+            RoomListDisplayMode.PEOPLE -> views.createChatRoomButton.isVisible = true
+            RoomListDisplayMode.ROOMS  -> views.createGroupRoomButton.isVisible = true
+            else                       -> Unit // No button in this mode
         }
 
         views.createChatRoomButton.debouncedClicks {
-            createDirectChat()
+            fabCreateDirectChat()
         }
         views.createGroupRoomButton.debouncedClicks {
-            openRoomDirectory()
+            fabOpenRoomDirectory()
         }
 
         // Hide FAB when list is scrolling
@@ -196,7 +198,6 @@ class RoomListFragment @Inject constructor(
                 object : RecyclerView.OnScrollListener() {
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                         views.createChatFabMenu.removeCallbacks(showFabRunnable)
-
                         when (newState) {
                             RecyclerView.SCROLL_STATE_IDLE     -> {
                                 views.createChatFabMenu.postDelayed(showFabRunnable, 250)
@@ -222,12 +223,25 @@ class RoomListFragment @Inject constructor(
         roomListViewModel.handle(RoomListAction.FilterWith(filter))
     }
 
-    override fun openRoomDirectory(initialFilter: String) {
-        navigator.openRoomDirectory(requireActivity(), initialFilter)
+    // FilteredRoomFooterItem.Listener
+    override fun createRoom(initialName: String) {
+        navigator.openCreateRoom(requireActivity(), initialName)
     }
 
     override fun createDirectChat() {
         navigator.openCreateDirectRoom(requireActivity())
+    }
+
+    override fun openRoomDirectory(initialFilter: String) {
+        navigator.openRoomDirectory(requireActivity(), initialFilter)
+    }
+
+    override fun fabCreateDirectChat() {
+        navigator.openCreateDirectRoom(requireActivity())
+    }
+
+    override fun fabOpenRoomDirectory() {
+        navigator.openRoomDirectory(requireActivity(), "")
     }
 
     private fun setupRecyclerView() {
@@ -242,13 +256,14 @@ class RoomListFragment @Inject constructor(
         val concatAdapter = ConcatAdapter()
 
         roomListViewModel.sections.forEach { section ->
-            val sectionAdapter = SectionHeaderAdapter {
-                roomListViewModel.handle(RoomListAction.ToggleSection(section))
-            }.also {
+            val sectionAdapter = SectionHeaderAdapter(
+                    { roomListViewModel.handle(RoomListAction.ToggleSection(section)) },
+                    roomListParams.displayMode != RoomListDisplayMode.HOME
+            ).also {
                 it.updateSection(SectionHeaderAdapter.RoomsSectionData(section.sectionName))
             }
 
-            val contentAdapter = pagedControllerFactory.createRoomSummaryPagedController()
+            val contentAdapter = pagedControllerFactory.createRoomSummaryPagedController(roomListParams.displayMode)
                     .also { controller ->
                         section.livePages.observe(viewLifecycleOwner) { pl ->
                             controller.submitList(pl)
@@ -274,11 +289,15 @@ class RoomListFragment @Inject constructor(
                                     notifyOfLocalEcho = section.notifyOfLocalEcho
                             ),
                             sectionAdapter,
-                            contentAdapter
+                            if (roomListParams.displayMode != RoomListDisplayMode.HOME)
+                                contentAdapter.adapter else
+                                RoomHomeConcatAdapter(requireContext(), contentAdapter.adapter)
                     )
             )
             concatAdapter.addAdapter(sectionAdapter)
-            concatAdapter.addAdapter(contentAdapter.adapter)
+            concatAdapter.addAdapter(if (roomListParams.displayMode != RoomListDisplayMode.HOME)
+                contentAdapter.adapter else
+                RoomHomeConcatAdapter(requireContext(), contentAdapter.adapter))
         }
 
         // Add the footer controller
@@ -332,25 +351,20 @@ class RoomListFragment @Inject constructor(
     private fun promptLeaveRoom(roomId: String) {
         val isPublicRoom = roomListViewModel.isPublicRoom(roomId)
         val message = buildString {
-            append(getString(if (HomeActivity.isOneToOneChatOpen) R.string.room_participants_delete_prompt_msg else R.string.room_participants_leave_prompt_msg))
+            append(getString(R.string.room_participants_leave_prompt_msg))
             if (!isPublicRoom) {
                 append("\n\n")
                 append(getString(R.string.room_participants_leave_private_warning))
             }
         }
         AlertDialog.Builder(requireContext())
-                .setTitle(if (HomeActivity.isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_participants_leave_prompt_title)
+                .setTitle(if (isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_participants_leave_prompt_title)
                 .setMessage(message)
-                .setPositiveButton(if (HomeActivity.isOneToOneChatOpen) R.string.delete else R.string.leave) { _, _ ->
+                .setPositiveButton(R.string.leave) { _, _ ->
                     roomListViewModel.handle(RoomListAction.LeaveRoom(roomId))
                 }
                 .setNegativeButton(R.string.cancel, null)
                 .show()
-                .apply {
-                    if (!isPublicRoom) {
-                        withColoredButton(DialogInterface.BUTTON_POSITIVE)
-                    }
-                }
     }
 
     override fun invalidate() = withState(roomListViewModel) { state ->
@@ -366,6 +380,22 @@ class RoomListFragment @Inject constructor(
                             title = getString(R.string.room_list_catchup_empty_title),
                             image = ContextCompat.getDrawable(requireContext(), R.drawable.ic_noun_party_popper),
                             message = getString(R.string.room_list_catchup_empty_body))
+                }
+                RoomListDisplayMode.FAV           -> {
+                    StateView.State.Empty(
+                            title = getString(R.string.bottom_action_favourites),
+                            image = ContextCompat.getDrawable(requireContext(), R.drawable.empty_state_dm),
+                            isBigImage = true,
+                            message = null
+                    )
+                }
+                RoomListDisplayMode.HOME          -> {
+                    StateView.State.Empty(
+                            title = getString(R.string.room_list_people_empty_title),
+                            image = ContextCompat.getDrawable(requireContext(), R.drawable.empty_state_dm),
+                            isBigImage = true,
+                            message = null
+                    )
                 }
                 RoomListDisplayMode.PEOPLE        ->
                     StateView.State.Empty(
@@ -401,6 +431,7 @@ class RoomListFragment @Inject constructor(
     // RoomSummaryController.Callback **************************************************************
 
     override fun onRoomClicked(room: RoomSummary) {
+        isOneToOneChatOpen = room.isDirect
         roomListViewModel.handle(RoomListAction.SelectRoom(room))
     }
 
@@ -424,9 +455,5 @@ class RoomListFragment @Inject constructor(
     override fun onRejectRoomInvitation(room: RoomSummary) {
         notificationDrawerManager.clearMemberShipNotificationForRoom(room.roomId)
         roomListViewModel.handle(RoomListAction.RejectInvitation(room))
-    }
-
-    override fun createRoom(initialName: String) {
-        navigator.openCreateRoom(requireActivity(), initialName)
     }
 }
