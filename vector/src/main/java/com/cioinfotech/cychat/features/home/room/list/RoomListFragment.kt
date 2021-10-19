@@ -179,8 +179,8 @@ class RoomListFragment @Inject constructor(
 
     private fun setupCreateRoomButton() {
         when (roomListParams.displayMode) {
-            RoomListDisplayMode.NOTIFICATIONS,
-            RoomListDisplayMode.HOME   -> views.createChatFabMenu.isVisible = true
+//            RoomListDisplayMode.NOTIFICATIONS,
+//            RoomListDisplayMode.HOME   -> views.createChatFabMenu.isVisible = true
             RoomListDisplayMode.PEOPLE -> views.createChatRoomButton.isVisible = true
             RoomListDisplayMode.ROOMS  -> views.createGroupRoomButton.isVisible = true
             else                       -> Unit // No button in this mode

@@ -98,6 +98,7 @@ class RoomListViewModel @Inject constructor(
                 addSection(sections, R.string.bottom_action_people_x) {
                     it.memberships = listOf(Membership.JOIN)
                     it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                    it.roomTagQueryFilter = RoomTagQueryFilter(isFavorite = false, isLowPriority = false, false)
                 }
             }
             RoomListDisplayMode.ROOMS         -> {
@@ -115,7 +116,7 @@ class RoomListViewModel @Inject constructor(
                 addSection(sections, R.string.bottom_action_rooms) {
                     it.memberships = listOf(Membership.JOIN)
                     it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
-                    it.roomTagQueryFilter = RoomTagQueryFilter(false, false, false)
+                    it.roomTagQueryFilter = RoomTagQueryFilter(isFavorite = false, isLowPriority = false, false)
                 }
 
                 addSection(sections, R.string.low_priority_header) {
@@ -164,14 +165,27 @@ class RoomListViewModel @Inject constructor(
                 }
             }
             RoomListDisplayMode.HOME          -> {
+                addSection(sections, R.string.bottom_action_favourites) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ALL
+                    it.roomTagQueryFilter = RoomTagQueryFilter(true, null, null)
+                }
+
                 addSection(sections, R.string.invitations_header, true) {
                     it.memberships = listOf(Membership.INVITE)
                     it.roomCategoryFilter = RoomCategoryFilter.ALL
                 }
 
-                addSection(sections, R.string.direct_chats_header) {
+                addSection(sections, R.string.bottom_action_people_x) {
                     it.memberships = listOf(Membership.JOIN)
-                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_WITH_NOTIFICATIONS
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                    it.roomTagQueryFilter = RoomTagQueryFilter(isFavorite = false, isLowPriority = false, false)
+                }
+
+                addSection(sections, R.string.bottom_action_rooms, true) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_ROOMS
+                    it.roomTagQueryFilter = RoomTagQueryFilter(isFavorite = false, isLowPriority = false, false)
                 }
             }
         }

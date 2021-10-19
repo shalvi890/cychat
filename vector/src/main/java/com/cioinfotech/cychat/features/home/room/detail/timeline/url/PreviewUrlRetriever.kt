@@ -75,7 +75,7 @@ class PreviewUrlRetriever(session: Session,
                     mediaService.getPreviewUrl(
                             url = urlToRetrieve,
                             timestamp = null,
-                            cacheStrategy = if (BuildConfig.DEBUG) CacheStrategy.NoCache else CacheStrategy.TtlCache(CACHE_VALIDITY, false)
+                            cacheStrategy = if (BuildConfig.debug_mode) CacheStrategy.NoCache else CacheStrategy.TtlCache(CACHE_VALIDITY, false)
                     )
                 }.fold(
                         {

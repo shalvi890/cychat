@@ -307,7 +307,7 @@ class VectorPreferences @Inject constructor(private val context: Context) {
     }
 
     fun failFast(): Boolean {
-        return BuildConfig.DEBUG || (developerMode() && defaultPrefs.getBoolean(SETTINGS_DEVELOPER_MODE_FAIL_FAST_PREFERENCE_KEY, false))
+        return BuildConfig.debug_mode || (developerMode() && defaultPrefs.getBoolean(SETTINGS_DEVELOPER_MODE_FAIL_FAST_PREFERENCE_KEY, false))
     }
 
     fun didAskUserToEnableSessionPush(): Boolean {

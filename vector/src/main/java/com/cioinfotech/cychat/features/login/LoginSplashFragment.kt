@@ -46,7 +46,7 @@ class LoginSplashFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         views.loginSplashSubmit.setOnClickListener { getStarted() }
 
-        if (BuildConfig.DEBUG || vectorPreferences.developerMode()) {
+        if (BuildConfig.debug_mode) {
             views.loginSplashVersion.isVisible = true
             @SuppressLint("SetTextI18n")
             views.loginSplashVersion.text = "Version : ${BuildConfig.VERSION_NAME}"
@@ -55,7 +55,7 @@ class LoginSplashFragment @Inject constructor(
 
     /** Code for Different Screen logic When Release & Debug build is given environment screen is not shown in release */
     private fun getStarted() {
-        if (BuildConfig.BUILD_TYPE == "debug")
+        if (BuildConfig.debug_mode)
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
         else {
             val prefs = DefaultSharedPreferences.getInstance(requireContext())

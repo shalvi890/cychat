@@ -85,7 +85,7 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         if (useBigFont)
             holder.messageView.textSize = 44F
         else
-            holder.messageView.textSize = 17F
+            holder.messageView.textSize = 16F
 
         if (searchForPills) {
             message?.findPillsAndProcess(coroutineScope) {

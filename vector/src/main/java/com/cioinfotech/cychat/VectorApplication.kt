@@ -119,12 +119,12 @@ class VectorApplication :
                 .filterIsInstance(JitsiMeetDefaultLogHandler::class.java)
                 .forEach { Timber.uproot(it) }
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.debug_mode) {
             Timber.plant(Timber.DebugTree())
         }
         Timber.plant(vectorComponent.vectorFileLogger())
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.debug_mode) {
             Stetho.initializeWithDefaults(this)
         }
 //        logInfo()

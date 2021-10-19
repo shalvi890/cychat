@@ -97,7 +97,7 @@ class LoginServerUrlFormFragment @Inject constructor() : AbstractLoginFragment<F
                 views.loginServerUrlFormNotice.text = getString(R.string.login_server_url_form_common_notice)
             }
         }
-        val completions = state.knownCustomHomeServersUrls + if (BuildConfig.DEBUG) listOf("http://10.0.2.2:8080") else emptyList()
+        val completions = state.knownCustomHomeServersUrls + if (BuildConfig.debug_mode) listOf("http://10.0.2.2:8080") else emptyList()
         views.loginServerUrlFormHomeServerUrl.setAdapter(ArrayAdapter(
                 requireContext(),
                 R.layout.item_completion_homeserver,

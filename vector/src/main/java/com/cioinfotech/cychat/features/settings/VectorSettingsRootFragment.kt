@@ -43,7 +43,7 @@ class VectorSettingsRootFragment @Inject constructor() : VectorSettingsBaseFragm
     /** Showing Environment for Debug Mode Only*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.debug_mode) {
             val pref = DefaultSharedPreferences.getInstance(requireContext())
             findPreference<VectorPreference>(ENVIRONMENT)?.summary = pref.getString(NetworkConstants.CY_CHAT_ENV, "")
         } else
