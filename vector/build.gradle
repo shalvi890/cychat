@@ -120,12 +120,12 @@ android {
         targetSdkVersion 30
         multiDexEnabled true
 
-        renderscriptTargetApi 24
+        renderscriptTargetApi 25
         renderscriptSupportModeEnabled true
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (master, features, etc.) will have version code based on application version.
-        versionCode 81
+        versionCode 82
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"

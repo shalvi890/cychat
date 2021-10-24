@@ -164,9 +164,6 @@ import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.settings.VectorSettingsActivity
 import com.cioinfotech.cychat.features.share.SharedData
 import com.cioinfotech.cychat.features.themes.ThemeUtils
-import com.cioinfotech.cychat.features.userdirectory.ServerListFragment
-import com.cioinfotech.cychat.features.userdirectory.UserListFragment
-import com.cioinfotech.cychat.features.userdirectory.adapter.ServerListAdapter
 import com.cioinfotech.cychat.features.widgets.WidgetActivity
 import com.cioinfotech.cychat.features.widgets.WidgetArgs
 import com.cioinfotech.cychat.features.widgets.WidgetKind
@@ -211,7 +208,6 @@ import org.matrix.android.sdk.api.util.MatrixItem
 import org.matrix.android.sdk.api.util.toMatrixItem
 import org.matrix.android.sdk.internal.crypto.model.event.EncryptedEventContent
 import org.matrix.android.sdk.internal.crypto.model.event.WithHeldCode
-import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomain
 import timber.log.Timber
 import java.io.File
 import java.net.URL
@@ -1108,7 +1104,8 @@ class RoomDetailFragment @Inject constructor(
                     imageContentRenderer.createGlideRequest(
                             epoxyModel.mediaData,
                             ImageContentRenderer.Mode.THUMBNAIL,
-                            requestManager as GlideRequests
+                            requestManager as GlideRequests,
+                            context = requireContext()
                     )
                 })
     }

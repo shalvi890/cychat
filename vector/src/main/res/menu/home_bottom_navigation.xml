@@ -9,7 +9,7 @@
     <item
         android:id="@+id/bottom_fav"
         android:enabled="true"
-        android:icon="@drawable/ic_star_24dp"
+        android:icon="@drawable/ic_fav"
         android:title="@string/bottom_action_favourites" />
     <item
         android:id="@+id/bottom_action_people"

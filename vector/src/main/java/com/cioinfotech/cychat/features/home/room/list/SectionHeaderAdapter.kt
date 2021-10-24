@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.utils.DebouncedClickListener
@@ -89,7 +90,9 @@ class SectionHeaderAdapter constructor(
                     DrawableCompat.setTint(it, tintColor)
                 }
                 binding.roomCategoryTitleView.setCompoundDrawablesWithIntrinsicBounds(null, null, expandedArrowDrawable, null)
-            }
+            } else
+                binding.viewDivider.isVisible = true && layoutPosition != 0
+
             binding.roomCategoryUnreadCounterBadgeView.render(UnreadCounterBadgeView.State(roomsSectionData.notificationCount, roomsSectionData.isHighlighted))
         }
 

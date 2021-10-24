@@ -16,12 +16,14 @@
 
 package com.cioinfotech.cychat.features.media
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Parcelable
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.updateLayoutParams
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
@@ -29,8 +31,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.target.Target
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ORIENTATION_USE_EXIF
-import com.github.piasy.biv.view.BigImageView
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.files.LocalFilesHelper
@@ -39,6 +39,8 @@ import com.cioinfotech.cychat.core.glide.GlideRequest
 import com.cioinfotech.cychat.core.glide.GlideRequests
 import com.cioinfotech.cychat.core.ui.model.Size
 import com.cioinfotech.cychat.core.utils.DimensionConverter
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ORIENTATION_USE_EXIF
+import com.github.piasy.biv.view.BigImageView
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.extensions.tryOrNull
 import org.matrix.android.sdk.api.session.content.ContentUrlResolver
@@ -230,22 +232,24 @@ class ImageContentRenderer @Inject constructor(private val localFilesHelper: Loc
                 .into(imageView)
     }
 
-    private fun createGlideRequest(data: Data, mode: Mode, imageView: ImageView, size: Size): GlideRequest<Drawable> {
-        return createGlideRequest(data, mode, GlideApp.with(imageView), size)
+    fun createGlideRequest(data: Data, mode: Mode, imageView: ImageView, size: Size): GlideRequest<Drawable> {
+        return createGlideRequest(data, mode, GlideApp.with(imageView), size, imageView.context)
     }
 
-    fun createGlideRequest(data: Data, mode: Mode, glideRequests: GlideRequests, size: Size = processSize(data, mode)): GlideRequest<Drawable> {
+    fun createGlideRequest(data: Data, mode: Mode, glideRequests: GlideRequests, size: Size = processSize(data, mode), context: Context): GlideRequest<Drawable> {
         return if (data.elementToDecrypt != null) {
             // Encrypted image
             glideRequests
                     .load(data)
+                    .placeholder(showCircularProgressDrawable(context))
+                    .error(showCircularProgressDrawable(context))
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
         } else {
             // Clear image
             val contentUrlResolver = activeSessionHolder.getActiveSession().contentUrlResolver()
             val resolvedUrl = when (mode) {
                 Mode.FULL_SIZE,
-                Mode.STICKER -> resolveUrl(data)
+                Mode.STICKER   -> resolveUrl(data)
                 Mode.THUMBNAIL -> contentUrlResolver.resolveThumbnail(data.url, size.width, size.height, ContentUrlResolver.ThumbnailMethod.SCALE)
             }
             // Fallback to base url
@@ -253,6 +257,8 @@ class ImageContentRenderer @Inject constructor(private val localFilesHelper: Loc
 
             glideRequests
                     .load(resolvedUrl)
+                    .placeholder(showCircularProgressDrawable(context))
+                    .error(showCircularProgressDrawable(context))
                     .apply {
                         if (mode == Mode.THUMBNAIL) {
                             error(
@@ -313,7 +319,7 @@ class ImageContentRenderer @Inject constructor(private val localFilesHelper: Loc
                     finalHeight = min(maxImageWidth * height / width, maxImageHeight)
                     finalWidth = finalHeight * width / height
                 }
-                Mode.STICKER -> {
+                Mode.STICKER   -> {
                     // limit on width
                     val maxWidthDp = min(dimensionConverter.dpToPx(120), maxImageWidth / 2)
                     finalWidth = min(dimensionConverter.dpToPx(width), maxWidthDp)
@@ -329,5 +335,13 @@ class ImageContentRenderer @Inject constructor(private val localFilesHelper: Loc
             finalWidth = maxImageWidth
         }
         return Size(finalWidth, finalHeight)
+    }
+
+    private fun showCircularProgressDrawable(context: Context): CircularProgressDrawable {
+        return CircularProgressDrawable(context).apply {
+            strokeWidth = 8f
+            centerRadius = 48f
+            start()
+        }
     }
 }
