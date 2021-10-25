@@ -125,7 +125,7 @@ android {
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (master, features, etc.) will have version code based on application version.
-        versionCode 82
+        versionCode 83
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
