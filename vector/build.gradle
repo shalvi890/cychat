@@ -12,7 +12,7 @@ kapt {
 // Note: 2 digits max for each value
 ext.versionMajor = 0
 ext.versionMinor = 0
-ext.versionPatch = 25
+ext.versionPatch = 26
 //
 //static def getGitTimestamp() {
 //    def cmd = 'git show -s --format=%ct'
@@ -125,7 +125,7 @@ android {
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (master, features, etc.) will have version code based on application version.
-        versionCode 83
+        versionCode 84
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
@@ -227,7 +227,7 @@ android {
         release {
             resValue "string", "app_name", "CyVerse"
             /** Change debug_mode to false to make sure environment screen should not show */
-            buildConfigField "boolean", "debug_mode", "false"
+            buildConfigField "boolean", "debug_mode", "true"
             buildConfigField "boolean", "LOW_PRIVACY_LOG_ENABLE", "false"
             buildConfigField "boolean", "ENABLE_STRICT_MODE_LOGS", "false"
             signingConfig signingConfigs.release
