@@ -22,29 +22,24 @@ import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.Uninitialized
 import com.airbnb.mvrx.ViewModelContext
+import com.cioinfotech.cychat.core.extensions.exhaustive
+import com.cioinfotech.cychat.core.platform.VectorViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import com.cioinfotech.cychat.core.extensions.exhaustive
-import com.cioinfotech.cychat.core.platform.VectorViewModel
-import com.cioinfotech.cychat.features.themes.ThemeProvider
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jitsi.meet.sdk.JitsiMeetUserInfo
 import org.matrix.android.sdk.api.query.QueryStringValue
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.widgets.model.Widget
 import org.matrix.android.sdk.api.session.widgets.model.WidgetType
-import org.matrix.android.sdk.api.util.toMatrixItem
 import org.matrix.android.sdk.rx.asObservable
-import java.net.URL
 
 class JitsiCallViewModel @AssistedInject constructor(
         @Assisted initialState: JitsiCallViewState,
-        private val session: Session,
-        private val jitsiMeetPropertiesFactory: JitsiWidgetPropertiesFactory,
-        private val themeProvider: ThemeProvider
+        session: Session,
+        private val jitsiService: JitsiService
 ) : VectorViewModel<JitsiCallViewState, JitsiCallViewActions, JitsiCallViewEvents>(initialState) {
 
     @AssistedFactory
@@ -55,7 +50,7 @@ class JitsiCallViewModel @AssistedInject constructor(
     private var currentWidgetObserver: Disposable? = null
     private val widgetService = session.widgetService()
 
-    private var confIsStarted = false
+    private var confIsJoined = false
     private var pendingArgs: VectorJitsiActivity.Args? = null
 
     init {
@@ -63,7 +58,7 @@ class JitsiCallViewModel @AssistedInject constructor(
     }
 
     private fun observeWidget(roomId: String, widgetId: String) {
-        confIsStarted = false
+        confIsJoined = false
         currentWidgetObserver?.dispose()
         currentWidgetObserver = widgetService.getRoomWidgetsLive(roomId, QueryStringValue.Equals(widgetId), WidgetType.Jitsi.values())
                 .asObservable()
@@ -74,10 +69,9 @@ class JitsiCallViewModel @AssistedInject constructor(
                         setState {
                             copy(widget = Success(jitsiWidget))
                         }
-
-                        if (!confIsStarted) {
-                            confIsStarted = true
-                            startConference(jitsiWidget)
+                        if (!confIsJoined) {
+                            confIsJoined = true
+                            joinConference(jitsiWidget)
                         }
                     } else {
                         setState {
@@ -90,24 +84,15 @@ class JitsiCallViewModel @AssistedInject constructor(
                 .disposeOnClear()
     }
 
-    private fun startConference(jitsiWidget: Widget) = withState { state ->
-        val me = session.getRoomMember(session.myUserId, state.roomId)?.toMatrixItem()
-        val userInfo = JitsiMeetUserInfo().apply {
-            displayName = me?.getBestName()
-            avatar = me?.avatarUrl?.let { session.contentUrlResolver().resolveFullSize(it) }?.let { URL(it) }
+    private fun joinConference(jitsiWidget: Widget) = withState { state ->
+        viewModelScope.launch {
+            try {
+                val joinConference = jitsiService.joinConference(state.roomId, jitsiWidget, state.enableVideo)
+                _viewEvents.post(joinConference)
+            } catch (throwable: Throwable) {
+                _viewEvents.post(JitsiCallViewEvents.FailJoiningConference)
+            }
         }
-        val roomName = session.getRoomSummary(state.roomId)?.displayName
-
-        val ppt = widgetService.getWidgetComputedUrl(jitsiWidget, themeProvider.isLightTheme())
-                ?.let { url -> jitsiMeetPropertiesFactory.create(url) }
-
-        _viewEvents.post(JitsiCallViewEvents.StartConference(
-                enableVideo = state.enableVideo,
-                jitsiUrl = "https://${ppt?.domain}",
-                subject = roomName ?: "",
-                confId = ppt?.confId ?: "",
-                userInfo = userInfo
-        ))
     }
 
     override fun handle(action: JitsiCallViewActions) {
@@ -160,12 +145,12 @@ class JitsiCallViewModel @AssistedInject constructor(
         const val ENABLE_VIDEO_OPTION = "ENABLE_VIDEO_OPTION"
 
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: JitsiCallViewState): JitsiCallViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: JitsiCallViewState): JitsiCallViewModel {
             val callActivity: VectorJitsiActivity = viewModelContext.activity()
             return callActivity.viewModelFactory.create(state)
         }
 
-        override fun initialState(viewModelContext: ViewModelContext): JitsiCallViewState? {
+        override fun initialState(viewModelContext: ViewModelContext): JitsiCallViewState {
             val args: VectorJitsiActivity.Args = viewModelContext.args()
 
             return JitsiCallViewState(

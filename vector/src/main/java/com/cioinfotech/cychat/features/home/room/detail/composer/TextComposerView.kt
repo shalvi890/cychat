@@ -26,13 +26,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
-import androidx.core.widget.doOnTextChanged
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.extensions.setTextIfDifferent
 import com.cioinfotech.cychat.databinding.ComposerLayoutBinding
 
 /**
@@ -48,7 +48,7 @@ class TextComposerView @JvmOverloads constructor(
         fun onCloseRelatedMessage()
         fun onSendMessage(text: CharSequence)
         fun onAddAttachment()
-        fun onSendAudio()
+//        fun onSendAudio()
     }
 
     val views: ComposerLayoutBinding
@@ -61,7 +61,6 @@ class TextComposerView @JvmOverloads constructor(
     private var isExpanded = false
     val text: Editable?
         get() = views.composerEditText.text
-    private var isKeyboardTouchable = false
 
     init {
         inflate(context, R.layout.composer_layout, this)
@@ -73,37 +72,38 @@ class TextComposerView @JvmOverloads constructor(
             override fun onRichContentSelected(contentUri: Uri): Boolean {
                 return callback?.onRichContentSelected(contentUri) ?: false
             }
+
+            override fun onTextChanged(text: CharSequence) {
+                callback?.onTextChanged(text)
+            }
         }
         views.composerRelatedMessageCloseButton.setOnClickListener {
-            if (isKeyboardTouchable) {
-                collapse()
-                callback?.onCloseRelatedMessage()
-            }
+            collapse()
+            callback?.onCloseRelatedMessage()
         }
 
         views.sendButton.setOnClickListener {
-            if (isKeyboardTouchable) {
-                if (text.isNullOrEmpty() && !isExpanded) {
-                    callback?.onSendAudio()
-                } else {
-                    val textMessage = text?.toString()?.trim()?.toSpannable() ?: ""
-                    callback?.onSendMessage(textMessage)
-                }
-            }
+//            if (isKeyboardTouchable) {
+//                if (text.isNullOrEmpty() && !isExpanded) {
+//                    callback?.onSendAudio()
+//                } else {
+            val textMessage = text?.toString()?.trim()?.toSpannable() ?: ""
+            callback?.onSendMessage(textMessage)
+//                }
+//            }
         }
 
         views.attachmentButton.setOnClickListener {
-            if (isKeyboardTouchable)
-                callback?.onAddAttachment()
+            callback?.onAddAttachment()
         }
 
-        views.composerEditText.doOnTextChanged { text, _, _, _ ->
-            if (text.isNullOrEmpty() && !isExpanded) {
-                views.sendButton.setImageResource(R.drawable.ic_microphone)
-            } else {
-                views.sendButton.setImageResource(R.drawable.ic_send)
-            }
-        }
+//        views.composerEditText.doOnTextChanged { text, _, _, _ ->
+//            if (text.isNullOrEmpty() && !isExpanded) {
+//                views.sendButton.setImageResource(R.drawable.ic_microphone)
+//            } else {
+//                views.sendButton.setImageResource(R.drawable.ic_send)
+//            }
+//        }
     }
 
     fun collapse(animate: Boolean = true, transitionComplete: (() -> Unit)? = null) {
@@ -112,11 +112,6 @@ class TextComposerView @JvmOverloads constructor(
             return
         }
         isExpanded = false
-        if (text.isNullOrEmpty()) {
-            views.sendButton.setImageResource(R.drawable.ic_microphone)
-        } else {
-            views.sendButton.setImageResource(R.drawable.ic_send)
-        }
         currentConstraintSetId = R.layout.composer_layout_constraint_set_compact
         applyNewConstraintSet(animate, transitionComplete)
     }
@@ -126,20 +121,21 @@ class TextComposerView @JvmOverloads constructor(
             // ignore we good
             return
         }
-        views.sendButton.setImageResource(R.drawable.ic_send)
-        isExpanded = true
         currentConstraintSetId = R.layout.composer_layout_constraint_set_expanded
         applyNewConstraintSet(animate, transitionComplete)
     }
 
+    fun setTextIfDifferent(text: CharSequence?): Boolean {
+        return views.composerEditText.setTextIfDifferent(text)
+    }
+
     private fun applyNewConstraintSet(animate: Boolean, transitionComplete: (() -> Unit)?) {
+        // val wasSendButtonInvisible = views.sendButton.isInvisible
         if (animate) {
             configureAndBeginTransition(transitionComplete)
         }
         ConstraintSet().also {
             it.clone(context, currentConstraintSetId)
-//     in case shield is hidden, we will have glitch without this
-//            it.getConstraint(R.id.composerShieldImageView).propertySet.visibility = views.composerShieldImageView.visibility
             it.applyTo(this)
         }
     }
@@ -168,20 +164,20 @@ class TextComposerView @JvmOverloads constructor(
     }
 
     fun setRoomEncrypted(isEncrypted: Boolean) {
-        if (isKeyboardTouchable)
-            if (isEncrypted) {
-                views.composerEditText.setHint(R.string.room_message_placeholder)
+//        if (isKeyboardTouchable)
+        if (isEncrypted) {
+            views.composerEditText.setHint(R.string.room_message_placeholder)
 //            views.composerShieldImageView.render(roomEncryptionTrustLevel)
-            } else {
-                views.composerEditText.setHint(R.string.room_message_placeholder)
+        } else {
+            views.composerEditText.setHint(R.string.room_message_placeholder)
 //            views.composerShieldImageView.render(null)
-            }
-        else
-            views.composerEditText.setHint(R.string.no_one_present_in_chat)
+        }
+//        else
+//            views.composerEditText.setHint(R.string.no_one_present_in_chat)
     }
 
     fun setKeyBoardTouch(isEnabled: Boolean) {
-        isKeyboardTouchable = isEnabled
+//        isKeyboardTouchable = isEnabled
         views.composerEditText.isFocusable = isEnabled
         views.composerEditText.isClickable = isEnabled
 

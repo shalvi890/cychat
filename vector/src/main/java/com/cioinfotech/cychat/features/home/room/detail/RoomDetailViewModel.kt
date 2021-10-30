@@ -32,6 +32,8 @@ import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.features.call.conference.JitsiActiveConferenceHolder
+import com.cioinfotech.cychat.features.call.conference.JitsiService
 import com.cioinfotech.cychat.features.call.dialpad.DialPadLookup
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.command.CommandParser
@@ -47,8 +49,6 @@ import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.Timeline
 import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlRetriever
 import com.cioinfotech.cychat.features.home.room.typing.TypingHelper
 import com.cioinfotech.cychat.features.powerlevel.PowerLevelsObservableFactory
-import com.cioinfotech.cychat.features.raw.wellknown.getElementWellknown
-import com.cioinfotech.cychat.features.settings.VectorLocale
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
@@ -68,7 +68,6 @@ import org.matrix.android.sdk.api.MatrixCallback
 import org.matrix.android.sdk.api.MatrixPatterns
 import org.matrix.android.sdk.api.extensions.tryOrNull
 import org.matrix.android.sdk.api.query.QueryStringValue
-import org.matrix.android.sdk.api.raw.RawService
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.call.PSTNProtocolChecker
 import org.matrix.android.sdk.api.session.crypto.MXCryptoError
@@ -99,13 +98,11 @@ import org.matrix.android.sdk.api.session.room.timeline.getLastMessageContent
 import org.matrix.android.sdk.api.session.room.timeline.getRelationContent
 import org.matrix.android.sdk.api.session.room.timeline.getTextEditableContent
 import org.matrix.android.sdk.api.session.widgets.model.WidgetType
-import org.matrix.android.sdk.api.util.appendParamToUrl
 import org.matrix.android.sdk.api.util.toOptional
 import org.matrix.android.sdk.internal.crypto.model.event.WithHeldCode
 import org.matrix.android.sdk.rx.rx
 import org.matrix.android.sdk.rx.unwrap
 import timber.log.Timber
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -115,7 +112,6 @@ class RoomDetailViewModel @AssistedInject constructor(
         private val stringProvider: StringProvider,
         private val rainbowGenerator: RainbowGenerator,
         private val session: Session,
-        private val rawService: RawService,
         private val supportedVerificationMethodsProvider: SupportedVerificationMethodsProvider,
         private val stickerPickerActionHandler: StickerPickerActionHandler,
         private val roomSummariesHolder: RoomSummariesHolder,
@@ -123,6 +119,8 @@ class RoomDetailViewModel @AssistedInject constructor(
         private val callManager: WebRtcCallManager,
         private val chatEffectManager: ChatEffectManager,
         private val directRoomHelper: DirectRoomHelper,
+        private val activeConferenceHolder: JitsiActiveConferenceHolder,
+        private val jitsiService: JitsiService,
         timelineSettingsFactory: TimelineSettingsFactory
 ) : VectorViewModel<RoomDetailViewState, RoomDetailAction, RoomDetailViewEvents>(initialState),
         Timeline.Listener, ChatEffectManager.Delegate, PSTNProtocolChecker.Listener {
@@ -241,9 +239,25 @@ class RoomDetailViewModel @AssistedInject constructor(
                 .map { widgets ->
                     widgets.filter { it.isActive }
                 }
-                .execute {
-                    copy(activeRoomWidgets = it)
+                .execute { widgets ->
+                    copy(activeRoomWidgets = widgets)
                 }
+
+        asyncSubscribe(RoomDetailViewState::activeRoomWidgets) { widgets ->
+            setState {
+                val jitsiWidget = widgets.firstOrNull { it.type == WidgetType.Jitsi }
+                val jitsiConfId = jitsiWidget?.let {
+                    jitsiService.extractJitsiWidgetData(it)?.confId
+                }
+                copy(
+                        jitsiState = jitsiState.copy(
+                                confId = jitsiConfId,
+                                widgetId = jitsiWidget?.widgetId,
+                                hasJoined = activeConferenceHolder.isJoined(jitsiConfId)
+                        )
+                )
+            }
+        }
     }
 
     private fun observeMyRoomMember() {
@@ -325,11 +339,66 @@ class RoomDetailViewModel @AssistedInject constructor(
                 )
             }
             is RoomDetailAction.DoNotShowPreviewUrlFor           -> handleDoNotShowPreviewUrlFor(action)
-            is RoomDetailAction.SelectRecordAudioAttachment      -> _viewEvents.post(RoomDetailViewEvents.OpenAudioRecording)
+//            is RoomDetailAction.SelectRecordAudioAttachment      -> _viewEvents.post(RoomDetailViewEvents.OpenAudioRecording)
             RoomDetailAction.RemoveAllFailedMessages             -> handleRemoveAllFailedMessages()
             RoomDetailAction.ResendAll                           -> handleResendAll()
+            RoomDetailAction.StartRecordingVoiceMessage          -> _viewEvents.post(RoomDetailViewEvents.StartRecordingVoiceMessage)
+            is RoomDetailAction.EndRecordingVoiceMessage         -> _viewEvents.post(RoomDetailViewEvents.EndRecordingVoiceMessage(action.isCancelled))
+            RoomDetailAction.PauseRecordingVoiceMessage          -> _viewEvents.post(RoomDetailViewEvents.PauseRecordingVoiceMessage)
+            RoomDetailAction.PlayOrPauseRecordingPlayback        -> _viewEvents.post(RoomDetailViewEvents.PlayOrPauseRecordingPlayback)
+            RoomDetailAction.EndAllVoiceActions                  -> _viewEvents.post(RoomDetailViewEvents.EndAllVoiceActions)
         }.exhaustive
     }
+
+//    private fun handleStartRecordingVoiceMessage() {
+//        try {
+//            voiceMessageHelper.startRecording()
+//        } catch (failure: Throwable) {
+//            _viewEvents.post(RoomDetailViewEvents.Failure(failure))
+//        }
+//    }
+
+//    private fun handleEndRecordingVoiceMessage(isCancelled: Boolean) {
+//        voiceMessageHelper.stopPlayback()
+//        if (isCancelled) {
+//            voiceMessageHelper.deleteRecording()
+//        } else {
+//            voiceMessageHelper.stopRecording()?.let { audioType ->
+//                if (audioType.duration > 1000) {
+//                    room.sendMedia(audioType.toContentAttachmentData(), false, emptySet())
+//                } else {
+//                    voiceMessageHelper.deleteRecording()
+//                }
+//            }
+//        }
+//    }
+
+//    private fun handlePlayOrPauseVoicePlayback(action: RoomDetailAction.PlayOrPauseVoicePlayback) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            try {
+//                // Download can fail
+//                val audioFile = session.fileService().downloadFile(action.messageAudioContent)
+//                // Conversion can fail, fallback to the original file in this case and let the player fail for us
+//                val convertedFile = voicePlayerHelper.convertFile(audioFile) ?: audioFile
+//                // Play can fail
+//                voiceMessageHelper.startOrPausePlayback(action.eventId, convertedFile)
+//            } catch (failure: Throwable) {
+//                _viewEvents.post(RoomDetailViewEvents.Failure(failure))
+//            }
+//        }
+//    }
+
+//    private fun handlePlayOrPauseRecordingPlayback() {
+//        voiceMessageHelper.startOrPauseRecordingPlayback()
+//    }
+
+//    private fun handleEndAllVoiceActions() {
+//        voiceMessageHelper.stopAllVoiceActions()
+//    }
+
+//    private fun handlePauseRecordingVoiceMessage() {
+//        voiceMessageHelper.pauseRecording()
+//    }
 
     private fun handleStartCallWithPhoneNumber(action: RoomDetailAction.StartCallWithPhoneNumber) {
         viewModelScope.launch {
@@ -437,57 +506,8 @@ class RoomDetailViewModel @AssistedInject constructor(
     private fun handleAddJitsiConference(action: RoomDetailAction.AddJitsiWidget) {
         _viewEvents.post(RoomDetailViewEvents.ShowWaitingView)
         viewModelScope.launch(Dispatchers.IO) {
-            // Build data for a jitsi widget
-            val widgetId: String = WidgetType.Jitsi.preferred + "_" + session.myUserId + "_" + System.currentTimeMillis()
-
-            // Create a random enough jitsi conference id
-            // Note: the jitsi server automatically creates conference when the conference
-            // id does not exist yet
-            var widgetSessionId = UUID.randomUUID().toString()
-
-            if (widgetSessionId.length > 8) {
-                widgetSessionId = widgetSessionId.substring(0, 7)
-            }
-            val roomId: String = room.roomId
-            val confId = roomId.substring(1, roomId.indexOf(":") - 1) + widgetSessionId.lowercase(VectorLocale.applicationLocale)
-
-            val preferredJitsiDomain = tryOrNull {
-                rawService.getElementWellknown(session.myUserId)
-                        ?.jitsiServer
-                        ?.preferredDomain
-            }
-            val jitsiDomain = preferredJitsiDomain ?: stringProvider.getString(R.string.preferred_jitsi_domain)
-
-            // We use the default element wrapper for this widget
-            // https://github.com/vector-im/element-web/blob/develop/docs/jitsi-dev.md
-            // https://github.com/matrix-org/matrix-react-sdk/blob/develop/src/utils/WidgetUtils.ts#L469
-            val url = buildString {
-                append("https://app.element.io/jitsi.html")
-                appendParamToUrl("confId", confId)
-                append("#conferenceDomain=\$domain")
-                append("&conferenceId=\$conferenceId")
-                append("&isAudioOnly=\$isAudioOnly")
-                append("&displayName=\$matrix_display_name")
-                append("&avatarUrl=\$matrix_avatar_url")
-                append("&userId=\$matrix_user_id")
-                append("&roomId=\$matrix_room_id")
-                append("&theme=\$theme")
-            }
-            val widgetEventContent = mapOf(
-                    "url" to url,
-                    "type" to WidgetType.Jitsi.legacy,
-                    "data" to mapOf(
-                            "conferenceId" to confId,
-                            "domain" to jitsiDomain,
-                            "isAudioOnly" to !action.withVideo
-                    ),
-                    "creatorUserId" to session.myUserId,
-                    "id" to widgetId,
-                    "name" to "jitsi"
-            )
-
             try {
-                val widget = session.widgetService().createRoomWidget(roomId, widgetId, widgetEventContent)
+                val widget = jitsiService.createJitsiWidget(room.roomId, action.withVideo)
                 _viewEvents.post(RoomDetailViewEvents.JoinJitsiConference(widget, action.withVideo))
             } catch (failure: Throwable) {
                 _viewEvents.post(RoomDetailViewEvents.ShowMessage(stringProvider.getString(R.string.failed_to_add_widget)))
@@ -673,8 +693,8 @@ class RoomDetailViewModel @AssistedInject constructor(
             R.id.invite                 -> state.canInvite && !HomeActivity.isOneToOneChatOpen
 //            R.id.open_matrix_apps -> true
             R.id.voice_call,
-            R.id.video_call             -> callManager.getCallsByRoomId(state.roomId).isEmpty() && HomeActivity.isOneToOneChatOpen
-            R.id.hangup_call            -> callManager.getCallsByRoomId(state.roomId).isNotEmpty() && HomeActivity.isOneToOneChatOpen
+            R.id.video_call             -> callManager.getCallsByRoomId(state.roomId).isEmpty()
+            R.id.hangup_call            -> callManager.getCallsByRoomId(state.roomId).isNotEmpty()
             R.id.search, R.id.wallpaper -> true
 //            R.id.invite_from_orgs       -> !HomeActivity.isOneToOneChatOpen
 //            R.id.dev_tools        -> vectorPreferences.developerMode()
@@ -1140,36 +1160,40 @@ class RoomDetailViewModel @AssistedInject constructor(
         val isLocalSendingFile = action.senderId == session.myUserId
                 && mxcUrl.startsWith("content://")
         val isDownloaded = session.fileService().isFileInCache(action.messageFileContent)
-        if (isLocalSendingFile) {
-            tryOrNull { Uri.parse(mxcUrl) }?.let {
-                _viewEvents.post(RoomDetailViewEvents.OpenFile(
-                        action.messageFileContent.mimeType,
-                        it,
-                        null,
-                        action.messageFileContent.getFileName()
-                ))
-            }
-        } else if (isDownloaded) {
-            // we can open it
-            session.fileService().getTemporarySharableURI(action.messageFileContent)?.let { uri ->
-                _viewEvents.post(RoomDetailViewEvents.OpenFile(
-                        action.messageFileContent.mimeType,
-                        uri,
-                        null,
-                        action.messageFileContent.getFileName()
-                ))
-            }
-        } else {
-            viewModelScope.launch {
-                val result = runCatching {
-                    session.fileService().downloadFile(messageContent = action.messageFileContent)
+        when {
+            isLocalSendingFile -> {
+                tryOrNull { Uri.parse(mxcUrl) }?.let {
+                    _viewEvents.post(RoomDetailViewEvents.OpenFile(
+                            action.messageFileContent.mimeType,
+                            it,
+                            null,
+                            action.messageFileContent.getFileName()
+                    ))
                 }
+            }
+            isDownloaded       -> {
+                // we can open it
+                session.fileService().getTemporarySharableURI(action.messageFileContent)?.let { uri ->
+                    _viewEvents.post(RoomDetailViewEvents.OpenFile(
+                            action.messageFileContent.mimeType,
+                            uri,
+                            null,
+                            action.messageFileContent.getFileName()
+                    ))
+                }
+            }
+            else               -> {
+                viewModelScope.launch {
+                    val result = runCatching {
+                        session.fileService().downloadFile(messageContent = action.messageFileContent)
+                    }
 
-                _viewEvents.post(RoomDetailViewEvents.DownloadFileState(
-                        action.messageFileContent.mimeType,
-                        result.getOrNull(),
-                        result.exceptionOrNull()
-                ))
+                    _viewEvents.post(RoomDetailViewEvents.DownloadFileState(
+                            action.messageFileContent.mimeType,
+                            result.getOrNull(),
+                            result.exceptionOrNull()
+                    ))
+                }
             }
         }
     }

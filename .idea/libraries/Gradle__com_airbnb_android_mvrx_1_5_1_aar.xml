@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.airbnb.android:mvrx:1.5.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d79c3bc324123c0180c4a0a80c000c5e/jetified-mvrx-1.5.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d79c3bc324123c0180c4a0a80c000c5e/jetified-mvrx-1.5.1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d79c3bc324123c0180c4a0a80c000c5e/jetified-mvrx-1.5.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a684b04a48c74d8a12479c0900684a93/jetified-mvrx-1.5.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a684b04a48c74d8a12479c0900684a93/jetified-mvrx-1.5.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a684b04a48c74d8a12479c0900684a93/jetified-mvrx-1.5.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.airbnb.android/mvrx/1.5.1/1b105719d784c3f3522ea1d07cc6e0cd0ffcf09/mvrx-1.5.1-javadoc.jar!/" />

@@ -16,7 +16,7 @@
 
 package org.matrix.android.sdk.internal.task
 
-internal interface Task<PARAMS, RESULT> {
+interface Task<PARAMS, RESULT> {
 
     suspend fun execute(params: PARAMS): RESULT
 }

@@ -25,6 +25,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -32,12 +33,12 @@ import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.MvRx
 import com.airbnb.mvrx.Success
 import com.airbnb.mvrx.viewModel
-import com.facebook.react.modules.core.PermissionListener
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ScreenComponent
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.databinding.ActivityJitsiBinding
+import com.facebook.react.modules.core.PermissionListener
 import kotlinx.parcelize.Parcelize
 import org.jitsi.meet.sdk.BroadcastEvent
 import org.jitsi.meet.sdk.JitsiMeetActivityDelegate
@@ -87,8 +88,9 @@ class VectorJitsiActivity : VectorBaseActivity<ActivityJitsiBinding>(), JitsiMee
 
         jitsiViewModel.observeViewEvents {
             when (it) {
-                is JitsiCallViewEvents.StartConference            -> configureJitsiView(it)
+                is JitsiCallViewEvents.JoinConference             -> configureJitsiView(it)
                 is JitsiCallViewEvents.ConfirmSwitchingConference -> handleConfirmSwitching(it)
+                JitsiCallViewEvents.FailJoiningConference         -> handleFailJoining()
                 JitsiCallViewEvents.Finish                        -> finish()
                 JitsiCallViewEvents.LeaveConference               -> handleLeaveConference()
             }.exhaustive
@@ -118,6 +120,11 @@ class VectorJitsiActivity : VectorBaseActivity<ActivityJitsiBinding>(), JitsiMee
         Timber.w("onPictureInPictureModeChanged($isInPictureInPictureMode)")
     }
 
+    private fun handleFailJoining() {
+        Toast.makeText(this, getString(R.string.error_jitsi_join_conf), Toast.LENGTH_LONG).show()
+        finish()
+    }
+
     override fun initUiAndData() {
         super.initUiAndData()
         jitsiMeetView = JitsiMeetView(this)
@@ -139,7 +146,7 @@ class VectorJitsiActivity : VectorBaseActivity<ActivityJitsiBinding>(), JitsiMee
         }
     }
 
-    private fun configureJitsiView(startConference: JitsiCallViewEvents.StartConference) {
+    private fun configureJitsiView(startConference: JitsiCallViewEvents.JoinConference) {
         val jitsiMeetConferenceOptions = JitsiMeetConferenceOptions.Builder()
                 .setVideoMuted(!startConference.enableVideo)
                 .setUserInfo(startConference.userInfo)

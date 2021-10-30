@@ -67,3 +67,14 @@ fun View.getMeasurements(): Pair<Int, Int> {
     val height = measuredHeight
     return width to height
 }
+
+fun View.setAttributeTintedBackground(@DrawableRes drawableRes: Int, @AttrRes tint: Int) {
+    val drawable = ContextCompat.getDrawable(context, drawableRes)!!
+    DrawableCompat.setTint(drawable, ThemeUtils.getColor(context, tint))
+    background = drawable
+}
+
+fun View.setAttributeBackground(@AttrRes attributeId: Int) {
+    val attribute = ThemeUtils.getAttribute(context, attributeId)!!
+    setBackgroundResource(attribute.resourceId)
+}

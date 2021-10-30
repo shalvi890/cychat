@@ -11,4 +11,6 @@
 
     <integer name="splash_animation_velocity">750</integer>
 
+    <integer name="rtl_x_multiplier">1</integer>
+
 </resources>

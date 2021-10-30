@@ -22,7 +22,7 @@ import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.failure.MatrixError
 import org.matrix.android.sdk.api.failure.getRetryDelay
 import org.matrix.android.sdk.api.failure.shouldBeRetried
-import org.matrix.android.sdk.internal.network.ssl.CertUtil
+import org.matrix.android.sdk.internal.network.ssl.CertUtil.getCertificateException
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -37,11 +37,11 @@ import java.io.IOException
  * @param maxRetriesCount the max number of retries
  * @param requestBlock a suspend lambda to perform the network request
  */
-internal suspend inline fun <DATA> executeRequest(globalErrorReceiver: GlobalErrorReceiver?,
-                                                  canRetry: Boolean = false,
-                                                  maxDelayBeforeRetry: Long = 32_000L,
-                                                  maxRetriesCount: Int = 4,
-                                                  noinline requestBlock: suspend () -> DATA): DATA {
+suspend inline fun <DATA> executeRequest(globalErrorReceiver: GlobalErrorReceiver?,
+                                         canRetry: Boolean = false,
+                                         maxDelayBeforeRetry: Long = 32_000L,
+                                         maxRetriesCount: Int = 4,
+                                         noinline requestBlock: suspend () -> DATA): DATA {
     var currentRetryCount = 0
     var currentDelay = 1_000L
 
@@ -64,7 +64,7 @@ internal suspend inline fun <DATA> executeRequest(globalErrorReceiver: GlobalErr
             }
 
             // Check if this is a certificateException
-            CertUtil.getCertificateException(exception)
+            getCertificateException(exception)
                     // TODO Support certificate error once logged
                     // ?.also { unrecognizedCertificateException ->
                     //    // Send the error to the bus, for a global management

@@ -37,6 +37,8 @@ import org.matrix.android.sdk.api.session.accountdata.AccountDataService
 import org.matrix.android.sdk.api.session.events.EventService
 import org.matrix.android.sdk.api.session.homeserver.HomeServerCapabilitiesService
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
+import org.matrix.android.sdk.internal.session.openid.DefaultOpenIdService
+import org.matrix.android.sdk.api.session.openid.OpenIdService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
 import org.matrix.android.sdk.api.session.securestorage.SecureStorageService
 import org.matrix.android.sdk.api.session.securestorage.SharedSecretStorageService
@@ -376,4 +378,7 @@ internal abstract class SessionModule {
 
     @Binds
     abstract fun bindEventSenderProcessor(processor: EventSenderProcessorCoroutine): EventSenderProcessor
+
+    @Binds
+    abstract fun bindOpenIdTokenService(service: DefaultOpenIdService): OpenIdService
 }

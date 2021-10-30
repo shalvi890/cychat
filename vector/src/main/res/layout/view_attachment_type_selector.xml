@@ -184,7 +184,7 @@
                     android:id="@+id/attachmentRecordButton"
                     style="@style/AttachmentTypeSelectorButton"
                     android:contentDescription="@string/attachment_type_contact"
-                    android:src="@drawable/ic_microphone"
+                    android:src="@drawable/ic_voice_mic"
                     tools:background="@color/riotx_accent" />
 
                 <TextView

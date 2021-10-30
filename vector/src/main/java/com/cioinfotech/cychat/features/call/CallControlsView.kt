@@ -29,7 +29,7 @@ class CallControlsView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val views: ViewCallControlsBinding
+    val views: ViewCallControlsBinding
 
     var interactionListener: InteractionListener? = null
 
@@ -43,7 +43,12 @@ class CallControlsView @JvmOverloads constructor(
         views.muteIcon.setOnClickListener { toggleMute() }
         views.videoToggleIcon.setOnClickListener { toggleVideo() }
         views.openChatIcon.setOnClickListener { returnToChat() }
-        views.moreIcon.setOnClickListener { moreControlOption() }
+        views.selectSoundDeviceIcon.setOnClickListener { selectSoundDeviceIcon() }
+        views.callControlsSwitchCamera.setOnClickListener { callControlsSwitchCamera() }
+        views.callControlsOpenDialPad.setOnClickListener { callControlsOpenDialPad() }
+        views.callControlsToggleSDHD.setOnClickListener { callControlsToggleSDHD() }
+        views.callControlsToggleHoldResume.setOnClickListener { callControlsToggleHoldResume() }
+        views.callControlsTransfer.setOnClickListener { callControlsTransfer() }
     }
 
     private fun acceptIncomingCall() {
@@ -70,8 +75,32 @@ class CallControlsView @JvmOverloads constructor(
         interactionListener?.returnToChat()
     }
 
-    private fun moreControlOption() {
-        interactionListener?.didTapMore()
+//    private fun moreControlOption() {
+//        interactionListener?.didTapMore()
+//    }
+
+    private fun selectSoundDeviceIcon() {
+        interactionListener?.selectSoundDeviceIcon()
+    }
+
+    private fun callControlsSwitchCamera() {
+        interactionListener?.callControlsSwitchCamera()
+    }
+
+    private fun callControlsOpenDialPad() {
+        interactionListener?.callControlsOpenDialPad()
+    }
+
+    private fun callControlsToggleSDHD() {
+        interactionListener?.callControlsToggleSDHD()
+    }
+
+    private fun callControlsToggleHoldResume() {
+        interactionListener?.callControlsToggleHoldResume()
+    }
+
+    private fun callControlsTransfer() {
+        interactionListener?.callControlsTransfer()
     }
 
     fun updateForState(state: VectorCallViewState) {
@@ -87,7 +116,7 @@ class CallControlsView @JvmOverloads constructor(
             views.videoToggleIcon.setImageResource(R.drawable.ic_video)
             views.videoToggleIcon.contentDescription = resources.getString(R.string.a11y_stop_camera)
         } else {
-          views.videoToggleIcon.setImageResource(R.drawable.ic_video_off)
+            views.videoToggleIcon.setImageResource(R.drawable.ic_video_off)
             views.videoToggleIcon.contentDescription = resources.getString(R.string.a11y_start_camera)
         }
 
@@ -123,6 +152,7 @@ class CallControlsView @JvmOverloads constructor(
                 views.ringingControls.isVisible = false
                 views.connectedControls.isVisible = false
             }
+            CallState.CreateOffer     -> Unit
         }
     }
 
@@ -133,6 +163,13 @@ class CallControlsView @JvmOverloads constructor(
         fun didTapToggleMute()
         fun didTapToggleVideo()
         fun returnToChat()
-        fun didTapMore()
+
+        //        fun didTapMore()
+        fun selectSoundDeviceIcon()
+        fun callControlsSwitchCamera()
+        fun callControlsOpenDialPad()
+        fun callControlsToggleSDHD()
+        fun callControlsToggleHoldResume()
+        fun callControlsTransfer()
     }
 }

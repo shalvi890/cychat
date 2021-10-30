@@ -43,6 +43,7 @@ import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_VIDEO_IP_CALL
 import com.cioinfotech.cychat.core.utils.allGranted
 import com.cioinfotech.cychat.core.utils.checkPermissions
 import com.cioinfotech.cychat.databinding.ActivityCallBinding
+import com.cioinfotech.cychat.features.call.audio.CallAudioManager
 import com.cioinfotech.cychat.features.call.dialpad.CallDialPadBottomSheet
 import com.cioinfotech.cychat.features.call.dialpad.DialPadFragment
 import com.cioinfotech.cychat.features.call.utils.EglUtils
@@ -52,6 +53,7 @@ import com.cioinfotech.cychat.features.home.room.detail.RoomDetailActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailArgs
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.parcelize.Parcelize
+import me.gujun.android.span.span
 import org.matrix.android.sdk.api.extensions.orFalse
 import org.matrix.android.sdk.api.session.call.CallState
 import org.matrix.android.sdk.api.session.call.MxCallDetail
@@ -111,6 +113,17 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
         window.navigationBarColor = Color.BLACK
         super.onCreate(savedInstanceState)
 
+
+        callViewModel.observeViewEvents {
+            when (it) {
+                is VectorCallViewEvents.ShowSoundDeviceChooser -> {
+                    showSoundDeviceChooser(it.available, it.current)
+                }
+                else                                           -> {
+                }
+            }
+        }
+
         if (intent.hasExtra(MvRx.KEY_ARG)) {
             callArgs = intent.getParcelableExtra(MvRx.KEY_ARG)!!
         } else {
@@ -150,6 +163,50 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
         }
     }
 
+    private fun showSoundDeviceChooser(available: Set<CallAudioManager.Device>, current: CallAudioManager.Device) {
+        val soundDevices = available.map {
+            when (it) {
+                CallAudioManager.Device.WIRELESS_HEADSET -> span {
+                    text = getString(R.string.sound_device_wireless_headset)
+                    textStyle = if (current == it) "bold" else "normal"
+                }
+                CallAudioManager.Device.PHONE            -> span {
+                    text = getString(R.string.sound_device_phone)
+                    textStyle = if (current == it) "bold" else "normal"
+                }
+                CallAudioManager.Device.SPEAKER          -> span {
+                    text = getString(R.string.sound_device_speaker)
+                    textStyle = if (current == it) "bold" else "normal"
+                }
+                CallAudioManager.Device.HEADSET          -> span {
+                    text = getString(R.string.sound_device_headset)
+                    textStyle = if (current == it) "bold" else "normal"
+                }
+            }
+        }
+        AlertDialog.Builder(this)
+                .setItems(soundDevices.toTypedArray()) { d, n ->
+                    d.cancel()
+                    when (soundDevices[n].toString()) {
+                        // TODO Make an adapter and handle multiple Bluetooth headsets. Also do not use translations.
+                        getString(R.string.sound_device_phone)            -> {
+                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.PHONE))
+                        }
+                        getString(R.string.sound_device_speaker)          -> {
+                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.SPEAKER))
+                        }
+                        getString(R.string.sound_device_headset)          -> {
+                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.HEADSET))
+                        }
+                        getString(R.string.sound_device_wireless_headset) -> {
+                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.WIRELESS_HEADSET))
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+    }
+
     override fun onDestroy() {
         callManager.getCallById(callArgs.callId)?.detachRenderers(listOf(views.pipRenderer, views.fullscreenRenderer))
         if (surfaceRenderersAreInitialized) {
@@ -176,7 +233,7 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
         when (callState) {
             is CallState.Idle,
             is CallState.CreateOffer,
-            is CallState.Dialing     -> {
+            is CallState.Dialing      -> {
                 views.callVideoGroup.isInvisible = true
                 views.callInfoGroup.isVisible = true
                 views.callStatusText.setText(R.string.call_ring)
@@ -190,14 +247,14 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
                 configureCallInfo(state)
             }
 
-            is CallState.Answering -> {
+            is CallState.Answering    -> {
                 views.callVideoGroup.isInvisible = true
                 views.callInfoGroup.isVisible = true
                 views.callStatusText.setText(R.string.call_connecting)
                 views.callConnectingProgress.isVisible = true
                 configureCallInfo(state)
             }
-            is CallState.Connected -> {
+            is CallState.Connected    -> {
                 if (callState.iceConnectionState == MxPeerConnectionState.CONNECTED) {
                     if (state.isLocalOnHold || state.isRemoteOnHold) {
                         views.smallIsHeldIcon.isVisible = true
@@ -221,7 +278,7 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
                         if (callArgs.isVideoCall) {
                             views.callVideoGroup.isVisible = true
                             views.callInfoGroup.isVisible = false
-                            views.pipRenderer.isVisible =  !state.isVideoCaptureInError && state.otherKnownCallInfo == null
+                            views.pipRenderer.isVisible = !state.isVideoCaptureInError && state.otherKnownCallInfo == null
                         } else {
                             views.callVideoGroup.isInvisible = true
                             views.callInfoGroup.isVisible = true
@@ -236,12 +293,41 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
                     views.callConnectingProgress.isVisible = true
                 }
             }
-            is CallState.Terminated -> {
-                finish()
-            }
-            null -> {
-            }
+            is CallState.Terminated   -> finish()
+            null                      -> Unit
         }
+
+        views.callControlsView.views.selectSoundDeviceIcon.contentDescription = getString(R.string.call_select_sound_device)
+        views.callControlsView.views.selectSoundDeviceIcon.contentDescription = when (state.device) {
+            CallAudioManager.Device.PHONE            -> getString(R.string.sound_device_phone)
+            CallAudioManager.Device.SPEAKER          -> getString(R.string.sound_device_speaker)
+            CallAudioManager.Device.HEADSET          -> getString(R.string.sound_device_headset)
+            CallAudioManager.Device.WIRELESS_HEADSET -> getString(R.string.sound_device_wireless_headset)
+        }
+
+        views.callControlsView.views.callControlsSwitchCamera.isVisible = state.isVideoCall && state.canSwitchCamera
+        views.callControlsView.views.callControlsSwitchCamera.contentDescription = getString(if (state.isFrontCamera) R.string.call_camera_front else R.string.call_camera_back)
+
+        if (state.isVideoCall) {
+            views.callControlsView.views.callControlsToggleSDHD.isVisible = true
+            if (state.isHD) {
+                views.callControlsView.views.callControlsToggleSDHD.contentDescription = getString(R.string.call_format_turn_hd_off)
+                views.callControlsView.views.callControlsToggleSDHD.setImageResource(R.drawable.ic_hd_disabled)
+            } else {
+                views.callControlsView.views.callControlsToggleSDHD.contentDescription = getString(R.string.call_format_turn_hd_on)
+                views.callControlsView.views.callControlsToggleSDHD.setImageResource(R.drawable.ic_hd)
+            }
+        } else {
+            views.callControlsView.views.callControlsToggleSDHD.isVisible = false
+        }
+        if (state.isRemoteOnHold) {
+            views.callControlsView.views.callControlsToggleHoldResume.contentDescription = getString(R.string.call_resume_action)
+            views.callControlsView.views.callControlsToggleHoldResume.setImageResource(R.drawable.ic_call_resume_action)
+        } else {
+            views.callControlsView.views.callControlsToggleHoldResume.contentDescription = getString(R.string.call_hold_action)
+            views.callControlsView.views.callControlsToggleHoldResume.setImageResource(R.drawable.ic_call_hold_action)
+        }
+        views.callControlsView.views.callControlsTransfer.isVisible = state.canOpponentBeTransferred
     }
 
     private fun configureCallInfo(state: VectorCallViewState, blurAvatar: Boolean = false) {
@@ -323,13 +409,13 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
     private fun handleViewEvents(event: VectorCallViewEvents?) {
         Timber.v("## VOIP handleViewEvents $event")
         when (event) {
-            VectorCallViewEvents.DismissNoCall -> {
+            VectorCallViewEvents.DismissNoCall             -> {
                 finish()
             }
-            is VectorCallViewEvents.ConnectionTimeout -> {
+            is VectorCallViewEvents.ConnectionTimeout      -> {
                 onErrorTimoutConnect(event.turn)
             }
-            is VectorCallViewEvents.ShowDialPad -> {
+            is VectorCallViewEvents.ShowDialPad            -> {
                 CallDialPadBottomSheet.newInstance(false).apply {
                     callback = dialPadCallback
                 }.show(supportFragmentManager, FRAGMENT_DIAL_PAD_TAG)
@@ -337,8 +423,9 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
             is VectorCallViewEvents.ShowCallTransferScreen -> {
                 navigator.openCallTransfer(this, callArgs.callId)
             }
-            null -> {
+            null                                           -> {
             }
+            else                                           -> Unit
         }
     }
 
@@ -420,9 +507,33 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
         finish()
     }
 
-    override fun didTapMore() {
-        CallControlsBottomSheet().show(supportFragmentManager, "Controls")
+    override fun selectSoundDeviceIcon() {
+        callViewModel.handle(VectorCallViewActions.SwitchSoundDevice)
     }
+
+    override fun callControlsSwitchCamera() {
+        callViewModel.handle(VectorCallViewActions.ToggleCamera)
+    }
+
+    override fun callControlsOpenDialPad() {
+        callViewModel.handle(VectorCallViewActions.OpenDialPad)
+    }
+
+    override fun callControlsToggleSDHD() {
+        callViewModel.handle(VectorCallViewActions.ToggleHDSD)
+    }
+
+    override fun callControlsToggleHoldResume() {
+        callViewModel.handle(VectorCallViewActions.ToggleHoldResume)
+    }
+
+    override fun callControlsTransfer() {
+        callViewModel.handle(VectorCallViewActions.InitiateCallTransfer)
+    }
+
+//    override fun didTapMore() {
+//        CallControlsBottomSheet().show(supportFragmentManager, "Controls")
+//    }
 
     // Needed to let you answer call when phone is locked
     private fun turnScreenOnAndKeyguardOff() {

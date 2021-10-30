@@ -16,6 +16,9 @@
 
 package org.matrix.android.sdk.api
 
+import org.matrix.android.sdk.BuildConfig
+import timber.log.Timber
+
 /**
  * This class contains pattern to match the different Matrix ids
  */
@@ -145,5 +148,19 @@ object MatrixPatterns {
      */
     fun extractServerNameFromId(matrixId: String?): String? {
         return matrixId?.substringAfter(":", missingDelimiterValue = "")?.takeIf { it.isNotEmpty() }
+    }
+
+    /**
+     * Return the domain form a userId
+     * Examples:
+     * - "@alice:domain.org".getDomain() will return "domain.org"
+     * - "@bob:domain.org:3455".getDomain() will return "domain.org:3455"
+     */
+    fun String.getDomain(): String {
+        if (BuildConfig.DEBUG && !isUserId(this)) {
+            // They are some invalid userId localpart in the wild, but the domain part should be there anyway
+            Timber.w("Not a valid user ID: $this")
+        }
+        return substringAfter(":")
     }
 }

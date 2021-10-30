@@ -16,9 +16,9 @@
 
 package org.matrix.android.sdk.internal.network.ssl
 
-import org.matrix.android.sdk.api.auth.data.HomeServerConnectionConfig
 import okhttp3.ConnectionSpec
 import okhttp3.internal.tls.OkHostnameVerifier
+import org.matrix.android.sdk.api.auth.data.HomeServerConnectionConfig
 import timber.log.Timber
 import java.security.KeyStore
 import java.security.MessageDigest
@@ -35,7 +35,7 @@ import javax.net.ssl.X509TrustManager
 /**
  * Various utility classes for dealing with X509Certificates
  */
-internal object CertUtil {
+object CertUtil {
 
     // Set to false to do some test
     private const val USE_DEFAULT_HOSTNAME_VERIFIER = true
@@ -128,7 +128,7 @@ internal object CertUtil {
         return null
     }
 
-    internal data class PinnedSSLSocketFactory(
+    data class PinnedSSLSocketFactory(
             val sslSocketFactory: SSLSocketFactory,
             val x509TrustManager: X509TrustManager
     )

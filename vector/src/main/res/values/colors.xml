@@ -342,4 +342,13 @@
     <color name="cy_chat_room_bg_light">#dfe0e2</color>
     <color name="cy_chat_room_bg_dark">#FF181B21</color>
     <color name="cy_chat_room_bg_black">#FF0D0F12</color>
+
+    <attr name="vctr_system" format="color" />
+    <color name="element_system_light">#F4F6FA</color>
+    <color name="element_system_dark">#21262C</color>
+    <color name="element_system_black">#21262C</color>
+
+    <attr name="vctr_content_quinary" format="color" />
+
+    <color name="palette_vermilion">#FF5B55</color>
 </resources>

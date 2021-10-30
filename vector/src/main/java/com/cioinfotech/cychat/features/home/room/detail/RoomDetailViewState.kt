@@ -55,6 +55,14 @@ sealed class UnreadState {
     data class HasUnread(val firstUnreadEventId: String) : UnreadState()
 }
 
+data class JitsiState(
+        val hasJoined: Boolean = false,
+        // Not null if we have an active jitsi widget on the room
+        val confId: String? = null,
+        val widgetId: String? = null,
+        val deleteWidgetInProgress: Boolean = false
+)
+
 data class RoomDetailViewState(
         val roomId: String,
         val eventId: String?,
@@ -76,7 +84,8 @@ data class RoomDetailViewState(
         val isAllowedToManageWidgets: Boolean = false,
         val isAllowedToStartWebRTCCall: Boolean = true,
         val showDialerOption: Boolean = false,
-        val hasFailedSending: Boolean = false
+        val hasFailedSending: Boolean = false,
+        val jitsiState: JitsiState = JitsiState()
 ) : MvRxState {
 
     constructor(args: RoomDetailArgs) : this(

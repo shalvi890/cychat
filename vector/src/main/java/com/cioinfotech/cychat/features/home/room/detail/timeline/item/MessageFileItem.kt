@@ -66,10 +66,14 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
             holder.fileImageView.setImageResource(R.drawable.ic_cross)
             holder.progressLayout.isVisible = false
         }
-        holder.filenameView.text = filename
-        if (attributes.informationData.sendState.isSending()) {
+        holder.filenameView.text = if (filename.contains(".mp4"))
+            holder.filenameView.context.getString(R.string.sent_an_audio_file) + " " + holder.filenameView.context.getString(R.string.sent_a_file)
+        else
+            filename
+
+        if (attributes.informationData.sendState.isSending())
             holder.fileImageView.setImageResource(iconRes)
-        } else {
+        else {
             if (izDownloaded) {
                 holder.fileImageView.setImageResource(iconRes)
                 holder.fileDownloadProgress.progress = 100
@@ -95,6 +99,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
         holder.textTimeView.text = attributes.informationData.time
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
+        attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)
     }
 
     override fun unbind(holder: Holder) {
@@ -115,6 +120,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         val clFiles by bind<ConstraintLayout>(R.id.clFiles)
         val textTimeView by bind<TextView>(R.id.messageTextTimeView)
         val sendStateImageView by bind<SendStateImageView>(R.id.messageSendStateImageView)
+        val avatarImageView by bind<ImageView>(R.id.messageAvatarImageView)
     }
 
     companion object {

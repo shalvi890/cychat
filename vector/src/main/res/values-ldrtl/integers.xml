@@ -2,5 +2,6 @@
 <resources>
 
     <integer name="rtl_mirror_flip">180</integer>
+    <integer name="rtl_x_multiplier">-1</integer>
 
 </resources>

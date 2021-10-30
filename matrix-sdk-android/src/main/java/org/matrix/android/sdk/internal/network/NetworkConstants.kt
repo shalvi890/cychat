@@ -82,6 +82,4 @@ object NetworkConstants {
     const val DEVICE_ID = "dev_id"
     const val CURRENT_DOMAIN = "curr_domain"
     const val SESSION_UPDATED = "SESSION_UPDATED"
-
-    const val ROOM_WALLPAPERS = "ROOM_WALLPAPERS"
 }

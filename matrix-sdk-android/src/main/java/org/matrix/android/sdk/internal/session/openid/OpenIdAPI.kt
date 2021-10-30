@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Matrix.org Foundation C.I.C.
+ * Copyright (c) 2021 New Vector Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.matrix.android.sdk.internal.session.openid
 
+import org.matrix.android.sdk.api.session.openid.OpenIdToken
 import org.matrix.android.sdk.api.util.JsonDict
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import retrofit2.http.Body
@@ -34,5 +35,5 @@ internal interface OpenIdAPI {
      */
     @POST(NetworkConstants.URI_API_PREFIX_PATH_R0 + "user/{userId}/openid/request_token")
     suspend fun openIdToken(@Path("userId") userId: String,
-                            @Body body: JsonDict = emptyMap()): RequestOpenIdTokenResponse
+                            @Body body: JsonDict = emptyMap()): OpenIdToken
 }

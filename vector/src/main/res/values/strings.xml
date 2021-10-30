@@ -1674,6 +1674,7 @@
 
     <string name="error_jitsi_not_supported_on_old_device">Sorry, conference calls with Jitsi are not supported on old devices (devices with Android OS below 6.0)</string>
     <string name="jitsi_leave_conf_to_join_another_one_content">Leave the current conference and switch to the other one?</string>
+    <string name="error_jitsi_join_conf">Sorry, an error occurred while trying to join the conference</string>
 
     <string name="room_widget_resource_permission_title">This widget wants to use the following resources:</string>
     <string name="room_widget_resource_grant_permission">Allow</string>
@@ -3293,7 +3294,7 @@
     <string name="hello_blank_fragment"> </string>
     <string name="please_select_server_to_search">Please, Select Organization To Search</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
-    <string name="please_enter_security_code">Please, Enter Verification Code</string>
+    <string name="please_enter_security_code">Please, enter verification code</string>
     <string name="change_org">Invite from Other Organization</string>
     <string name="search_company_name">Search Organization Name</string>
     <string name="logo">Logo</string>
@@ -3305,4 +3306,22 @@
     <string name="room_settings_none">None</string>
     <string name="room_settings_room_notifications_notify_me">Notify me for</string>
     <string name="notifications">Notifications</string>
+    <string name="a11y_start_voice_message">Record Voice Message</string>
+    <string name="voice_message_slide_to_cancel">Slide to cancel</string>
+    <string name="a11y_lock_voice_message">Voice Message Lock</string>
+    <string name="a11y_play_voice_message">Play Voice Message</string>
+    <string name="a11y_pause_voice_message">Pause Voice Message</string>
+    <string name="a11y_stop_voice_message">Stop Recording</string>
+    <string name="a11y_recording_voice_message">Recording voice message</string>
+    <string name="a11y_delete_recorded_voice_message">Delete recording</string>
+    <string name="voice_message_release_to_send_toast">Hold to record, release to send</string>
+    <string name="voice_message_n_seconds_warning_toast">%1$ds left</string>
+    <string name="voice_message_tap_to_stop_toast">Tap on your recording to stop or listen</string>
+    <string name="labs_use_voice_message">Enable voice message</string>
+    <string name="error_voice_message_unable_to_play">Cannot play this voice message</string>
+    <string name="error_voice_message_unable_to_record">Cannot record a voice message</string>
+    <string name="error_voice_message_cannot_reply_or_edit">Cannot reply or edit while voice message is active</string>
+    <string name="voice_message_reply_content">Voice Message (%1$s)</string>
+    <string name="missing_permissions_title">Permissions Missing</string>
+    <string name="denied_permission_voice_message">Permission To Record Voice Denied</string>
 </resources>

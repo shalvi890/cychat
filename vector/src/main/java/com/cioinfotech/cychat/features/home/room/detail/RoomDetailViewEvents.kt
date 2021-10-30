@@ -75,7 +75,7 @@ sealed class RoomDetailViewEvents : VectorViewEvents {
 
     abstract class SendMessageResult : RoomDetailViewEvents()
 
-    data class DisplayAndAcceptCall(val call: WebRtcCall): RoomDetailViewEvents()
+    data class DisplayAndAcceptCall(val call: WebRtcCall) : RoomDetailViewEvents()
 
     object DisplayPromptForIntegrationManager : RoomDetailViewEvents()
 
@@ -103,5 +103,10 @@ sealed class RoomDetailViewEvents : VectorViewEvents {
     data class StartChatEffect(val type: ChatEffect) : RoomDetailViewEvents()
     object StopChatEffects : RoomDetailViewEvents()
 
-    object OpenAudioRecording: RoomDetailViewEvents()
+    //    object OpenAudioRecording: RoomDetailViewEvents()
+    object StartRecordingVoiceMessage : RoomDetailViewEvents()
+    data class EndRecordingVoiceMessage(val isCancelled: Boolean) : RoomDetailViewEvents()
+    object PauseRecordingVoiceMessage : RoomDetailViewEvents()
+    object PlayOrPauseRecordingPlayback : RoomDetailViewEvents()
+    object EndAllVoiceActions : RoomDetailViewEvents()
 }

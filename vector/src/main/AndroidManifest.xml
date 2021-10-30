@@ -12,9 +12,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.STORAGE"/>
+    <uses-permission android:name="android.permission.STORAGE" />
     <!-- Call feature -->
     <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
     <!-- Commented because Google PlayStore does not like we add permission if we are not requiring it. And it was added for future use -->
@@ -39,7 +40,7 @@
         tools:node="remove" />
 
     <!-- Jitsi SDK is now API23+ -->
-    <uses-sdk tools:overrideLibrary="org.jitsi.meet.sdk,com.oney.WebRTCModule,com.learnium.RNDeviceInfo,com.reactnativecommunity.asyncstorage,com.ocetnik.timer,com.calendarevents,com.reactnativecommunity.netinfo,com.kevinresol.react_native_default_preference,com.rnimmersive,com.corbt.keepawake,com.BV.LinearGradient,com.horcrux.svg" />
+    <!--    <uses-sdk tools:overrideLibrary="org.jitsi.meet.sdk,com.oney.WebRTCModule,com.learnium.RNDeviceInfo,com.reactnativecommunity.asyncstorage,com.ocetnik.timer,com.calendarevents,com.reactnativecommunity.netinfo,com.kevinresol.react_native_default_preference,com.rnimmersive,com.corbt.keepawake,com.BV.LinearGradient,com.horcrux.svg" />-->
 
     <!-- Adding CAMERA permission prevents Chromebooks to see the application on the PlayStore -->
     <!-- Tell that the Camera is not mandatory to install the application -->
@@ -144,21 +145,21 @@
         <activity android:name=".features.createdirect.CreateDirectRoomActivity" />
         <activity android:name=".features.invite.InviteUsersToRoomActivity" />
         <activity android:name=".features.webview.VectorWebViewActivity" />
-<!--        <activity android:name=".features.link.LinkHandlerActivity">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
+        <!--        <activity android:name=".features.link.LinkHandlerActivity">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.VIEW" />-->
 
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+        <!--                <category android:name="android.intent.category.DEFAULT" />-->
+        <!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
-<!--                <data android:scheme="https" />-->
-<!--                <data android:host="riot.im" />-->
-<!--                <data android:host="app.element.io" />-->
-<!--                <data android:host="mobile.element.io" />-->
-<!--                <data android:host="develop.element.io" />-->
-<!--                <data android:host="staging.element.io" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+        <!--                <data android:scheme="https" />-->
+        <!--                <data android:host="riot.im" />-->
+        <!--                <data android:host="app.element.io" />-->
+        <!--                <data android:host="mobile.element.io" />-->
+        <!--                <data android:host="develop.element.io" />-->
+        <!--                <data android:host="staging.element.io" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
 
         <activity
             android:name=".features.share.IncomingShareActivity"
@@ -327,10 +328,10 @@
         <!-- Providers -->
 
         <!-- Remove WorkManagerInitializer Provider because we are using on-demand initialization of WorkManager-->
-<!--        <provider-->
-<!--            android:name="androidx.work.impl.WorkManagerInitializer"-->
-<!--            android:authorities="${applicationId}.workmanager-init"-->
-<!--            tools:node="remove" />-->
+        <!--        <provider-->
+        <!--            android:name="androidx.work.impl.WorkManagerInitializer"-->
+        <!--            android:authorities="${applicationId}.workmanager-init"-->
+        <!--            tools:node="remove" />-->
 
         <provider
             android:name="androidx.core.content.FileProvider"

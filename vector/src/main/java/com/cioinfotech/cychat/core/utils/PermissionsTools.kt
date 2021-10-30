@@ -20,7 +20,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,6 +47,7 @@ private const val PERMISSION_READ_EXTERNAL_STORAGE = 0x1 shl 4
 // Permissions sets
 const val PERMISSIONS_FOR_AUDIO_IP_CALL = PERMISSION_RECORD_AUDIO
 const val PERMISSIONS_FOR_VIDEO_IP_CALL = PERMISSION_CAMERA or PERMISSION_RECORD_AUDIO
+val PERMISSIONS_FOR_VOICE_MESSAGE = listOf(Manifest.permission.RECORD_AUDIO)
 const val PERMISSIONS_FOR_TAKING_PHOTO = PERMISSION_CAMERA
 const val PERMISSIONS_FOR_MEMBERS_SEARCH = PERMISSION_READ_CONTACTS
 const val PERMISSIONS_FOR_MEMBER_DETAILS = PERMISSION_READ_CONTACTS
@@ -72,29 +72,28 @@ const val PERMISSION_REQUEST_CODE_DOWNLOAD_FILE = 575
 const val PERMISSION_REQUEST_CODE_PICK_ATTACHMENT = 576
 const val PERMISSION_REQUEST_CODE_INCOMING_URI = 577
 const val PERMISSION_REQUEST_CODE_READ_CONTACTS = 579
+private var permissionDialogDisplayed = false
 
 /**
  * Log the used permissions statuses.
  */
 fun logPermissionStatuses(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val permissions = listOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.READ_CONTACTS)
+    val permissions = listOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.READ_CONTACTS)
 
-        Timber.v("## logPermissionStatuses() : log the permissions status used by the app")
+    Timber.v("## logPermissionStatuses() : log the permissions status used by the app")
 
-        for (permission in permissions) {
-            Timber.v(("Status of [$permission] : " +
-                    if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission)) {
-                        "PERMISSION_GRANTED"
-                    } else {
-                        "PERMISSION_DENIED"
-                    }))
-        }
+    for (permission in permissions) {
+        Timber.v(("Status of [$permission] : " +
+                if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission)) {
+                    "PERMISSION_GRANTED"
+                } else {
+                    "PERMISSION_DENIED"
+                }))
     }
 }
 
@@ -102,6 +101,29 @@ fun Fragment.registerForPermissionsResult(allGranted: (Boolean) -> Unit): Activi
     return registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
         allGranted.invoke(result.keys.all { result[it] == true })
     }
+}
+
+fun Fragment.registerForPermissionsResult(lambda: (allGranted: Boolean, deniedPermanently: Boolean) -> Unit): ActivityResultLauncher<Array<String>> {
+    return registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        onPermissionResult(result, lambda)
+    }
+}
+
+private fun onPermissionResult(result: Map<String, Boolean>, lambda: (allGranted: Boolean, deniedPermanently: Boolean) -> Unit) {
+    if (result.keys.all { result[it] == true }) {
+        lambda(true, /* not used */ false)
+    } else {
+        if (permissionDialogDisplayed) {
+            // A permission dialog has been displayed, so even if the user has checked the do not ask again button, we do
+            // not tell the user to open the app settings
+            lambda(false, false)
+        } else {
+            // No dialog has been displayed, so tell the user to go to the system setting
+            lambda(false, true)
+        }
+    }
+    // Reset
+    permissionDialogDisplayed = false
 }
 
 /**
@@ -209,16 +231,8 @@ private fun checkPermissions(permissionsToBeGrantedBitMap: Int,
         if (PERMISSION_READ_CONTACTS == permissionsToBeGrantedBitMap and PERMISSION_READ_CONTACTS) {
             val permissionType = Manifest.permission.READ_CONTACTS
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                isRequestPermissionRequired = isRequestPermissionRequired or
-                        updatePermissionsToBeGranted(activity, permissionListAlreadyDenied, permissionsListToBeGranted, permissionType)
-            } else {
-                // TODO uncomment
-                /*if (!ContactsManager.getInstance().isContactBookAccessRequested) {
-                    isRequestPermissionRequired = true
-                    permissionsListToBeGranted.add(permissionType)
-                }*/
-            }
+            isRequestPermissionRequired = isRequestPermissionRequired or
+                    updatePermissionsToBeGranted(activity, permissionListAlreadyDenied, permissionsListToBeGranted, permissionType)
         }
 
         // if some permissions were already denied: display a dialog to the user before asking again.

@@ -61,7 +61,7 @@ internal fun <T> Response<T>.toFailure(globalErrorReceiver: GlobalErrorReceiver?
 /**
  * Convert a HttpException to a Failure, and eventually parse errorBody to convert it to a MatrixError
  */
-internal fun HttpException.toFailure(globalErrorReceiver: GlobalErrorReceiver?): Failure {
+ fun HttpException.toFailure(globalErrorReceiver: GlobalErrorReceiver?): Failure {
     return toFailure(response()?.errorBody(), code(), globalErrorReceiver)
 }
 

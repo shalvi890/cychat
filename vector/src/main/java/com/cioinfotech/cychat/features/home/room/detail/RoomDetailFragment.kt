@@ -25,6 +25,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -83,6 +84,7 @@ import com.cioinfotech.cychat.core.extensions.showKeyboard
 import com.cioinfotech.cychat.core.extensions.trackItemsVisibilityChange
 import com.cioinfotech.cychat.core.glide.GlideApp
 import com.cioinfotech.cychat.core.glide.GlideRequests
+import com.cioinfotech.cychat.core.hardware.vibrate
 import com.cioinfotech.cychat.core.intent.getFilenameFromUri
 import com.cioinfotech.cychat.core.intent.getMimeTypeFromUri
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
@@ -97,6 +99,7 @@ import com.cioinfotech.cychat.core.ui.views.NotificationAreaView
 import com.cioinfotech.cychat.core.utils.Debouncer
 import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.core.utils.KeyboardStateUtils
+import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_VOICE_MESSAGE
 import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_WRITING_FILES
 import com.cioinfotech.cychat.core.utils.TextUtils
 import com.cioinfotech.cychat.core.utils.checkPermissions
@@ -105,6 +108,7 @@ import com.cioinfotech.cychat.core.utils.copyToClipboard
 import com.cioinfotech.cychat.core.utils.createJSonViewerStyleProvider
 import com.cioinfotech.cychat.core.utils.createUIHandler
 import com.cioinfotech.cychat.core.utils.isValidUrl
+import com.cioinfotech.cychat.core.utils.onPermissionDeniedSnackbar
 import com.cioinfotech.cychat.core.utils.openUrlInExternalBrowser
 import com.cioinfotech.cychat.core.utils.registerForPermissionsResult
 import com.cioinfotech.cychat.core.utils.saveMedia
@@ -129,8 +133,8 @@ import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.home.room.RoomWallpaperFragment
 import com.cioinfotech.cychat.features.home.room.adapter.RoomWallpaperAdapter
 import com.cioinfotech.cychat.features.home.room.detail.audioplayer.AudioPlayerFragment
-import com.cioinfotech.cychat.features.home.room.detail.audiorecorder.AudioRecorderFragment
 import com.cioinfotech.cychat.features.home.room.detail.composer.TextComposerView
+import com.cioinfotech.cychat.features.home.room.detail.composer.VoiceMessageRecorderView
 import com.cioinfotech.cychat.features.home.room.detail.readreceipts.DisplayReadReceiptsBottomSheet
 import com.cioinfotech.cychat.features.home.room.detail.timeline.TimelineEventController
 import com.cioinfotech.cychat.features.home.room.detail.timeline.action.EventSharedAction
@@ -138,6 +142,7 @@ import com.cioinfotech.cychat.features.home.room.detail.timeline.action.MessageA
 import com.cioinfotech.cychat.features.home.room.detail.timeline.action.MessageSharedActionViewModel
 import com.cioinfotech.cychat.features.home.room.detail.timeline.edithistory.ViewEditHistoryBottomSheet
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.MatrixItemColorProvider
+import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.VoiceMessagePlaybackTracker
 import com.cioinfotech.cychat.features.home.room.detail.timeline.image.buildImageContentRendererData
 import com.cioinfotech.cychat.features.home.room.detail.timeline.item.AbsMessageItem
 import com.cioinfotech.cychat.features.home.room.detail.timeline.item.MessageFileItem
@@ -210,7 +215,11 @@ import org.matrix.android.sdk.internal.crypto.model.event.EncryptedEventContent
 import org.matrix.android.sdk.internal.crypto.model.event.WithHeldCode
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -239,7 +248,8 @@ class RoomDetailFragment @Inject constructor(
         private val imageContentRenderer: ImageContentRenderer,
         private val roomDetailPendingActionStore: RoomDetailPendingActionStore,
         private val pillsPostProcessorFactory: PillsPostProcessor.Factory,
-        private val callManager: WebRtcCallManager
+        private val callManager: WebRtcCallManager,
+        private val voiceMessagePlaybackTracker: VoiceMessagePlaybackTracker
 ) :
         VectorBaseFragment<FragmentRoomDetailBinding>(),
         TimelineEventController.Callback,
@@ -248,7 +258,7 @@ class RoomDetailFragment @Inject constructor(
         AttachmentTypeSelectorView.Callback,
         AttachmentsHelper.Callback,
         GalleryOrCameraDialogHelper.Listener,
-        CurrentCallsView.Callback, AudioRecorderFragment.RecordAudio {
+        CurrentCallsView.Callback {
 
     companion object {
         /**
@@ -286,6 +296,8 @@ class RoomDetailFragment @Inject constructor(
 
     private lateinit var scrollOnNewMessageCallback: ScrollOnNewMessageCallback
     private lateinit var scrollOnHighlightedEventCallback: ScrollOnHighlightedEventCallback
+
+    private var isSpecialModeOn = false
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentRoomDetailBinding {
         return FragmentRoomDetailBinding.inflate(inflater, container, false)
@@ -338,6 +350,8 @@ class RoomDetailFragment @Inject constructor(
         setupConfBannerView()
         setupEmojiPopup()
         setupFailedMessagesWarningView()
+        setupVoiceMessageView()
+
         views.roomToolbarContentView.debouncedClicks {
             navigator.openRoomProfile(requireActivity(), roomDetailArgs.roomId)
         }
@@ -410,13 +424,56 @@ class RoomDetailFragment @Inject constructor(
                 is RoomDetailViewEvents.StartChatEffect                  -> handleChatEffect(it.type)
                 RoomDetailViewEvents.StopChatEffects                     -> handleStopChatEffects()
                 is RoomDetailViewEvents.DisplayAndAcceptCall             -> acceptIncomingCall(it)
-                is RoomDetailViewEvents.OpenAudioRecording               -> openAudioRecording()
+                is RoomDetailViewEvents.StartRecordingVoiceMessage       -> Unit
+                RoomDetailViewEvents.EndAllVoiceActions                  -> stopRecorderAndDeleteFile()
+                is RoomDetailViewEvents.EndRecordingVoiceMessage         -> Unit
+                RoomDetailViewEvents.PauseRecordingVoiceMessage          -> Unit
+                RoomDetailViewEvents.PlayOrPauseRecordingPlayback        -> Unit
             }.exhaustive
         }
 
         if (savedInstanceState == null) {
             handleShareData()
         }
+    }
+
+    private fun setupVoiceMessageView() {
+        views.voiceMessageRecorderView.voiceMessagePlaybackTracker = voiceMessagePlaybackTracker
+
+        views.voiceMessageRecorderView.callback = object : VoiceMessageRecorderView.Callback {
+            override fun onVoiceRecordingStarted(): Boolean {
+                return if (com.cioinfotech.cychat.features.home.room.detail.timeline.helper.checkPermissions(PERMISSIONS_FOR_VOICE_MESSAGE, requireActivity(), permissionVoiceMessageLauncher)) {
+//                    roomDetailViewModel.handle(RoomDetailAction.StartRecordingVoiceMessage)
+                    views.composerLayout.visibility = View.INVISIBLE
+                    views.voiceMessageRecorderView.isVisible = true
+                    startAudioRecording()
+                    vibrate(requireContext())
+                    true
+                } else
+                    false
+            }
+
+            override fun onVoiceRecordingEnded(isCancelled: Boolean) {
+                stopRecorderAndSendAudio(isCancelled)
+                views.composerLayout.isVisible = true
+                setSendButtonVisibility(views.composerLayout.text.toString())
+            }
+
+//            override fun onVoiceRecordingPlaybackModeOn() {
+//                roomDetailViewModel.handle(RoomDetailAction.PauseRecordingVoiceMessage)
+//            }
+
+            override fun onVoicePlaybackButtonClicked() {
+                roomDetailViewModel.handle(RoomDetailAction.PlayOrPauseRecordingPlayback)
+            }
+        }
+    }
+
+    private val permissionVoiceMessageLauncher = registerForPermissionsResult { allGranted, deniedPermanently ->
+        if (allGranted) {
+            // In this case, let the user start again the gesture
+        } else if (deniedPermanently)
+            vectorBaseActivity.onPermissionDeniedSnackbar(R.string.denied_permission_voice_message)
     }
 
     private fun setWallpaper() {
@@ -427,11 +484,22 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
-    private fun openAudioRecording() {
-        AudioRecorderFragment().apply {
-            recordAudio = this@RoomDetailFragment
-        }.show(parentFragmentManager, "Voice Recorder")
-    }
+//    private fun openAudioRecording() {
+//        AudioRecorderFragment().apply {
+//            recordAudio = this@RoomDetailFragment
+//        }.show(parentFragmentManager, "Voice Recorder")
+//        if (event.isVisible) {
+//            views.voiceMessageRecorderView.isVisible = false
+//            views.composerLayout.views.sendButton.alpha = 0f
+//            views.composerLayout.views.sendButton.isVisible = true
+//            views.composerLayout.views.sendButton.animate().alpha(1f).setDuration(150).start()
+//        } else {
+//        views.composerLayout.views.sendButton.isInvisible = true
+//        views.voiceMessageRecorderView.alpha = 0f
+//        views.voiceMessageRecorderView.isVisible = true
+//        views.voiceMessageRecorderView.animate().alpha(1f).setDuration(150).start()
+//        }
+//    }
 
     private fun acceptIncomingCall(event: RoomDetailViewEvents.DisplayAndAcceptCall) {
         val intent = VectorCallActivity.newIntent(
@@ -625,11 +693,10 @@ class RoomDetailFragment @Inject constructor(
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
-            if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            if (intent.resolveActivity(requireActivity().packageManager) != null)
                 requireActivity().startActivity(intent)
-            } else {
+            else
                 requireActivity().toast(R.string.error_no_external_application_found)
-            }
         }
     }
 
@@ -650,7 +717,7 @@ class RoomDetailFragment @Inject constructor(
     }
 
     private fun handleJoinedToAnotherRoom(action: RoomDetailViewEvents.JoinRoomCommandSuccess) {
-        updateComposerText("")
+        views.composerLayout.setTextIfDifferent("")
         lockSendButton = false
         navigator.openRoom(vectorBaseActivity, action.roomId)
     }
@@ -886,7 +953,7 @@ class RoomDetailFragment @Inject constructor(
         autoCompleter.exitSpecialMode()
         views.composerLayout.collapse()
 
-        updateComposerText(text)
+        views.composerLayout.setTextIfDifferent(text)
         views.composerLayout.views.sendButton.contentDescription = getString(R.string.send)
     }
 
@@ -901,6 +968,8 @@ class RoomDetailFragment @Inject constructor(
             setTextColor(matrixItemColorProvider.getColor(MatrixItem.UserItem(event.root.senderId ?: "@")))
         }
 
+        isSpecialModeOn = true
+        setSendButtonVisibility("")
         val messageContent: MessageContent? = event.getLastMessageContent()
         val nonFormattedBody = messageContent?.body ?: ""
         var formattedBody: CharSequence? = null
@@ -916,11 +985,10 @@ class RoomDetailFragment @Inject constructor(
         val isImageVisible = if (data != null) {
             imageContentRenderer.render(data, ImageContentRenderer.Mode.THUMBNAIL, views.composerLayout.views.composerRelatedMessageImage)
             true
-        } else {
+        } else
             false
-        }
 
-        updateComposerText(defaultContent)
+        views.composerLayout.setTextIfDifferent(defaultContent)
 
         views.composerLayout.views.composerRelatedMessageActionIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), iconRes))
         views.composerLayout.views.sendButton.contentDescription = getString(descriptionRes)
@@ -935,15 +1003,6 @@ class RoomDetailFragment @Inject constructor(
             }
         }
         focusComposerAndShowKeyboard()
-    }
-
-    private fun updateComposerText(text: String) {
-        // Do not update if this is the same text to avoid the cursor to move
-        if (text != views.composerLayout.text.toString()) {
-            // Ignore update to avoid saving a draft
-            views.composerLayout.views.composerEditText.setText(text)
-            views.composerLayout.views.composerEditText.setSelection(views.composerLayout.text?.length ?: 0)
-        }
     }
 
     override fun onResume() {
@@ -970,6 +1029,8 @@ class RoomDetailFragment @Inject constructor(
         notificationDrawerManager.setCurrentRoom(null)
 
         roomDetailViewModel.handle(RoomDetailAction.SaveDraft(views.composerLayout.text.toString()))
+        views.voiceMessageRecorderView.initVoiceRecordingViews()
+        roomDetailViewModel.handle(RoomDetailAction.EndAllVoiceActions)
     }
 
     private val attachmentFileActivityResultLauncher = registerStartForActivityResult {
@@ -1177,21 +1238,44 @@ class RoomDetailFragment @Inject constructor(
             /**
              * Function to send Recorder Audio
              */
-            override fun onSendAudio() {
-                onTypeSelected(AttachmentTypeSelectorView.Type.RECORD)
-            }
+//            override fun onSendAudio() {
+//                onTypeSelected(AttachmentTypeSelectorView.Type.RECORD)
+//            }
 
             override fun onSendMessage(text: CharSequence) {
                 sendTextMessage(text)
             }
 
             override fun onCloseRelatedMessage() {
+                isSpecialModeOn = false
+                setSendButtonVisibility(composerEditText.text.toString())
                 roomDetailViewModel.handle(RoomDetailAction.EnterRegularMode(views.composerLayout.text.toString(), false))
             }
 
             override fun onRichContentSelected(contentUri: Uri): Boolean {
                 return sendUri(contentUri)
             }
+
+            override fun onTextChanged(text: CharSequence) {
+                setSendButtonVisibility(text)
+            }
+        }
+        setSendButtonVisibility(views.composerLayout.text.toString())
+    }
+
+    private fun setSendButtonVisibility(text: CharSequence) {
+        if (text.isNotEmpty() || isSpecialModeOn) {
+            if (!views.composerLayout.views.sendButton.isVisible) {
+                views.voiceMessageRecorderView.isVisible = false
+                views.composerLayout.views.sendButton.alpha = 0f
+                views.composerLayout.views.sendButton.isVisible = true
+                views.composerLayout.views.sendButton.animate().alpha(1f).setDuration(150).start()
+            }
+        } else {
+            views.composerLayout.views.sendButton.isInvisible = true
+            views.voiceMessageRecorderView.alpha = 0f
+            views.voiceMessageRecorderView.isVisible = true
+            views.voiceMessageRecorderView.animate().alpha(1f).setDuration(150).start()
         }
     }
 
@@ -1257,6 +1341,7 @@ class RoomDetailFragment @Inject constructor(
             views.inviteView.visibility = View.GONE
             if (state.tombstoneEvent == null) {
                 if (state.canSendMessage) {
+//                    views.voiceMessageRecorderView.isVisible = !textComposerState.isSendButtonVisible
                     views.composerLayout.visibility = View.VISIBLE
                     views.composerLayout.setRoomEncrypted(summary?.isEncrypted!!)
                     views.notificationAreaView.render(NotificationAreaView.State.Hidden)
@@ -1265,10 +1350,11 @@ class RoomDetailFragment @Inject constructor(
                     views.notificationAreaView.render(NotificationAreaView.State.NoPermissionToPost)
                 }
             } else {
-                views.composerLayout.visibility = View.GONE
+                views.hideComposerViews()
                 views.notificationAreaView.render(NotificationAreaView.State.Tombstone(state.tombstoneEvent))
             }
         } else if (summary?.membership == Membership.INVITE && inviter != null && !summary?.isDirect!!) {
+            views.hideComposerViews()
             views.inviteView.visibility = View.VISIBLE
             views.inviteView.render(inviter, VectorInviteView.Mode.LARGE, state.changeMembershipState)
             // Intercept click event
@@ -1289,6 +1375,11 @@ class RoomDetailFragment @Inject constructor(
             renderSubTitle(typingMessage, roomSummary.topic)
 //            views.roomToolbarDecorationImageView.render(roomSummary.roomEncryptionTrustLevel)
         }
+    }
+
+    private fun FragmentRoomDetailBinding.hideComposerViews() {
+        composerLayout.isVisible = false
+        voiceMessageRecorderView.isVisible = false
     }
 
     private fun renderSubTitle(typingMessage: String?, topic: String) {
@@ -1336,7 +1427,7 @@ class RoomDetailFragment @Inject constructor(
                 displayCommandError(getString(R.string.unrecognized_command, sendMessageResult.command))
             }
             is RoomDetailViewEvents.SlashCommandResultOk       -> {
-                updateComposerText("")
+                views.composerLayout.setTextIfDifferent("")
             }
             is RoomDetailViewEvents.SlashCommandResultError    -> {
                 displayCommandError(errorFormatter.toHumanReadable(sendMessageResult.throwable))
@@ -1828,12 +1919,22 @@ class RoomDetailFragment @Inject constructor(
                 roomDetailViewModel.handle(RoomDetailAction.UpdateQuickReactAction(action.eventId, action.clickedOn, action.add))
             }
             is EventSharedAction.Edit                -> {
+//                if (!views.voiceMessageRecorderView.isActive()) {
+//                    textComposerViewModel.handle(TextComposerAction.EnterEditMode(action.eventId, views.composerLayout.text.toString()))
+//                } else {
+//                    requireActivity().toast(R.string.error_voice_message_cannot_reply_or_edit)
+//                }
                 roomDetailViewModel.handle(RoomDetailAction.EnterEditMode(action.eventId, views.composerLayout.text.toString()))
             }
             is EventSharedAction.Quote               -> {
                 roomDetailViewModel.handle(RoomDetailAction.EnterQuoteMode(action.eventId, views.composerLayout.text.toString()))
             }
             is EventSharedAction.Reply               -> {
+//                if (!views.voiceMessageRecorderView.isActive()) {
+//                    textComposerViewModel.handle(TextComposerAction.EnterReplyMode(action.eventId, views.composerLayout.text.toString()))
+//                } else {
+//                    requireActivity().toast(R.string.error_voice_message_cannot_reply_or_edit)
+//                }
                 roomDetailViewModel.handle(RoomDetailAction.EnterReplyMode(action.eventId, views.composerLayout.text.toString()))
             }
             is EventSharedAction.CopyPermalink       -> {
@@ -2021,7 +2122,7 @@ class RoomDetailFragment @Inject constructor(
             AttachmentTypeSelectorView.Type.AUDIO   -> attachmentsHelper.selectAudio(attachmentAudioActivityResultLauncher)
             AttachmentTypeSelectorView.Type.CONTACT -> attachmentsHelper.selectContact(attachmentContactActivityResultLauncher)
             AttachmentTypeSelectorView.Type.STICKER -> roomDetailViewModel.handle(RoomDetailAction.SelectStickerAttachment)
-            AttachmentTypeSelectorView.Type.RECORD  -> roomDetailViewModel.handle(RoomDetailAction.SelectRecordAudioAttachment)
+            AttachmentTypeSelectorView.Type.RECORD  -> Unit
         }.exhaustive
     }
 
@@ -2070,23 +2171,96 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
-    /**
-     * Function to get Recorded file & send it.
-     */
-    override fun sendRecordedAudioFile(file: File) {
-        if (file.exists()) {
-            val uri = Uri.parse(file.absolutePath)
-            val mmr = MediaMetadataRetriever()
-            mmr.setDataSource(requireContext(), uri)
-            val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            val millSecond = Integer.parseInt(durationStr!!)
-            val attachments = mutableListOf<MultiPickerAudioType>()
-            attachments.add(MultiPickerAudioType(file.name, file.length(), RoomSummaryConstants.MEDIA_TYPE, file.toUri(), millSecond.toLong()))
-            onContentAttachmentsReady(attachments.map { it.toContentAttachmentData() })
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(TimeUnit.SECONDS.toMillis(4))
-                file.delete()
+    /**Voice Recorder Code */
+
+    private var mRecorder: MediaRecorder? = null
+    private var mFileName: String? = null
+
+    fun startAudioRecording() {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.getDefault()).format(
+                Date()
+        )
+        mFileName = requireContext().getExternalFilesDir(null)!!.absolutePath + "/recording_$timeStamp.mp4"
+        mRecorder = MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setOutputFile(mFileName)
+            try {
+                prepare()
+            } catch (e: IOException) {
+                Timber.e(e.localizedMessage)
+            }
+            start()
+        }
+    }
+
+    private fun stopRecorderAndDeleteFile() {
+        stopRecorder()
+        deleteFile()
+//        dismiss()
+    }
+
+    fun deleteFile() {
+        mFileName?.let {
+            File(it).apply {
+                if (this.exists())
+                    this.delete()
             }
         }
     }
+
+    private fun stopRecorderAndSendAudio(isCancelled: Boolean) {
+        stopRecorder()
+        if (isCancelled)
+            deleteFile()
+        else
+            sendFile()
+    }
+
+    private fun sendFile() {
+        mFileName?.let {
+            val file = File(it)
+            if (file.exists()) {
+                val uri = Uri.parse(file.absolutePath)
+                val mmr = MediaMetadataRetriever()
+                mmr.setDataSource(requireContext(), uri)
+                val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                val millSecond = Integer.parseInt(durationStr!!)
+                val attachments = mutableListOf<MultiPickerAudioType>()
+                attachments.add(MultiPickerAudioType(file.name, file.length(), RoomSummaryConstants.MEDIA_TYPE, file.toUri(), millSecond.toLong()))
+                onContentAttachmentsReady(attachments.map { it.toContentAttachmentData() })
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(TimeUnit.SECONDS.toMillis(4))
+                    file.delete()
+                }
+            }
+        }
+    }
+
+    fun stopRecorder() {
+        try {
+            mRecorder?.stop()
+            mRecorder?.release()
+        } catch (ex: Exception) {
+
+        } finally {
+            mRecorder = null
+        }
+    }
+
+//    fun pauseRecorder() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+//            mRecorder?.pause()
+//    }
+//
+//    fun resumeRecorder() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+//            mRecorder?.resume()
+//    }
+
+//    private fun pauseOrResumeRecording() {
+//        Toast.makeText(requireContext(), "pauseOrResumeRecording", Toast.LENGTH_LONG).show()
+//        if (mRecorder?.)
+//    }
 }

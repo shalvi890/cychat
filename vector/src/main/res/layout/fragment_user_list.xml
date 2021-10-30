@@ -119,7 +119,6 @@
             android:text="@string/change_org"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userListSearch" />
 

@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.matrix.android.sdk.api.auth.data.WellKnown;
 
 /*
  * IMPORTANT: This class is imported from Riot-Android to be able to perform a migration. Do not use it for any other purpose

@@ -73,9 +73,9 @@ sealed class RoomDetailAction : VectorViewModelAction {
 
     object ResendAll : RoomDetailAction()
 
-    data class StartCallWithPhoneNumber(val phoneNumber: String, val videoCall: Boolean): RoomDetailAction()
+    data class StartCallWithPhoneNumber(val phoneNumber: String, val videoCall: Boolean) : RoomDetailAction()
     data class StartCall(val isVideo: Boolean) : RoomDetailAction()
-    data class AcceptCall(val callId: String): RoomDetailAction()
+    data class AcceptCall(val callId: String) : RoomDetailAction()
     object EndCall : RoomDetailAction()
 
     data class AcceptVerificationRequest(val transactionId: String, val otherUserId: String) : RoomDetailAction()
@@ -86,7 +86,8 @@ sealed class RoomDetailAction : VectorViewModelAction {
     data class ReRequestKeys(val eventId: String) : RoomDetailAction()
 
     object SelectStickerAttachment : RoomDetailAction()
-    object SelectRecordAudioAttachment : RoomDetailAction()
+
+    //    object SelectRecordAudioAttachment : RoomDetailAction()
     object OpenIntegrationManager : RoomDetailAction()
     object ManageIntegrations : RoomDetailAction()
     data class AddJitsiWidget(val withVideo: Boolean) : RoomDetailAction()
@@ -110,4 +111,11 @@ sealed class RoomDetailAction : VectorViewModelAction {
 
     // Failed messages
     object RemoveAllFailedMessages : RoomDetailAction()
+
+    // Voice Message
+    object StartRecordingVoiceMessage : RoomDetailAction()
+    data class EndRecordingVoiceMessage(val isCancelled: Boolean) : RoomDetailAction()
+    object PauseRecordingVoiceMessage : RoomDetailAction()
+    object PlayOrPauseRecordingPlayback : RoomDetailAction()
+    object EndAllVoiceActions : RoomDetailAction()
 }

@@ -23,7 +23,7 @@ import javax.inject.Qualifier
  */
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-internal annotation class UserId
+annotation class UserId
 
 /**
  * Used to inject the deviceId

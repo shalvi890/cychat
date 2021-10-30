@@ -180,6 +180,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.cioinfotech.cychat.features.home.room.detail.composer.VoiceMessageRecorderView
+        android:id="@+id/voiceMessageRecorderView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
     <com.cioinfotech.cychat.features.invite.VectorInviteView
         android:id="@+id/inviteView"
         android:layout_width="0dp"

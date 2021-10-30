@@ -28,6 +28,7 @@ import com.cioinfotech.cychat.core.network.WifiDetector
 import com.cioinfotech.cychat.core.pushers.PushersManager
 import com.cioinfotech.cychat.core.utils.AssetReader
 import com.cioinfotech.cychat.core.utils.DimensionConverter
+import com.cioinfotech.cychat.features.call.conference.JitsiActiveConferenceHolder
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.configuration.VectorConfiguration
 import com.cioinfotech.cychat.features.crypto.keysrequest.KeyRequestHandler
@@ -173,4 +174,6 @@ interface VectorComponent {
     fun okHttpClient(): OkHttpClient
 
     fun cyChatService(): CyCoreService
+
+    fun jitsiActiveConferenceHolder(): JitsiActiveConferenceHolder
 }

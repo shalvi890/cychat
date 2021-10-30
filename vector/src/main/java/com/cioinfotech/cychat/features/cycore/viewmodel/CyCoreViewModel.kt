@@ -33,10 +33,10 @@ import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.ACCESS_TOKEN
-import org.matrix.android.sdk.internal.network.NetworkConstants.API_SERVER
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CURRENT_DOMAIN
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
@@ -55,7 +55,7 @@ class CyCoreViewModel @Inject constructor(
     private var userId = pref.getString(USER_ID, null)
     private var reqId = pref.getString(REQ_ID, null)
     private var accessToken = pref.getString(ACCESS_TOKEN, null)
-    private var serverURL = pref.getString(API_SERVER, null)
+    private var email = pref.getString(EMAIL, null)
 
     private var domainMutData: MutableLiveData<Boolean> = MutableLiveData()
     val domainData: LiveData<Boolean> get() = domainMutData
@@ -150,12 +150,14 @@ class CyCoreViewModel @Inject constructor(
 
     fun getFederatedDomains() {
         url?.let {
-            cyCoreService.cyGetFederatedDomains(accessToken, reqId, hashMapOf(CURRENT_DOMAIN to serverURL.toString()), it)
+            cyCoreService.cyGetFederatedDomains(accessToken, reqId, hashMapOf(CURRENT_DOMAIN to email.getEmailDomain()), it)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(handleGetFederatedDomains())
         }
     }
+
+    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     private fun handleGetFederatedDomains(): SingleObserver<FederatedDomainList> {
         return object : SingleObserver<FederatedDomainList> {

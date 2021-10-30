@@ -13,11 +13,11 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
-        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.gms:google-services:4.3.10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1'
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.3'
-        classpath "com.likethesalad.android:string-reference:1.2.1"
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
+        classpath "com.likethesalad.android:string-reference:1.2.2"
         classpath "io.reactivex.rxjava2:rxjava:2.2.10"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -48,6 +48,9 @@ allprojects {
                 //Chat effects
                 includeGroupByRegex 'com\\.github\\.jetradarmobile'
                 includeGroupByRegex 'nl\\.dionsegijn'
+
+                // Voice RecordView
+                includeGroupByRegex 'com\\.github\\.Armen101'
             }
         }
         maven {
@@ -58,11 +61,11 @@ allprojects {
         }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         // Jitsi repo
-//        maven {
-//            url "https://github.com/vector-im/jitsi_libre_maven/raw/master/android-sdk-3.1.0"
-//            // Note: to test Jitsi release you can use a local file like this:
-//            // url "file:///Users/bmarty/workspaces/jitsi_libre_maven/android-sdk-3.1.0"
-//        }
+        maven {
+            url "https://github.com/vector-im/jitsi_libre_maven/raw/main/android-sdk-3.1.0"
+            // Note: to test Jitsi release you can use a local file like this:
+            // url "file:///Users/bmarty/workspaces/jitsi_libre_maven/android-sdk-3.1.0"
+        }
         maven {
             url "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases"
         }
