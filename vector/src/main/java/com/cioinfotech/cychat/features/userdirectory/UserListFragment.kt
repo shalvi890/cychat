@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
 import androidx.core.view.forEach
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.mvrx.activityViewModel
@@ -120,6 +121,15 @@ class UserListFragment @Inject constructor(
             }
         }
         val pref = DefaultSharedPreferences.getInstance(requireContext())
+
+        views.switchOrg.setOnCheckedChangeListener { _, isChecked ->
+            views.btnChangeOrg.isInvisible = !isChecked
+            if (!isChecked) {
+                selectedDomain = null
+                viewModel.setDomain()
+            }
+            views.tvSearchingIn.isVisible = selectedDomain != null
+        }
         views.btnChangeOrg.setOnClickListener {
             ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
                 override fun onClick(item: FederatedDomain) {

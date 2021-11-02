@@ -132,7 +132,7 @@ android {
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (main, features, etc.) will have version code based on application version.
-        versionCode 85
+        versionCode 86
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
@@ -234,7 +234,7 @@ android {
         release {
             resValue "string", "app_name", "CyVerse"
             /** Change debug_mode to false to make sure environment screen should not show */
-            buildConfigField "boolean", "debug_mode", "true"
+            buildConfigField "boolean", "debug_mode", "false"
             buildConfigField "boolean", "LOW_PRIVACY_LOG_ENABLE", "false"
             buildConfigField "boolean", "ENABLE_STRICT_MODE_LOGS", "false"
             signingConfig signingConfigs.release

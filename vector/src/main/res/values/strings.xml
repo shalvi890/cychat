@@ -3295,7 +3295,7 @@
     <string name="please_select_server_to_search">Please, Select Organization To Search</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
     <string name="please_enter_security_code">Please, enter verification code</string>
-    <string name="change_org">Invite from Other Organization</string>
+    <string name="change_org">Enable Invite Other Organization</string>
     <string name="search_company_name">Search Organization Name</string>
     <string name="logo">Logo</string>
     <string name="select_wallpaper">Select Wallpaper</string>

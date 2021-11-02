@@ -100,6 +100,13 @@ class RoomListViewModel @Inject constructor(
                     it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
                     it.roomTagQueryFilter = RoomTagQueryFilter(isFavorite = false, isLowPriority = false, false)
                 }
+
+                addSection(sections, R.string.low_priority_header) {
+                    it.memberships = listOf(Membership.JOIN)
+                    it.roomCategoryFilter = RoomCategoryFilter.ONLY_DM
+                    it.roomTagQueryFilter = RoomTagQueryFilter(null, true, null)
+                }
+
             }
             RoomListDisplayMode.ROOMS         -> {
                 addSection(sections, R.string.invitations_header, true) {
