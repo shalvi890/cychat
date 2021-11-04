@@ -125,6 +125,7 @@ import com.cioinfotech.cychat.features.attachments.toContentAttachmentData
 import com.cioinfotech.cychat.features.attachments.toGroupedContentAttachmentData
 import com.cioinfotech.cychat.features.call.SharedKnownCallsViewModel
 import com.cioinfotech.cychat.features.call.VectorCallActivity
+import com.cioinfotech.cychat.features.call.conference.ConferenceEventEmitter
 import com.cioinfotech.cychat.features.call.conference.JitsiCallViewModel
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.command.Command
@@ -424,17 +425,18 @@ class RoomDetailFragment @Inject constructor(
                 is RoomDetailViewEvents.StartChatEffect                  -> handleChatEffect(it.type)
                 RoomDetailViewEvents.StopChatEffects                     -> handleStopChatEffects()
                 is RoomDetailViewEvents.DisplayAndAcceptCall             -> acceptIncomingCall(it)
-                is RoomDetailViewEvents.StartRecordingVoiceMessage       -> Unit
                 RoomDetailViewEvents.EndAllVoiceActions                  -> stopRecorderAndDeleteFile()
-                is RoomDetailViewEvents.EndRecordingVoiceMessage         -> Unit
-                RoomDetailViewEvents.PauseRecordingVoiceMessage          -> Unit
-                RoomDetailViewEvents.PlayOrPauseRecordingPlayback        -> Unit
+                RoomDetailViewEvents.LeaveJitsiConference                -> leaveJitsiConference()
             }.exhaustive
         }
 
         if (savedInstanceState == null) {
             handleShareData()
         }
+    }
+
+    private fun leaveJitsiConference() {
+        ConferenceEventEmitter(vectorBaseActivity).emitConferenceEnded()
     }
 
     private fun setupVoiceMessageView() {
@@ -463,9 +465,7 @@ class RoomDetailFragment @Inject constructor(
 //                roomDetailViewModel.handle(RoomDetailAction.PauseRecordingVoiceMessage)
 //            }
 
-            override fun onVoicePlaybackButtonClicked() {
-                roomDetailViewModel.handle(RoomDetailAction.PlayOrPauseRecordingPlayback)
-            }
+            override fun onVoicePlaybackButtonClicked() {}
         }
     }
 
@@ -623,7 +623,13 @@ class RoomDetailFragment @Inject constructor(
             }
 
             override fun onDelete(jitsiWidget: Widget) {
-                roomDetailViewModel.handle(RoomDetailAction.RemoveWidget(jitsiWidget.widgetId))
+                withState(roomDetailViewModel) {
+                    val jitsiWidgetId = it.jitsiState.widgetId ?: return@withState
+                    if (it.jitsiState.hasJoined) {
+                        leaveJitsiConference()
+                    }
+                    roomDetailViewModel.handle(RoomDetailAction.RemoveWidget(jitsiWidgetId))
+                }
             }
         }
     }

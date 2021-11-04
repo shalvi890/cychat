@@ -32,6 +32,7 @@ import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.core.resources.StringProvider
+import com.cioinfotech.cychat.features.call.conference.ConferenceEvent
 import com.cioinfotech.cychat.features.call.conference.JitsiActiveConferenceHolder
 import com.cioinfotech.cychat.features.call.conference.JitsiService
 import com.cioinfotech.cychat.features.call.dialpad.DialPadLookup
@@ -342,63 +343,12 @@ class RoomDetailViewModel @AssistedInject constructor(
 //            is RoomDetailAction.SelectRecordAudioAttachment      -> _viewEvents.post(RoomDetailViewEvents.OpenAudioRecording)
             RoomDetailAction.RemoveAllFailedMessages             -> handleRemoveAllFailedMessages()
             RoomDetailAction.ResendAll                           -> handleResendAll()
-            RoomDetailAction.StartRecordingVoiceMessage          -> _viewEvents.post(RoomDetailViewEvents.StartRecordingVoiceMessage)
-            is RoomDetailAction.EndRecordingVoiceMessage         -> _viewEvents.post(RoomDetailViewEvents.EndRecordingVoiceMessage(action.isCancelled))
-            RoomDetailAction.PauseRecordingVoiceMessage          -> _viewEvents.post(RoomDetailViewEvents.PauseRecordingVoiceMessage)
-            RoomDetailAction.PlayOrPauseRecordingPlayback        -> _viewEvents.post(RoomDetailViewEvents.PlayOrPauseRecordingPlayback)
             RoomDetailAction.EndAllVoiceActions                  -> _viewEvents.post(RoomDetailViewEvents.EndAllVoiceActions)
+            is RoomDetailAction.UpdateJoinJitsiCallStatus        -> handleJitsiCallJoinStatus(action)
+            is RoomDetailAction.JoinJitsiCall                    -> handleJoinJitsiCall()
+            is RoomDetailAction.LeaveJitsiCall                   -> handleLeaveJitsiCall()
         }.exhaustive
     }
-
-//    private fun handleStartRecordingVoiceMessage() {
-//        try {
-//            voiceMessageHelper.startRecording()
-//        } catch (failure: Throwable) {
-//            _viewEvents.post(RoomDetailViewEvents.Failure(failure))
-//        }
-//    }
-
-//    private fun handleEndRecordingVoiceMessage(isCancelled: Boolean) {
-//        voiceMessageHelper.stopPlayback()
-//        if (isCancelled) {
-//            voiceMessageHelper.deleteRecording()
-//        } else {
-//            voiceMessageHelper.stopRecording()?.let { audioType ->
-//                if (audioType.duration > 1000) {
-//                    room.sendMedia(audioType.toContentAttachmentData(), false, emptySet())
-//                } else {
-//                    voiceMessageHelper.deleteRecording()
-//                }
-//            }
-//        }
-//    }
-
-//    private fun handlePlayOrPauseVoicePlayback(action: RoomDetailAction.PlayOrPauseVoicePlayback) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            try {
-//                // Download can fail
-//                val audioFile = session.fileService().downloadFile(action.messageAudioContent)
-//                // Conversion can fail, fallback to the original file in this case and let the player fail for us
-//                val convertedFile = voicePlayerHelper.convertFile(audioFile) ?: audioFile
-//                // Play can fail
-//                voiceMessageHelper.startOrPausePlayback(action.eventId, convertedFile)
-//            } catch (failure: Throwable) {
-//                _viewEvents.post(RoomDetailViewEvents.Failure(failure))
-//            }
-//        }
-//    }
-
-//    private fun handlePlayOrPauseRecordingPlayback() {
-//        voiceMessageHelper.startOrPauseRecordingPlayback()
-//    }
-
-//    private fun handleEndAllVoiceActions() {
-//        voiceMessageHelper.stopAllVoiceActions()
-//    }
-
-//    private fun handlePauseRecordingVoiceMessage() {
-//        voiceMessageHelper.pauseRecording()
-//    }
 
     private fun handleStartCallWithPhoneNumber(action: RoomDetailAction.StartCallWithPhoneNumber) {
         viewModelScope.launch {
@@ -515,6 +465,33 @@ class RoomDetailViewModel @AssistedInject constructor(
                 _viewEvents.post(RoomDetailViewEvents.HideWaitingView)
             }
         }
+    }
+
+    private fun handleJitsiCallJoinStatus(action: RoomDetailAction.UpdateJoinJitsiCallStatus) = withState { state ->
+        if (state.jitsiState.confId == null) {
+            // If jitsi widget is removed while on the call
+            if (state.jitsiState.hasJoined) {
+                setState { copy(jitsiState = jitsiState.copy(hasJoined = false)) }
+            }
+            return@withState
+        }
+        when (action.conferenceEvent) {
+            is ConferenceEvent.Joined,
+            is ConferenceEvent.Terminated -> {
+                setState { copy(jitsiState = jitsiState.copy(hasJoined = activeConferenceHolder.isJoined(jitsiState.confId))) }
+            }
+            else                          -> Unit
+        }
+    }
+
+    private fun handleLeaveJitsiCall() {
+        _viewEvents.post(RoomDetailViewEvents.LeaveJitsiConference)
+    }
+
+    private fun handleJoinJitsiCall() = withState { state ->
+        val jitsiWidget = state.activeRoomWidgets()?.firstOrNull { it.widgetId == state.jitsiState.widgetId } ?: return@withState
+        val action = RoomDetailAction.EnsureNativeWidgetAllowed(jitsiWidget, false, RoomDetailViewEvents.JoinJitsiConference(jitsiWidget, true))
+        handleCheckWidgetAllowed(action)
     }
 
     private fun handleDeleteWidget(widgetId: String) {

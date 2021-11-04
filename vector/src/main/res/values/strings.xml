@@ -3292,7 +3292,7 @@
     <string name="you_are_searching_in">You are searching in %s:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
     <string name="hello_blank_fragment"> </string>
-    <string name="please_select_server_to_search">Please, Select Organization To Search</string>
+    <string name="please_select_server_to_search">Please, select organization to search</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
     <string name="please_enter_security_code">Please, enter verification code</string>
     <string name="change_org">Enable Invite Other Organization</string>

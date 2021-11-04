@@ -37,7 +37,7 @@ class TimelineEventVisibilityHelper @Inject constructor(private val userPreferen
      *
      * @return a list of timeline events which have sequentially the same type following the next direction.
      */
-    fun nextSameTypeEvents(timelineEvents: List<TimelineEvent>, index: Int, minSize: Int, eventIdToHighlight: String?): List<TimelineEvent> {
+    private fun nextSameTypeEvents(timelineEvents: List<TimelineEvent>, index: Int, minSize: Int, eventIdToHighlight: String?): List<TimelineEvent> {
         if (index >= timelineEvents.size - 1) {
             return emptyList()
         }
@@ -91,11 +91,11 @@ class TimelineEventVisibilityHelper @Inject constructor(private val userPreferen
     fun shouldShowEvent(timelineEvent: TimelineEvent, highlightedEventId: String?): Boolean {
         // If show hidden events is true we should always display something
         if (userPreferencesProvider.shouldShowHiddenEvents()) {
-            return false
+            return true
         }
         // We always show highlighted event
         if (timelineEvent.eventId == highlightedEventId) {
-            return false
+            return true
         }
         if (!timelineEvent.isDisplayable()) {
             return false

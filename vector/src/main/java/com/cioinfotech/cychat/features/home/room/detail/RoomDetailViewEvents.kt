@@ -45,6 +45,7 @@ sealed class RoomDetailViewEvents : VectorViewEvents {
 
     data class NavigateToEvent(val eventId: String) : RoomDetailViewEvents()
     data class JoinJitsiConference(val widget: Widget, val withVideo: Boolean) : RoomDetailViewEvents()
+    object LeaveJitsiConference : RoomDetailViewEvents()
 
     object OpenInvitePeople : RoomDetailViewEvents()
     object OpenSetRoomAvatarDialog : RoomDetailViewEvents()
@@ -97,16 +98,10 @@ sealed class RoomDetailViewEvents : VectorViewEvents {
     object SlashCommandResultOk : SendMessageResult()
     class SlashCommandResultError(val throwable: Throwable) : SendMessageResult()
 
-    // TODO Remove
     object SlashCommandNotImplemented : SendMessageResult()
 
     data class StartChatEffect(val type: ChatEffect) : RoomDetailViewEvents()
     object StopChatEffects : RoomDetailViewEvents()
 
-    //    object OpenAudioRecording: RoomDetailViewEvents()
-    object StartRecordingVoiceMessage : RoomDetailViewEvents()
-    data class EndRecordingVoiceMessage(val isCancelled: Boolean) : RoomDetailViewEvents()
-    object PauseRecordingVoiceMessage : RoomDetailViewEvents()
-    object PlayOrPauseRecordingPlayback : RoomDetailViewEvents()
     object EndAllVoiceActions : RoomDetailViewEvents()
 }

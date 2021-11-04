@@ -124,7 +124,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
             override fun onTick(millisUntilFinished: Long) {
                 try {
                     views.mobileOTPTimer.text = if (counter > 60)
-                        getString(R.string.auth_resend_email_otp_query_min, counter / 60, counter % 60)
+                        getString(R.string.auth_resend_mobile_otp_query_min, counter / 60, counter % 60)
                     else
                         getString(R.string.auth_resend_mobile_otp_query, counter)
                     counter--

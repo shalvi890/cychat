@@ -26,13 +26,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class TimelineItemFactory @Inject constructor(private val messageItemFactory: MessageItemFactory,
-                                              private val encryptedItemFactory: EncryptedItemFactory,
                                               private val noticeItemFactory: NoticeItemFactory,
                                               private val defaultItemFactory: DefaultItemFactory,
                                               private val encryptionItemFactory: EncryptionItemFactory,
                                               private val roomCreateItemFactory: RoomCreateItemFactory,
                                               private val widgetItemFactory: WidgetItemFactory,
-                                              private val verificationConclusionItemFactory: VerificationItemFactory,
                                               private val callItemFactory: CallItemFactory,
                                               private val timelineEventVisibilityHelper: TimelineEventVisibilityHelper) {
 

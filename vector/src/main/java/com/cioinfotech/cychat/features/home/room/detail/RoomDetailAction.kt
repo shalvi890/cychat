@@ -19,6 +19,7 @@ package com.cioinfotech.cychat.features.home.room.detail
 import android.net.Uri
 import android.view.View
 import com.cioinfotech.cychat.core.platform.VectorViewModelAction
+import com.cioinfotech.cychat.features.call.conference.ConferenceEvent
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
 import org.matrix.android.sdk.api.session.events.model.Event
 import org.matrix.android.sdk.api.session.room.model.message.MessageStickerContent
@@ -91,6 +92,10 @@ sealed class RoomDetailAction : VectorViewModelAction {
     object OpenIntegrationManager : RoomDetailAction()
     object ManageIntegrations : RoomDetailAction()
     data class AddJitsiWidget(val withVideo: Boolean) : RoomDetailAction()
+    data class UpdateJoinJitsiCallStatus(val conferenceEvent: ConferenceEvent) : RoomDetailAction()
+    object JoinJitsiCall : RoomDetailAction()
+    object LeaveJitsiCall : RoomDetailAction()
+
     data class RemoveWidget(val widgetId: String) : RoomDetailAction()
     data class EnsureNativeWidgetAllowed(val widget: Widget,
                                          val userJustAccepted: Boolean,
@@ -113,9 +118,5 @@ sealed class RoomDetailAction : VectorViewModelAction {
     object RemoveAllFailedMessages : RoomDetailAction()
 
     // Voice Message
-    object StartRecordingVoiceMessage : RoomDetailAction()
-    data class EndRecordingVoiceMessage(val isCancelled: Boolean) : RoomDetailAction()
-    object PauseRecordingVoiceMessage : RoomDetailAction()
-    object PlayOrPauseRecordingPlayback : RoomDetailAction()
     object EndAllVoiceActions : RoomDetailAction()
 }
