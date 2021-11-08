@@ -19,7 +19,7 @@ kapt {
 // Note: 2 digits max for each value
 ext.versionMajor = 0
 ext.versionMinor = 0
-ext.versionPatch = 27
+ext.versionPatch = 28
 //
 //static def getGitTimestamp() {
 //    def cmd = 'git show -s --format=%ct'
@@ -132,7 +132,7 @@ android {
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (main, features, etc.) will have version code based on application version.
-        versionCode 86
+        versionCode 87
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
