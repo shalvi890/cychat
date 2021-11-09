@@ -35,8 +35,7 @@
             android:gravity="center_horizontal"
             android:padding="@dimen/alerter_padding_default"
             android:text="@string/please_select_server_to_search"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@id/iv_dismiss"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,6 +43,7 @@
         <EditText
             android:id="@+id/et_search"
             android:layout_width="match_parent"
+            android:autofillHints="@null"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/alerter_padding_half"
             android:layout_marginEnd="@dimen/alerter_padding_half"
