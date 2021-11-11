@@ -30,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.ACCESS_TOKEN
@@ -164,6 +165,33 @@ class CyCoreViewModel @Inject constructor(
 
             override fun onSuccess(t: FederatedDomainList) {
                 federatedDomainListData.postValue(t)
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {}
+        }
+    }
+
+    fun handleGetDefaultURLs() {
+        url?.let {
+            cyCoreService.cyGetDefaultURLs(accessToken, it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getDefaultURLs())
+        }
+    }
+
+    private fun getDefaultURLs(): SingleObserver<DefaultURLParent> {
+        return object : SingleObserver<DefaultURLParent> {
+
+            override fun onSuccess(t: DefaultURLParent) {
+                if (t.status != "error")
+                    pref.edit().apply {
+                        putString(NetworkConstants.JITSI, t.data.jitsi)
+                        putString(NetworkConstants.SYGNAL, t.data.sygnal)
+                        apply()
+                    }
             }
 
             override fun onSubscribe(d: Disposable) {}

@@ -26,7 +26,7 @@ import org.matrix.android.sdk.api.auth.wellknown.WellknownResult
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
+import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
@@ -121,7 +121,7 @@ interface AuthenticationService {
 
     fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams): Single<CheckOTPResponse>
 
-    fun getCountryList(auth: String): Single<CountryCodeParent>
+    fun getSettings(auth: String): Single<GetSettingsParent>
 
     fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
 

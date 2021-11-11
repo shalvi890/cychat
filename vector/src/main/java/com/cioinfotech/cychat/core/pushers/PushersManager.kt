@@ -16,11 +16,14 @@
 
 package com.cioinfotech.cychat.core.pushers
 
+import android.content.Context
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.resources.AppNameProvider
 import com.cioinfotech.cychat.core.resources.LocaleProvider
 import com.cioinfotech.cychat.core.resources.StringProvider
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.math.abs
@@ -31,13 +34,19 @@ class PushersManager @Inject constructor(
         private val activeSessionHolder: ActiveSessionHolder,
         private val localeProvider: LocaleProvider,
         private val stringProvider: StringProvider,
-        private val appNameProvider: AppNameProvider
+        private val appNameProvider: AppNameProvider,
+        context: Context
 ) {
+
+    private val pref = DefaultSharedPreferences.getInstance(context)
+    private val defaultURL = stringProvider.getString(R.string.pusher_http_url)
+    private val jitsiURL = pref.getString(NetworkConstants.SYGNAL, "")
+
     suspend fun testPush(pushKey: String) {
         val currentSession = activeSessionHolder.getActiveSession()
 
         currentSession.testPush(
-                stringProvider.getString(R.string.pusher_http_url),
+                if (jitsiURL.isNullOrEmpty()) defaultURL else "$jitsiURL/_matrix/push/v1/notify",
                 stringProvider.getString(R.string.pusher_app_id),
                 pushKey,
                 TEST_EVENT_ID
@@ -55,7 +64,7 @@ class PushersManager @Inject constructor(
                 localeProvider.current().language,
                 appNameProvider.getAppName(),
                 currentSession.sessionParams.deviceId ?: "MOBILE",
-                stringProvider.getString(R.string.pusher_http_url),
+                if (jitsiURL.isNullOrEmpty()) defaultURL else "$jitsiURL/_matrix/push/v1/notify",
                 append = false,
                 withEventIdOnly = true
         )

@@ -38,7 +38,7 @@ import com.cioinfotech.cychat.core.platform.showOptimizedSnackbar
 import com.cioinfotech.cychat.databinding.FragmentLoginBinding
 import com.cioinfotech.cychat.databinding.FragmentValidateSecurityCodeBinding
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
+import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import timber.log.Timber
 import javax.inject.Inject
@@ -53,7 +53,7 @@ import javax.inject.Inject
  */
 class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLoginBinding>(), AdapterView.OnItemSelectedListener {
     private val emailRegex = Regex("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
-    private var allSettings: CountryCodeParent? = null
+    private var allSettings: GetSettingsParent? = null
     private var selectedCountry: CountryCode? = null
     private var firstTime = true
     private var isUserValidated = false
@@ -74,7 +74,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
                 mutableListOf<String>())
 
         views.spinnerList.adapter = spinnerArrayAdapter
-        loginViewModel.handleCountryList()
+        loginViewModel.handleGetSettings()
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
             if (it != null && it.data.countries.isNotEmpty()) {
                 allSettings = it

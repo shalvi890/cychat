@@ -400,7 +400,7 @@ internal class DefaultAuthenticationService @Inject constructor(
 
     override fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams) = buildCyAuthAPI().checkOTP(auth, reqId, verifyParams)
 
-    override fun getCountryList(auth: String) = buildCyAuthAPI().getCountryList(auth)
+    override fun getSettings(auth: String) = buildCyAuthAPI().getSettings(auth)
 
     override fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(auth, reqId, hashMap)
 

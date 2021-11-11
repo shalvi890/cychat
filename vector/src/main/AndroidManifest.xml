@@ -74,6 +74,7 @@
         <!-- Activity alias for the launcher Activity (must be declared after the Activity it targets) -->
         <activity-alias
             android:name=".features.Alias"
+            android:exported="true"
             android:targetActivity=".features.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -89,6 +90,7 @@
         <activity android:name=".features.home.HomeActivity" />
         <activity
             android:name=".features.login.LoginActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize">
             <!-- Add intent filter to handle redirection URL after SSO login in external browser -->
@@ -145,24 +147,22 @@
         <activity android:name=".features.createdirect.CreateDirectRoomActivity" />
         <activity android:name=".features.invite.InviteUsersToRoomActivity" />
         <activity android:name=".features.webview.VectorWebViewActivity" />
-        <!--        <activity android:name=".features.link.LinkHandlerActivity">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.VIEW" />-->
+        <activity
+            android:name=".features.link.LinkHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-        <!--                <category android:name="android.intent.category.DEFAULT" />-->
-        <!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <!--                <data android:scheme="https" />-->
-        <!--                <data android:host="riot.im" />-->
-        <!--                <data android:host="app.element.io" />-->
-        <!--                <data android:host="mobile.element.io" />-->
-        <!--                <data android:host="develop.element.io" />-->
-        <!--                <data android:host="staging.element.io" />-->
-        <!--            </intent-filter>-->
-        <!--        </activity>-->
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".features.share.IncomingShareActivity"
+            android:exported="true"
             android:parentActivityName=".features.home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -196,6 +196,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.permalink.PermalinkHandlerActivity"
+            android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -288,11 +289,11 @@
         <!-- Add tools:ignore="Instantiatable" for the error reported only by Buildkite and for lintGplayRelease check :/ -->
         <service
             android:name=".core.services.VectorSyncService"
-            android:exported="false"
-            tools:ignore="Instantiatable" />
+            android:exported="false" />
 
         <service
             android:name=".features.call.telecom.VectorConnectionService"
+            android:exported="false"
             android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
             <intent-filter>
                 <action android:name="android.telecom.ConnectionService" />
@@ -319,7 +320,9 @@
         A media button receiver receives and helps translate hardware media playback buttons,
         such as those found on wired and wireless headsets, into the appropriate callbacks in your app.
            -->
-        <receiver android:name="androidx.media.session.MediaButtonReceiver">
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

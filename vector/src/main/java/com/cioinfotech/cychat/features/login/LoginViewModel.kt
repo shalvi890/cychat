@@ -66,7 +66,7 @@ import org.matrix.android.sdk.api.failure.Failure
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCodeParent
+import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
@@ -153,7 +153,7 @@ class LoginViewModel @AssistedInject constructor(
 
     private var loginParams: PasswordLoginParams? = null
 
-    val countryCodeList: MutableLiveData<CountryCodeParent> = MutableLiveData()
+    val countryCodeList: MutableLiveData<GetSettingsParent> = MutableLiveData()
 
     val signUpSignInData: MutableLiveData<LoginResponseChild> = MutableLiveData()
 
@@ -348,25 +348,31 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Get Country List / Get Settings API Implementation-
      * No Params just to get all countries with codes.
      * */
-    fun handleCountryList() {
-        authenticationService.getCountryList(AUTH_KEY)
+    fun handleGetSettings() {
+        authenticationService.getSettings(AUTH_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getListOfCountriesObserver())
+                .subscribe(getSettingsObserver())
         setState {
             copy(asyncGetCountryList = Loading())
         }
     }
 
-    /** CyChat Get Country List API Implementation-
+    /** CyChat Get Settings API Implementation-
      * Function waits for Get Country List API Response
      * */
-    private fun getListOfCountriesObserver(): SingleObserver<CountryCodeParent> {
-        return object : SingleObserver<CountryCodeParent> {
+    private fun getSettingsObserver(): SingleObserver<GetSettingsParent> {
+        return object : SingleObserver<GetSettingsParent> {
 
-            override fun onSuccess(t: CountryCodeParent) {
+            override fun onSuccess(t: GetSettingsParent) {
                 if (t.status == "ok") {
                     countryCodeList.postValue(t)
+                    pref.edit().apply {
+                        putString(NetworkConstants.SYGNAL, t.data.sygnal)
+                        putString(NetworkConstants.JITSI, t.data.jitsi)
+                        apply()
+
+                    }
                     setState {
                         copy(
                                 asyncGetCountryList = Success(Unit)

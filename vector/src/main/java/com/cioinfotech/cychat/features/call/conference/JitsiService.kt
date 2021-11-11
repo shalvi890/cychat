@@ -16,7 +16,9 @@
 
 package com.cioinfotech.cychat.features.call.conference
 
+import android.content.Context
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.network.await
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.core.utils.ensureProtocol
@@ -38,6 +40,7 @@ import org.matrix.android.sdk.api.session.widgets.model.WidgetType
 import org.matrix.android.sdk.api.util.appendParamToUrl
 import org.matrix.android.sdk.api.util.toMatrixItem
 import org.matrix.android.sdk.internal.di.MoshiProvider
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import java.net.URL
 import java.util.UUID
 import javax.inject.Inject
@@ -45,16 +48,21 @@ import javax.inject.Inject
 class JitsiService @Inject constructor(
         private val session: Session,
         private val rawService: RawService,
-        private val stringProvider: StringProvider,
+        stringProvider: StringProvider,
         private val themeProvider: ThemeProvider,
-        private val jitsiJWTFactory: JitsiJWTFactory) {
+        private val jitsiJWTFactory: JitsiJWTFactory,
+        context: Context) {
 
     companion object {
         const val JITSI_OPEN_ID_TOKEN_JWT_AUTH = "openidtoken-jwt"
     }
 
+    private val pref = DefaultSharedPreferences.getInstance(context)
+    private val defaultURL = stringProvider.getString(R.string.preferred_jitsi_domain)
+    private val jitsiURL = pref.getString(NetworkConstants.JITSI, defaultURL) ?: defaultURL
+
     private val jitsiWidgetDataFactory by lazy {
-        JitsiWidgetDataFactory(stringProvider.getString(R.string.preferred_jitsi_domain)) { widget ->
+        JitsiWidgetDataFactory(jitsiURL) { widget ->
             session.widgetService().getWidgetComputedUrl(widget, themeProvider.isLightTheme())
         }
     }
@@ -67,7 +75,7 @@ class JitsiService @Inject constructor(
                     ?.jitsiServer
                     ?.preferredDomain
         }
-        val jitsiDomain = preferredJitsiDomain ?: stringProvider.getString(R.string.preferred_jitsi_domain)
+        val jitsiDomain = preferredJitsiDomain ?: jitsiURL
         val jitsiAuth = getJitsiAuth(jitsiDomain)
         val confId = createConferenceId(roomId, jitsiAuth)
 

@@ -1241,12 +1241,9 @@ class RoomDetailFragment @Inject constructor(
                 attachmentTypeSelector.show(views.composerLayout.views.attachmentButton, keyboardStateUtils.isKeyboardShowing)
             }
 
-            /**
-             * Function to send Recorder Audio
-             */
-//            override fun onSendAudio() {
-//                onTypeSelected(AttachmentTypeSelectorView.Type.RECORD)
-//            }
+            override fun onPhotoClicked() {
+                onTypeSelected(AttachmentTypeSelectorView.Type.CAMERA)
+            }
 
             override fun onSendMessage(text: CharSequence) {
                 sendTextMessage(text)

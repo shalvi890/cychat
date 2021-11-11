@@ -19,6 +19,7 @@ package com.cioinfotech.cychat.features.cycore
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
 import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import retrofit2.http.Body
@@ -58,4 +59,8 @@ interface CyCoreAPI {
             @Header("Authorization") auth: String?,
             @Header("reqid") reqId: String?,
             @Body map: HashMap<String, String>): Single<FederatedDomainList>
+
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @DELETE(NetworkConstants.DEFAULT_URLS)
+    fun getDefaultURLs(@Header("Authorization") auth: String?): Single<DefaultURLParent>
 }

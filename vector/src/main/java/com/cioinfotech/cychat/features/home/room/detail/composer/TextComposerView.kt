@@ -26,6 +26,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.Transition
@@ -48,7 +50,7 @@ class TextComposerView @JvmOverloads constructor(
         fun onCloseRelatedMessage()
         fun onSendMessage(text: CharSequence)
         fun onAddAttachment()
-//        fun onSendAudio()
+        fun onPhotoClicked()
     }
 
     val views: ComposerLayoutBinding
@@ -82,28 +84,22 @@ class TextComposerView @JvmOverloads constructor(
             callback?.onCloseRelatedMessage()
         }
 
+        views.composerQuickPhotoButton.setOnClickListener {
+            callback?.onPhotoClicked()
+        }
+
         views.sendButton.setOnClickListener {
-//            if (isKeyboardTouchable) {
-//                if (text.isNullOrEmpty() && !isExpanded) {
-//                    callback?.onSendAudio()
-//                } else {
             val textMessage = text?.toString()?.trim()?.toSpannable() ?: ""
             callback?.onSendMessage(textMessage)
-//                }
-//            }
         }
 
         views.attachmentButton.setOnClickListener {
             callback?.onAddAttachment()
         }
 
-//        views.composerEditText.doOnTextChanged { text, _, _, _ ->
-//            if (text.isNullOrEmpty() && !isExpanded) {
-//                views.sendButton.setImageResource(R.drawable.ic_microphone)
-//            } else {
-//                views.sendButton.setImageResource(R.drawable.ic_send)
-//            }
-//        }
+        views.composerEditText.doOnTextChanged { text, _, _, _ ->
+            views.composerQuickPhotoButton.isVisible = text.isNullOrEmpty() && !isExpanded
+        }
     }
 
     fun collapse(animate: Boolean = true, transitionComplete: (() -> Unit)? = null) {
@@ -130,7 +126,6 @@ class TextComposerView @JvmOverloads constructor(
     }
 
     private fun applyNewConstraintSet(animate: Boolean, transitionComplete: (() -> Unit)?) {
-        // val wasSendButtonInvisible = views.sendButton.isInvisible
         if (animate) {
             configureAndBeginTransition(transitionComplete)
         }
@@ -164,20 +159,13 @@ class TextComposerView @JvmOverloads constructor(
     }
 
     fun setRoomEncrypted(isEncrypted: Boolean) {
-//        if (isKeyboardTouchable)
-        if (isEncrypted) {
+        if (isEncrypted)
             views.composerEditText.setHint(R.string.room_message_placeholder)
-//            views.composerShieldImageView.render(roomEncryptionTrustLevel)
-        } else {
+        else
             views.composerEditText.setHint(R.string.room_message_placeholder)
-//            views.composerShieldImageView.render(null)
-        }
-//        else
-//            views.composerEditText.setHint(R.string.no_one_present_in_chat)
     }
 
     fun setKeyBoardTouch(isEnabled: Boolean) {
-//        isKeyboardTouchable = isEnabled
         views.composerEditText.isFocusable = isEnabled
         views.composerEditText.isClickable = isEnabled
 

@@ -51,7 +51,7 @@ object NetworkConstants {
     // Cy Chat APIs
     const val USER_LOGIN = "/user-login"
     const val CHECK_OTP = "/check-otp"
-    const val COUNTRY_LIST = "/get-settings"
+    const val GET_SETTINGS = "/get-settings"
     const val RESENT_OTP = "/resend-otp"
     const val VALIDATE_SECURITY_CODE = "/val-secr-code"
     const val GET_DOMAIN_DETAILS = "/get-company-name-and-logo"
@@ -66,6 +66,10 @@ object NetworkConstants {
     const val EMAIL = "EMAIL"
     const val ACCESS_TOKEN_SMALL = "access_token"
     const val REQ_ID = "REQ_ID"
+    const val JITSI = "JITSI"
+    const val SYGNAL = "SYGNAL"
+    const val DEFAULT_URLS = "/get-jitsi-url"
+
 
     //    const val REQ_ID_SMALL = "req_id"
     const val DOMAIN_NAME = "DOMAIN_NAME"

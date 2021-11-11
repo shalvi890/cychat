@@ -57,7 +57,6 @@ import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
 import com.cioinfotech.cychat.features.permalink.PermalinkHandler
 import com.cioinfotech.cychat.features.popup.DefaultVectorAlert
 import com.cioinfotech.cychat.features.popup.PopupAlertManager
-import com.cioinfotech.cychat.features.rageshake.VectorUncaughtExceptionHandler
 import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.cychat.features.settings.VectorSettingsActivity
 import com.cioinfotech.cychat.features.themes.ThemeUtils
@@ -119,7 +118,6 @@ class HomeActivity :
     private val bootStrapViewModel by viewModel(BootstrapSharedViewModel::class)
 
     @Inject lateinit var activeSessionHolder: ActiveSessionHolder
-    @Inject lateinit var vectorUncaughtExceptionHandler: VectorUncaughtExceptionHandler
     @Inject lateinit var pushManager: PushersManager
     @Inject lateinit var notificationDrawerManager: NotificationDrawerManager
     @Inject lateinit var vectorPreferences: VectorPreferences
@@ -201,6 +199,7 @@ class HomeActivity :
     /** This Function has all Cychat functions which we have to call on following events:
      * -session startup
      * -register
+     * -default server URL handler
      **/
     private fun onFirstSession() {
         val pref = DefaultSharedPreferences.getInstance(applicationContext)
@@ -254,6 +253,11 @@ class HomeActivity :
                     }
                     job.cancel()
                 }
+            }
+        } else {
+            if (!::cyChatViewModel.isInitialized) {
+                cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
+                cyChatViewModel.handleGetDefaultURLs()
             }
         }
     }

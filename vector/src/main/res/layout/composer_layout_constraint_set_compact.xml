@@ -131,15 +131,15 @@
         app:layout_constraintTop_toTopOf="@id/sendButton"
         tools:ignore="MissingPrefix" />
 
-<!--    <com.cioinfotech.cychat.core.ui.views.ShieldImageView-->
-<!--        android:id="@+id/composerShieldImageView"-->
-<!--        android:layout_width="16dp"-->
-<!--        android:layout_height="16dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/sendButton"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/composerEditText"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/attachmentButton"-->
-<!--        app:layout_constraintTop_toTopOf="@id/sendButton"-->
-<!--        tools:visibility="visible" />-->
+    <!--    <com.cioinfotech.cychat.core.ui.views.ShieldImageView-->
+    <!--        android:id="@+id/composerShieldImageView"-->
+    <!--        android:layout_width="16dp"-->
+    <!--        android:layout_height="16dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/sendButton"-->
+    <!--        app:layout_constraintEnd_toStartOf="@+id/composerEditText"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/attachmentButton"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/sendButton"-->
+    <!--        tools:visibility="visible" />-->
 
     <com.cioinfotech.cychat.features.home.room.detail.composer.ComposerEditText
         android:id="@+id/composerEditText"
@@ -157,22 +157,38 @@
 
     <ImageButton
         android:id="@+id/composerEmojiButton"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_margin="1dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/a11y_open_emoji_picker"
         android:src="@drawable/ic_insert_emoji"
         app:layout_constraintBottom_toBottomOf="@id/sendButton"
-        app:layout_constraintEnd_toStartOf="@+id/sendButton"
+        app:layout_constraintEnd_toStartOf="@+id/composerQuickPhotoButton"
         app:layout_constraintStart_toEndOf="@id/composerEditText"
         app:layout_constraintTop_toTopOf="@id/sendButton"
         app:layout_goneMarginEnd="8dp" />
 
     <ImageButton
+        android:id="@+id/composerQuickPhotoButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="1dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/a11y_open_emoji_picker"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_keyboard_camera"
+        app:layout_constraintBottom_toBottomOf="@id/sendButton"
+        app:layout_constraintEnd_toStartOf="@+id/sendButton"
+        app:layout_constraintStart_toEndOf="@id/composerEmojiButton"
+        app:layout_constraintTop_toTopOf="@id/sendButton"
+        app:layout_goneMarginEnd="8dp"
+        app:tint="?riotx_room_active_widgets_banner_text" />
+
+    <ImageButton
         android:id="@+id/sendButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="2dp"
         android:background="@drawable/bg_send"
         android:contentDescription="@string/send"
@@ -180,7 +196,7 @@
         android:src="@drawable/ic_send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/composerEmojiButton"
+        app:layout_constraintStart_toEndOf="@id/composerQuickPhotoButton"
         tools:ignore="MissingPrefix" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
