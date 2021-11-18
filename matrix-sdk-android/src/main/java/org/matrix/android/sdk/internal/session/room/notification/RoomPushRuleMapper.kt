@@ -84,10 +84,12 @@ internal fun RoomPushRule.toRoomNotificationState(): RoomNotificationState {
         if (actions.contains(Action.DoNotNotify)) {
             if (kind == RuleSetKey.OVERRIDE) {
                 RoomNotificationState.MUTE
-            } else {
+            }
+            else {
                 RoomNotificationState.MENTIONS_ONLY
             }
-        } else if (actions.contains(Action.Notify)) {
+        } else
+            if (actions.contains(Action.Notify)) {
             val hasSoundAction = actions.find {
                 it is Action.Sound
             } != null

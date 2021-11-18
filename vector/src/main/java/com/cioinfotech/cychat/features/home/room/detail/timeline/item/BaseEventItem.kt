@@ -44,14 +44,10 @@ abstract class BaseEventItem<H : BaseEventItem.BaseHolder> : VectorEpoxyModel<H>
     @CallSuper
     override fun bind(holder: H) {
         super.bind(holder)
-//        holder.leftGuideline.updateLayoutParams<RelativeLayout.LayoutParams> {
-//            this.marginStart = leftGuideline
-//        }
         holder.checkableBackground.isChecked = highlighted
     }
 
     abstract class BaseHolder(@IdRes val stubId: Int) : VectorEpoxyHolder() {
-        //        val leftGuideline by bind<View>(R.id.messageStartGuideline)
         val checkableBackground by bind<CheckableView>(R.id.messageSelectedBackground)
 
         override fun bindView(itemView: View) {

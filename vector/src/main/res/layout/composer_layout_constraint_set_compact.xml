@@ -183,7 +183,7 @@
         app:layout_constraintStart_toEndOf="@id/composerEmojiButton"
         app:layout_constraintTop_toTopOf="@id/sendButton"
         app:layout_goneMarginEnd="8dp"
-        app:tint="?riotx_room_active_widgets_banner_text" />
+        app:tint="?riotx_text_secondary" />
 
     <ImageButton
         android:id="@+id/sendButton"

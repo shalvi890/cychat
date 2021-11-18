@@ -30,6 +30,7 @@ import com.cioinfotech.cychat.core.epoxy.VectorEpoxyHolder
 import com.cioinfotech.cychat.core.epoxy.VectorEpoxyModel
 import com.cioinfotech.cychat.core.epoxy.onClick
 import com.cioinfotech.cychat.core.extensions.setTextOrHide
+import com.cioinfotech.cychat.core.resources.ColorProvider
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.themes.ThemeUtils
@@ -44,6 +45,7 @@ abstract class BottomSheetRoomPreviewItem : VectorEpoxyModel<BottomSheetRoomPrev
     @EpoxyAttribute lateinit var avatarRenderer: AvatarRenderer
     @EpoxyAttribute lateinit var matrixItem: MatrixItem
     @EpoxyAttribute lateinit var stringProvider: StringProvider
+    @EpoxyAttribute lateinit var colorProvider: ColorProvider
     @EpoxyAttribute var izLowPriority: Boolean = false
     @EpoxyAttribute var izFavorite: Boolean = false
     @EpoxyAttribute var settingsClickListener: ClickListener? = null
@@ -89,7 +91,7 @@ abstract class BottomSheetRoomPreviewItem : VectorEpoxyModel<BottomSheetRoomPrev
         val tintColor: Int
         if (isLowPriority) {
             description = stringProvider.getString(R.string.room_list_quick_actions_low_priority_remove)
-            tintColor = ContextCompat.getColor(holder.view.context, R.color.riotx_accent)
+            tintColor = colorProvider.getColorFromAttribute(R.attr.colorPrimary)
         } else {
             description = stringProvider.getString(R.string.room_list_quick_actions_low_priority_add)
             tintColor = ThemeUtils.getColor(holder.view.context, R.attr.riotx_text_secondary)
@@ -107,7 +109,7 @@ abstract class BottomSheetRoomPreviewItem : VectorEpoxyModel<BottomSheetRoomPrev
         if (isFavorite) {
             description = stringProvider.getString(R.string.room_list_quick_actions_favorite_remove)
             holder.roomFavorite.setImageResource(R.drawable.ic_star_green_24dp)
-            tintColor = ContextCompat.getColor(holder.view.context, R.color.riotx_accent)
+            tintColor = colorProvider.getColorFromAttribute(R.attr.colorPrimary)
         } else {
             description = stringProvider.getString(R.string.room_list_quick_actions_favorite_add)
             holder.roomFavorite.setImageResource(R.drawable.ic_star_24dp)

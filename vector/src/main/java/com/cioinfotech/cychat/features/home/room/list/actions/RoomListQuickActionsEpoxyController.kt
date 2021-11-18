@@ -38,7 +38,7 @@ import javax.inject.Inject
  */
 class RoomListQuickActionsEpoxyController @Inject constructor(
         private val avatarRenderer: AvatarRenderer,
-        val colorProvider: ColorProvider,
+        private val colorProvider: ColorProvider,
         private val stringProvider: StringProvider
 ) : TypedEpoxyController<RoomListQuickActionsState>() {
 
@@ -59,7 +59,7 @@ class RoomListQuickActionsEpoxyController @Inject constructor(
                 avatarRenderer(host.avatarRenderer)
                 matrixItem(roomSummary.toMatrixItem())
                 stringProvider(host.stringProvider)
-//                colorProvider(host.colorProvider)
+                colorProvider(host.colorProvider)
                 izLowPriority(roomSummary.isLowPriority)
                 izFavorite(roomSummary.isFavorite)
                 settingsClickListener { host.listener?.didSelectMenuAction(RoomListQuickActionsSharedAction.Settings(roomSummary.roomId)) }
@@ -107,7 +107,6 @@ class RoomListQuickActionsEpoxyController @Inject constructor(
     }
 
     private fun RoomListQuickActionsSharedAction.toBottomSheetItem(index: Int, roomNotificationState: RoomNotificationState? = null) {
-        val host = this@RoomListQuickActionsEpoxyController
         val selected = when (this) {
             is RoomListQuickActionsSharedAction.NotificationsAllNoisy     -> roomNotificationState == RoomNotificationState.ALL_MESSAGES_NOISY
             is RoomListQuickActionsSharedAction.NotificationsAll          -> roomNotificationState == RoomNotificationState.ALL_MESSAGES
@@ -118,11 +117,7 @@ class RoomListQuickActionsEpoxyController @Inject constructor(
         return bottomSheetActionItem {
             id("action_$index")
             selected(selected)
-            if (iconResId != null) {
-                iconRes(iconResId)
-            } else {
-                showIcon(false)
-            }
+            iconRes(iconResId)
             textRes(titleRes)
             destructive(this@toBottomSheetItem.destructive)
             listener(View.OnClickListener { listener?.didSelectMenuAction(this@toBottomSheetItem) })

@@ -48,11 +48,10 @@ abstract class RadioButtonItem : VectorEpoxyModel<RadioButtonItem.Holder>() {
     override fun bind(holder: Holder) {
         super.bind(holder)
         holder.view.onClick(listener)
-        if (titleRes != null) {
+        if (titleRes != null)
             holder.titleText.setText(titleRes!!)
-        } else {
+        else
             holder.titleText.text = title
-        }
 
         if (selected) {
             holder.radioImage.setAttributeTintedImageResource(R.drawable.ic_radio_on, R.attr.colorPrimary)

@@ -30,7 +30,7 @@ data class RoomNotificationSettingsViewState(
         val roomSummary: Async<RoomSummary> = Uninitialized,
         val isLoading: Boolean = false,
         val notificationState: Async<RoomNotificationState> = Uninitialized
-)  : MvRxState {
+) : MvRxState {
     constructor(args: RoomProfileArgs) : this(roomId = args.roomId)
     constructor(args: RoomListActionsArgs) : this(roomId = args.roomId)
 }
@@ -47,7 +47,7 @@ val RoomNotificationSettingsViewState.notificationStateMapped: Async<RoomNotific
              */
             return Success(RoomNotificationState.ALL_MESSAGES_NOISY)
         }
-        return  notificationState
+        return notificationState
     }
 
 /**

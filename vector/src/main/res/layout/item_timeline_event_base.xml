@@ -12,8 +12,10 @@
     <com.cioinfotech.cychat.core.platform.CheckableView
         android:id="@+id/messageSelectedBackground"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/highlighted_message_background" />
+        android:layout_height="0dp"
+        android:background="@drawable/highlighted_message_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clStubContainer"
@@ -45,12 +47,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@sample/matrix.json/data/displayName" />
-
-        <!--        <Space-->
-        <!--            android:id="@+id/decorationSpace"-->
-        <!--            android:layout_width="4dp"-->
-        <!--            android:layout_height="8dp"-->
-        <!--            android:layout_toEndOf="@id/messageStartGuideline" />-->
 
         <FrameLayout
             android:id="@+id/viewStubContainer"
