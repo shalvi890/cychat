@@ -23,6 +23,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.extensions.commitTransaction
@@ -38,7 +41,6 @@ import com.cioinfotech.cychat.features.call.SharedKnownCallsViewModel
 import com.cioinfotech.cychat.features.call.VectorCallActivity
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
-import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.home.room.list.RoomListFragment
 import com.cioinfotech.cychat.features.home.room.list.RoomListParams
 import com.cioinfotech.cychat.features.settings.VectorPreferences
@@ -165,9 +167,14 @@ class HomeDetailFragment @Inject constructor(
         val pref = DefaultSharedPreferences.getInstance(requireContext())
         val logo = pref.getString(DOMAIN_IMAGE, null)
         if (logo != null)
-            avatarRenderer.render(GlideApp.with(requireActivity()), logo, views.groupToolbarAvatarImageView)
+            Glide.with(this)
+                    .load(logo)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(DrawableImageViewTarget(views.groupToolbarAvatarImageView))
         else
-            avatarRenderer.render(GlideApp.with(requireActivity()), R.drawable.ic_government_logo, views.groupToolbarAvatarImageView)
+            avatarRenderer.render(GlideApp.with(requireActivity()), R.mipmap.ic_launcher, views.groupToolbarAvatarImageView)
 
         views.groupToolbarTitleView.text = pref.getString(DOMAIN_NAME, null) ?: getString(R.string.cyberia)
     }

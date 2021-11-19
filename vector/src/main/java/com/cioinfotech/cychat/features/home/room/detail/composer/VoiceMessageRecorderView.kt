@@ -366,13 +366,13 @@ class VoiceMessageRecorderView : ConstraintLayout, VoiceMessagePlaybackTracker.L
     }
 
     private fun showRecordingViews() {
-        views.voiceMessageMicButton.setImageResource(R.drawable.ic_voice_mic_recording)
+        views.voiceMessageMicButton.setImageResource(R.drawable.ic_voice_mic)
         views.voiceMessageMicButton.setAttributeTintedBackground(R.drawable.circle_with_halo, R.attr.colorPrimary)
-        views.voiceMessageMicButton.updateLayoutParams<MarginLayoutParams> {
-            setMargins(0, 0, 0, 0)
-        }
+//        views.voiceMessageMicButton.updateLayoutParams<MarginLayoutParams> {
+//            setMargins(0, 0, 0, 0)
+//        }
         views.voiceMessageMicButton.animate().scaleX(1.5f).scaleY(1.5f).setDuration(300).start()
-
+        views.bgSend.isInvisible = true
         views.voiceMessageLockBackground.isVisible = true
         views.voiceMessageLockBackground.animate().setDuration(300).translationY(-dimensionConverter.dpToPx(180).toFloat()).start()
         views.voiceMessageLockImage.isVisible = true
@@ -443,17 +443,18 @@ class VoiceMessageRecorderView : ConstraintLayout, VoiceMessagePlaybackTracker.L
     }
 
     private fun resetMicButtonUi() {
+        views.bgSend.isVisible = true
         views.voiceMessageMicButton.isVisible = true
-        views.voiceMessageMicButton.setImageResource(R.drawable.ic_voice_mic)
         views.voiceMessageMicButton.setAttributeBackground(android.R.attr.selectableItemBackgroundBorderless)
-        views.voiceMessageMicButton.updateLayoutParams<MarginLayoutParams> {
-            if (rtlXMultiplier == -1) {
-                // RTL
-                setMargins(dimensionConverter.dpToPx(12), 0, 0, dimensionConverter.dpToPx(12))
-            } else {
-                setMargins(0, 0, dimensionConverter.dpToPx(12), dimensionConverter.dpToPx(12))
-            }
-        }
+        views.voiceMessageMicButton.setImageResource(R.drawable.ic_voice_mic)
+//        views.voiceMessageMicButton.updateLayoutParams<MarginLayoutParams> {
+//            if (rtlXMultiplier == -1) {
+//                // RTL
+//                setMargins(dimensionConverter.dpToPx(12), 0, 0, dimensionConverter.dpToPx(12))
+//            } else {
+//                setMargins(0, 0, dimensionConverter.dpToPx(12), dimensionConverter.dpToPx(12))
+//            }
+//        }
     }
 
     private fun animateLockImageWithBackground() {
@@ -479,6 +480,7 @@ class VoiceMessageRecorderView : ConstraintLayout, VoiceMessagePlaybackTracker.L
 
         // Lock image animation
         views.voiceMessageMicButton.isInvisible = true
+        views.bgSend.isInvisible = true
         views.voiceMessageLockImage.apply {
             isVisible = true
             animate()
