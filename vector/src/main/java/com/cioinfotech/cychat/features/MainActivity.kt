@@ -45,10 +45,10 @@ import com.cioinfotech.cychat.features.signout.hard.SignedOutActivity
 import com.cioinfotech.cychat.features.signout.soft.SoftLogoutActivity
 import com.cioinfotech.cychat.features.themes.ActivityOtherThemes
 import com.cioinfotech.cychat.features.ui.UiStateRepository
-import kotlinx.parcelize.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.failure.GlobalError
 import timber.log.Timber
 import javax.inject.Inject

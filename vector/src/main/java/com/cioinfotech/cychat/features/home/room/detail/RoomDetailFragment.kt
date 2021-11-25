@@ -845,6 +845,7 @@ class RoomDetailFragment @Inject constructor(
         menu.forEach {
             it.isVisible = roomDetailViewModel.isMenuItemVisible(it.itemId)
         }
+        menu.findItem(R.id.search).isVisible = session.getRoom(roomDetailArgs.roomId)?.isEncrypted() == false
         withState(roomDetailViewModel) { state ->
             // Set the visual state of the call buttons (voice/video) to enabled/disabled according to user permissions
             val callButtonsEnabled = when (state.asyncRoomSummary.invoke()?.joinedMembersCount) {

@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.mvrx.Fail
 import com.airbnb.mvrx.Loading
 import com.airbnb.mvrx.Success
-import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
@@ -53,7 +52,7 @@ class SearchFragment @Inject constructor(
         StateView.EventCallback,
         SearchResultController.Listener {
 
-    private val fragmentArgs: SearchArgs by args()
+    //    private val fragmentArgs: SearchArgs by args()
     private val searchViewModel: SearchViewModel by fragmentViewModel()
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentSearchBinding {
@@ -96,6 +95,7 @@ class SearchFragment @Inject constructor(
                             title = getString(R.string.search_no_results),
                             image = ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_no_results))
                 }
+                else       -> {}
             }
         } else {
             controller.setData(state)

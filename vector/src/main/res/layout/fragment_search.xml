@@ -9,7 +9,7 @@
         android:id="@+id/searchResultRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="top"
         android:overScrollMode="always"
         tools:itemCount="2"
         tools:listitem="@layout/item_search_result" />

@@ -18,12 +18,14 @@ package com.cioinfotech.cychat.features.home
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -63,6 +65,15 @@ import com.cioinfotech.cychat.features.themes.ThemeUtils
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewModel
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.cioinfotech.cychat.push.fcm.FcmHelper
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -83,6 +94,8 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import timber.log.Timber
 import javax.inject.Inject
+
+private const val RC_APP_UPDATE = 11
 
 @Parcelize
 data class HomeActivityArgs(
@@ -127,6 +140,7 @@ class HomeActivity :
     @Inject lateinit var permalinkHandler: PermalinkHandler
     @Inject lateinit var avatarRenderer: AvatarRenderer
     @Inject lateinit var initSyncStepFormatter: InitSyncStepFormatter
+    private lateinit var mAppUpdateManager: AppUpdateManager
 
     private val drawerListener = object : DrawerLayout.SimpleDrawerListener() {
         override fun onDrawerStateChanged(newState: Int) {
@@ -135,6 +149,57 @@ class HomeActivity :
     }
 
     override fun getBinding() = ActivityHomeBinding.inflate(layoutInflater)
+
+    override fun onStart() {
+        super.onStart()
+        mAppUpdateManager = AppUpdateManagerFactory.create(this)
+
+        mAppUpdateManager.registerListener(installStateUpdatedListener)
+
+        mAppUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo: AppUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                try {
+                    mAppUpdateManager.startUpdateFlowForResult(
+                            appUpdateInfo, AppUpdateType.IMMEDIATE, this, RC_APP_UPDATE)
+                } catch (e: IntentSender.SendIntentException) {
+                    e.printStackTrace()
+                }
+            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED)
+                popupSnackbarForCompleteUpdate()
+        }
+    }
+
+    private val installStateUpdatedListener: InstallStateUpdatedListener = object : InstallStateUpdatedListener {
+        override fun onStateUpdate(state: InstallState) {
+            if (state.installStatus() == InstallStatus.INSTALLED)
+                mAppUpdateManager.unregisterListener(this)
+            else if (state.installStatus() == InstallStatus.DOWNLOADED)
+                popupSnackbarForCompleteUpdate()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_APP_UPDATE) {
+            if (resultCode != RESULT_OK)
+                Timber.e("onActivityResult: app download failed")
+            else
+                showSnackbar("App Updated Successfully!!")
+        }
+    }
+
+    private fun popupSnackbarForCompleteUpdate() {
+        val snackbar = Snackbar.make(
+                getBinding().root,
+                "New app is ready!",
+                Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction("Install") {
+            mAppUpdateManager.completeUpdate()
+        }
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.primary_color_light))
+        snackbar.show()
+    }
 
     override fun injectWith(injector: ScreenComponent) {
         injector.inject(this)
@@ -591,5 +656,11 @@ class HomeActivity :
         private const val ROOM_LINK_PREFIX = "${MATRIX_TO_CUSTOM_SCHEME_URL_BASE}room/"
         private const val USER_LINK_PREFIX = "${MATRIX_TO_CUSTOM_SCHEME_URL_BASE}user/"
         var isOneToOneChatOpen = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::mAppUpdateManager.isInitialized)
+            mAppUpdateManager.unregisterListener(installStateUpdatedListener)
     }
 }

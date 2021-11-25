@@ -9,20 +9,20 @@
         android:title="@string/settings"
         app:showAsAction="never" />
 
-    <!--    <item-->
-    <!--        android:id="@+id/search"-->
-    <!--        android:title="@string/search"-->
-    <!--        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/search"
+        android:title="@string/search"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/invite"
         android:title="@string/invite"
         app:showAsAction="never" />
 
-<!--    <item-->
-<!--        android:id="@+id/invite_from_orgs"-->
-<!--        android:title="@string/invite_from_other_organization"-->
-<!--        app:showAsAction="never" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/invite_from_orgs"-->
+    <!--        android:title="@string/invite_from_other_organization"-->
+    <!--        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/wallpaper"

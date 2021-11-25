@@ -155,7 +155,7 @@ class RoomDetailViewModel @AssistedInject constructor(
         const val PAGINATION_COUNT = 50
 
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: RoomDetailViewState): RoomDetailViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: RoomDetailViewState): RoomDetailViewModel {
             val fragment: RoomDetailFragment = (viewModelContext as FragmentViewModelContext).fragment()
 
             return fragment.roomDetailViewModelFactory.create(state)
@@ -666,16 +666,17 @@ class RoomDetailViewModel @AssistedInject constructor(
             return@withState false
         }
         when (itemId) {
-            R.id.timeline_setting       -> true
-            R.id.invite                 -> state.canInvite && !HomeActivity.isOneToOneChatOpen
+            R.id.timeline_setting -> true
+            R.id.invite           -> state.canInvite && !HomeActivity.isOneToOneChatOpen
 //            R.id.open_matrix_apps -> true
             R.id.voice_call,
-            R.id.video_call             -> callManager.getCallsByRoomId(state.roomId).isEmpty()
-            R.id.hangup_call            -> callManager.getCallsByRoomId(state.roomId).isNotEmpty()
-            R.id.search, R.id.wallpaper -> true
+            R.id.video_call       -> callManager.getCallsByRoomId(state.roomId).isEmpty()
+            R.id.hangup_call      -> callManager.getCallsByRoomId(state.roomId).isNotEmpty()
+            R.id.search           -> true
+            R.id.wallpaper        -> true
 //            R.id.invite_from_orgs       -> !HomeActivity.isOneToOneChatOpen
 //            R.id.dev_tools        -> vectorPreferences.developerMode()
-            else                        -> false
+            else                  -> false
         }
     }
 
