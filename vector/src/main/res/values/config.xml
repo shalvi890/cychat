@@ -14,7 +14,8 @@
      -->
 
     <!-- Note: pusher_http_url should have path '/_matrix/push/v1/notify' -->
-    <string name="pusher_http_url" translatable="false">https://cyverse-sygnal.cioinfotech.com/_matrix/push/v1/notify</string>
+    <string name="pusher_http_url" translatable="false">https://cyverse-prod-notif.cioinfotech.com/_matrix/push/v1/notify</string>
+    <string name="pusher_http_url_debug" translatable="false">https://cyverse-iden.cioinfotech.com/_matrix/push/v1/notify</string>
     <!-- Note: pusher_app_id cannot exceed 64 chars -->
     <string name="pusher_app_id" translatable="false">com.cioinfotech.cychat</string>
 

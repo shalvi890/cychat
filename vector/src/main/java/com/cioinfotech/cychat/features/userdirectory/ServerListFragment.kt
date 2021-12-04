@@ -36,7 +36,7 @@ class ServerListFragment(private val tempItemClickListener: ServerListAdapter.It
 
     private lateinit var cyCoreViewModel: CyCoreViewModel
     private var federatedDomainList = mutableListOf<FederatedDomain>()
-    val adapter = ServerListAdapter()
+    private val adapter = ServerListAdapter()
 
     override fun invalidate() {}
 

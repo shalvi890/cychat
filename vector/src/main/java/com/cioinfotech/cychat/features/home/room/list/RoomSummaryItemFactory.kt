@@ -48,23 +48,20 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
                 val changeMembershipState = roomChangeMembershipStates[roomSummary.roomId] ?: ChangeMembershipState.Unknown
                 createInvitationItem(roomSummary, changeMembershipState, listener)
             }
-            else              ->  if (displayMode != RoomListDisplayMode.HOME)
-                createRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked })
+            else              -> if (displayMode != RoomListDisplayMode.HOME)
+                createRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked }, listener?.let { it::onRoomProfileClicked })
             else
-                createHomeRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked })
+                createHomeRoomItem(roomSummary, selectedRoomIds, listener?.let { it::onRoomClicked }, listener?.let { it::onRoomLongClicked }, listener?.let { it::onRoomProfileClicked })
         }
     }
 
     private fun createInvitationItem(roomSummary: RoomSummary,
                                      changeMembershipState: ChangeMembershipState,
                                      listener: RoomListListener?): VectorEpoxyModel<*> {
-        val secondLine = if (roomSummary.isDirect) {
+        val secondLine = if (roomSummary.isDirect)
             roomSummary.inviterId
-        } else {
-            roomSummary.inviterId?.let {
-                stringProvider.getString(R.string.invited_by, it)
-            }
-        }
+        else
+            roomSummary.inviterId?.let { stringProvider.getString(R.string.invited_by, it) }
 
         return RoomInvitationItem_()
                 .id(roomSummary.roomId)
@@ -81,7 +78,8 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
             roomSummary: RoomSummary,
             selectedRoomIds: Set<String>,
             onClick: ((RoomSummary) -> Unit)?,
-            onLongClick: ((RoomSummary) -> Boolean)?
+            onLongClick: ((RoomSummary) -> Boolean)?,
+            onProfileClick: ((RoomSummary) -> Unit)?
     ): VectorEpoxyModel<*> {
         val unreadCount = roomSummary.notificationCount
         val showHighlighted = roomSummary.highlightCount > 0
@@ -118,13 +116,19 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
                             onClick?.invoke(roomSummary)
                         })
                 )
+                .itemProfileClickListener(
+                        DebouncedClickListener({
+                            onProfileClick?.invoke(roomSummary)
+                        })
+                )
     }
 
-    fun createHomeRoomItem(
+    private fun createHomeRoomItem(
             roomSummary: RoomSummary,
             selectedRoomIds: Set<String>,
             onClick: ((RoomSummary) -> Unit)?,
-            onLongClick: ((RoomSummary) -> Boolean)?
+            onLongClick: ((RoomSummary) -> Boolean)?,
+            onProfileClick: ((RoomSummary) -> Unit)?
     ): VectorEpoxyModel<*> {
         val unreadCount = roomSummary.notificationCount
         val showHighlighted = roomSummary.highlightCount > 0
@@ -148,6 +152,11 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
                 .itemClickListener(
                         DebouncedClickListener({
                             onClick?.invoke(roomSummary)
+                        })
+                )
+                .itemProfileClickListener(
+                        DebouncedClickListener({
+                            onProfileClick?.invoke(roomSummary)
                         })
                 )
     }

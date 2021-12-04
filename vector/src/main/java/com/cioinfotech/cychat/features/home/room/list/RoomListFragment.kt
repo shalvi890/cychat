@@ -40,6 +40,7 @@ import com.cioinfotech.cychat.core.platform.StateView
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.resources.UserPreferencesProvider
 import com.cioinfotech.cychat.databinding.FragmentRoomListBinding
+import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.home.RoomListDisplayMode
 import com.cioinfotech.cychat.features.home.room.adapter.RoomHomeConcatAdapter
@@ -67,7 +68,8 @@ class RoomListFragment @Inject constructor(
         val roomListViewModelFactory: RoomListViewModel.Factory,
         private val notificationDrawerManager: NotificationDrawerManager,
         private val footerController: RoomListFooterController,
-        private val userPreferencesProvider: UserPreferencesProvider
+        private val userPreferencesProvider: UserPreferencesProvider,
+        private val avatarRenderer: AvatarRenderer
 ) : VectorBaseFragment<FragmentRoomListBinding>(),
         RoomListListener,
         OnBackPressed,
@@ -450,6 +452,11 @@ class RoomListFragment @Inject constructor(
     override fun onAcceptRoomInvitation(room: RoomSummary) {
         notificationDrawerManager.clearMemberShipNotificationForRoom(room.roomId)
         roomListViewModel.handle(RoomListAction.AcceptInvitation(room))
+    }
+
+    override fun onRoomProfileClicked(room: RoomSummary) {
+        isOneToOneChatOpen = room.isDirect
+        ShowProfileDialogFragment.getInstance(room, avatarRenderer, navigator, this).show(childFragmentManager, "")
     }
 
     override fun onRejectRoomInvitation(room: RoomSummary) {

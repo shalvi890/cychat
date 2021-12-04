@@ -62,7 +62,8 @@ class RoomSummaryPagedController(
                 ),
                 selectedRoomIds = emptySet(),
                 onClick = null,
-                onLongClick = null
+                onLongClick = null,
+                onProfileClick = null
         )
 
         return roomSummaryItemFactory.create(item, roomChangeMembershipStates.orEmpty(), emptySet(), listener, displayMode)

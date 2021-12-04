@@ -107,6 +107,8 @@ import com.cioinfotech.cychat.core.utils.colorizeMatchingText
 import com.cioinfotech.cychat.core.utils.copyToClipboard
 import com.cioinfotech.cychat.core.utils.createJSonViewerStyleProvider
 import com.cioinfotech.cychat.core.utils.createUIHandler
+import com.cioinfotech.cychat.core.utils.forwardMedia
+import com.cioinfotech.cychat.core.utils.forwardText
 import com.cioinfotech.cychat.core.utils.isValidUrl
 import com.cioinfotech.cychat.core.utils.onPermissionDeniedSnackbar
 import com.cioinfotech.cychat.core.utils.openUrlInExternalBrowser
@@ -1387,7 +1389,6 @@ class RoomDetailFragment @Inject constructor(
     }
 
     private fun renderSubTitle(typingMessage: String?, topic: String) {
-        // TODO Temporary place to put typing data
         val subtitle = typingMessage?.takeIf { it.isNotBlank() } ?: topic
         views.roomToolbarSubtitleView.apply {
             setTextOrHide(subtitle)
@@ -1404,7 +1405,6 @@ class RoomDetailFragment @Inject constructor(
     private fun renderTombstoneEventHandling(async: Async<String>) {
         when (async) {
             is Loading -> {
-                // TODO Better handling progress
                 vectorBaseActivity.showWaitingView(getString(R.string.joining_room))
             }
             is Success -> {
@@ -1567,6 +1567,7 @@ class RoomDetailFragment @Inject constructor(
                     }
                 }.show(parentFragmentManager, "REQ")
             }
+            else                                          -> {}
         }
     }
 
@@ -1838,6 +1839,21 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
+    private fun onForwardActionClicked(action: EventSharedAction.Forward) {
+        if (action.messageContent is MessageTextContent) {
+            forwardText(requireContext(), action.messageContent.body)
+        } else if (action.messageContent is MessageWithAttachmentContent) {
+            lifecycleScope.launch {
+                val result = runCatching { session.fileService().downloadFile(messageContent = action.messageContent) }
+                if (!isAdded) return@launch
+                result.fold(
+                        { forwardMedia(requireContext(), it, getMimeTypeFromUri(requireContext(), it.toUri())) },
+                        { showErrorInSnackbar(it) }
+                )
+            }
+        }
+    }
+
     private val saveActionActivityResultLauncher = registerForPermissionsResult { allGranted ->
         if (allGranted) {
             sharedActionViewModel.pendingAction?.let {
@@ -1897,6 +1913,9 @@ class RoomDetailFragment @Inject constructor(
             }
             is EventSharedAction.Share               -> {
                 onShareActionClicked(action)
+            }
+            is EventSharedAction.Forward             -> {
+                onForwardActionClicked(action)
             }
             is EventSharedAction.Save                -> {
                 onSaveActionClicked(action)
@@ -2016,9 +2035,7 @@ class RoomDetailFragment @Inject constructor(
             views.composerLayout.views.composerEditText.setSelection(Command.EMOTE.length)
         } else {
             val roomMember = roomDetailViewModel.getMember(userId)
-            // TODO move logic outside of fragment
-            (roomMember?.displayName ?: userId)
-                    .let { sanitizeDisplayName(it) }
+            sanitizeDisplayName((roomMember?.displayName ?: userId))
                     .let { displayName ->
                         buildSpannedString {
                             append(displayName)
@@ -2233,7 +2250,7 @@ class RoomDetailFragment @Inject constructor(
                 val millSecond = Integer.parseInt(durationStr!!)
                 val attachments = mutableListOf<MultiPickerAudioType>()
                 attachments.add(MultiPickerAudioType(file.name, file.length(), RoomSummaryConstants.MEDIA_TYPE, file.toUri(), millSecond.toLong()))
-                onContentAttachmentsReady(attachments.map { it.toContentAttachmentData() })
+                onContentAttachmentsReady(attachments.map { attachment -> attachment.toContentAttachmentData() })
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(TimeUnit.SECONDS.toMillis(4))
                     file.delete()
@@ -2252,19 +2269,4 @@ class RoomDetailFragment @Inject constructor(
             mRecorder = null
         }
     }
-
-//    fun pauseRecorder() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-//            mRecorder?.pause()
-//    }
-//
-//    fun resumeRecorder() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-//            mRecorder?.resume()
-//    }
-
-//    private fun pauseOrResumeRecording() {
-//        Toast.makeText(requireContext(), "pauseOrResumeRecording", Toast.LENGTH_LONG).show()
-//        if (mRecorder?.)
-//    }
 }

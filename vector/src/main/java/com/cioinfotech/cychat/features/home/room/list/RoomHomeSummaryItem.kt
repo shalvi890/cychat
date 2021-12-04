@@ -45,11 +45,13 @@ abstract class RoomHomeSummaryItem : VectorEpoxyModel<RoomHomeSummaryItem.Holder
     @EpoxyAttribute var showHighlighted: Boolean = false
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash) var itemLongClickListener: View.OnLongClickListener? = null
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash) var itemClickListener: View.OnClickListener? = null
+    @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash) var itemProfileClickListener: View.OnClickListener? = null
     @EpoxyAttribute var showSelected: Boolean = false
 
     override fun bind(holder: Holder) {
         super.bind(holder)
         holder.rootView.setOnClickListener(itemClickListener)
+        holder.avatarImageView.setOnClickListener(itemProfileClickListener)
         holder.rootView.setOnLongClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             itemLongClickListener?.onLongClick(it) ?: false

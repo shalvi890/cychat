@@ -61,6 +61,14 @@ class AvatarRenderer @Inject constructor(private val activeSessionHolder: Active
                 DrawableImageViewTarget(imageView))
     }
 
+    @UiThread
+    fun renderSquare(matrixItem: MatrixItem, imageView: ImageView) {
+        renderSquare(GlideApp.with(imageView),
+                matrixItem,
+                DrawableImageViewTarget(imageView))
+    }
+
+
     fun clear(imageView: ImageView) {
         // It can be called after recycler view is destroyed, just silently catch
         tryOrNull { GlideApp.with(imageView).clear(imageView) }
@@ -99,6 +107,17 @@ class AvatarRenderer @Inject constructor(private val activeSessionHolder: Active
                 .apply(RequestOptions.circleCropTransform())
                 .placeholder(placeholder)
                 .into(target)
+    }
+
+    @UiThread
+    fun renderSquare(glideRequests: GlideRequests,
+                     matrixItem: MatrixItem,
+                     target: Target<Drawable>) {
+        glideRequests.load(activeSessionHolder.getSafeActiveSession()?.contentUrlResolver()?.resolveFullSize(matrixItem.avatarUrl)).into(target)
+    }
+
+    fun getURL(matrixItem: MatrixItem):String?{
+     return activeSessionHolder.getSafeActiveSession()?.contentUrlResolver()?.resolveFullSize(matrixItem.avatarUrl)
     }
 
     @UiThread

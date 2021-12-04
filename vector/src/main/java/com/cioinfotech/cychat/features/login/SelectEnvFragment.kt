@@ -26,6 +26,8 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_CHAT_ENV
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEV
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEV_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.PRODUCTION
+import org.matrix.android.sdk.internal.network.NetworkConstants.PRODUCTION_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.QA
 import org.matrix.android.sdk.internal.network.NetworkConstants.QA_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.UAT
@@ -41,6 +43,17 @@ class SelectEnvFragment : AbstractLoginFragment<FragmentSelectEnvBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val prefs = DefaultSharedPreferences.getInstance(requireContext())
+
+        views.btnProd.setOnClickListener {
+            RetrofitFactory.BASE_URL = PRODUCTION_URL
+            prefs.edit().apply {
+                putString(BASE_URL, PRODUCTION_URL)
+                putString(CY_CHAT_ENV, PRODUCTION)
+                apply()
+            }
+            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
+        }
+
         views.btnDev.setOnClickListener {
             RetrofitFactory.BASE_URL = DEV_URL
             prefs.edit().apply {

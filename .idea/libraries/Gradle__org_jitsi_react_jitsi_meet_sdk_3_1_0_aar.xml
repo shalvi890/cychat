@@ -2,8 +2,8 @@
   <library name="Gradle: org.jitsi.react:jitsi-meet-sdk:3.1.0@aar">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18b88a9b5aedadd7a7ccdcda8961ea9b/jetified-jitsi-meet-sdk-3.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18b88a9b5aedadd7a7ccdcda8961ea9b/jetified-jitsi-meet-sdk-3.1.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18b88a9b5aedadd7a7ccdcda8961ea9b/jetified-jitsi-meet-sdk-3.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/18b88a9b5aedadd7a7ccdcda8961ea9b/jetified-jitsi-meet-sdk-3.1.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

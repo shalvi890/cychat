@@ -18,6 +18,15 @@
         android:textColor="?riotx_text_primary"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/btn_prod" />
+
+    <Button
+        android:id="@+id/btn_prod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/warning_color"
+        android:text="@string/production"
         app:layout_constraintBottom_toTopOf="@id/btn_dev" />
 
     <Button

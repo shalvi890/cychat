@@ -86,7 +86,7 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
 
     companion object : MvRxViewModelFactory<MessageActionsViewModel, MessageActionState> {
         @JvmStatic
-        override fun create(viewModelContext: ViewModelContext, state: MessageActionState): MessageActionsViewModel? {
+        override fun create(viewModelContext: ViewModelContext, state: MessageActionState): MessageActionsViewModel {
             val fragment: MessageActionsBottomSheet = (viewModelContext as FragmentViewModelContext).fragment()
             return fragment.messageActionViewModelFactory.create(state)
         }
@@ -215,30 +215,30 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
         } ?: ""
     }
 
-    private fun getRedactionReason(timelineEvent: TimelineEvent): String {
-        return (timelineEvent
-                .root
-                .unsignedData
-                ?.redactedEvent
-                ?.content
-                ?.get("reason") as? String)
-                ?.takeIf { it.isNotBlank() }
-                .let { reason ->
-                    if (reason == null) {
-                        if (timelineEvent.root.isRedactedBySameUser()) {
-                            stringProvider.getString(R.string.event_redacted_by_user_reason)
-                        } else {
-                            stringProvider.getString(R.string.event_redacted_by_admin_reason)
-                        }
-                    } else {
-                        if (timelineEvent.root.isRedactedBySameUser()) {
-                            stringProvider.getString(R.string.event_redacted_by_user_reason_with_reason, reason)
-                        } else {
-                            stringProvider.getString(R.string.event_redacted_by_admin_reason_with_reason, reason)
-                        }
-                    }
-                }
-    }
+//    private fun getRedactionReason(timelineEvent: TimelineEvent): String {
+//        return (timelineEvent
+//                .root
+//                .unsignedData
+//                ?.redactedEvent
+//                ?.content
+//                ?.get("reason") as? String)
+//                ?.takeIf { it.isNotBlank() }
+//                .let { reason ->
+//                    if (reason == null) {
+//                        if (timelineEvent.root.isRedactedBySameUser()) {
+//                            stringProvider.getString(R.string.event_redacted_by_user_reason)
+//                        } else {
+//                            stringProvider.getString(R.string.event_redacted_by_admin_reason)
+//                        }
+//                    } else {
+//                        if (timelineEvent.root.isRedactedBySameUser()) {
+//                            stringProvider.getString(R.string.event_redacted_by_user_reason_with_reason, reason)
+//                        } else {
+//                            stringProvider.getString(R.string.event_redacted_by_admin_reason_with_reason, reason)
+//                        }
+//                    }
+//                }
+//    }
 
     private fun actionsForEvent(timelineEvent: TimelineEvent, actionPermissions: ActionPermissions): List<EventSharedAction> {
         val messageContent = timelineEvent.getLastMessageContent()
@@ -348,6 +348,10 @@ class MessageActionsViewModel @AssistedInject constructor(@Assisted
 
             if (timelineEvent.hasBeenEdited()) {
                 add(EventSharedAction.ViewEditHistory(informationData))
+            }
+
+            if (canShare(msgType)) {
+                add(EventSharedAction.Forward(timelineEvent.eventId, messageContent!!))
             }
 
             if (canShare(msgType)) {

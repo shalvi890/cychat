@@ -9,14 +9,18 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable-ldrtl/ic_radio_on.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/bg_send.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/border_wallpaper.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/comment.xml" value="0.21574074074074073" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/element_logo_green.xml" value="0.1" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/highlighted_message_background.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_attachment.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_back_24dp.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_call_speaker_default.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_delete.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_download_anim.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_expand_more.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_fab_add_chat.xml" value="0.2323799795709908" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_fab_add_room.xml" value="0.2323799795709908" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_forward_share.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_catchup.xml" value="0.2323799795709908" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_chat.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_group.xml" value="0.2323799795709908" />
@@ -27,7 +31,10 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_login_splash_sliders.xml" value="0.1" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_logo_matrix_org.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_microphone.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_more_horizontal_2.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_more_vertical.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_radio_on.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_reply.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_send.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_star_24dp.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_voice_mic.xml" value="0.23697916666666666" />
@@ -57,6 +64,7 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login_server_selection.xml" value="0.2" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login_splash.xml" value="0.2" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_my_dialog.xml" value="0.21666666666666667" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_profile_full_screen.xml" value="0.27113702623906705" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_detail.xml" value="0.2" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_fav_list.xml" value="0.12409420289855072" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_home_list.xml" value="0.1984375" />
@@ -64,10 +72,11 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_wallpaper.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_search.xml" value="0.15443840579710144" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_select_env.xml" value="0.176" />
-        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_server_list.xml" value="0.4" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_server_list.xml" value="0.152" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_show_profile_dialog.xml" value="0.264" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_code_show.xml" value="0.2" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_directory.xml" value="0.1766304347826087" />
-        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_list.xml" value="0.4" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_list.xml" value="0.6" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_validate_security_code.xml" value="0.264" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_bottom_sheet_quick_reaction.xml" value="0.18206521739130435" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_bottom_sheet_room_preview.xml" value="0.21666666666666667" />
@@ -95,6 +104,7 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_file_stub.xml" value="0.4" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_media_message_stub.xml" value="0.10833333333333334" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_text_message_stub.xml" value="0.6" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_unknown_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_user.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/view_attachment_type_selector.xml" value="0.1" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/view_call_controls.xml" value="0.2" />

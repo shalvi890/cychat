@@ -18,7 +18,7 @@ package com.cioinfotech.cychat.features.home
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
+import android.content.IntentSender.SendIntentException
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -95,7 +95,8 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import timber.log.Timber
 import javax.inject.Inject
 
-private const val RC_APP_UPDATE = 11
+private const val FLEXIBLE_APP_UPDATE_REQ_CODE = 123
+private const val IMMEDIATE_APP_UPDATE_REQ_CODE = 124
 
 @Parcelize
 data class HomeActivityArgs(
@@ -140,7 +141,8 @@ class HomeActivity :
     @Inject lateinit var permalinkHandler: PermalinkHandler
     @Inject lateinit var avatarRenderer: AvatarRenderer
     @Inject lateinit var initSyncStepFormatter: InitSyncStepFormatter
-    private lateinit var mAppUpdateManager: AppUpdateManager
+    private lateinit var appUpdateManager: AppUpdateManager
+    private lateinit var installStateUpdatedListener: InstallStateUpdatedListener
 
     private val drawerListener = object : DrawerLayout.SimpleDrawerListener() {
         override fun onDrawerStateChanged(newState: Int) {
@@ -149,57 +151,6 @@ class HomeActivity :
     }
 
     override fun getBinding() = ActivityHomeBinding.inflate(layoutInflater)
-
-    override fun onStart() {
-        super.onStart()
-        mAppUpdateManager = AppUpdateManagerFactory.create(this)
-
-        mAppUpdateManager.registerListener(installStateUpdatedListener)
-
-        mAppUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo: AppUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
-                try {
-                    mAppUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.IMMEDIATE, this, RC_APP_UPDATE)
-                } catch (e: IntentSender.SendIntentException) {
-                    e.printStackTrace()
-                }
-            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED)
-                popupSnackbarForCompleteUpdate()
-        }
-    }
-
-    private val installStateUpdatedListener: InstallStateUpdatedListener = object : InstallStateUpdatedListener {
-        override fun onStateUpdate(state: InstallState) {
-            if (state.installStatus() == InstallStatus.INSTALLED)
-                mAppUpdateManager.unregisterListener(this)
-            else if (state.installStatus() == InstallStatus.DOWNLOADED)
-                popupSnackbarForCompleteUpdate()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_APP_UPDATE) {
-            if (resultCode != RESULT_OK)
-                Timber.e("onActivityResult: app download failed")
-            else
-                showSnackbar("App Updated Successfully!!")
-        }
-    }
-
-    private fun popupSnackbarForCompleteUpdate() {
-        val snackbar = Snackbar.make(
-                getBinding().root,
-                "New app is ready!",
-                Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction("Install") {
-            mAppUpdateManager.completeUpdate()
-        }
-        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.primary_color_light))
-        snackbar.show()
-    }
 
     override fun injectWith(injector: ScreenComponent) {
         injector.inject(this)
@@ -213,8 +164,77 @@ class HomeActivity :
         return serverBackupviewModelFactory.create(initialState)
     }
 
+    private fun checkUpdate() {
+        if (!::appUpdateManager.isInitialized)
+            appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE))
+                startUpdateFlow(appUpdateInfo)
+            else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
+                startImmediateUpdateFlow(appUpdateInfo)
+            else if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS)
+                startUpdateFlow(appUpdateInfo)
+            else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED)
+                popupSnackBarForCompleteUpdate()
+        }
+    }
+
+    private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
+        try {
+            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, FLEXIBLE_APP_UPDATE_REQ_CODE)
+        } catch (e: SendIntentException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun startImmediateUpdateFlow(appUpdateInfo: AppUpdateInfo) {
+        try {
+            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, IMMEDIATE_APP_UPDATE_REQ_CODE)
+        } catch (e: SendIntentException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == FLEXIBLE_APP_UPDATE_REQ_CODE || requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
+            when (resultCode) {
+                RESULT_CANCELED -> Unit
+                RESULT_OK       -> Unit
+                else            -> checkUpdate()
+            }
+        }
+    }
+
+    private fun popupSnackBarForCompleteUpdate() {
+        Snackbar.make(views.root, "New app is ready!", Snackbar.LENGTH_INDEFINITE).let {
+            it.setAction("Install") {
+                appUpdateManager.completeUpdate()
+            }
+            it.setActionTextColor(ContextCompat.getColor(this, R.color.primary_color_light))
+            it.show()
+        }
+    }
+
+    private fun removeInstallStateUpdateListener() {
+        appUpdateManager.unregisterListener(installStateUpdatedListener)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        checkUpdate()
+        installStateUpdatedListener = InstallStateUpdatedListener { state: InstallState ->
+            when (state.installStatus()) {
+                InstallStatus.DOWNLOADED -> popupSnackBarForCompleteUpdate()
+                InstallStatus.INSTALLED  -> removeInstallStateUpdateListener()
+                else                     -> Unit
+            }
+        }
+        appUpdateManager.registerListener(installStateUpdatedListener)
         FcmHelper.ensureFcmTokenIsRetrieved(this, pushManager, vectorPreferences.areNotificationEnabledForDevice())
         sharedActionViewModel = viewModelProvider.get(HomeSharedActionViewModel::class.java)
 
@@ -660,7 +680,6 @@ class HomeActivity :
 
     override fun onStop() {
         super.onStop()
-        if (::mAppUpdateManager.isInitialized)
-            mAppUpdateManager.unregisterListener(installStateUpdatedListener)
+        removeInstallStateUpdateListener()
     }
 }

@@ -32,6 +32,7 @@ class IncomingShareController @Inject constructor(private val roomSummaryItemFac
     interface Callback {
         fun onRoomClicked(roomSummary: RoomSummary)
         fun onRoomLongClicked(roomSummary: RoomSummary): Boolean
+        fun onRoomProfileClicked(room: RoomSummary)
     }
 
     var callback: Callback? = null
@@ -52,7 +53,7 @@ class IncomingShareController @Inject constructor(private val roomSummaryItemFac
         } else {
             roomSummaries.forEach { roomSummary ->
                 roomSummaryItemFactory
-                        .createRoomItem(roomSummary, data.selectedRoomIds, callback?.let { it::onRoomClicked }, callback?.let { it::onRoomLongClicked })
+                        .createRoomItem(roomSummary, data.selectedRoomIds, callback?.let { it::onRoomClicked }, callback?.let { it::onRoomLongClicked }, callback?.let { it::onRoomProfileClicked })
                         .addTo(this)
             }
         }

@@ -41,6 +41,9 @@ import com.cioinfotech.cychat.databinding.FragmentIncomingShareBinding
 import com.cioinfotech.cychat.features.attachments.AttachmentsHelper
 import com.cioinfotech.cychat.features.attachments.preview.AttachmentsPreviewActivity
 import com.cioinfotech.cychat.features.attachments.preview.AttachmentsPreviewArgs
+import com.cioinfotech.cychat.features.home.AvatarRenderer
+import com.cioinfotech.cychat.features.home.HomeActivity
+import com.cioinfotech.cychat.features.home.room.list.ShowProfileDialogFragment
 import com.cioinfotech.cychat.features.login.LoginActivity
 
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
@@ -54,7 +57,8 @@ import javax.inject.Inject
 class IncomingShareFragment @Inject constructor(
         val incomingShareViewModelFactory: IncomingShareViewModel.Factory,
         private val incomingShareController: IncomingShareController,
-        private val sessionHolder: ActiveSessionHolder
+        private val sessionHolder: ActiveSessionHolder,
+        private val avatarRenderer: AvatarRenderer
 ) :
         VectorBaseFragment<FragmentIncomingShareBinding>(),
         AttachmentsHelper.Callback,
@@ -223,11 +227,17 @@ class IncomingShareFragment @Inject constructor(
     }
 
     override fun onRoomClicked(roomSummary: RoomSummary) {
+        HomeActivity.isOneToOneChatOpen = roomSummary.isDirect
         viewModel.handle(IncomingShareAction.SelectRoom(roomSummary, false))
     }
 
     override fun onRoomLongClicked(roomSummary: RoomSummary): Boolean {
         viewModel.handle(IncomingShareAction.SelectRoom(roomSummary, true))
         return true
+    }
+
+    override fun onRoomProfileClicked(room: RoomSummary) {
+        HomeActivity.isOneToOneChatOpen = room.isDirect
+        ShowProfileDialogFragment.getInstance(room, avatarRenderer, navigator, callback = this).show(childFragmentManager, "")
     }
 }

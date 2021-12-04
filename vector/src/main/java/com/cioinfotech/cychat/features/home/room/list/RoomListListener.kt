@@ -24,4 +24,5 @@ interface RoomListListener : FilteredRoomFooterItem.FilteredRoomFooterItemListen
     fun onRoomLongClicked(room: RoomSummary): Boolean
     fun onRejectRoomInvitation(room: RoomSummary)
     fun onAcceptRoomInvitation(room: RoomSummary)
+    fun onRoomProfileClicked(room: RoomSummary)
 }

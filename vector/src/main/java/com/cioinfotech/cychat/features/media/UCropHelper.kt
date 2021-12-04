@@ -41,7 +41,7 @@ fun createUCropWithDefaultSettings(colorProvider: ColorProvider,
                                 // setFreeStyleCropEnabled(true)
                                 // Color used for toolbar icon and text
                                 setToolbarColor(colorProvider.getColorFromAttribute(R.attr.riotx_background))
-                                setToolbarWidgetColor(colorProvider.getColorFromAttribute(R.attr.vctr_toolbar_primary_text_color))
+                                setToolbarWidgetColor(colorProvider.getColorFromAttribute(R.attr.riot_primary_text_color))
                                 // Background
                                 setRootViewBackgroundColor(colorProvider.getColorFromAttribute(R.attr.riotx_background))
                                 // Status bar color (pb in dark mode, icon of the status bar are dark)

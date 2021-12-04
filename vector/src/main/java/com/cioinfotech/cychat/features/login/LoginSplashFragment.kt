@@ -25,18 +25,14 @@ import androidx.core.view.isVisible
 import com.cioinfotech.cychat.BuildConfig
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentLoginSplashBinding
-import com.cioinfotech.cychat.features.settings.VectorPreferences
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.RetrofitFactory
-
 import javax.inject.Inject
 
 /**
  * In this screen, the user is viewing an introduction to what he can do with this application
  */
-class LoginSplashFragment @Inject constructor(
-        private val vectorPreferences: VectorPreferences
-) : AbstractLoginFragment<FragmentLoginSplashBinding>() {
+class LoginSplashFragment @Inject constructor() : AbstractLoginFragment<FragmentLoginSplashBinding>() {
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentLoginSplashBinding {
         return FragmentLoginSplashBinding.inflate(inflater, container, false)
@@ -59,10 +55,10 @@ class LoginSplashFragment @Inject constructor(
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
         else {
             val prefs = DefaultSharedPreferences.getInstance(requireContext())
-            RetrofitFactory.BASE_URL = NetworkConstants.UAT_URL
+            RetrofitFactory.BASE_URL = NetworkConstants.PRODUCTION_URL
             prefs.edit().apply {
-                putString(NetworkConstants.BASE_URL, NetworkConstants.UAT_URL)
-                putString(NetworkConstants.CY_CHAT_ENV, NetworkConstants.UAT)
+                putString(NetworkConstants.BASE_URL, NetworkConstants.PRODUCTION_URL)
+                putString(NetworkConstants.CY_CHAT_ENV, NetworkConstants.PRODUCTION)
                 apply()
             }
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))

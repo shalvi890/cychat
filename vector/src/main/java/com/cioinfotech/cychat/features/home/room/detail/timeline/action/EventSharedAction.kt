@@ -51,6 +51,9 @@ sealed class EventSharedAction(@StringRes val titleRes: Int,
     data class Share(val eventId: String, val messageContent: MessageContent) :
             EventSharedAction(R.string.share, R.drawable.ic_share)
 
+    data class Forward(val eventId: String, val messageContent: MessageContent) :
+            EventSharedAction(R.string.forward, R.drawable.ic_forward_share)
+
     data class Save(val eventId: String, val messageContent: MessageWithAttachmentContent) :
             EventSharedAction(R.string.save, R.drawable.ic_material_save)
 

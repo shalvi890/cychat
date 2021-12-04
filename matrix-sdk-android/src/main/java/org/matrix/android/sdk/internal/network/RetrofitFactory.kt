@@ -31,7 +31,7 @@ import javax.inject.Inject
 class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
 
     companion object {
-        var BASE_URL = NetworkConstants.UAT_URL
+        var BASE_URL = NetworkConstants.PRODUCTION_URL
     }
 
     /**

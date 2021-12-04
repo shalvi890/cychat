@@ -43,10 +43,12 @@ object NetworkConstants {
     const val DEV_URL = "https://cychat-dev.cioinfotech.com"
     const val QA_URL = "https://cyberiaqa-api.cioinfotech.com"
     const val UAT_URL = "https://cychat-ct.cioinfotech.com"
+    const val PRODUCTION_URL = "https://cyv-prod-matrix.cioinfotech.com"
 
     const val DEV = "Development"
     const val QA = "QA"
     const val UAT = "UAT"
+    const val PRODUCTION = "PRODUCTION"
 
     // Cy Chat APIs
     const val USER_LOGIN = "/user-login"
@@ -69,7 +71,6 @@ object NetworkConstants {
     const val JITSI = "JITSI"
     const val SYGNAL = "SYGNAL"
     const val DEFAULT_URLS = "/get-jitsi-url"
-
 
     //    const val REQ_ID_SMALL = "req_id"
     const val DOMAIN_NAME = "DOMAIN_NAME"

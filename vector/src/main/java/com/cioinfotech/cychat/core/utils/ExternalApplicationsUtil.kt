@@ -334,6 +334,44 @@ private fun sendShareIntent(context: Context, intent: Intent) {
     }
 }
 
+fun forwardMedia(context: Context, file: File, mediaMimeType: String?) {
+    var mediaUri: Uri? = null
+    try {
+        mediaUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileProvider", file)
+    } catch (e: Exception) {
+        Timber.e(e, "onMediaAction Selected File cannot be shared")
+    }
+
+    if (null != mediaUri) {
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        // Grant temporary read permission to the content URI
+        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        sendIntent.type = mediaMimeType
+        sendIntent.putExtra(Intent.EXTRA_STREAM, mediaUri)
+
+        forwardIntent(context, sendIntent)
+    }
+}
+
+fun forwardText(context: Context, text: String) {
+    val sendIntent = Intent()
+    sendIntent.action = Intent.ACTION_SEND
+    sendIntent.type = "text/plain"
+    sendIntent.putExtra(Intent.EXTRA_TEXT, text)
+
+    forwardIntent(context, sendIntent)
+}
+
+private fun forwardIntent(context: Context, intent: Intent) {
+    try {
+        intent.setPackage(context.packageName)
+        context.startActivity(intent)
+    } catch (activityNotFoundException: ActivityNotFoundException) {
+        context.toast(R.string.error_no_external_application_found)
+    }
+}
+
 private fun appendTimeToFilename(name: String): String {
     val dateExtension = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
     if (!name.contains(".")) return name + "_" + dateExtension
