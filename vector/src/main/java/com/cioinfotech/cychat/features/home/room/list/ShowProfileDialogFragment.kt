@@ -62,11 +62,6 @@ class ShowProfileDialogFragment(
             requireDialog().dismiss()
         }
         views.root.setOnClickListener { requireDialog().dismiss() }
-        views.ivSettings.setOnClickListener {
-            onRoomClicked?.onRoomLongClicked(room)
-            callback?.onRoomLongClicked(room)
-            requireDialog().dismiss()
-        }
         views.ivInfo.setOnClickListener {
             navigator.openRoomProfile(requireActivity(), room.roomId)
         }

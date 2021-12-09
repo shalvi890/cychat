@@ -19,16 +19,16 @@ package com.cioinfotech.cychat.features.share
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.MvRxViewModelFactory
 import com.airbnb.mvrx.ViewModelContext
-import com.jakewharton.rxrelay2.BehaviorRelay
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.assisted.AssistedFactory
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.extensions.toggle
 import com.cioinfotech.cychat.core.platform.VectorViewModel
 import com.cioinfotech.cychat.features.attachments.isPreviewable
 import com.cioinfotech.cychat.features.attachments.toGroupedContentAttachmentData
 import com.cioinfotech.cychat.features.home.room.list.BreadcrumbsRoomComparator
+import com.jakewharton.rxrelay2.BehaviorRelay
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import org.matrix.android.sdk.api.query.QueryStringValue
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
@@ -114,26 +114,26 @@ class IncomingShareViewModel @AssistedInject constructor(
 
     private fun handleShareToSelectedRooms() = withState { state ->
         val sharedData = state.sharedData ?: return@withState
-        if (state.selectedRoomIds.size == 1) {
-            // In this case the edition of the media will be handled by the RoomDetailFragment
-            val selectedRoomId = state.selectedRoomIds.first()
-            val selectedRoom = state.roomSummaries()?.find { it.roomId == selectedRoomId } ?: return@withState
-            _viewEvents.post(IncomingShareViewEvents.ShareToRoom(selectedRoom, sharedData, showAlert = false))
-        } else {
-            when (sharedData) {
-                is SharedData.Text        -> {
-                    state.selectedRoomIds.forEach { roomId ->
-                        val room = session.getRoom(roomId)
-                        room?.sendTextMessage(sharedData.text)
-                    }
-                    // This is it, pass the first roomId to let the screen open it
-                    _viewEvents.post(IncomingShareViewEvents.MultipleRoomsShareDone(state.selectedRoomIds.first()))
+//        if (state.selectedRoomIds.size == 1) {
+//            // In this case the edition of the media will be handled by the RoomDetailFragment
+//            val selectedRoomId = state.selectedRoomIds.first()
+//            val selectedRoom = state.roomSummaries()?.find { it.roomId == selectedRoomId } ?: return@withState
+//            _viewEvents.post(IncomingShareViewEvents.ShareToRoom(selectedRoom, sharedData, showAlert = false))
+//        } else {
+        when (sharedData) {
+            is SharedData.Text        -> {
+                state.selectedRoomIds.forEach { roomId ->
+                    val room = session.getRoom(roomId)
+                    room?.sendTextMessage(sharedData.text)
                 }
-                is SharedData.Attachments -> {
-                    shareAttachments(sharedData.attachmentData, state.selectedRoomIds, proposeMediaEdition = true, compressMediaBeforeSending = false)
-                }
-            }.exhaustive
-        }
+                // This is it, pass the first roomId to let the screen open it
+                _viewEvents.post(IncomingShareViewEvents.MultipleRoomsShareDone(state.selectedRoomIds.first()))
+            }
+            is SharedData.Attachments -> {
+                shareAttachments(sharedData.attachmentData, state.selectedRoomIds, proposeMediaEdition = true, compressMediaBeforeSending = false)
+            }
+        }.exhaustive
+//        }
     }
 
     private fun handleShareToRoom(action: IncomingShareAction.ShareToRoom) = withState { state ->
@@ -185,28 +185,32 @@ class IncomingShareViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectRoom(action: IncomingShareAction.SelectRoom) = withState { state ->
-        if (state.isInMultiSelectionMode) {
-            // One room is clicked (or long clicked) while in multi selection mode -> toggle this room
-            val selectedRooms = state.selectedRoomIds
-            val newSelectedRooms = selectedRooms.toggle(action.roomSummary.roomId)
-            setState { copy(isInMultiSelectionMode = newSelectedRooms.isNotEmpty(), selectedRoomIds = newSelectedRooms) }
-        } else if (action.enableMultiSelect) {
-            // One room is long clicked, not in multi selection mode -> enable multi selection mode
-            setState { copy(isInMultiSelectionMode = true, selectedRoomIds = setOf(action.roomSummary.roomId)) }
-        } else {
-            // One room is clicked, not in multi selection mode -> direct share
-            val sharedData = state.sharedData ?: return@withState
-            val doNotShowAlert = when (sharedData) {
-                is SharedData.Attachments -> {
-                    // Do not show alert if the shared data contains only previewable attachments, because the user will get another chance to cancel the share
-                    sharedData.attachmentData.all { it.isPreviewable() }
-                }
-                is SharedData.Text        -> {
-                    // Do not show alert when sharing text to one room, because it will just fill the composer
-                    true
-                }
+        when {
+            state.isInMultiSelectionMode -> {
+                // One room is clicked (or long clicked) while in multi selection mode -> toggle this room
+                val selectedRooms = state.selectedRoomIds
+                val newSelectedRooms = selectedRooms.toggle(action.roomSummary.roomId)
+                setState { copy(isInMultiSelectionMode = newSelectedRooms.isNotEmpty(), selectedRoomIds = newSelectedRooms) }
             }
-            _viewEvents.post(IncomingShareViewEvents.ShareToRoom(action.roomSummary, sharedData, !doNotShowAlert))
+            action.enableMultiSelect     -> {
+                // One room is long clicked, not in multi selection mode -> enable multi selection mode
+                setState { copy(isInMultiSelectionMode = true, selectedRoomIds = setOf(action.roomSummary.roomId)) }
+            }
+            else                         -> {
+                // One room is clicked, not in multi selection mode -> direct share
+                val sharedData = state.sharedData ?: return@withState
+                val doNotShowAlert = when (sharedData) {
+                    is SharedData.Attachments -> {
+                        // Do not show alert if the shared data contains only previewable attachments, because the user will get another chance to cancel the share
+                        sharedData.attachmentData.all { it.isPreviewable() }
+                    }
+                    is SharedData.Text        -> {
+                        // Do not show alert when sharing text to one room, because it will just fill the composer
+                        true
+                    }
+                }
+                _viewEvents.post(IncomingShareViewEvents.ShareToRoom(action.roomSummary, sharedData, !doNotShowAlert))
+            }
         }
     }
 }

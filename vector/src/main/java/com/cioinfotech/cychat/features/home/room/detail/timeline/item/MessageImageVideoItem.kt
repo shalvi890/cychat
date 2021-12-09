@@ -80,6 +80,7 @@ abstract class MessageImageVideoItem : AbsMessageItem<MessageImageVideoItem.Hold
             constraintSet.setHorizontalBias(holder.imageView.id, 0f)
         constraintSet.applyTo(holder.clImageVideo)
         holder.textTimeView.text = attributes.informationData.time
+        holder.textTimeView.isVisible = attributes.informationData.forceShowTimestamp
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
     }
 

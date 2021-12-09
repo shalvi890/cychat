@@ -97,6 +97,7 @@ abstract class MessageFileItem : AbsMessageItem<MessageFileItem.Holder>() {
         else
             constraintSet.setHorizontalBias(holder.clFiles.id, 0f)
         constraintSet.applyTo(holder.fileLayout as ConstraintLayout)
+        holder.textTimeView.isVisible =attributes.informationData.forceShowTimestamp
         holder.textTimeView.text = attributes.informationData.time
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
         attributes.avatarRenderer.render(attributes.informationData.matrixItem, holder.avatarImageView)

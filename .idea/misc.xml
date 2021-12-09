@@ -58,6 +58,7 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_audio_recorder.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_deactivate_account.xml" value="0.2151268115942029" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_home_detail.xml" value="0.21422101449275363" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_incoming_share.xml" value="0.1" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_loading.xml" value="0.152" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login.xml" value="0.29398148148148145" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login_o_t_p.xml" value="0.264" />
@@ -103,6 +104,7 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_code_block_stub.xml" value="0.15443840579710144" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_file_stub.xml" value="0.4" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_media_message_stub.xml" value="0.10833333333333334" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_redacted_stub.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_text_message_stub.xml" value="0.6" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_unknown_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_user.xml" value="0.21666666666666667" />
@@ -117,6 +119,7 @@
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/xml/vector_settings_notifications.xml" value="0.264" />
+        <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/xml/vector_settings_preferences.xml" value="0.15443840579710144" />
       </map>
     </option>
   </component>

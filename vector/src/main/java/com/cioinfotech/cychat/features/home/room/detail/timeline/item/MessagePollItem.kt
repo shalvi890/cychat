@@ -111,6 +111,7 @@ abstract class MessagePollItem : AbsMessageItem<MessagePollItem.Holder>() {
         holder.infoText.text = holder.view.context.resources.getQuantityString(R.plurals.poll_info, totalVotes, totalVotes)
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
         holder.textTimeView.text = attributes.informationData.time
+        holder.textTimeView.isVisible = attributes.informationData.forceShowTimestamp
     }
 
     override fun unbind(holder: Holder) {

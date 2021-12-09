@@ -20,14 +20,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
-import com.google.android.material.button.MaterialButton
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.setTextOrHide
 import com.cioinfotech.cychat.core.ui.views.SendStateImageView
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailAction
 import com.cioinfotech.cychat.features.home.room.detail.timeline.TimelineEventController
+import com.google.android.material.button.MaterialButton
 import org.matrix.android.sdk.api.session.room.model.message.MessageOptionsContent
 
 @EpoxyModelClass(layout = R.layout.item_timeline_event_base)
@@ -72,6 +73,7 @@ abstract class MessageOptionsItem : AbsMessageItem<MessageOptionsItem.Holder>() 
             Gravity.START
         holder.sendStateImageView.render(attributes.informationData.sendStateDecoration)
         holder.textTimeView.text = attributes.informationData.time
+        holder.textTimeView.isVisible = attributes.informationData.forceShowTimestamp
     }
 
     class Holder : AbsMessageItem.Holder(STUB_ID) {

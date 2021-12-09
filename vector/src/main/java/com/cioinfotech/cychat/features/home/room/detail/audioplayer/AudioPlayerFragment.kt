@@ -51,9 +51,9 @@ class AudioPlayerFragment(private val url: String? = null, private val fileName:
         if (url.isNullOrEmpty() && file == null)
             dismiss()
 
-        fileName?.let {
-            views.tvFileName.text = it
-        }
+//        fileName?.let {
+//            views.tvFileName.text = it
+//        }
         views.seekBar.setOnTouchListener { _, _ -> true }
         try {
             mediaPlayer.apply {

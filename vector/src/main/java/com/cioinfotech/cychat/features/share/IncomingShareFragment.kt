@@ -227,8 +227,8 @@ class IncomingShareFragment @Inject constructor(
     }
 
     override fun onRoomClicked(roomSummary: RoomSummary) {
-        HomeActivity.isOneToOneChatOpen = roomSummary.isDirect
-        viewModel.handle(IncomingShareAction.SelectRoom(roomSummary, false))
+//        HomeActivity.isOneToOneChatOpen = roomSummary.isDirect
+        viewModel.handle(IncomingShareAction.SelectRoom(roomSummary, true))
     }
 
     override fun onRoomLongClicked(roomSummary: RoomSummary): Boolean {

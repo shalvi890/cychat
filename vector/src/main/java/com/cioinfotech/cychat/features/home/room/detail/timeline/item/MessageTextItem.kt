@@ -96,34 +96,41 @@ abstract class MessageTextItem : AbsMessageItem<MessageTextItem.Holder>() {
         /**
          * Changes Done To Add Date at the end of message & add space
          */
-        val time = attributes.informationData.time?.replace(Regex(" "), ".")
-        val spannable = SpannableString(SpannableStringBuilder().append("    ").append(time)).apply {
-            setSpan(
-                    ForegroundColorSpan(Color.GRAY),
-                    0,
-                    this.length,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-            )
-            setSpan(
-                    AbsoluteSizeSpan(TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_DIP,
-                            11.toFloat(),
-                            holder.messageView.context.resources.displayMetrics
-                    ).toInt()),
-                    0,
-                    this.length,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            setSpan(
-                    ForegroundColorSpan(Color.TRANSPARENT),
-                    this.length - 3,
-                    this.length - 2,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-            )
+        val textFuture = if (attributes.informationData.forceShowTimestamp) {
+            val time = attributes.informationData.time?.replace(Regex(" "), ".")
+            val spannable = SpannableString(SpannableStringBuilder().append("    ").append(time)).apply {
+                setSpan(
+                        ForegroundColorSpan(Color.GRAY),
+                        0,
+                        this.length,
+                        Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+                setSpan(
+                        AbsoluteSizeSpan(TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                11.toFloat(),
+                                holder.messageView.context.resources.displayMetrics
+                        ).toInt()),
+                        0,
+                        this.length,
+                        Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                setSpan(
+                        ForegroundColorSpan(Color.TRANSPARENT),
+                        this.length - 3,
+                        this.length - 2,
+                        Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            PrecomputedTextCompat.getTextFuture(
+                    if (!message.isNullOrEmpty()) SpannableStringBuilder().append(message).append(spannable) else "",
+                    TextViewCompat.getTextMetricsParams(holder.messageView),
+                    null)
+        } else {
+            PrecomputedTextCompat.getTextFuture(
+                    message ?: "",
+                    TextViewCompat.getTextMetricsParams(holder.messageView),
+                    null)
         }
-        val textFuture = PrecomputedTextCompat.getTextFuture(
-                if (!message.isNullOrEmpty()) SpannableStringBuilder().append(message).append(spannable) else "",
-                TextViewCompat.getTextMetricsParams(holder.messageView),
-                null)
         super.bind(holder)
         holder.messageView.movementMethod = movementMethod
 
