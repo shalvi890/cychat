@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'placeholder-resolver'
+apply plugin: 'com.google.firebase.crashlytics'
 
 buildscript {
     repositories {
@@ -19,7 +20,7 @@ kapt {
 // Note: 2 digits max for each value
 ext.versionMajor = 0
 ext.versionMinor = 0
-ext.versionPatch = 40
+ext.versionPatch = 41
 
 //static def getGitTimestamp() {
 //    def cmd = 'git show -s --format=%ct'
@@ -132,7 +133,7 @@ android {
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (main, features, etc.) will have version code based on application version.
-        versionCode 103
+        versionCode 104
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
@@ -447,8 +448,10 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.5'
+    implementation 'com.google.firebase:firebase-analytics-ktx:20.0.1'
     // gplay flavor only
-    gplayImplementation('com.google.firebase:firebase-messaging:22.0.0') {
+    gplayImplementation('com.google.firebase:firebase-messaging:23.0.0') {
         exclude group: 'com.google.firebase', module: 'firebase-core'
         exclude group: 'com.google.firebase', module: 'firebase-analytics'
         exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'

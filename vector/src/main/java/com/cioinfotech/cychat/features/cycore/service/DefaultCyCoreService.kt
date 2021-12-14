@@ -20,7 +20,6 @@ import com.cioinfotech.cychat.features.cycore.CyCoreAPI
 import dagger.Lazy
 import io.reactivex.Single
 import okhttp3.OkHttpClient
-import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 import javax.inject.Inject

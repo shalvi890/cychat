@@ -43,7 +43,7 @@ object NetworkConstants {
     const val DEV_URL = "https://cychat-dev.cioinfotech.com"
     const val QA_URL = "https://cyberiaqa-api.cioinfotech.com"
     const val UAT_URL = "https://cychat-ct.cioinfotech.com"
-    const val PRODUCTION_URL = "https://cyverse-production.cioinfotech.com"
+    const val PRODUCTION_URL = "https://cyverse-production1.cioinfotech.com"
 
     const val DEV = "Development"
     const val QA = "QA"

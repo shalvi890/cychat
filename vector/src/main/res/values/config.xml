@@ -20,7 +20,7 @@
     <string name="pusher_app_id" translatable="false">com.cioinfotech.cychat</string>
 
     <!-- preferred jitsi domain -->
-    <string name="preferred_jitsi_domain" translatable="false">cyverse-jitsi1.cioinfotech.com</string>
+    <string name="preferred_jitsi_domain" translatable="false">https://cyverse-prod-jitsi.cioinfotech.com/</string>
 
     <string-array name="room_directory_servers" translatable="false">
         <item>matrix.org</item>

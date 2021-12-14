@@ -3281,7 +3281,7 @@
     <string name="event_status_failed_messages_warning">Messages failed to send</string>
     <string name="event_status_delete_all_failed_dialog_title">Delete unsent messages</string>
     <string name="event_status_delete_all_failed_dialog_message">Are you sure you want to delete all unsent messages in this room?</string>
-    <string name="you_are_signing_up_for_your_organization_s_secure_instant_messenger">You are using a secure, trusted communications to for your organisation.</string>
+    <string name="you_are_signing_up_for_your_organization_s_secure_instant_messenger">You are using a secure, trusted communications for your organisation.</string>
     <string name="welcome_back">Welcome Back %s %s</string>
     <string name="please_select_environment">Please Select Environment</string>
     <string name="development">Development</string>

@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.BillCarsonFr:JsonViewer:0.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/12d507efd45ac54eb02214b8ad0d066b/jetified-JsonViewer-0.6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/12d507efd45ac54eb02214b8ad0d066b/jetified-JsonViewer-0.6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/12d507efd45ac54eb02214b8ad0d066b/jetified-JsonViewer-0.6/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/30ba44fbed63cf54e82283fc71309901/jetified-JsonViewer-0.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/30ba44fbed63cf54e82283fc71309901/jetified-JsonViewer-0.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/30ba44fbed63cf54e82283fc71309901/jetified-JsonViewer-0.6/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

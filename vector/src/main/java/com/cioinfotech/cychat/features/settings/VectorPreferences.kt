@@ -722,7 +722,7 @@ class VectorPreferences @Inject constructor(private val context: Context) {
      * @return true if the message timestamps must be always shown
      */
     fun alwaysShowTimeStamps(): Boolean {
-        return defaultPrefs.getBoolean(SETTINGS_ALWAYS_SHOW_TIMESTAMPS_KEY, false)
+        return defaultPrefs.getBoolean(SETTINGS_ALWAYS_SHOW_TIMESTAMPS_KEY, true)
     }
 
     /**

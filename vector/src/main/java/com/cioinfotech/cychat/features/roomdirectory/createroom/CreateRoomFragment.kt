@@ -26,7 +26,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.airbnb.mvrx.Loading
 import com.airbnb.mvrx.Success
-import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
 import com.cioinfotech.cychat.R
@@ -38,10 +37,10 @@ import com.cioinfotech.cychat.core.platform.OnBackPressed
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.resources.ColorProvider
 import com.cioinfotech.cychat.databinding.FragmentCreateRoomBinding
+import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.roomdirectory.RoomDirectorySharedAction
 import com.cioinfotech.cychat.features.roomdirectory.RoomDirectorySharedActionViewModel
 import kotlinx.parcelize.Parcelize
-
 import org.matrix.android.sdk.api.session.room.failure.CreateRoomFailure
 import javax.inject.Inject
 
@@ -61,7 +60,6 @@ class CreateRoomFragment @Inject constructor(
 
     private lateinit var sharedActionViewModel: RoomDirectorySharedActionViewModel
     private val viewModel: CreateRoomViewModel by fragmentViewModel()
-    private val args: CreateRoomArgs by args()
 
     private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
 
@@ -87,10 +85,8 @@ class CreateRoomFragment @Inject constructor(
     }
 
     override fun showFailure(throwable: Throwable) {
-        // Note: RoomAliasError are displayed directly in the form
-        if (throwable !is CreateRoomFailure.AliasError) {
+        if (throwable !is CreateRoomFailure.AliasError)
             super.showFailure(throwable)
-        }
     }
 
     private fun setupWaitingView() {
@@ -150,6 +146,7 @@ class CreateRoomFragment @Inject constructor(
     }
 
     override fun submit() {
+        HomeActivity.isOneToOneChatOpen = false
         viewModel.handle(CreateRoomAction.Create)
     }
 
@@ -169,9 +166,7 @@ class CreateRoomFragment @Inject constructor(
                         .setNegativeButton(R.string.no, null)
                         .show()
                 true
-            } else {
-                false
-            }
+            } else false
         }
     }
 
@@ -181,11 +176,8 @@ class CreateRoomFragment @Inject constructor(
         if (async is Success) {
             // Navigate to freshly created room
             navigator.openRoom(requireActivity(), async())
-
             sharedActionViewModel.post(RoomDirectorySharedAction.Close)
-        } else {
-            // Populate list with Epoxy
+        } else
             createRoomController.setData(state)
-        }
     }
 }

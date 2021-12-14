@@ -39,7 +39,7 @@ interface CyCoreAPI {
             @Header("reqid") reqId: String?,
             @Query("user_id") userId: String?): Single<DomainDetails>
 
-    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:N")
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:Y")
     @POST(NetworkConstants.UPDATE_RECOVERY_KEY)
     fun updateRecoveryKey(
             @Header("Authorization") auth: String?,
@@ -53,7 +53,7 @@ interface CyCoreAPI {
             @Header("reqid") reqId: String?,
             @QueryMap map: HashMap<String, String>): Single<BaseResponse>
 
-    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:N")
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.LIST_FEDERATED_DOMAINS)
     fun getFederatedDomains(
             @Header("Authorization") auth: String?,
