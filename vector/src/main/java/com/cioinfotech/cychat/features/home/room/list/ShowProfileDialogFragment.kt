@@ -65,18 +65,19 @@ class ShowProfileDialogFragment(
         views.ivInfo.setOnClickListener {
             navigator.openRoomProfile(requireActivity(), room.roomId)
         }
-        views.ivProfile.setOnClickListener {
-            ProfileFullScreenFragment(room, avatarRenderer).show(childFragmentManager, "")
-        }
         views.tvTitle.text = room.displayName
         if (room.toMatrixItem().avatarUrl == "")
             avatarRenderer.render(room.toMatrixItem(), views.ivProfile)
-        else
+        else {
             Glide.with(requireContext())
                     .load(avatarRenderer.getURL(room.toMatrixItem()))
                     .placeholder(showCircularProgressDrawable(requireContext()))
                     .error(R.mipmap.ic_launcher)
                     .into(views.ivProfile)
+            views.ivProfile.setOnClickListener {
+                ProfileFullScreenFragment(room, avatarRenderer).show(childFragmentManager, "")
+            }
+        }
     }
 
     private fun showCircularProgressDrawable(context: Context): CircularProgressDrawable {

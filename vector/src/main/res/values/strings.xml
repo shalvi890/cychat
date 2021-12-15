@@ -2123,7 +2123,7 @@
     <string name="create_room_action_create">"CREATE"</string>
     <string name="create_room_name_section">"Room name"</string>
     <string name="create_room_name_hint">"Name*"</string>
-    <string name="create_room_name_error">Please, enter Room name</string>
+    <string name="create_room_name_error">Please enter Room name</string>
     <string name="create_room_topic_section">"Room topic (optional)"</string>
     <string name="create_room_topic_hint">"Topic"</string>
     <string name="create_room_settings_section">"Room settings"</string>
@@ -2634,8 +2634,8 @@
     <string name="verification_request_alert_description">For extra security, verify %s by checking a one-time code on both your devices.\n\nFor maximum security, do this in person.</string>
     <string name="room_profile_not_encrypted_subtitle">Messages in this room are not end-to-end encrypted.</string>
     <string name="direct_room_profile_not_encrypted_subtitle">Messages here are not end-to-end encrypted.</string>
-    <string name="room_profile_encrypted_subtitle">Messages in this room are end-to-end encrypted.\n\nYour messages are secured with locks and only you and the recipient have the unique keys to unlock them.</string>
-    <string name="direct_room_profile_encrypted_subtitle">Messages here are end-to-end encrypted.\n\nYour messages are secured with locks and only you and the recipient have the unique keys to unlock them.</string>
+    <string name="room_profile_encrypted_subtitle">Messages in this room are end-to-end encrypted.</string>
+    <string name="direct_room_profile_encrypted_subtitle">Messages here are end-to-end encrypted.</string>
     <string name="room_profile_section_security">Security</string>
     <string name="room_profile_section_security_learn_more">Learn more</string>
     <string name="room_profile_section_more">More</string>
@@ -3292,9 +3292,9 @@
     <string name="you_are_searching_in">You are searching in %s:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
     <string name="hello_blank_fragment"> </string>
-    <string name="please_select_server_to_search">Please, select organization to search</string>
+    <string name="please_select_server_to_search">Please select organization to search</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
-    <string name="please_enter_security_code">Please, enter verification code</string>
+    <string name="please_enter_security_code">Please enter verification code</string>
     <string name="change_org">Enable Invite Other Organization</string>
     <string name="search_company_name">Search Organization Name</string>
     <string name="logo">Logo</string>

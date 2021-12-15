@@ -16,14 +16,11 @@
 
 package com.cioinfotech.cychat.features.home.room.list
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.cioinfotech.cychat.R
+import androidx.core.net.toUri
 import com.cioinfotech.cychat.core.platform.VectorBaseDialogFragment
 import com.cioinfotech.cychat.databinding.FragmentProfileFullScreenBinding
 import com.cioinfotech.cychat.features.home.AvatarRenderer
@@ -41,21 +38,23 @@ class ProfileFullScreenFragment(private val room: RoomSummary, private var avata
             requireDialog().dismiss()
         }
         views.tvTitle.text = room.displayName
-        if (room.toMatrixItem().avatarUrl == "")
-            avatarRenderer.render(room.toMatrixItem(), views.ivProfile)
-        else
-            Glide.with(requireContext())
-                    .load(avatarRenderer.getURL(room.toMatrixItem()))
-                    .placeholder(showCircularProgressDrawable(requireContext()))
-                    .error(R.mipmap.ic_launcher)
-                    .into(views.ivProfile)
-    }
-
-    private fun showCircularProgressDrawable(context: Context): CircularProgressDrawable {
-        return CircularProgressDrawable(context).apply {
-            strokeWidth = 8f
-            centerRadius = 48f
-            start()
+        if (!room.toMatrixItem().avatarUrl.isNullOrEmpty()) {
+//            avatarRenderer.render(room.toMatrixItem(), views.ivProfile)
+//        else
+            views.ivProfile.showImage(avatarRenderer.getURL(room.toMatrixItem())?.toUri())
+//            Glide.with(requireContext())
+//                    .load(avatarRenderer.getURL(room.toMatrixItem()))
+//                    .placeholder(showCircularProgressDrawable(requireContext()))
+//                    .error(R.mipmap.ic_launcher)
+//                    .into(views.ivProfile)
         }
     }
+
+//    private fun showCircularProgressDrawable(context: Context): CircularProgressDrawable {
+//        return CircularProgressDrawable(context).apply {
+//            strokeWidth = 8f
+//            centerRadius = 48f
+//            start()
+//        }
+//    }
 }

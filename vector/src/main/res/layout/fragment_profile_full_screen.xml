@@ -35,16 +35,15 @@
         app:layout_constraintTop_toTopOf="@id/iv_back"
         tools:text="text ssome big name" />
 
-    <ImageView
+    <com.github.piasy.biv.view.BigImageView
         android:id="@+id/iv_profile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:contentDescription="@null"
+        app:failureImageInitScaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@id/iv_back"
+        app:optimizeDisplay="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

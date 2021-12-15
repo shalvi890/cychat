@@ -169,14 +169,14 @@ class HomeDetailFragment @Inject constructor(
         if (logo != null)
             Glide.with(this)
                     .load(logo)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round)
                     .apply(RequestOptions.circleCropTransform())
                     .into(DrawableImageViewTarget(views.groupToolbarAvatarImageView))
         else
-            avatarRenderer.render(GlideApp.with(requireActivity()), R.mipmap.ic_launcher, views.groupToolbarAvatarImageView)
+            avatarRenderer.render(GlideApp.with(requireActivity()), R.mipmap.ic_launcher_round, views.groupToolbarAvatarImageView)
 
-        views.groupToolbarTitleView.text = pref.getString(DOMAIN_NAME, null) ?: getString(R.string.cyberia)
+        views.groupToolbarTitleView.text = pref.getString(DOMAIN_NAME, "") ?: getString(R.string.app_name)
     }
 
     override fun onResume() {

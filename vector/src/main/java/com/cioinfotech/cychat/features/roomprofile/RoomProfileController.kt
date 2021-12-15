@@ -61,9 +61,7 @@ class RoomProfileController @Inject constructor(
     }
 
     override fun buildModels(data: RoomProfileViewState?) {
-        if (data == null) {
-            return
-        }
+        if (data == null) return
         val roomSummary = data.roomSummary() ?: return
 
         // Topic
@@ -164,11 +162,12 @@ class RoomProfileController @Inject constructor(
         }
         buildProfileAction(
                 id = "leave",
-                title = stringProvider.getString(if (roomSummary.isDirect) {
-                    R.string.direct_room_profile_section_more_leave
-                } else {
-                    R.string.room_profile_section_more_leave
-                }),
+                title = stringProvider.getString(
+                        if (roomSummary.isDirect)
+                            R.string.direct_room_profile_section_more_leave
+                        else
+                            R.string.room_profile_section_more_leave
+                ),
                 dividerColor = dividerColor,
                 divider = false,
                 destructive = true,
