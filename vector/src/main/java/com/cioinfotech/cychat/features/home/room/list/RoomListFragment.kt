@@ -239,10 +239,12 @@ class RoomListFragment @Inject constructor(
     }
 
     override fun fabCreateDirectChat() {
+        isOneToOneChatOpen = true
         navigator.openCreateDirectRoom(requireActivity())
     }
 
     override fun fabOpenRoomDirectory() {
+        isOneToOneChatOpen = false
         navigator.openRoomDirectory(requireActivity(), "")
     }
 
