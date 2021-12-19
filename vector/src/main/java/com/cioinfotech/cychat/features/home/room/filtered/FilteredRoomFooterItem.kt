@@ -37,7 +37,7 @@ abstract class FilteredRoomFooterItem : VectorEpoxyModel<FilteredRoomFooterItem.
         super.bind(holder)
         holder.createRoomButton.setOnClickListener { listener?.createRoom(currentFilter) }
         holder.createDirectChat.setOnClickListener { listener?.fabCreateDirectChat() }
-        holder.openRoomDirectory.setOnClickListener { listener?.createRoom(currentFilter) }
+        holder.openRoomDirectory.setOnClickListener { listener?.openRoomDirectory(currentFilter) }
     }
 
     class Holder : VectorEpoxyHolder() {
@@ -48,6 +48,8 @@ abstract class FilteredRoomFooterItem : VectorEpoxyModel<FilteredRoomFooterItem.
 
     interface FilteredRoomFooterItemListener : NotifsFabMenuView.Listener {
         fun createRoom(initialName: String)
+        fun createDirectChat()
+        fun openRoomDirectory(initialFilter: String)
     }
 
     interface Listener {

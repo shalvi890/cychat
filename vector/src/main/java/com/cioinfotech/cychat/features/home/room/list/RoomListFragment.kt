@@ -74,7 +74,7 @@ class RoomListFragment @Inject constructor(
         RoomListListener,
         OnBackPressed,
         FilteredRoomFooterItem.Listener,
-        NotifsFabMenuView.Listener {
+        FilteredRoomFooterItem.FilteredRoomFooterItemListener {
 
     private var modelBuildListener: OnModelBuildFinishedListener? = null
     private lateinit var sharedActionViewModel: RoomListQuickActionsSharedActionViewModel
