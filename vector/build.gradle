@@ -110,7 +110,7 @@ project.android.buildTypes.all { buildType ->
 android {
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\tejab\\AndroidStudioProjects\\cychat\\playstore\\cychat.jks')
+            storeFile file('D:\\Projects\\AndroidStudioProjects\\cychat\\playstore\\cychat.jks')
             storePassword 'Qwerty@12345'
             keyPassword 'Qwerty@12345'
             keyAlias 'key'
