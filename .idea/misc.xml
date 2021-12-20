@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_add_people.xml" value="0.23697916666666666" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_catchup.xml" value="0.23697916666666666" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_chat.xml" value="0.23697916666666666" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_group.xml" value="0.23697916666666666" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_filter_footer.xml" value="0.1" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/mipmap-anydpi-v26/ic_launcher_debug.xml" value="0.1" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/matrix-sdk-android/src/main/res/drawable/ic_verification_fish.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable-anydpi-v26/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/tejab/AndroidStudioProjects/cychat/vector/src/main/res/drawable-ldrtl/ic_radio_off.xml" value="0.23697916666666666" />
