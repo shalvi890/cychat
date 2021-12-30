@@ -1072,6 +1072,12 @@ class RoomDetailFragment @Inject constructor(
         }
     }
 
+    private val attachmentVideoActivityResultLauncher = registerStartForActivityResult {
+        if (it.resultCode == Activity.RESULT_OK) {
+            attachmentsHelper.onRecordedVideoResult()
+        }
+    }
+
     private val contentAttachmentActivityResultLauncher = registerStartForActivityResult { activityResult ->
         val data = activityResult.data ?: return@registerStartForActivityResult
         if (activityResult.resultCode == Activity.RESULT_OK) {
@@ -2128,16 +2134,20 @@ class RoomDetailFragment @Inject constructor(
     }
 
     override fun onTypeSelected(type: AttachmentTypeSelectorView.Type) {
-        if (checkPermissions(type.permissionsBit, requireActivity(), typeSelectedActivityResultLauncher)) {
+        if (checkPermissions(type.permissionsBit, requireActivity(), typeSelectedActivityResultLauncher))
             launchAttachmentProcess(type)
-        } else {
+        else
             attachmentsHelper.pendingType = type
-        }
     }
 
     private fun launchAttachmentProcess(type: AttachmentTypeSelectorView.Type) {
         when (type) {
-            AttachmentTypeSelectorView.Type.CAMERA  -> attachmentsHelper.openCamera(requireContext(), attachmentPhotoActivityResultLauncher)
+            AttachmentTypeSelectorView.Type.CAMERA  -> attachmentsHelper.openCamera(
+                    activity = requireActivity(),
+                    vectorPreferences = vectorPreferences,
+                    cameraActivityResultLauncher =           attachmentPhotoActivityResultLauncher,
+                    cameraVideoActivityResultLauncher = attachmentVideoActivityResultLauncher
+            )
             AttachmentTypeSelectorView.Type.FILE    -> attachmentsHelper.selectFile(attachmentFileActivityResultLauncher)
             AttachmentTypeSelectorView.Type.GALLERY -> attachmentsHelper.selectGallery(attachmentImageActivityResultLauncher)
             AttachmentTypeSelectorView.Type.AUDIO   -> attachmentsHelper.selectAudio(attachmentAudioActivityResultLauncher)

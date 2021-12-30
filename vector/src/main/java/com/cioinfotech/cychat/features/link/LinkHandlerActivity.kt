@@ -62,24 +62,23 @@ class LinkHandlerActivity : VectorBaseActivity<ActivityProgressBinding>() {
             return
         }
 
-        if (uri.getQueryParameter(LoginConfig.CONFIG_HS_PARAMETER) != null) {
-            handleConfigUrl(uri)
-        } else if (SUPPORTED_HOSTS.contains(uri.host)) {
-            handleSupportedHostUrl(uri)
-        } else {
-            // Other links are not yet handled, but should not come here (manifest configuration error?)
-            toast(R.string.universal_link_malformed)
-            finish()
+        when {
+            uri.getQueryParameter(LoginConfig.CONFIG_HS_PARAMETER) != null -> handleConfigUrl(uri)
+            SUPPORTED_HOSTS.contains(uri.host)                             -> handleSupportedHostUrl(uri)
+            else                                                           -> {
+                // Other links are not yet handled, but should not come here (manifest configuration error?)
+                toast(R.string.universal_link_malformed)
+                finish()
+            }
         }
     }
 
     private fun handleConfigUrl(uri: Uri) {
-        if (sessionHolder.hasActiveSession()) {
+        if (sessionHolder.hasActiveSession())
             displayAlreadyLoginPopup(uri)
-        } else {
-            // user is not yet logged in, this is the nominal case
+        else
             startLoginActivity(uri)
-        }
+        // user is not yet logged in, this is the nominal case
     }
 
     private fun handleSupportedHostUrl(uri: Uri) {
@@ -175,13 +174,14 @@ class LinkHandlerActivity : VectorBaseActivity<ActivityProgressBinding>() {
 
     companion object {
         private val SUPPORTED_HOSTS = listOf(
+                "cyverse.co.za"
                 // Regular Element Web instance
-                "app.element.io",
+//                "app.element.io",
                 // Other known instances of Element Web
-                "develop.element.io",
-                "staging.element.io",
+//                "develop.element.io",
+//                "staging.element.io",
                 // Previous Web instance, kept for compatibility reason
-                "riot.im"
+//                "riot.im"
         )
         private val SUPPORTED_PATHS = listOf(
                 "/#/room/",

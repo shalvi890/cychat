@@ -43,6 +43,7 @@ import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_PICKING_CONTACT
 import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_RECORD_AUDIO
 import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_TAKING_PHOTO
 import com.cioinfotech.cychat.databinding.ViewAttachmentTypeSelectorBinding
+import com.cioinfotech.cychat.features.attachments.AttachmentTypeSelectorView.Callback
 import kotlin.math.max
 
 private const val ANIMATION_DURATION = 250
@@ -93,11 +94,10 @@ class AttachmentTypeSelectorView(context: Context,
         if (isKeyboardOpen) {
             showAtLocation(anchor, Gravity.NO_GRAVITY, 0, anchorCoordinates[1] + anchor.height)
         } else {
-            val contentViewHeight = if (contentView.height == 0) {
+            val contentViewHeight = if (contentView.height == 0)
                 contentView.getMeasurements().second
-            } else {
+            else
                 contentView.height
-            }
             showAtLocation(anchor, Gravity.NO_GRAVITY, 0, anchorCoordinates[1] - contentViewHeight)
         }
         contentView.doOnNextLayout {

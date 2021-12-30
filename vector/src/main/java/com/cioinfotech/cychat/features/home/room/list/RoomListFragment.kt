@@ -49,7 +49,6 @@ import com.cioinfotech.cychat.features.home.room.list.actions.RoomListActionsArg
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsBottomSheet
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedAction
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedActionViewModel
-import com.cioinfotech.cychat.features.home.room.list.widget.NotifsFabMenuView
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.extensions.orTrue
@@ -441,6 +440,7 @@ class RoomListFragment @Inject constructor(
 
     override fun onRoomLongClicked(room: RoomSummary): Boolean {
         userPreferencesProvider.neverShowLongClickOnRoomHelpAgain()
+        isOneToOneChatOpen = room.isDirect
         withState(roomListViewModel) {
             // refresh footer
             footerController.setData(it)

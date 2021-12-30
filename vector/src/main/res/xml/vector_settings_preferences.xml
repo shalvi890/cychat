@@ -55,6 +55,12 @@
             android:summary="@string/settings_show_emoji_keyboard_summary"
             android:title="@string/settings_show_emoji_keyboard" />
 
+        <com.cioinfotech.cychat.core.preference.VectorPreference
+            android:key="SETTINGS_INTERFACE_TAKE_PHOTO_VIDEO"
+            android:persistent="false"
+            android:summary="@string/option_always_ask"
+            android:title="@string/option_take_photo_video" />
+
     </com.cioinfotech.cychat.core.preference.VectorPreferenceCategory>
 
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory android:title="@string/settings_category_timeline">

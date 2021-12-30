@@ -79,6 +79,12 @@ class VectorPreferences @Inject constructor(private val context: Context) {
         // user
         const val SETTINGS_PROFILE_PICTURE_PREFERENCE_KEY = "SETTINGS_PROFILE_PICTURE_PREFERENCE_KEY"
 
+        // Possible values for TAKE_PHOTO_VIDEO_MODE
+        const val TAKE_PHOTO_VIDEO_MODE_ALWAYS_ASK = 0
+        const val TAKE_PHOTO_VIDEO_MODE_PHOTO = 1
+        const val TAKE_PHOTO_VIDEO_MODE_VIDEO = 2
+        private const val TAKE_PHOTO_VIDEO_MODE = "TAKE_PHOTO_VIDEO_MODE"
+
         // contacts
         const val SETTINGS_CONTACTS_PHONEBOOK_COUNTRY_PREFERENCE_KEY = "SETTINGS_CONTACTS_PHONEBOOK_COUNTRY_PREFERENCE_KEY"
 
@@ -942,6 +948,19 @@ class VectorPreferences @Inject constructor(private val context: Context) {
             BackgroundSyncMode.values().firstOrNull { it.name == strPref } ?: BackgroundSyncMode.FDROID_BACKGROUND_SYNC_MODE_FOR_BATTERY
         } catch (e: Throwable) {
             BackgroundSyncMode.FDROID_BACKGROUND_SYNC_MODE_FOR_BATTERY
+        }
+    }
+
+    /*
+    * Photo / video picker
+    */
+    fun getTakePhotoVideoMode(): Int {
+        return defaultPrefs.getInt(TAKE_PHOTO_VIDEO_MODE, TAKE_PHOTO_VIDEO_MODE_ALWAYS_ASK)
+    }
+
+    fun setTakePhotoVideoMode(mode: Int) {
+        return defaultPrefs.edit {
+            putInt(TAKE_PHOTO_VIDEO_MODE, mode)
         }
     }
 }

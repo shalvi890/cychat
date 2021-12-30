@@ -15,12 +15,15 @@
  */
 package com.cioinfotech.cychat.features.attachments
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
+import com.cioinfotech.cychat.core.dialogs.PhotoOrVideoDialog
 import com.cioinfotech.cychat.core.platform.Restorable
+import com.cioinfotech.cychat.features.settings.VectorPreferences
 import com.cioinfotech.lib.multipicker.MultiPicker
 import org.matrix.android.sdk.BuildConfig
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
@@ -93,9 +96,28 @@ class AttachmentsHelper(val context: Context, val callback: Callback) : Restorab
     /**
      * Starts the process for handling capture image picking
      */
-    fun openCamera(context: Context, activityResultLauncher: ActivityResultLauncher<Intent>) {
-        captureUri = MultiPicker.get(MultiPicker.CAMERA).startWithExpectingFile(context, activityResultLauncher)
+    fun openCamera(activity: Activity,
+                   vectorPreferences: VectorPreferences,
+                   cameraActivityResultLauncher: ActivityResultLauncher<Intent>,
+                   cameraVideoActivityResultLauncher: ActivityResultLauncher<Intent>) {
+        PhotoOrVideoDialog(activity, vectorPreferences).show(object : PhotoOrVideoDialog.PhotoOrVideoDialogListener {
+            override fun takePhoto() {
+                captureUri = MultiPicker.get(MultiPicker.CAMERA).startWithExpectingFile(context, cameraActivityResultLauncher)
+            }
+
+            override fun takeVideo() {
+                captureUri = MultiPicker.get(MultiPicker.RECORDED_VIDEO).startWithExpectingFile(context, cameraVideoActivityResultLauncher)
+            }
+        })
     }
+
+
+//    /**
+//     * Starts the process for handling capture image picking
+//     */
+//    fun openCameraForVideo(context: Context, activityResultLauncher: ActivityResultLauncher<Intent>) {
+//        captureUri = MultiPicker.get(MultiPicker.RECORDED_VIDEO).startWithExpectingFile(context, activityResultLauncher)
+//    }
 
     /**
      * Starts the process for handling contact picking
@@ -159,6 +181,18 @@ class AttachmentsHelper(val context: Context, val callback: Callback) : Restorab
                         .getSelectedFiles(context, data)
                         .map { it.toContentAttachmentData() }
         )
+    }
+
+    fun onRecordedVideoResult() {
+        captureUri?.let { captureUri ->
+            MultiPicker.get(MultiPicker.RECORDED_VIDEO)
+                    .getTakenVideo(context, captureUri)
+                    ?.let {
+                        callback.onContentAttachmentsReady(
+                                listOf(it).map { it.toContentAttachmentData() }
+                        )
+                    }
+        }
     }
 
     /**

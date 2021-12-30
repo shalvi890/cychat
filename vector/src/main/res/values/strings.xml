@@ -2308,6 +2308,7 @@
     <string name="attachment_type_contact">"Contact"</string>
     <string name="attachment_type_record">"Record"</string>
     <string name="attachment_type_camera">"Camera"</string>
+    <string name="attachment_type_video">"Video"</string>
     <string name="attachment_type_audio">"Audio"</string>
     <string name="attachment_type_gallery">"Gallery"</string>
     <string name="attachment_type_sticker">"Sticker"</string>
@@ -3324,4 +3325,6 @@
     <string name="missing_permissions_title">Permissions Missing</string>
     <string name="denied_permission_voice_message">Permission To Record Voice Denied</string>
     <string name="production">Production</string>
+    <string name="option_always_ask">Always Ask</string>
+    <string name="use_as_default_and_do_not_ask_again">Use as default and do not ask again</string>
 </resources>

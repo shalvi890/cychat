@@ -37,7 +37,8 @@
             app:layout_constraintEnd_toEndOf="@id/messageThumbnailView"
             app:layout_constraintStart_toStartOf="@id/messageThumbnailView"
             app:layout_constraintTop_toTopOf="@id/messageThumbnailView"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:tint="@color/primary_color_light" />
 
         <include
             android:id="@+id/messageMediaUploadProgressLayout"

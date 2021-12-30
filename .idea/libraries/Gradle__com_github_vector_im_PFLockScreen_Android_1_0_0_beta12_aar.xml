@@ -5,8 +5,8 @@
     </ANNOTATIONS>
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
