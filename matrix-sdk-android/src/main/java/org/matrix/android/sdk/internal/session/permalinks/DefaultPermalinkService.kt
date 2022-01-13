@@ -42,9 +42,6 @@ internal class DefaultPermalinkService @Inject constructor(
     }
 
     override fun getLinkedId(url: String): String? {
-        return url
-                .takeIf { it.startsWith(MATRIX_TO_URL_BASE) }
-                ?.substring(MATRIX_TO_URL_BASE.length)
-                ?.substringBeforeLast("?")
+        return permalinkFactory.getLinkedId(url)
     }
 }

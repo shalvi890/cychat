@@ -16,7 +16,10 @@
 
 package org.matrix.android.sdk.internal.session.permalinks
 
+import org.matrix.android.sdk.api.MatrixConfiguration
 import org.matrix.android.sdk.api.session.events.model.Event
+import org.matrix.android.sdk.api.session.permalinks.PermalinkData
+import org.matrix.android.sdk.api.session.permalinks.PermalinkParser
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService.Companion.MATRIX_TO_URL_BASE
 import org.matrix.android.sdk.api.session.room.members.roomMemberQueryParams
 import org.matrix.android.sdk.api.session.room.model.Membership
@@ -30,7 +33,8 @@ internal class PermalinkFactory @Inject constructor(
         @UserId
         private val userId: String,
         // Use a provider to fix circular Dagger dependency
-        private val roomGetterProvider: Provider<RoomGetter>
+        private val roomGetterProvider: Provider<RoomGetter>,
+        private val matrixConfiguration: MatrixConfiguration
 ) {
 
     fun createPermalink(event: Event): String? {
@@ -58,12 +62,52 @@ internal class PermalinkFactory @Inject constructor(
         return MATRIX_TO_URL_BASE + escape(roomId) + "/" + escape(eventId) + computeViaParams(userId, roomId)
     }
 
-    fun getLinkedId(url: String): String? {
-        val isSupported = url.startsWith(MATRIX_TO_URL_BASE)
+    fun createPermalink(roomId: String, eventId: String, forceMatrixTo: Boolean): String {
+        return buildString {
+            append(baseUrl(forceMatrixTo))
+            if (useClientFormat(forceMatrixTo)) {
+                append(ROOM_PATH)
+            }
+            append(escape(roomId))
+            append("/")
+            append(escape(eventId))
+            append(computeViaParams(userId, roomId))
+        }
+    }
 
-        return if (isSupported) {
-            url.substring(MATRIX_TO_URL_BASE.length)
-        } else null
+    /**
+     * Get the permalink base URL according to the potential one in [MatrixConfiguration.clientPermalinkBaseUrl]
+     * and the [forceMatrixTo] parameter.
+     *
+     * @param forceMatrixTo whether we should force using matrix.to base URL.
+     *
+     * @return the permalink base URL.
+     */
+    private fun baseUrl(forceMatrixTo: Boolean): String {
+        return matrixConfiguration.clientPermalinkBaseUrl
+                ?.takeUnless { forceMatrixTo }
+                ?: MATRIX_TO_URL_BASE
+    }
+
+    private fun useClientFormat(forceMatrixTo: Boolean): Boolean {
+        return !forceMatrixTo && matrixConfiguration.clientPermalinkBaseUrl != null
+    }
+
+    fun getLinkedId(url: String): String? {
+        val clientBaseUrl = matrixConfiguration.clientPermalinkBaseUrl
+        return when {
+            url.startsWith(MATRIX_TO_URL_BASE)                     -> url.substring(MATRIX_TO_URL_BASE.length)
+            clientBaseUrl != null && url.startsWith(clientBaseUrl) -> {
+                when (PermalinkParser.parse(url)) {
+                    is PermalinkData.GroupLink -> url.substring(clientBaseUrl.length + GROUP_PATH.length)
+                    is PermalinkData.RoomLink  -> url.substring(clientBaseUrl.length + ROOM_PATH.length)
+                    is PermalinkData.UserLink  -> url.substring(clientBaseUrl.length + USER_PATH.length)
+                    else                       -> null
+                }
+            }
+            else                                                   -> null
+        }
+                ?.substringBeforeLast("?")
     }
 
     /**
@@ -114,5 +158,11 @@ internal class PermalinkFactory @Inject constructor(
                 ?.map { it.userId }
                 .orEmpty()
                 .toSet()
+    }
+
+    companion object {
+        private const val ROOM_PATH = "room/"
+        private const val USER_PATH = "user/"
+        private const val GROUP_PATH = "group/"
     }
 }

@@ -12,9 +12,9 @@
 
     <ImageView
         android:id="@+id/roomInvitationAvatarImageView"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:contentDescription="@string/avatar"
         app:layout_constraintStart_toStartOf="parent"

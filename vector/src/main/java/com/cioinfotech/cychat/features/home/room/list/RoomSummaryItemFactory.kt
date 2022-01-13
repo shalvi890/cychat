@@ -30,6 +30,7 @@ import org.matrix.android.sdk.api.session.room.members.ChangeMembershipState
 import org.matrix.android.sdk.api.session.room.model.Membership
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import org.matrix.android.sdk.api.util.toMatrixItem
+import org.matrix.android.sdk.api.util.toNormalEmail
 import javax.inject.Inject
 
 class RoomSummaryItemFactory @Inject constructor(private val displayableEventFormatter: DisplayableEventFormatter,
@@ -59,9 +60,9 @@ class RoomSummaryItemFactory @Inject constructor(private val displayableEventFor
                                      changeMembershipState: ChangeMembershipState,
                                      listener: RoomListListener?): VectorEpoxyModel<*> {
         val secondLine = if (roomSummary.isDirect)
-            roomSummary.inviterId
+            roomSummary.inviterId?.toNormalEmail()
         else
-            roomSummary.inviterId?.let { stringProvider.getString(R.string.invited_by, it) }
+            roomSummary.inviterId?.let { stringProvider.getString(R.string.invited_by, it.toNormalEmail()) }
 
         return RoomInvitationItem_()
                 .id(roomSummary.roomId)
