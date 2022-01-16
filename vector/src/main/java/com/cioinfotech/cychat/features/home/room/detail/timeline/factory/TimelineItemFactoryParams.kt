@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.home.room.detail.timeline.factory
 
 import com.cioinfotech.cychat.features.home.room.detail.timeline.TimelineEventController
+import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineEventsGroup
 import org.matrix.android.sdk.api.session.room.timeline.TimelineEvent
 
 data class TimelineItemFactoryParams(
@@ -25,7 +26,8 @@ data class TimelineItemFactoryParams(
         val nextEvent: TimelineEvent? = null,
         val highlightedEventId: String? = null,
         val lastSentEventIdWithoutReadReceipts: String? = null,
-        val callback: TimelineEventController.Callback? = null
+        val callback: TimelineEventController.Callback? = null,
+        val eventsGroup: TimelineEventsGroup? = null
 ) {
     val isHighlighted = highlightedEventId == event.eventId
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package im.vector.app.features.roomprofile.notifications
+package com.cioinfotech.cychat.features.roomprofile.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,11 +29,6 @@ import com.cioinfotech.cychat.core.extensions.configureWith
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.databinding.FragmentRoomSettingGenericBinding
 import com.cioinfotech.cychat.features.home.AvatarRenderer
-import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsAction
-import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsController
-import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsViewEvents
-import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsViewModel
-import com.cioinfotech.cychat.features.roomprofile.notifications.RoomNotificationSettingsViewState
 import com.cioinfotech.cychat.features.settings.VectorSettingsActivity
 import org.matrix.android.sdk.api.session.room.notification.RoomNotificationState
 import org.matrix.android.sdk.api.util.toMatrixItem

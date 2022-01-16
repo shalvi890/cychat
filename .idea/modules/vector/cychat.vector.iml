@@ -72,10 +72,13 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/src/main/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/third_party_licenses/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/ap_generated_sources/gplayDebug/out" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/ap_generated_sources/gplayDebug/out" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/res/resValues/gplay/debug" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/resolved/gplayDebug" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/buildConfig/gplay/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/kapt/gplayDebug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/kapt/gplayDebug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/kaptKotlin/gplayDebug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/build/generated/source/kaptKotlin/gplayDebug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/src/androidTest/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../vector/src/debug/java" isTestSource="false" />

@@ -47,6 +47,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:drawablePadding="8dp"
         android:textColor="?attr/vctr_notice_secondary"
         android:textSize="11sp"
         tools:text="@string/video_call_in_progress" />

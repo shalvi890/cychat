@@ -26,7 +26,6 @@ import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActio
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import im.vector.app.features.roomprofile.notifications.RoomNotificationSettingsFragment
 import kotlinx.coroutines.launch
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.rx.rx

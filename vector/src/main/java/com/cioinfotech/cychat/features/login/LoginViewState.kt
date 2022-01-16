@@ -71,7 +71,5 @@ data class LoginViewState(
                 || asyncCyValidateSecurityCode is Loading
     }
 
-    fun isUserLogged(): Boolean {
-        return asyncLoginAction is Success
-    }
+    fun isUserLogged() = asyncLoginAction is Success
 }

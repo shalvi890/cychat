@@ -23,7 +23,6 @@ import com.cioinfotech.cychat.core.utils.FirstThrottler
 import com.cioinfotech.cychat.core.utils.copyToClipboard
 import com.cioinfotech.cychat.core.utils.displayInWebView
 import com.cioinfotech.cychat.core.utils.openAppSettingsPage
-import com.cioinfotech.cychat.core.utils.openUrlInChromeCustomTab
 import com.cioinfotech.cychat.features.version.VersionProvider
 import com.cioinfotech.cychat.openOssLicensesMenuActivity
 import org.matrix.android.sdk.api.Matrix
@@ -75,21 +74,21 @@ class VectorSettingsHelpAboutFragment @Inject constructor(
         // copyright
         findPreference<VectorPreference>(VectorPreferences.SETTINGS_COPYRIGHT_PREFERENCE_KEY)!!
                 .onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            openUrlInChromeCustomTab(requireContext(), null, VectorSettingsUrls.COPYRIGHT)
+            activity?.displayInWebView(VectorSettingsUrls.COPYRIGHT)
             false
         }
 
         // terms & conditions
         findPreference<VectorPreference>(VectorPreferences.SETTINGS_APP_TERM_CONDITIONS_PREFERENCE_KEY)!!
                 .onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            openUrlInChromeCustomTab(requireContext(), null, VectorSettingsUrls.TAC)
+            activity?.displayInWebView(VectorSettingsUrls.TAC)
             false
         }
 
         // privacy policy
         findPreference<VectorPreference>(VectorPreferences.SETTINGS_PRIVACY_POLICY_PREFERENCE_KEY)!!
                 .onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            openUrlInChromeCustomTab(requireContext(), null, VectorSettingsUrls.PRIVACY_POLICY)
+            activity?.displayInWebView(VectorSettingsUrls.PRIVACY_POLICY)
             false
         }
 

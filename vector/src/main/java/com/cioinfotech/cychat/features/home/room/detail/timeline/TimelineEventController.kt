@@ -46,6 +46,7 @@ import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.Timeline
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineEventDiffUtilCallback
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineEventVisibilityHelper
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineEventVisibilityStateChangedListener
+import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineEventsGroups
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineMediaSizeProvider
 import com.cioinfotech.cychat.features.home.room.detail.timeline.item.AbsMessageItem
 import com.cioinfotech.cychat.features.home.room.detail.timeline.item.BasedMergedItem
@@ -146,6 +147,8 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
 
     // Map eventId to adapter position
     private val adapterPositionMapping = HashMap<String, Int>()
+    private val timelineEventsGroups = TimelineEventsGroups()
+    private val receiptsByEvent = HashMap<String, MutableList<ReadReceipt>>()
     private val modelCache = arrayListOf<CacheItemData?>()
     private var currentSnapshot: List<TimelineEvent> = emptyList()
     private var inSubmitList: Boolean = false
@@ -334,19 +337,22 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
         if (modelCache.isEmpty()) {
             return
         }
-        val receiptsByEvents = getReadReceiptsByShownEvent()
-        val lastSentEventWithoutReadReceipts = searchLastSentEventWithoutReadReceipts(receiptsByEvents)
+        preprocessReverseEvents()
+        val receiptsByEvent = getReadReceiptsByShownEvent()
+        val lastSentEventWithoutReadReceipts = searchLastSentEventWithoutReadReceipts(receiptsByEvent)
         (0 until modelCache.size).forEach { position ->
             val event = currentSnapshot[position]
             val nextEvent = currentSnapshot.nextOrNull(position)
             val prevEvent = currentSnapshot.prevOrNull(position)
+            val timelineEventsGroup = timelineEventsGroups.getOrNull(event)
             val params = TimelineItemFactoryParams(
                     event = event,
                     prevEvent = prevEvent,
                     nextEvent = nextEvent,
                     highlightedEventId = eventIdToHighlight,
                     lastSentEventIdWithoutReadReceipts = lastSentEventWithoutReadReceipts,
-                    callback = callback
+                    callback = callback,
+                    eventsGroup = timelineEventsGroup
             )
             // Should be build if not cached or if model should be refreshed
             if (modelCache[position] == null || modelCache[position]?.shouldTriggerBuild == true) {
@@ -354,7 +360,7 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
             }
             val itemCachedData = modelCache[position] ?: return@forEach
             // Then update with additional models if needed
-            modelCache[position] = itemCachedData.enrichWithModels(event, nextEvent, position, receiptsByEvents)
+            modelCache[position] = itemCachedData.enrichWithModels(event, nextEvent, position, receiptsByEvent)
         }
     }
 
@@ -448,6 +454,28 @@ class TimelineEventController @Inject constructor(private val dateFormatter: Vec
             existingReceipts.addAll(currentReadReceipts)
         }
         return receiptsByEvent
+    }
+
+    private fun preprocessReverseEvents() {
+        receiptsByEvent.clear()
+        timelineEventsGroups.clear()
+        val itr = currentSnapshot.listIterator(currentSnapshot.size)
+        var lastShownEventId: String? = null
+        while (itr.hasPrevious()) {
+            val event = itr.previous()
+            timelineEventsGroups.addOrIgnore(event)
+            val currentReadReceipts = ArrayList(event.readReceipts).filter {
+                it.user.userId != session.myUserId
+            }
+            if (timelineEventVisibilityHelper.shouldShowEvent(event, eventIdToHighlight)) {
+                lastShownEventId = event.eventId
+            }
+            if (lastShownEventId == null) {
+                continue
+            }
+            val existingReceipts = receiptsByEvent.getOrPut(lastShownEventId) { ArrayList() }
+            existingReceipts.addAll(currentReadReceipts)
+        }
     }
 
     private fun buildDaySeparatorItem(originServerTs: Long?): DaySeparatorItem {

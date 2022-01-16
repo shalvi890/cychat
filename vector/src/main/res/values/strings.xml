@@ -727,6 +727,15 @@
     <string name="call_connected">Call connected</string>
     <string name="call_connecting">Call connecting…</string>
     <string name="call_ended">Call ended</string>
+    <plurals name="missed_audio_call">
+        <item quantity="one">Missed audio call</item>
+        <item quantity="other">%d missed audio calls</item>
+    </plurals>
+    <plurals name="missed_video_call">
+        <item quantity="one">Missed video call</item>
+        <item quantity="other">%d missed video calls</item>
+    </plurals>
+    <string name="call_ringing">Call ringing…</string>
     <string name="call_ring">Calling…</string>
     <string name="incoming_call">Incoming Call</string>
     <string name="incoming_video_call">Incoming Video Call</string>
@@ -3327,4 +3336,26 @@
     <string name="production">Production</string>
     <string name="option_always_ask">Always Ask</string>
     <string name="use_as_default_and_do_not_ask_again">Use as default and do not ask again</string>
+
+    <string name="action_join">Join</string>
+    <string name="call_tile_voice_incoming">Incoming voice call</string>
+    <string name="call_tile_video_incoming">Incoming video call</string>
+    <string name="call_tile_voice_active">Active voice call</string>
+    <string name="call_tile_video_active">Active video call</string>
+    <string name="call_tile_voice_call_has_ended">Voice call ended • %1$s</string>
+    <string name="call_tile_video_call_has_ended">Video call ended • %1$s</string>
+    <string name="call_tile_voice_declined">Voice call declined</string>
+    <string name="call_tile_video_declined">Video call declined</string>
+    <string name="call_tile_voice_missed">Missed voice call</string>
+    <string name="call_tile_video_missed">Missed video call</string>
+    <string name="call_tile_no_answer">No answer</string>
+    <string name="call_tile_connection_failed">Connection failed</string>
+    <string name="action_leave">Leave</string>
+    <string name="terms_and_conditions_copyrights">Terms &amp; conditions, copyrights etc.</string>
+    <string name="call_preferences">Call preferences</string>
+    <string name="language_message_editor_and_timeline"><![CDATA[Language, message editor & timeline]]></string>
+    <string name="setup_and_configuration_of_notices"><![CDATA[Setup & configuration of notices]]></string>
+    <string name="profile_settings_and_cache"><![CDATA[Profile settings & cache]]></string>
+    <string name="something_went_wrong">Something Went Wrong! Please, try again after sometime.</string>
+
 </resources>

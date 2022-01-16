@@ -5,6 +5,7 @@
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_general"
         android:title="@string/settings_general_title"
+        android:summary="@string/profile_settings_and_cache"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsGeneralFragment" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference
@@ -16,16 +17,19 @@
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_notification"
         android:title="@string/settings_notifications"
+        android:summary="@string/setup_and_configuration_of_notices"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsNotificationPreferenceFragment" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_preferences"
         android:title="@string/settings_preferences"
+        android:summary="@string/language_message_editor_and_timeline"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsPreferencesFragment" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_call"
         android:title="@string/preference_voice_and_video"
+        android:summary="@string/call_preferences"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsVoiceVideoFragment" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference
@@ -55,6 +59,7 @@
     <com.cioinfotech.cychat.core.preference.VectorPreference
         android:icon="@drawable/ic_settings_root_help_about"
         android:title="@string/preference_root_help_about"
+        android:summary="@string/terms_and_conditions_copyrights"
         app:fragment="com.cioinfotech.cychat.features.settings.VectorSettingsHelpAboutFragment" />
 
     <com.cioinfotech.cychat.core.preference.VectorPreference

@@ -18,20 +18,17 @@ package com.cioinfotech.cychat.core.di
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
 import com.cioinfotech.cychat.features.attachments.preview.AttachmentsPreviewFragment
 import com.cioinfotech.cychat.features.contactsbook.ContactsBookFragment
 import com.cioinfotech.cychat.features.crypto.keysbackup.settings.KeysBackupSettingsFragment
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecuredStorageKeyFragment
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecuredStoragePassphraseFragment
 import com.cioinfotech.cychat.features.crypto.quads.SharedSecuredStorageResetAllFragment
-import com.cioinfotech.cychat.features.crypto.recover.BootstrapReAuthFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapConclusionFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapConfirmPassphraseFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapEnterPassphraseFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapMigrateBackupFragment
+import com.cioinfotech.cychat.features.crypto.recover.BootstrapReAuthFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapSaveRecoveryKeyFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapSetupRecoveryKeyFragment
 import com.cioinfotech.cychat.features.crypto.recover.BootstrapWaitingFragment
@@ -83,11 +80,11 @@ import com.cioinfotech.cychat.features.roommemberprofile.RoomMemberProfileFragme
 import com.cioinfotech.cychat.features.roommemberprofile.devices.DeviceListFragment
 import com.cioinfotech.cychat.features.roommemberprofile.devices.DeviceTrustInfoActionFragment
 import com.cioinfotech.cychat.features.roomprofile.RoomProfileFragment
+import com.cioinfotech.cychat.features.roomprofile.alias.RoomAliasFragment
 import com.cioinfotech.cychat.features.roomprofile.banned.RoomBannedMemberListFragment
 import com.cioinfotech.cychat.features.roomprofile.members.RoomMemberListFragment
-import com.cioinfotech.cychat.features.roomprofile.settings.RoomSettingsFragment
-import com.cioinfotech.cychat.features.roomprofile.alias.RoomAliasFragment
 import com.cioinfotech.cychat.features.roomprofile.permissions.RoomPermissionsFragment
+import com.cioinfotech.cychat.features.roomprofile.settings.RoomSettingsFragment
 import com.cioinfotech.cychat.features.roomprofile.uploads.RoomUploadsFragment
 import com.cioinfotech.cychat.features.roomprofile.uploads.files.RoomUploadsFilesFragment
 import com.cioinfotech.cychat.features.roomprofile.uploads.media.RoomUploadsMediaFragment
@@ -120,6 +117,9 @@ import com.cioinfotech.cychat.features.terms.ReviewTermsFragment
 import com.cioinfotech.cychat.features.usercode.ShowUserCodeFragment
 import com.cioinfotech.cychat.features.userdirectory.UserListFragment
 import com.cioinfotech.cychat.features.widgets.WidgetFragment
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
 
 @Module
 interface FragmentModule {

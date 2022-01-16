@@ -142,7 +142,7 @@
     <style name="VectorButtonStylePositive" parent="VectorButtonStyleDestructive">
         <item name="backgroundTint">@color/button_positive_background_selector</item>
         <item name="android:textColor">@color/button_positive_text_color_selector</item>
-        <item name="drawableTint">@color/riotx_accent</item>
+        <item name="drawableTint">@color/white</item>
     </style>
 
     <style name="VectorButtonStyleInlineBot" parent="VectorButtonStyleDestructive">

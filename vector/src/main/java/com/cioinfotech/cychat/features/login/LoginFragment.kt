@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import com.airbnb.mvrx.Incomplete
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.core.platform.showOptimizedSnackbar
@@ -59,6 +60,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     private var isUserValidated = false
     private var securityCodeDialogShowing = false
     private var dialogBinding: FragmentValidateSecurityCodeBinding? = null
+    private var getCountryListIsCompleted = false
     //    private var passwordShown = false
 //    private var isSignupMode = false
     // Temporary patch for https://github.com/vector-im/riotX-android/issues/1410,
@@ -374,8 +376,18 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             dialogBinding?.pbProgress?.isVisible = false
             dialogBinding?.btnValidate?.isEnabled = true
             dialogBinding?.root?.showOptimizedSnackbar(errorFormatter.toHumanReadable(throwable))
-        } else
-            showErrorInSnackbar(if (throwable.message?.contains("502") == true) Throwable("Server is Offline") else throwable)
+        } else {
+            showErrorInSnackbar(
+                    if (throwable.message?.contains("502") == true)
+                        Throwable(getString(R.string.something_went_wrong))
+                    else throwable
+            )
+            if (!getCountryListIsCompleted) {
+                views.mobileNumberTil.isEnabled = false
+                views.loginFieldTil.isEnabled = false
+                views.loginSubmit.isEnabled = false
+            }
+        }
     }
 
     override fun updateWithState(state: LoginViewState) {
@@ -413,15 +425,10 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
 //            else       -> Unit
 //        }
 
-//        when (state.asyncRegistration) {
-//            is Loading -> {
-//                // Ensure password is hidden
-//                passwordShown = false
-////                renderPasswordField()
-//            }
-//            // Success is handled by the LoginActivity
-//            else       -> Unit
-//        }
+        getCountryListIsCompleted = when (state.asyncGetCountryList) {
+            is Incomplete -> false
+            else          -> true
+        }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

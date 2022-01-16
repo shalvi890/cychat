@@ -20,6 +20,7 @@ import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.home.room.detail.timeline.MessageColorProvider
 import com.cioinfotech.cychat.features.home.room.detail.timeline.TimelineEventController
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.AvatarSizeProvider
+import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.CallSignalingEventsGroup
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.MessageInformationDataFactory
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.MessageItemAttributesFactory
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.RoomSummariesHolder
@@ -50,39 +51,47 @@ class CallItemFactory @Inject constructor(
         val event = params.event
         if (event.root.eventId == null) return null
         val roomId = event.roomId
+        val callEventGrouper = params.eventsGroup?.let { CallSignalingEventsGroup(it) } ?: return null
         val informationData = messageInformationDataFactory.create(params)
         val callSignalingContent = event.getCallSignallingContent() ?: return null
         val callId = callSignalingContent.callId ?: return null
-        val call = callManager.getCallById(callId)
-        val callKind = when {
-            call == null            -> CallTileTimelineItem.CallKind.UNKNOWN
-            call.mxCall.isVideoCall -> CallTileTimelineItem.CallKind.VIDEO
-            else                    -> CallTileTimelineItem.CallKind.AUDIO
-        }
+//        val call = callManager.getCallById(callId)
+        val callKind = if (callEventGrouper.isVideo()) CallTileTimelineItem.CallKind.VIDEO else CallTileTimelineItem.CallKind.AUDIO
+//        val callKind = when {
+//            call == null            -> CallTileTimelineItem.CallKind.AUDIO
+//            call.mxCall.isVideoCall -> CallTileTimelineItem.CallKind.VIDEO
+//            else                    -> CallTileTimelineItem.CallKind.AUDIO
+//        }
         return when (event.root.getClearType()) {
             EventType.CALL_ANSWER -> {
-                createCallTileTimelineItem(
-                        roomId = roomId,
-                        callId = callId,
-                        callStatus = CallTileTimelineItem.CallStatus.IN_CALL,
-                        callKind = callKind,
-                        callback = params.callback,
-                        highlight = params.isHighlighted,
-                        informationData = informationData,
-                        isStillActive = call != null
-                )
+                if (callEventGrouper.isInCall()) {
+                    createCallTileTimelineItem(
+                            roomId = roomId,
+                            callId = callEventGrouper.callId,
+                            callStatus = CallTileTimelineItem.CallStatus.IN_CALL,
+                            callKind = callKind,
+                            callback = params.callback,
+                            highlight = params.isHighlighted,
+                            informationData = informationData,
+                            isStillActive = callEventGrouper.isInCall(),
+                            formattedDuration = callEventGrouper.formattedDuration()
+                    )
+                } else null
             }
             EventType.CALL_INVITE -> {
-                createCallTileTimelineItem(
-                        roomId = roomId,
-                        callId = callId,
-                        callStatus = CallTileTimelineItem.CallStatus.INVITED,
-                        callKind = callKind,
-                        callback = params.callback,
-                        highlight = params.isHighlighted,
-                        informationData = informationData,
-                        isStillActive = call != null
-                )
+                if (callEventGrouper.isRinging()) {
+                    createCallTileTimelineItem(
+                            roomId = roomId,
+                            callId = callEventGrouper.callId,
+                            callStatus = CallTileTimelineItem.CallStatus.INVITED,
+                            callKind = callKind,
+                            callback = params.callback,
+                            highlight = params.isHighlighted,
+                            informationData = informationData,
+                            isStillActive = callEventGrouper.isRinging(),
+                            formattedDuration = callEventGrouper.formattedDuration()
+                    )
+                } else null
             }
             EventType.CALL_REJECT -> {
                 createCallTileTimelineItem(
@@ -93,19 +102,21 @@ class CallItemFactory @Inject constructor(
                         callback = params.callback,
                         highlight = params.isHighlighted,
                         informationData = informationData,
-                        isStillActive = false
+                        isStillActive = false,
+                        formattedDuration = callEventGrouper.formattedDuration()
                 )
             }
             EventType.CALL_HANGUP -> {
                 createCallTileTimelineItem(
                         roomId = roomId,
                         callId = callId,
-                        callStatus = CallTileTimelineItem.CallStatus.ENDED,
+                        callStatus = if (callEventGrouper.callWasMissed()) CallTileTimelineItem.CallStatus.MISSED else CallTileTimelineItem.CallStatus.ENDED,
                         callKind = callKind,
                         callback = params.callback,
                         highlight = params.isHighlighted,
                         informationData = informationData,
-                        isStillActive = false
+                        isStillActive = false,
+                        formattedDuration = callEventGrouper.formattedDuration()
                 )
             }
             else                  -> null
@@ -130,6 +141,7 @@ class CallItemFactory @Inject constructor(
             informationData: MessageInformationData,
             highlight: Boolean,
             isStillActive: Boolean,
+            formattedDuration: String,
             callback: TimelineEventController.Callback?
     ): CallTileTimelineItem? {
         val userOfInterest = roomSummariesHolder.get(roomId)?.toMatrixItem() ?: return null
@@ -147,7 +159,8 @@ class CallItemFactory @Inject constructor(
                     readReceiptsCallback = it.readReceiptsCallback,
                     userOfInterest = userOfInterest,
                     callback = callback,
-                    isStillActive = isStillActive
+                    isStillActive = isStillActive,
+                    formattedDuration = formattedDuration
             )
         }
         return CallTileTimelineItem_()

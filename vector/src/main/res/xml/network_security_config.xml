@@ -7,6 +7,7 @@
     <!-- Allow clearText traffic on some specified host -->
     <domain-config cleartextTrafficPermitted="true">
         <!-- Localhost -->
+        <domain includeSubdomains="true">cyverse.co.za</domain>
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">127.0.0.1</domain>
         <!-- Localhost for Android emulator -->
