@@ -185,6 +185,24 @@ class LoginViewModel @AssistedInject constructor(
         }.exhaustive
     }
 
+    fun handleSupplierConfirmation() {
+        _viewEvents.post(LoginViewEvents.OnSupplierConfirmed)
+        setState {
+            copy(
+                    asyncSupplierConfirmed = Success(Unit)
+            )
+        }
+    }
+
+    fun handleUserMappingConfirmed() {
+        _viewEvents.post(LoginViewEvents.OnMappingConfirmed)
+        setState {
+            copy(
+                    asyncUserMapped = Success(Unit)
+            )
+        }
+    }
+
     /** CyChat API- Start */
 
     private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""

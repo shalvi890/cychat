@@ -8,6 +8,9 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_catchup.xml" value="0.23697916666666666" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_chat.xml" value="0.23697916666666666" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_group.xml" value="0.23697916666666666" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login.xml" value="0.15443840579710144" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_supplier_confirmation.xml" value="0.21666666666666667" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_mapping.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_home_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_category.xml" value="0.13697916666666668" />

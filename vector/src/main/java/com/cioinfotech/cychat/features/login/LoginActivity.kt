@@ -159,7 +159,7 @@ open class LoginActivity : VectorBaseActivity<ActivityLoginBinding>(), ToolbarCo
             is LoginViewEvents.OnServerSelectionDone                      -> onServerSelectionDone(loginViewEvents)
             is LoginViewEvents.OnSignModeSelected                         -> onSignModeSelected(loginViewEvents)
             is LoginViewEvents.OnHomeserverSelection                      -> addFragmentToBackstack(R.id.loginFragmentContainer,
-                    LoginFragment::class.java,
+                    SupplierConfirmationFragment::class.java,
                     tag = FRAGMENT_LOGIN_TAG,
                     option = commonOption)
             is LoginViewEvents.OnLoginFlowRetrieved                       ->
@@ -203,6 +203,15 @@ open class LoginActivity : VectorBaseActivity<ActivityLoginBinding>(), ToolbarCo
                         LoginGenericTextInputFormFragment::class.java,
                         LoginGenericTextInputFormFragmentArgument(TextInputFormFragmentMode.ConfirmMsisdn, true, loginViewEvents.msisdn),
                         tag = FRAGMENT_REGISTRATION_STAGE_TAG,
+                        option = commonOption)
+            is LoginViewEvents.OnSupplierConfirmed                        -> addFragmentToBackstack(R.id.loginFragmentContainer,
+                    LoginFragment::class.java,
+                    tag = FRAGMENT_LOGIN_TAG,
+                    option = commonOption)
+            is LoginViewEvents.OnMappingConfirmed                         ->
+                addFragmentToBackstack(R.id.loginFragmentContainer,
+                        UserMappingFragment::class.java,
+                        tag = FRAGMENT_LOGIN_TAG,
                         option = commonOption)
             is LoginViewEvents.OnOTPSendSuccess                           -> Unit
 //            is LoginViewEvents.OnValidateSecurityCode                     -> {

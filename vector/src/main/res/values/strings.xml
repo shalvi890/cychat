@@ -3357,5 +3357,12 @@
     <string name="setup_and_configuration_of_notices"><![CDATA[Setup & configuration of notices]]></string>
     <string name="profile_settings_and_cache"><![CDATA[Profile settings & cache]]></string>
     <string name="something_went_wrong">Something Went Wrong! Please, try again after sometime.</string>
+    <string name="please_select_type_of_user">Select Type Of User</string>
+    <string name="supplier">Supplier</string>
+    <string name="check">Check</string>
+    <string name="supplier_code">Supplier Code</string>
+    <string name="send_code">Send Code</string>
+    <string name="check_code">Check Code</string>
+    <string name="token_sent_to_supplier">Verification code sent to supplier</string>
 
 </resources>
