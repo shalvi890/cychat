@@ -66,22 +66,6 @@
         tools:visibility="visible">
 
         <ImageView
-            android:id="@+id/openChatIcon"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_rounded_button"
-            android:clickable="true"
-            android:contentDescription="@string/a11y_open_chat"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/ic_call_pip"
-            app:layout_constraintBottom_toBottomOf="@id/muteIcon"
-            app:layout_constraintEnd_toStartOf="@id/muteIcon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/muteIcon"
-            app:tint="?attr/riotx_text_primary" />
-
-        <ImageView
             android:id="@+id/muteIcon"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -92,8 +76,40 @@
             android:padding="16dp"
             android:src="@drawable/ic_microphone_off"
             app:backgroundTint="?attr/riotx_background"
+            app:layout_constraintEnd_toStartOf="@id/videoToggleIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/riotx_text_primary" />
+
+        <ImageView
+            android:id="@+id/videoToggleIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_rounded_button"
+            android:clickable="true"
+            android:contentDescription="@string/a11y_stop_camera"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_call_videocam_off_default"
+            app:backgroundTint="?attr/riotx_background"
+            app:layout_constraintEnd_toStartOf="@id/selectSoundDeviceIcon"
+            app:layout_constraintStart_toEndOf="@id/muteIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/riotx_text_primary" />
+
+        <ImageView
+            android:id="@+id/selectSoundDeviceIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_rounded_button"
+            android:clickable="true"
+            app:backgroundTint="?attr/riotx_background"
+            android:contentDescription="@string/call_select_sound_device"
+            android:focusable="true"
+            android:scaleType="center"
+            android:src="@drawable/ic_call_speaker_default"
             app:layout_constraintEnd_toStartOf="@id/endCallIcon"
-            app:layout_constraintStart_toEndOf="@id/openChatIcon"
+            app:layout_constraintStart_toEndOf="@id/videoToggleIcon"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="?attr/riotx_text_primary" />
 
@@ -108,42 +124,26 @@
             android:focusable="true"
             android:padding="12dp"
             android:src="@drawable/ic_call_hangup"
-            app:layout_constraintEnd_toStartOf="@id/videoToggleIcon"
-
-            app:layout_constraintStart_toEndOf="@id/muteIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/selectSoundDeviceIcon"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/white" />
 
         <ImageView
-            android:id="@+id/videoToggleIcon"
+            android:id="@+id/openChatIcon"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/bg_rounded_button"
             android:clickable="true"
-            android:contentDescription="@string/a11y_stop_camera"
-            android:focusable="true"
-            android:padding="16dp"
-            android:src="@drawable/ic_call_videocam_off_default"
-            app:backgroundTint="?attr/riotx_background"
-            app:layout_constraintEnd_toStartOf="@id/selectSoundDeviceIcon"
-            app:layout_constraintStart_toEndOf="@id/endCallIcon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/riotx_text_primary"
-            tools:ignore="MissingConstraints,MissingPrefix" />
-
-        <ImageView
-            android:id="@+id/selectSoundDeviceIcon"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_rounded_button"
-            android:clickable="true"
-            android:contentDescription="@string/call_select_sound_device"
+            android:contentDescription="@string/a11y_open_chat"
             android:focusable="true"
             android:scaleType="center"
-            android:src="@drawable/ic_call_speaker_default"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/videoToggleIcon"
-            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_call_pip"
+            app:backgroundTint="?attr/riotx_background"
+            app:layout_constraintEnd_toStartOf="@id/callControlsSwitchCamera"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/endCallIcon"
             app:tint="?attr/riotx_text_primary" />
 
         <ImageView
@@ -154,11 +154,12 @@
             android:background="@drawable/bg_rounded_button"
             android:clickable="true"
             android:contentDescription="@string/a11y_open_chat"
+            app:backgroundTint="?attr/riotx_background"
             android:focusable="true"
             android:scaleType="center"
             android:src="@drawable/ic_video_flip"
             app:layout_constraintEnd_toStartOf="@id/callControlsOpenDialPad"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/openChatIcon"
             app:layout_constraintTop_toBottomOf="@id/endCallIcon"
             app:tint="?attr/riotx_text_primary" />
 
@@ -168,8 +169,10 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
+            android:background="@drawable/bg_rounded_button"
             android:contentDescription="@string/a11y_mute_microphone"
             android:focusable="true"
+            android:visibility="gone"
             android:padding="16dp"
             android:src="@drawable/ic_call_dial_pad"
             app:backgroundTint="?attr/riotx_background"
@@ -184,6 +187,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
+            android:background="@drawable/bg_rounded_button"
             android:contentDescription="@string/call_notification_hangup"
             android:focusable="true"
             android:padding="12dp"
@@ -199,6 +203,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/bg_rounded_button"
             android:clickable="true"
             android:contentDescription="@string/a11y_stop_camera"
             android:focusable="true"
@@ -219,6 +224,7 @@
             android:contentDescription="@string/call_select_sound_device"
             android:focusable="true"
             android:scaleType="center"
+            android:background="@drawable/bg_rounded_button"
             android:src="@drawable/ic_call_transfer"
             app:backgroundTint="?attr/riotx_background"
             app:layout_constraintEnd_toEndOf="parent"
