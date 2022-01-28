@@ -20,6 +20,7 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -53,7 +54,6 @@ import com.cioinfotech.cychat.features.home.room.detail.RoomDetailActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailArgs
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.parcelize.Parcelize
-import me.gujun.android.span.span
 import org.matrix.android.sdk.api.extensions.orFalse
 import org.matrix.android.sdk.api.session.call.CallState
 import org.matrix.android.sdk.api.session.call.MxCallDetail
@@ -116,17 +116,14 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
 
         callViewModel.observeViewEvents {
             when (it) {
-                is VectorCallViewEvents.ShowSoundDeviceChooser -> {
-                    showSoundDeviceChooser(it.available, it.current)
-                }
-                else                                           -> {
-                }
+                is VectorCallViewEvents.ShowSoundDeviceChooser -> changeDeviceSound(it.available, it.current)
+                else                                           -> Unit
             }
         }
 
-        if (intent.hasExtra(MvRx.KEY_ARG)) {
+        if (intent.hasExtra(MvRx.KEY_ARG))
             callArgs = intent.getParcelableExtra(MvRx.KEY_ARG)!!
-        } else {
+        else {
             Timber.e("## VOIP missing callArgs for VectorCall Activity")
             finish()
         }
@@ -163,48 +160,28 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
         }
     }
 
-    private fun showSoundDeviceChooser(available: Set<CallAudioManager.Device>, current: CallAudioManager.Device) {
-        val soundDevices = available.map {
+    private fun changeDeviceSound(available: Set<CallAudioManager.Device>, current: CallAudioManager.Device) {
+        var currentSelectionIndex = 0
+        for (i in available.indices) {
+            if (current == available.elementAt(i))
+                currentSelectionIndex = i
+        }
+
+        if (currentSelectionIndex < available.size - 1)
+            currentSelectionIndex += 1
+        else
+            currentSelectionIndex = 0
+
+        val iconArray = available.map {
             when (it) {
-                CallAudioManager.Device.WIRELESS_HEADSET -> span {
-                    text = getString(R.string.sound_device_wireless_headset)
-                    textStyle = if (current == it) "bold" else "normal"
-                }
-                CallAudioManager.Device.PHONE            -> span {
-                    text = getString(R.string.sound_device_phone)
-                    textStyle = if (current == it) "bold" else "normal"
-                }
-                CallAudioManager.Device.SPEAKER          -> span {
-                    text = getString(R.string.sound_device_speaker)
-                    textStyle = if (current == it) "bold" else "normal"
-                }
-                CallAudioManager.Device.HEADSET          -> span {
-                    text = getString(R.string.sound_device_headset)
-                    textStyle = if (current == it) "bold" else "normal"
-                }
+                CallAudioManager.Device.WIRELESS_HEADSET -> R.drawable.quantum_ic_bluetooth_audio_grey600_24
+                CallAudioManager.Device.PHONE            -> R.drawable.ic_phone
+                CallAudioManager.Device.SPEAKER          -> R.drawable.ic_call_speaker_default
+                CallAudioManager.Device.HEADSET          -> R.drawable.ic_headphones
             }
         }
-        AlertDialog.Builder(this)
-                .setItems(soundDevices.toTypedArray()) { d, n ->
-                    d.cancel()
-                    when (soundDevices[n].toString()) {
-                        // TODO Make an adapter and handle multiple Bluetooth headsets. Also do not use translations.
-                        getString(R.string.sound_device_phone)            -> {
-                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.PHONE))
-                        }
-                        getString(R.string.sound_device_speaker)          -> {
-                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.SPEAKER))
-                        }
-                        getString(R.string.sound_device_headset)          -> {
-                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.HEADSET))
-                        }
-                        getString(R.string.sound_device_wireless_headset) -> {
-                            callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(CallAudioManager.Device.WIRELESS_HEADSET))
-                        }
-                    }
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
+        views.callControlsView.views.selectSoundDeviceIcon.setImageResource(iconArray[currentSelectionIndex])
+        callViewModel.handle(VectorCallViewActions.ChangeAudioDevice(available.elementAt(currentSelectionIndex)))
     }
 
     override fun onDestroy() {
@@ -422,8 +399,6 @@ class VectorCallActivity : VectorBaseActivity<ActivityCallBinding>(), CallContro
             }
             is VectorCallViewEvents.ShowCallTransferScreen -> {
                 navigator.openCallTransfer(this, callArgs.callId)
-            }
-            null                                           -> {
             }
             else                                           -> Unit
         }
