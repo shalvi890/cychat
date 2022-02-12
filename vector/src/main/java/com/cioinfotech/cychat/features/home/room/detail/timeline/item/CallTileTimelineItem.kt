@@ -203,18 +203,10 @@ abstract class CallTileTimelineItem : AbsBaseMessageItem<CallTileTimelineItem.Ho
         }
         when {
             // Invite state for conference should show as InCallStatus
-            attributes.callKind == CallKind.CONFERENCE -> {
-                holder.statusView.setStatus(R.string.call_tile_video_active)
-            }
-            attributes.informationData.sentByMe        -> {
-                holder.statusView.setStatus(R.string.call_ringing)
-            }
-            attributes.callKind.isVoiceCall            -> {
-                holder.statusView.setStatus(R.string.call_tile_voice_incoming)
-            }
-            else                                       -> {
-                holder.statusView.setStatus(R.string.call_tile_video_incoming)
-            }
+            attributes.callKind == CallKind.CONFERENCE -> holder.statusView.setStatus(R.string.call_tile_video_active)
+            attributes.informationData.sentByMe        -> holder.statusView.setStatus(R.string.call_ringing)
+            attributes.callKind.isVoiceCall            -> holder.statusView.setStatus(R.string.call_tile_voice_incoming)
+            else                                       -> holder.statusView.setStatus(R.string.call_tile_video_incoming)
         }
     }
 

@@ -34,6 +34,7 @@ import androidx.preference.SwitchPreference
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.cache.DiskCache
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.dialogs.GalleryOrCameraDialogHelper
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.core.extensions.showPassword
@@ -58,6 +59,7 @@ import kotlinx.coroutines.withContext
 import org.matrix.android.sdk.api.failure.isInvalidPassword
 import org.matrix.android.sdk.api.session.integrationmanager.IntegrationManagerConfig
 import org.matrix.android.sdk.api.session.integrationmanager.IntegrationManagerService
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.rx.rx
 import org.matrix.android.sdk.rx.unwrap
 import java.io.File
@@ -84,6 +86,11 @@ class VectorSettingsGeneralFragment @Inject constructor(
     private val mDisplayNamePreference by lazy {
         findPreference<EditTextPreference>("SETTINGS_DISPLAY_NAME_PREFERENCE_KEY")!!
     }
+
+    private val mDisplayUserName by lazy {
+        findPreference<EditTextPreference>("SETTINGS_DISPLAY_USERNAME")!!
+    }
+
     private val mPasswordPreference by lazy {
         findPreference<VectorPreference>(VectorPreferences.SETTINGS_CHANGE_PASSWORD_PREFERENCE_KEY)!!
     }
@@ -115,6 +122,11 @@ class VectorSettingsGeneralFragment @Inject constructor(
 
         observeUserAvatar()
         observeUserDisplayName()
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
+        mDisplayUserName.let {
+            it.summary = pref.getString(NetworkConstants.EMAIL, null)
+            it.text = pref.getString(NetworkConstants.EMAIL, null)
+        }
     }
 
     private fun observeUserAvatar() {
