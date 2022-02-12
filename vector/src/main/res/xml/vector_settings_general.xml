@@ -16,6 +16,11 @@
             android:persistent="false"
             android:title="@string/settings_display_name" />
 
+        <com.cioinfotech.cychat.core.preference.VectorEditTextPreference
+            android:key="SETTINGS_DISPLAY_USERNAME"
+            android:persistent="false"
+            android:title="@string/username" />
+
         <com.cioinfotech.cychat.core.preference.VectorPreference
             android:key="SETTINGS_CHANGE_PASSWORD_PREFERENCE_KEY"
             android:summary="@string/change_password_summary"

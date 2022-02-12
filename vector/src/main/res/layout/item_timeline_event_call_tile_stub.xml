@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,10 +16,16 @@
 
     <TextView
         android:id="@+id/itemCallCreatorNameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:drawablePadding="6dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:padding="8dp"
+        app:layout_constraintEnd_toStartOf="@id/itemCallStatusTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
         android:textColor="?riotx_text_primary"
         android:textSize="14sp"
@@ -27,26 +33,28 @@
         tools:text="@sample/matrix.json/data/displayName" />
 
 
-    <TextView
-        android:id="@+id/itemCallKindTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:drawablePadding="4dp"
-        android:gravity="center"
-        android:textColor="?riotx_text_primary"
-        android:textSize="11sp"
-        tools:text="@string/action_video_call" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/itemCallKindTextView"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:drawablePadding="4dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:textColor="?riotx_text_primary"-->
+    <!--        android:textSize="11sp"-->
+    <!--        tools:text="@string/action_video_call" />-->
 
     <TextView
         android:id="@+id/itemCallStatusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/itemCallCreatorNameTextView"
+        app:layout_constraintTop_toTopOf="parent"
         android:drawablePadding="8dp"
         android:textColor="?attr/vctr_notice_secondary"
         android:textSize="11sp"
@@ -56,6 +64,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/itemCallAcceptRejectViewGroup"
         android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/itemCallCreatorNameTextView"
         android:layout_height="wrap_content">
 
         <Button
@@ -85,4 +95,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

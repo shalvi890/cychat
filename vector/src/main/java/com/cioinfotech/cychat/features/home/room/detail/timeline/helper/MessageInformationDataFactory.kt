@@ -125,14 +125,11 @@ class MessageInformationDataFactory @Inject constructor(private val session: Ses
     private fun getSendStateDecoration(event: TimelineEvent,
                                        isMedia: Boolean): SendStateDecoration {
         val eventSendState = event.root.sendState
-        return if (eventSendState.isSending()) {
-            if (isMedia) SendStateDecoration.SENDING_MEDIA else SendStateDecoration.SENDING_NON_MEDIA
-        } else if (eventSendState.hasFailed()) {
-            SendStateDecoration.FAILED
-        } else if (eventSendState.isSent()) {
-            SendStateDecoration.SENT
-        } else {
-            SendStateDecoration.NONE
+        return when {
+            eventSendState.isSending() -> if (isMedia) SendStateDecoration.SENDING_MEDIA else SendStateDecoration.SENDING_NON_MEDIA
+            eventSendState.hasFailed() -> SendStateDecoration.FAILED
+            eventSendState.isSent()    -> SendStateDecoration.SENT
+            else                       -> SendStateDecoration.NONE
         }
     }
 

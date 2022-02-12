@@ -48,10 +48,10 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 class CyCoreViewModel @Inject constructor(
         private val cyCoreService: CyCoreService,
-        private val applicationContext: Context
+        applicationContext: Context
 ) : ViewModel() {
 
-    private var pref: SharedPreferences = DefaultSharedPreferences.getInstance(applicationContext)
+    private var pref = DefaultSharedPreferences.getInstance(applicationContext)
     private var url = pref.getString(BASE_URL, null)
     private var userId = pref.getString(USER_ID, null)
     private var reqId = pref.getString(REQ_ID, null)
@@ -82,9 +82,8 @@ class CyCoreViewModel @Inject constructor(
 
             override fun onSuccess(t: DomainDetails) {
                 if (t.status == "ok") {
-                    val prefs = DefaultSharedPreferences.getInstance(applicationContext)
                     val data = t.data
-                    prefs.edit().apply {
+                    pref.edit().apply {
                         if (!data.companyName.isNullOrEmpty())
                             this.putString(NetworkConstants.DOMAIN_NAME, data.companyName)
                         if (!data.logo.isNullOrEmpty())
