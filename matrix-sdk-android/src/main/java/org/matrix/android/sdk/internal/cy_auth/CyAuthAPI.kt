@@ -20,23 +20,25 @@ import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
+import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
-import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.ROOT_API
 import retrofit2.http.Body
-import retrofit2.http.GET
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface CyAuthAPI {
 
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @POST(NetworkConstants.USER_LOGIN)
-    fun login(
-            @Header("Authorization") auth: String,
-            @Body loginParams: PasswordLoginParams): Single<LoginResponse>
+    @POST(ROOT_API)
+    fun login(@FieldMap map: HashMap<String, String>): Single<LoginResponse>
 
     @Headers("CONNECT_TIMEOUT:10000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:Y")
     @POST(NetworkConstants.CHECK_OTP)
@@ -45,9 +47,10 @@ interface CyAuthAPI {
             @Header("reqid") reqId: String?,
             @Body loginParams: VerifyOTPParams): Single<CheckOTPResponse>
 
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @GET(NetworkConstants.GET_SETTINGS)
-    fun getSettings(@Header("Authorization") auth: String): Single<GetSettingsParent>
+    @POST(ROOT_API)
+    fun getSettings(@FieldMap map: HashMap<String, String>): Single<GetSettingsParent>
 
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.RESENT_OTP)
@@ -61,4 +64,19 @@ interface CyAuthAPI {
     fun validateSecurityCode(
             @Header("Authorization") auth: String?,
             @Body map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun getGroups(@FieldMap map: HashMap<String, String>): Single<GroupParent>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun getUserType(@FieldMap map: HashMap<String, String>): Single<UserTypeParent>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:10000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun cyNewCheckCode(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
 }

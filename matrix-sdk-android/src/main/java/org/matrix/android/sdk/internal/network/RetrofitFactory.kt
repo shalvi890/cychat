@@ -48,7 +48,17 @@ class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
 
     fun create(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL.ensureTrailingSlash().ensureProtocol())
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .build()
+    }
+
+    fun createCentralServer(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(NetworkConstants.CENTRAL_SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -57,16 +67,6 @@ class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
     }
 
     fun createWithBaseURL(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(baseUrl.ensureTrailingSlash().ensureProtocol())
-                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(okHttpClient)
-                .build()
-    }
-
-    fun createWithBaseURL(okHttpClient: OkHttpClient, baseUrl: String, authToken: String): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(baseUrl.ensureTrailingSlash().ensureProtocol())
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))

@@ -18,6 +18,6 @@ package org.matrix.android.sdk.internal.cy_auth.data
 
 open class BaseResponse{
     val status:String =""
-    val message: String = ""
+    val message: String? = ""
     val errorCode:String = ""
 }

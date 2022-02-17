@@ -57,7 +57,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     private var allSettings: GetSettingsParent? = null
     private var selectedCountry: CountryCode? = null
     private var firstTime = true
-    private var isUserValidated = false
+//    private var isUserValidated = false
     private var securityCodeDialogShowing = false
     private var dialogBinding: FragmentValidateSecurityCodeBinding? = null
     private var getCountryListIsCompleted = false
@@ -78,10 +78,10 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         views.spinnerList.adapter = spinnerArrayAdapter
         loginViewModel.handleGetSettings()
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
-            if (it != null && it.data.countries.isNotEmpty()) {
+            if (it != null && it.data.isNotEmpty()) {
                 allSettings = it
                 val list = mutableListOf<String>()
-                it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
+                it.data.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
                         list)
                 views.spinnerList.adapter = spinnerArrayAdapter
@@ -189,50 +189,49 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         if (invalidMobileNumber()) error++
         if (error == 0) {
             val deviceId = Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-            loginViewModel.handleCyLogin(PasswordLoginParams(login.lowercase(), mobileNo, deviceId, selectedCountry?.code
-                    ?: "IN"), allSettings?.data?.secCodeDomains)
+            loginViewModel.handleCyLogin(PasswordLoginParams(login.lowercase(), mobileNo, deviceId, selectedCountry?.code ?: "IN"))//, allSettings?.data?.secCodeDomains)
 
-            if ((allSettings?.data?.secCodeDomains?.contains(login.getEmailDomain()) == true) && !isUserValidated) {
-                val dialog = Dialog(requireContext())
-                FragmentValidateSecurityCodeBinding.inflate(
-                        layoutInflater,
-                        views.root,
-                        false
-                ).apply {
-                    dialogBinding = this
-                    dialog.setContentView(this.root)
-                    dialog.window?.setLayout(
-                            WindowManager.LayoutParams.MATCH_PARENT,
-                            WindowManager.LayoutParams.MATCH_PARENT
-                    )
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    this.btnValidate.setOnClickListener {
-                        this.otpTil.error = null
-                        this.btnValidate.hideKeyboard()
-
-                        if (this.otpField.text.toString().isEmpty())
-                            this.otpTil.error = getString(R.string.please_enter_security_code)
-                        else {
-                            dialogBinding?.btnValidate?.isEnabled = false
-                            pbProgress.isVisible = true
-                            loginViewModel.validateSecurityCode(this.otpField.text.toString())
-                        }
-                    }
-                    this.tvTitle.setOnClickListener {
-                        securityCodeDialogShowing = false
-                        dialog.dismiss()
-                    }
-                    securityCodeDialogShowing = true
-                    dialog.show()
-                }
-                loginViewModel.isUserValidatedLiveData.observe(viewLifecycleOwner) {
-                    if (it) {
-                        securityCodeDialogShowing = false
-                        isUserValidated = true
-                        dialog.dismiss()
-                    }
-                }
-            }
+//            if ((allSettings?.data?.contain(login.getEmailDomain()) == true) && !isUserValidated) {
+//                val dialog = Dialog(requireContext())
+//                FragmentValidateSecurityCodeBinding.inflate(
+//                        layoutInflater,
+//                        views.root,
+//                        false
+//                ).apply {
+//                    dialogBinding = this
+//                    dialog.setContentView(this.root)
+//                    dialog.window?.setLayout(
+//                            WindowManager.LayoutParams.MATCH_PARENT,
+//                            WindowManager.LayoutParams.MATCH_PARENT
+//                    )
+//                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//                    this.btnValidate.setOnClickListener {
+//                        this.otpTil.error = null
+//                        this.btnValidate.hideKeyboard()
+//
+//                        if (this.otpField.text.toString().isEmpty())
+//                            this.otpTil.error = getString(R.string.please_enter_security_code)
+//                        else {
+//                            dialogBinding?.btnValidate?.isEnabled = false
+//                            pbProgress.isVisible = true
+//                            loginViewModel.validateSecurityCode(this.otpField.text.toString())
+//                        }
+//                    }
+//                    this.tvTitle.setOnClickListener {
+//                        securityCodeDialogShowing = false
+//                        dialog.dismiss()
+//                    }
+//                    securityCodeDialogShowing = true
+//                    dialog.show()
+//                }
+//                loginViewModel.isUserValidatedLiveData.observe(viewLifecycleOwner) {
+//                    if (it) {
+//                        securityCodeDialogShowing = false
+//                        isUserValidated = true
+//                        dialog.dismiss()
+//                    }
+//                }
+//            }
         }
     }
 
@@ -432,7 +431,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        allSettings?.data?.countries?.let {
+        allSettings?.data?.let {
             selectedCountry = it[position]
         }
         if (firstTime)

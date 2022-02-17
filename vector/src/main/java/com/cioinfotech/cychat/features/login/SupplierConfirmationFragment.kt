@@ -23,17 +23,22 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.databinding.FragmentSupplierConfirmationBinding
-import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
-import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
+import com.cioinfotech.cychat.features.login.adapter.ServerListAdapter
+import org.matrix.android.sdk.internal.cy_auth.data.Group
+import org.matrix.android.sdk.internal.cy_auth.data.UserType
+import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
+import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.RetrofitFactory.Companion.BASE_URL
 import javax.inject.Inject
 
-class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentSupplierConfirmationBinding>(), AdapterView.OnItemSelectedListener {
+class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentSupplierConfirmationBinding>(), AdapterView.OnItemSelectedListener, ServerListAdapter.ItemClickListener {
 
-    private var allSettings: GetSettingsParent? = null
-    private var selectedCountry: CountryCode? = null
-    private var firstTime = true
+    private var allSettings: UserTypeParent? = null
+    private var selectedCountry: UserType? = null
+    private var hiddenCount = 0
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentSupplierConfirmationBinding.inflate(layoutInflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,19 +48,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                 mutableListOf<String>())
 
         views.spinner.adapter = spinnerArrayAdapter
-        loginViewModel.handleGetSettings()
-        loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
-            if (it != null && it.data.countries.isNotEmpty()) {
-                allSettings = it
-                val list = mutableListOf<String>()
-                it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
-                spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
-                        list)
-                views.spinner.adapter = spinnerArrayAdapter
-                views.spinner.onItemSelectedListener = this
-            }
-        }
-
+        loginViewModel.getUserType()
         views.btnSubmit.setOnClickListener { submit() }
 
         views.supplierField.setOnEditorActionListener { _, actionId, _ ->
@@ -65,10 +58,54 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
             }
             return@setOnEditorActionListener false
         }
+
+//        views.supplierField.doOnTextChanged { text, _, _, _ ->
+//            if (text?.isNotEmpty() == true)
+//                views.supplierField.error = null
+//        }
+
+        loginViewModel.observeViewEvents {
+            if (it is LoginViewEvents.OnUserTypeConfirmed) {
+                allSettings = it.userTypeParent
+                val list = mutableListOf<String>()
+                it.userTypeParent.data.forEach { name -> list.add(name.name) }
+                spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
+                        list)
+                views.spinner.adapter = spinnerArrayAdapter
+                views.spinner.onItemSelectedListener = this
+            }
+
+            if (it is LoginViewEvents.OnGetGroupsConfirmed)
+                SelectEnvironmentDialog(it.groupParent, this).show(childFragmentManager, null)
+        }
+
+        views.btnHidden.setOnClickListener {
+            hiddenCount++
+            if (hiddenCount >= 4)
+                loginViewModel.getGroup()
+        }
     }
 
     private fun submit() {
-        loginViewModel.handleSupplierConfirmation()
+        selectedCountry?.let {
+            BASE_URL = it.cychat_url
+            if (it.verify_mode == NetworkConstants.NONE)
+                loginViewModel.handleSupplierConfirmation(
+                        it.verify_mode == NetworkConstants.NONE,
+                        "",
+                        it.utype_id,
+                        it.cychat_token)
+            else {
+                if (views.supplierField.text.toString().isEmpty())
+                    views.tvSupplierTil.error = getString(R.string.please_enter_code)
+                else
+                    loginViewModel.handleSupplierConfirmation(
+                            it.verify_mode == NetworkConstants.NONE,
+                            views.supplierField.text.toString(),
+                            it.utype_id,
+                            it.cychat_token)
+            }
+        }
     }
 
     override fun onError(throwable: Throwable) {
@@ -82,17 +119,23 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
     override fun resetViewModel() {}
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        allSettings?.data?.countries?.let {
+        allSettings?.data?.let {
             selectedCountry = it[position]
+            views.tvUserDescription.text = selectedCountry?.utype_desc
+            selectedCountry?.verify_mode?.let { verifyMode ->
+                views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
+                views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
+                    getString(R.string.check_code)
+                else
+                    getString(R.string.auth_submit)
+            }
         }
-        if (firstTime)
-            firstTime = false
-        else
-            checkIfCodeNeeded()
-    }
-
-    private fun checkIfCodeNeeded() {
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    override fun onClick(item: Group) {
+        loginViewModel.groupValue = item.value
+        loginViewModel.getUserType()
+    }
 }

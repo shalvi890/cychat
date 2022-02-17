@@ -18,6 +18,8 @@ package com.cioinfotech.cychat.features.login
 
 import com.cioinfotech.cychat.core.platform.VectorViewEvents
 import org.matrix.android.sdk.api.auth.registration.FlowResult
+import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
+import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 
 /**
  * Transient events for Login
@@ -47,5 +49,7 @@ sealed class LoginViewEvents : VectorViewEvents {
     object OnResendOTP : LoginViewEvents()
     object OnSupplierConfirmed : LoginViewEvents()
     object OnMappingConfirmed : LoginViewEvents()
+    data class OnGetGroupsConfirmed(val groupParent: GroupParent) : LoginViewEvents()
+    data class OnUserTypeConfirmed(val userTypeParent: UserTypeParent) : LoginViewEvents()
     data class OnWebLoginError(val errorCode: Int, val description: String, val failingUrl: String) : LoginViewEvents()
 }

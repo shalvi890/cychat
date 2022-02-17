@@ -2,11 +2,15 @@
   <library name="Gradle: com.github.vector-im:PFLockScreen-Android:1.0.0-beta12@aar">
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/288408d91c0ba5340b974f9b6f264d4c/jetified-PFLockScreen-Android-1.0.0-beta12/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/288408d91c0ba5340b974f9b6f264d4c/jetified-PFLockScreen-Android-1.0.0-beta12/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/288408d91c0ba5340b974f9b6f264d4c/jetified-PFLockScreen-Android-1.0.0-beta12/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/288408d91c0ba5340b974f9b6f264d4c/jetified-PFLockScreen-Android-1.0.0-beta12/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cca8b934d2062a73b19180643d45ef4a/jetified-PFLockScreen-Android-1.0.0-beta12/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

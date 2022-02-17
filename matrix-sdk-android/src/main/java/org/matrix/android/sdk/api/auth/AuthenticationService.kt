@@ -27,8 +27,10 @@ import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
+import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 
 /**
@@ -117,14 +119,20 @@ interface AuthenticationService {
     /**
      * Cychat APIs Start Here
      */
-    fun cyLogin(auth: String, loginParams: PasswordLoginParams): Single<LoginResponse>
+    fun cyLogin(hashMap: HashMap<String, String>): Single<LoginResponse>
 
     fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams): Single<CheckOTPResponse>
 
-    fun getSettings(auth: String): Single<GetSettingsParent>
+    fun getSettings(hashMap: HashMap<String, String>): Single<GetSettingsParent>
 
     fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
 
     fun cyValidateSecurityCode(auth: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
+
+    fun cyGetUserType(map:HashMap<String,String>):Single<UserTypeParent>
+
+    fun cyGetGroups(map:HashMap<String,String>):Single<GroupParent>
+
+    fun cyNewCheckCode(map:HashMap<String,String>):Single<BaseResponse>
 
 }

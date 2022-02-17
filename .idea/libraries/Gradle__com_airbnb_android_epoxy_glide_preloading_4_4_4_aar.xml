@@ -5,6 +5,8 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8003454f46433c0527d86372f0ba4a2a/jetified-epoxy-glide-preloading-4.4.4/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8003454f46433c0527d86372f0ba4a2a/jetified-epoxy-glide-preloading-4.4.4/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8003454f46433c0527d86372f0ba4a2a/jetified-epoxy-glide-preloading-4.4.4/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eceeebed8d9ad97f45a7db3c742c0f39/jetified-epoxy-glide-preloading-4.4.4/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eceeebed8d9ad97f45a7db3c742c0f39/jetified-epoxy-glide-preloading-4.4.4/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.airbnb.android/epoxy-glide-preloading/4.4.4/c4d5db777533528b5cf53a4ce3b239291c0e41cc/epoxy-glide-preloading-4.4.4-javadoc.jar!/" />

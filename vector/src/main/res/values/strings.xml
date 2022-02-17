@@ -3304,6 +3304,7 @@
     <string name="please_select_server_to_search">Please select organization to search</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
     <string name="please_enter_security_code">Please enter verification code</string>
+    <string name="please_enter_code">Please enter code</string>
     <string name="change_org">Enable Invite Other Organization</string>
     <string name="search_company_name">Search Organization Name</string>
     <string name="logo">Logo</string>
@@ -3364,5 +3365,8 @@
     <string name="send_code">Send Code</string>
     <string name="check_code">Check Code</string>
     <string name="token_sent_to_supplier">Verification code sent to supplier</string>
+    <string name="please_select_server">Please, select environment</string>
+    <string name="search_server_name">Search server name</string>
+    <string name="enter_referral_code">Enter code</string>
 
 </resources>

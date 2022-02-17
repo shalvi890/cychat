@@ -67,15 +67,39 @@ import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
+import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
-import org.matrix.android.sdk.internal.network.NetworkConstants.BEARER
+import org.matrix.android.sdk.internal.network.NetworkConstants.CHECK_CODE_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
+import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
+import org.matrix.android.sdk.internal.network.NetworkConstants.COUNTRY_CODE
+import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
+import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_API_CLID
+import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.GENERAL_DATA
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_GROUPS_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_SETTINGS
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_SETTINGS_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_USER_TYPE_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.GROUP_VALUE
+import org.matrix.android.sdk.internal.network.NetworkConstants.IMEI
+import org.matrix.android.sdk.internal.network.NetworkConstants.LIVE
+import org.matrix.android.sdk.internal.network.NetworkConstants.LOGIN
+import org.matrix.android.sdk.internal.network.NetworkConstants.MOBILE
+import org.matrix.android.sdk.internal.network.NetworkConstants.OP
+import org.matrix.android.sdk.internal.network.NetworkConstants.REF_CODE
+import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.USERTYPE_DATA
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_LOGIN_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 
@@ -101,15 +125,17 @@ class LoginViewModel @AssistedInject constructor(
 
     private var pref: SharedPreferences = DefaultSharedPreferences.getInstance(applicationContext)
     private var reqId = pref.getString(NetworkConstants.REQ_ID, null)
-    private var accessToken = pref.getString(NetworkConstants.ACCESS_TOKEN, null).attachBearer()
 
-    fun String?.attachBearer(): String? {
-        return when {
-            this.isNullOrEmpty()  -> return null
-            this.contains(BEARER) -> return this
-            else                  -> BEARER + this
-        }
-    }
+    //    private var accessToken = pref.getString(NetworkConstants.ACCESS_TOKEN, null).attachBearer()
+    var groupValue = LIVE
+
+//    private fun String?.attachBearer(): String {
+//        return when {
+//            this.isNullOrEmpty()  -> return ""
+//            this.contains(BEARER) -> return this
+//            else                  -> BEARER + this
+//        }
+//    }
 
     init {
         getKnownCustomHomeServersUrls()
@@ -185,12 +211,56 @@ class LoginViewModel @AssistedInject constructor(
         }.exhaustive
     }
 
-    fun handleSupplierConfirmation() {
-        _viewEvents.post(LoginViewEvents.OnSupplierConfirmed)
-        setState {
-            copy(
-                    asyncSupplierConfirmed = Success(Unit)
+    /** CyChat API- Start */
+    fun handleSupplierConfirmation(isSkipApi: Boolean, code: String, utypeId: String, clid: String) {
+        pref.edit {
+            putString(CLID, clid)
+            putString(USER_TYPE, utypeId)
+            apply()
+        }
+        if (isSkipApi) {
+            _viewEvents.post(LoginViewEvents.OnSupplierConfirmed)
+            setState {
+                copy(
+                        asyncSupplierConfirmed = Success(Unit)
+                )
+            }
+        } else {
+            val tempMap = hashMapOf(
+                    CLIENT_NAME to CY_VERSE_ANDROID,
+                    GROUP_VALUE to groupValue,
+                    OP to CHECK_CODE_API,
+                    REF_CODE to code,
+                    USER_TYPE to utypeId,
+                    SERVICE_NAME to USERTYPE_DATA,
+                    CLID to clid
             )
+            authenticationService.cyNewCheckCode(tempMap)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(checkCodeObserver())
+            setState { copy(asyncSupplierConfirmed = Loading()) }
+        }
+    }
+
+    private fun checkCodeObserver(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnSupplierConfirmed)
+                    setState { copy(asyncSupplierConfirmed = Success(Unit)) }
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message ?: "Please, Check Referral Code!")))
+                    setState { copy(asyncSupplierConfirmed = Fail(Throwable(t.message ?: "Please, Check Referral Code!"))) }
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                setState { copy(asyncSupplierConfirmed = Fail(e)) }
+            }
         }
     }
 
@@ -203,27 +273,37 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    /** CyChat API- Start */
-
     private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     /** CyChat Login API Implementation-
      * @param passwordLoginParams- Mobile Number & Email of User
      * */
-    fun handleCyLogin(passwordLoginParams: PasswordLoginParams, secCodeDomains: MutableList<String>?) {
+    //secCodeDomains: MutableList<String>?
+    fun handleCyLogin(passwordLoginParams: PasswordLoginParams) {
         loginParams = passwordLoginParams
-        if (secCodeDomains?.contains(loginParams?.email.getEmailDomain()) != true
-                || (secCodeDomains.contains(loginParams?.email.getEmailDomain()) && isUserValidated.value == true)) {
-            authenticationService.cyLogin(AUTH_KEY, passwordLoginParams)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getCyLoginObserver(passwordLoginParams.email))
-            setState {
-                copy(
-                        asyncCyLogin = Loading()
-                )
-            }
+        val map = hashMapOf(
+                SERVICE_NAME to LOGIN,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                CLID to (pref.getString(CLID, "") ?: ""),
+                OP to USER_LOGIN_API,
+                USER_TYPE to (pref.getString(USER_TYPE, "") ?: ""),
+                MOBILE to loginParams!!.mobile,
+                EMAIL_SMALL to loginParams!!.email,
+                IMEI to loginParams!!.imei_no,
+                COUNTRY_CODE to loginParams!!.country_code
+        )
+//        if (secCodeDomains?.contains(loginParams?.email.getEmailDomain()) != true
+//                || (secCodeDomains.contains(loginParams?.email.getEmailDomain()) && isUserValidated.value == true)) {
+        authenticationService.cyLogin(map)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getCyLoginObserver(passwordLoginParams.email))
+        setState {
+            copy(
+                    asyncCyLogin = Loading()
+            )
         }
+//        }
     }
 
     /** CyChat Login API Implementation-
@@ -239,10 +319,10 @@ class LoginViewModel @AssistedInject constructor(
                     signUpSignInData.postValue(t.data)
                     pref.edit {
                         putString(NetworkConstants.REQ_ID, t.data.req_id)
-                        putString(NetworkConstants.ACCESS_TOKEN, t.data.access_token.attachBearer())
+//                        putString(NetworkConstants.ACCESS_TOKEN, t.data.access_token.attachBearer())
                         putString(NetworkConstants.EMAIL, email)
                         reqId = t.data.req_id
-                        accessToken = t.data.access_token.attachBearer()
+//                        accessToken = t.data.access_token.attachBearer()
                         if (t.data.type == SIGN_UP_SMALL)
                             putBoolean(SIGNING_MODE, true)
                         else
@@ -296,7 +376,7 @@ class LoginViewModel @AssistedInject constructor(
                     firstName,
                     lastName
             )
-            authenticationService.checkOTP(accessToken, reqId, checkOTPParams)
+            authenticationService.checkOTP("", reqId, checkOTPParams)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getCyCheckOTPObserver(it.email, firstName, lastName))
@@ -367,7 +447,14 @@ class LoginViewModel @AssistedInject constructor(
      * No Params just to get all countries with codes.
      * */
     fun handleGetSettings() {
-        authenticationService.getSettings(AUTH_KEY)
+        val tempMap = hashMapOf(
+                SERVICE_NAME to GET_SETTINGS,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                GROUP_VALUE to groupValue,
+                OP to GET_SETTINGS_API,
+                CLID to (pref.getString(CLID, "") ?: "")
+        )
+        authenticationService.getSettings(tempMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getSettingsObserver())
@@ -385,12 +472,12 @@ class LoginViewModel @AssistedInject constructor(
             override fun onSuccess(t: GetSettingsParent) {
                 if (t.status == "ok") {
                     countryCodeList.postValue(t)
-                    pref.edit().apply {
-                        putString(NetworkConstants.SYGNAL, t.data.sygnal)
-                        putString(NetworkConstants.JITSI, t.data.jitsi)
-                        apply()
-
-                    }
+//                    pref.edit().apply {
+//                        putString(NetworkConstants.SYGNAL, t.data.sygnal)
+//                        putString(NetworkConstants.JITSI, t.data.jitsi)
+//                        apply()
+//
+//                    }
                     setState {
                         copy(
                                 asyncGetCountryList = Success(Unit)
@@ -455,7 +542,17 @@ class LoginViewModel @AssistedInject constructor(
                                 asyncCyValidateSecurityCode = Success(Unit)
                         )
                     }
-                    authenticationService.cyLogin(AUTH_KEY, loginParams!!)
+                    val map = hashMapOf(
+                            SERVICE_NAME to LOGIN,
+                            CLIENT_NAME to CY_VERSE_ANDROID,
+                            CLID to (pref.getString(CLID, "") ?: ""),
+                            OP to USER_LOGIN_API,
+                            MOBILE to loginParams!!.mobile,
+                            EMAIL_SMALL to loginParams!!.email,
+                            IMEI to loginParams!!.imei_no,
+                            COUNTRY_CODE to loginParams!!.country_code
+                    )
+                    authenticationService.cyLogin(map)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(getCyLoginObserver(loginParams!!.email))
@@ -474,7 +571,7 @@ class LoginViewModel @AssistedInject constructor(
             override fun onError(e: Throwable) {
                 setState {
                     copy(
-                            resendOTP = Fail(e)
+                            asyncCyValidateSecurityCode = Fail(e)
                     )
                 }
             }
@@ -493,7 +590,7 @@ class LoginViewModel @AssistedInject constructor(
                     "email" to it.email,
                     "req_id" to reqId!!
             )
-            authenticationService.cyResendOTP(accessToken, reqId, map)
+            authenticationService.cyResendOTP("", reqId, map)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getResendOTPObserver())
@@ -541,6 +638,107 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
+    /** CyChat Get Groups API-
+     * Function waits to get all groups API Response
+     * */
+    fun getGroup() {
+        val tempMap = hashMapOf(
+                SERVICE_NAME to GENERAL_DATA,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                CLID to CY_VERSE_API_CLID,
+                GROUP_VALUE to groupValue,
+                OP to GET_GROUPS_API
+        )
+        authenticationService.cyGetGroups(tempMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getGroupObserver())
+        setState {
+            copy(
+                    asyncGetGroup = Loading()
+            )
+        }
+    }
+
+    /** Get Group API Implementation-
+     * Function waits for Get Group API Response
+     * */
+    private fun getGroupObserver(): SingleObserver<GroupParent> {
+        return object : SingleObserver<GroupParent> {
+
+            override fun onSuccess(t: GroupParent) {
+                Timber.d(t.toString())
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnGetGroupsConfirmed(t))
+                    setState {
+                        copy(
+                                asyncGetGroup = Success(Unit)
+                        )
+                    }
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                    setState {
+                        copy(
+                                asyncGetGroup = Fail(Throwable(t.message))
+                        )
+                    }
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                setState {
+                    copy(asyncGetGroup = Fail(e))
+                }
+            }
+        }
+    }
+
+    /** CyChat Get User Types API-
+     * Function waits to get all groups API Response
+     * */
+    fun getUserType() {
+        val tempMap = hashMapOf(
+                SERVICE_NAME to GENERAL_DATA,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                CLID to CY_VERSE_API_CLID,
+                GROUP_VALUE to groupValue,
+                OP to GET_USER_TYPE_API
+        )
+        authenticationService.cyGetUserType(tempMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getUserTypeObserver())
+        setState { copy(asyncGetUserType = Loading()) }
+    }
+
+    /** Get Get User Types API Implementation-
+     * Function waits for Get Group API Response
+     * */
+    private fun getUserTypeObserver(): SingleObserver<UserTypeParent> {
+        return object : SingleObserver<UserTypeParent> {
+
+            override fun onSuccess(t: UserTypeParent) {
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnUserTypeConfirmed(t))
+                    setState { copy(asyncGetUserType = Success(Unit)) }
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                    setState { copy(asyncGetUserType = Fail(Throwable(t.message))) }
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                setState {
+                    copy(asyncGetUserType = Fail(e))
+                }
+            }
+        }
+    }
+
     /** CyChat API- END */
     private fun handleUserAcceptCertificate(action: LoginAction.UserAcceptCertificate) {
         // It happens when we get the login flow, or during direct authentication.
@@ -560,6 +758,7 @@ class LoginViewModel @AssistedInject constructor(
                                 .withAllowedFingerPrints(listOf(action.fingerprint))
                                 .build()
                 )
+            else                            -> Unit
         }
     }
 

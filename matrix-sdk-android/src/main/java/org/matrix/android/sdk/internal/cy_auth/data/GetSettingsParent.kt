@@ -19,7 +19,7 @@ package org.matrix.android.sdk.internal.cy_auth.data
 import com.google.gson.annotations.SerializedName
 
 data class GetSettingsParent(
-        val data: CountryData
+        val data: MutableList<CountryCode>
 ) : BaseResponse()
 
 data class CountryData(

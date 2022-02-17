@@ -7,10 +7,21 @@
     android:padding="16dp"
     tools:context=".features.login.SupplierConfirmationFragment">
 
+    <TextView
+        android:id="@+id/btnHidden"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/image_view_logo"
         style="@style/LoginLogo"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +31,7 @@
         android:id="@+id/loginDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_vertical_margin_big"
+        android:layout_marginTop="60dp"
         android:text="@string/please_select_type_of_user"
         android:textAppearance="@style/TextAppearance.Vector.Login.Text"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,8 +52,7 @@
         android:id="@+id/tvUserDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_vertical_margin"
-        android:maxLines="4"
+        android:layout_marginTop="60dp"
         android:textAppearance="@style/TextAppearance.Vector.Login.Text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinner" />
@@ -52,8 +62,9 @@
         style="@style/VectorTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/supplier"
+        android:layout_marginTop="16dp"
+        android:hint="@string/enter_referral_code"
+        android:visibility="gone"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +77,6 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingEnd="48dp"
             tools:ignore="RtlSymmetry" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -77,8 +87,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:text="@string/check"
+        android:layout_marginTop="32dp"
+        android:text="@string/check_code"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSupplierTil"
         tools:enabled="false"

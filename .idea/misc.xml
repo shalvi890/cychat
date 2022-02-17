@@ -14,14 +14,18 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_group.xml" value="0.23697916666666666" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_call.xml" value="0.176" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/bottom_sheet_call_controls.xml" value="0.2" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/dialog_select_environment.xml" value="0.264" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login.xml" value="0.15443840579710144" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_login_o_t_p.xml" value="0.12001811594202899" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_server_list.xml" value="0.10371376811594203" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_supplier_confirmation.xml" value="0.21666666666666667" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_mapping.xml" value="0.21666666666666667" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_mapping.xml" value="0.2" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_home_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_category.xml" value="0.13697916666666668" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_filter_footer.xml" value="0.1" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_invitation.xml" value="0.21666666666666667" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_server_list.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_media_message_stub.xml" value="0.536" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_merged_room_creation_stub.xml" value="0.16799999999999998" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_timeline_event_poll_stub.xml" value="0.2" />
