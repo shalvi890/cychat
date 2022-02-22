@@ -51,9 +51,9 @@ class LoginSplashFragment @Inject constructor() : AbstractLoginFragment<Fragment
 
     /** Code for Different Screen logic When Release & Debug build is given environment screen is not shown in release */
     private fun getStarted() {
-        if (BuildConfig.debug_mode)
-            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
-        else {
+//        if (BuildConfig.debug_mode)
+//            loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnLoginFlowRetrieved))
+//        else {
             val prefs = DefaultSharedPreferences.getInstance(requireContext())
             RetrofitFactory.BASE_URL = NetworkConstants.PRODUCTION_URL
             prefs.edit().apply {
@@ -62,7 +62,7 @@ class LoginSplashFragment @Inject constructor() : AbstractLoginFragment<Fragment
                 apply()
             }
             loginViewModel.handle(LoginAction.PostViewEvent(LoginViewEvents.OnHomeserverSelection))
-        }
+//        }
     }
 
     override fun resetViewModel() {}

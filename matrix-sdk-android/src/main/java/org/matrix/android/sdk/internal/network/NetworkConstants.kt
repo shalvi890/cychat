@@ -57,6 +57,7 @@ object NetworkConstants {
     const val GET_USER_TYPE_API = "getUserType"
     const val GET_SETTINGS_API = "getSettings"
     const val CHECK_CODE_API = "checkCode"
+    const val CHECK_OTP_API = "checkOtp"
     const val USER_LOGIN_API = "userLogin"
     const val GENERAL_DATA = "general_data"
     const val CY_VERSE_ANDROID = "cyVerseAndroid"
@@ -95,7 +96,7 @@ object NetworkConstants {
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
     const val EMAIL = "EMAIL"
     const val ACCESS_TOKEN_SMALL = "access_token"
-    const val REQ_ID = "REQ_ID"
+    const val REQ_ID = "req_id"
     const val JITSI = "JITSI"
     const val SYGNAL = "SYGNAL"
     const val DEFAULT_URLS = "/get-jitsi-url"
@@ -119,4 +120,11 @@ object NetworkConstants {
     const val EMAIL_SMALL = "email"
     const val IMEI = "imei"
     const val COUNTRY_CODE = "country_code"
+
+    const val F_NAME = "fname"
+    const val L_NAME = "lname"
+    const val TYPE = "type"
+    const val EMAIL_OTP = "email_otp"
+    const val MOBILE_OTP = "mobile_otp"
+
 }

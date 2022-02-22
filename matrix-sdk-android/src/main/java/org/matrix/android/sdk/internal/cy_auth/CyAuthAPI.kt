@@ -23,7 +23,6 @@ import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
-import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.ROOT_API
 import retrofit2.http.Body
@@ -40,12 +39,10 @@ interface CyAuthAPI {
     @POST(ROOT_API)
     fun login(@FieldMap map: HashMap<String, String>): Single<LoginResponse>
 
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:10000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:Y")
-    @POST(NetworkConstants.CHECK_OTP)
-    fun checkOTP(
-            @Header("Authorization") auth: String?,
-            @Header("reqid") reqId: String?,
-            @Body loginParams: VerifyOTPParams): Single<CheckOTPResponse>
+    @POST(ROOT_API)
+    fun checkOTP(@FieldMap map: HashMap<String, String>): Single<CheckOTPResponse>
 
     @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")

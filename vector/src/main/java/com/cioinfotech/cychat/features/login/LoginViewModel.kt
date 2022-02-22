@@ -72,16 +72,18 @@ import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
-import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.CHECK_CODE_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.CHECK_OTP_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.COUNTRY_CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_API_CLID
+import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL_OTP
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.F_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.GENERAL_DATA
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_GROUPS_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_SETTINGS
@@ -91,12 +93,16 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.GROUP_VALUE
 import org.matrix.android.sdk.internal.network.NetworkConstants.IMEI
 import org.matrix.android.sdk.internal.network.NetworkConstants.LIVE
 import org.matrix.android.sdk.internal.network.NetworkConstants.LOGIN
+import org.matrix.android.sdk.internal.network.NetworkConstants.L_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.MOBILE
+import org.matrix.android.sdk.internal.network.NetworkConstants.MOBILE_OTP
 import org.matrix.android.sdk.internal.network.NetworkConstants.OP
 import org.matrix.android.sdk.internal.network.NetworkConstants.REF_CODE
+import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USERTYPE_DATA
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_LOGIN_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
@@ -124,7 +130,7 @@ class LoginViewModel @AssistedInject constructor(
     }
 
     private var pref: SharedPreferences = DefaultSharedPreferences.getInstance(applicationContext)
-    private var reqId = pref.getString(NetworkConstants.REQ_ID, null)
+    private var reqId = pref.getString(REQ_ID, null)
 
     //    private var accessToken = pref.getString(NetworkConstants.ACCESS_TOKEN, null).attachBearer()
     var groupValue = LIVE
@@ -278,7 +284,6 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Login API Implementation-
      * @param passwordLoginParams- Mobile Number & Email of User
      * */
-    //secCodeDomains: MutableList<String>?
     fun handleCyLogin(passwordLoginParams: PasswordLoginParams) {
         loginParams = passwordLoginParams
         val map = hashMapOf(
@@ -318,7 +323,7 @@ class LoginViewModel @AssistedInject constructor(
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                     signUpSignInData.postValue(t.data)
                     pref.edit {
-                        putString(NetworkConstants.REQ_ID, t.data.req_id)
+                        putString(REQ_ID, t.data.req_id)
 //                        putString(NetworkConstants.ACCESS_TOKEN, t.data.access_token.attachBearer())
                         putString(NetworkConstants.EMAIL, email)
                         reqId = t.data.req_id
@@ -366,17 +371,21 @@ class LoginViewModel @AssistedInject constructor(
      * */
     fun handleCyCheckOTP(emailOTP: String, mobileOTP: String, firstName: String, lastName: String) {
         loginParams?.let {
-            val checkOTPParams = VerifyOTPParams(it.email,
-                    it.mobile,
-                    it.imei_no,
-                    emailOTP,
-                    mobileOTP,
-                    reqId!!,
-                    signUpSignInData.value!!.type,
-                    firstName,
-                    lastName
+            val map = hashMapOf(
+                    SERVICE_NAME to LOGIN,
+                    CLIENT_NAME to CY_VERSE_ANDROID,
+                    CLID to (pref.getString(CLID, "") ?: ""),
+                    OP to CHECK_OTP_API,
+                    USER_TYPE to (pref.getString(USER_TYPE, "") ?: ""),
+                    IMEI to it.imei_no,
+                    F_NAME to firstName,
+                    L_NAME to lastName,
+                    TYPE to signUpSignInData.value!!.type,
+                    EMAIL_OTP to emailOTP,
+                    MOBILE_OTP to mobileOTP,
+                    REQ_ID to (pref.getString(REQ_ID, "") ?: "")
             )
-            authenticationService.checkOTP("", reqId, checkOTPParams)
+            authenticationService.checkOTP(map)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getCyCheckOTPObserver(it.email, firstName, lastName))
@@ -407,7 +416,7 @@ class LoginViewModel @AssistedInject constructor(
                     }
                     handle(
                             LoginAction.UpdateHomeServer(
-                                    "https://" + t.data.api_server,
+                                    t.data.api_server,
                                     email.replace("@", "-at-"),
                                     AES.decrypt(
                                             t.data.password,
@@ -472,12 +481,10 @@ class LoginViewModel @AssistedInject constructor(
             override fun onSuccess(t: GetSettingsParent) {
                 if (t.status == "ok") {
                     countryCodeList.postValue(t)
-//                    pref.edit().apply {
-//                        putString(NetworkConstants.SYGNAL, t.data.sygnal)
-//                        putString(NetworkConstants.JITSI, t.data.jitsi)
-//                        apply()
-//
-//                    }
+                    pref.edit().apply {
+                        putString(NetworkConstants.JITSI, t.jitsi)
+                        apply()
+                    }
                     setState {
                         copy(
                                 asyncGetCountryList = Success(Unit)

@@ -121,7 +121,7 @@ interface AuthenticationService {
      */
     fun cyLogin(hashMap: HashMap<String, String>): Single<LoginResponse>
 
-    fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams): Single<CheckOTPResponse>
+    fun checkOTP(hashMap: HashMap<String, String>): Single<CheckOTPResponse>
 
     fun getSettings(hashMap: HashMap<String, String>): Single<GetSettingsParent>
 

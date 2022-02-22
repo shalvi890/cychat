@@ -397,7 +397,7 @@ internal class DefaultAuthenticationService @Inject constructor(
 
     override fun cyLogin(hashMap: HashMap<String, String>) = buildCyAuthAPI().login(hashMap)
 
-    override fun checkOTP(auth: String?, reqId: String?, verifyParams: VerifyOTPParams) = buildCyAuthAPI().checkOTP(auth, reqId, verifyParams)
+    override fun checkOTP(hashMap: HashMap<String, String>) = buildCyAuthAPI().checkOTP(hashMap)
 
     override fun getSettings(hashMap: HashMap<String, String>) = buildCyAuthAPI().getSettings(hashMap)
 

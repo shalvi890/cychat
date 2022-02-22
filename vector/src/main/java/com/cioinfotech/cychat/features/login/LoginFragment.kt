@@ -17,15 +17,11 @@
 package com.cioinfotech.cychat.features.login
 
 import android.annotation.SuppressLint
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -78,10 +74,10 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         views.spinnerList.adapter = spinnerArrayAdapter
         loginViewModel.handleGetSettings()
         loginViewModel.countryCodeList.observe(viewLifecycleOwner) {
-            if (it != null && it.data.isNotEmpty()) {
+            if (it != null && it.data.countries.isNotEmpty()) {
                 allSettings = it
                 val list = mutableListOf<String>()
-                it.data.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
+                it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
                         list)
                 views.spinnerList.adapter = spinnerArrayAdapter
@@ -431,7 +427,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        allSettings?.data?.let {
+        allSettings?.data?.countries?.let {
             selectedCountry = it[position]
         }
         if (firstTime)

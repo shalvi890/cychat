@@ -179,7 +179,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         }
 
         if (error == 0)
-            loginViewModel.handleCyCheckOTP(mobileOTP, emailOTP, firstName, lastName)
+            loginViewModel.handleCyCheckOTP(emailOTP, mobileOTP, firstName, lastName)
     }
 
     private fun cleanupUi() {
