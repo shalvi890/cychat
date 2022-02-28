@@ -29,9 +29,7 @@ import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
-import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
-import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 
 /**
  * This interface defines methods to authenticate or to create an account to a matrix server.
@@ -129,10 +127,13 @@ interface AuthenticationService {
 
     fun cyValidateSecurityCode(auth: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
 
-    fun cyGetUserType(map:HashMap<String,String>):Single<UserTypeParent>
+    fun cyGetUserType(map: HashMap<String, String>): Single<UserTypeParent>
 
-    fun cyGetGroups(map:HashMap<String,String>):Single<GroupParent>
+    fun cyGetGroups(map: HashMap<String, String>): Single<GroupParent>
 
-    fun cyNewCheckCode(map:HashMap<String,String>):Single<BaseResponse>
+    fun cyNewCheckCode(map: HashMap<String, String>): Single<BaseResponse>
 
+    fun recheckReferralCode(map: HashMap<String, String>): Single<BaseResponse>
+
+    fun validateCodeBySupplier(map: HashMap<String, String>): Single<CheckOTPResponse>
 }

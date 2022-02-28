@@ -3363,10 +3363,11 @@
     <string name="check">Check</string>
     <string name="supplier_code">Supplier Code</string>
     <string name="send_code">Send Code</string>
-    <string name="check_code">Check Code</string>
+    <string name="check_code">Verify</string>
     <string name="token_sent_to_supplier">Verification code sent to supplier</string>
     <string name="please_select_server">Please, select environment</string>
     <string name="search_server_name">Search server name</string>
     <string name="enter_referral_code">Enter code</string>
+    <string name="verify_and_send_code"><![CDATA[Verify & Send Code]]></string>
 
 </resources>

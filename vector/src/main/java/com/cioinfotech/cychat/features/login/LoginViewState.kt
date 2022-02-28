@@ -32,6 +32,7 @@ data class LoginViewState(
         val asyncCyLogin: Async<Unit> = Uninitialized,
         val asyncCyValidateSecurityCode: Async<Unit> = Uninitialized,
         val asyncSupplierConfirmed: Async<Unit> = Uninitialized,
+        val asyncSupplierReConfirmed: Async<Unit> = Uninitialized,
         val asyncUserMapped: Async<Unit> = Uninitialized,
         val asyncGetGroup: Async<Unit> = Uninitialized,
         val asyncGetUserType: Async<Unit> = Uninitialized,
@@ -77,6 +78,7 @@ data class LoginViewState(
                 || asyncUserMapped is Loading
                 || asyncGetGroup is Loading
                 || asyncGetUserType is Loading
+                || asyncSupplierReConfirmed is Loading
     }
 
     fun isUserLogged() = asyncLoginAction is Success

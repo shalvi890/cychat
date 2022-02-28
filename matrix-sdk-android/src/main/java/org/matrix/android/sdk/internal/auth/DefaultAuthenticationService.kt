@@ -40,7 +40,6 @@ import org.matrix.android.sdk.internal.auth.version.Versions
 import org.matrix.android.sdk.internal.auth.version.isLoginAndRegistrationSupportedBySdk
 import org.matrix.android.sdk.internal.auth.version.isSupportedBySdk
 import org.matrix.android.sdk.internal.cy_auth.CyAuthAPI
-import org.matrix.android.sdk.internal.cy_auth.data.VerifyOTPParams
 import org.matrix.android.sdk.internal.di.Unauthenticated
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 import org.matrix.android.sdk.internal.network.executeRequest
@@ -410,6 +409,10 @@ internal class DefaultAuthenticationService @Inject constructor(
     override fun cyGetGroups(map: HashMap<String, String>) = buildCyCentralServer().getGroups(map)
 
     override fun cyNewCheckCode(map: HashMap<String, String>) = buildCyAuthAPI().cyNewCheckCode(map)
+
+    override fun recheckReferralCode(map: HashMap<String, String>) = buildCyAuthAPI().recheckReferralCode(map)
+
+    override fun validateCodeBySupplier(map: HashMap<String, String>) = buildCyAuthAPI().validateCodeBySupplier(map)
 
     private fun buildAuthAPI(homeServerConnectionConfig: HomeServerConnectionConfig): AuthAPI {
         val retrofit = retrofitFactory.create(buildClient(homeServerConnectionConfig), homeServerConnectionConfig.homeServerUri.toString())

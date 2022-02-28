@@ -76,4 +76,14 @@ interface CyAuthAPI {
     @Headers("CONNECT_TIMEOUT:10000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(ROOT_API)
     fun cyNewCheckCode(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun validateCodeBySupplier(@FieldMap map: HashMap<String, String>): Single<CheckOTPResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun recheckReferralCode(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
 }

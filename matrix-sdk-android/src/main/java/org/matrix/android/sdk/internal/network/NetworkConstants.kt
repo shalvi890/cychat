@@ -56,6 +56,8 @@ object NetworkConstants {
     const val GET_GROUPS_API = "getGroups"
     const val GET_USER_TYPE_API = "getUserType"
     const val GET_SETTINGS_API = "getSettings"
+    const val RE_CHECK_REF_CODE = "reCheckRefCode"
+    const val VALIDATE_CODE = "validateCode"
     const val CHECK_CODE_API = "checkCode"
     const val CHECK_OTP_API = "checkOtp"
     const val USER_LOGIN_API = "userLogin"
@@ -67,6 +69,7 @@ object NetworkConstants {
     const val CLIENT_NAME = "clientName"
     const val USER_TYPE = "userType"
     const val REF_CODE = "refCode"
+    const val REF_CODE_DASH = "ref_code"
     const val CLID = "clid"
     const val GROUP_VALUE = "groupValue"
     const val INDIVIDUAL = "Individual"
@@ -123,8 +126,10 @@ object NetworkConstants {
 
     const val F_NAME = "fname"
     const val L_NAME = "lname"
+    const val FIRST_NAME = "first_name"
+    const val LAST_NAME = "last_name"
     const val TYPE = "type"
     const val EMAIL_OTP = "email_otp"
     const val MOBILE_OTP = "mobile_otp"
-
+    const val EMAIL_VAL = "email_val"
 }
