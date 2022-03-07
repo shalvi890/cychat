@@ -28,15 +28,14 @@ class DefaultCyCoreService @Inject constructor(
         private val okHttpClient: Lazy<OkHttpClient>,
         private val retrofitFactory: RetrofitFactory) : CyCoreService {
 
-    override fun cyGetDomainDetails(auth: String?, reqId: String?, userId: String?, url: String) = buildCyCoreAPI(url).getDomainDetails(auth, reqId, userId)
-    override fun cyUpdateRecoveryKey(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(auth, reqId, hashMap)
-    override fun cyDeleteOldSessions(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).deleteOldSessions(auth, reqId, hashMap)
-    override fun cyGetFederatedDomains(auth: String?, reqId: String?, hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getFederatedDomains(auth, reqId, hashMap)
-    override fun cyGetDefaultURLs(auth: String?, url: String): Single<DefaultURLParent> = buildCyCoreAPI(url).getDefaultURLs(auth)
+    override fun cyGetDomainDetails(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDomainDetails(hashMap)
+    override fun cyUpdateRecoveryKey(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(hashMap)
+    override fun cyDeleteOldSessions(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).deleteOldSessions(hashMap)
+    override fun cyGetFederatedDomains(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getFederatedDomains(hashMap)
+    override fun cyGetDefaultURLs(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDefaultURLs(hashMap)
 
     private fun buildCyCoreAPI(url: String): CyCoreAPI {
-        val retrofit = retrofitFactory.createWithBaseURL(buildClient(), url)
-        return retrofit.create(CyCoreAPI::class.java)
+        return retrofitFactory.create(buildClient()).create(CyCoreAPI::class.java)
     }
 
     private fun buildClient(): OkHttpClient {

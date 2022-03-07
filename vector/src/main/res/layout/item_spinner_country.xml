@@ -3,7 +3,6 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:paddingStart="6dp"
     android:paddingTop="16dp"
     android:paddingEnd="6dp"

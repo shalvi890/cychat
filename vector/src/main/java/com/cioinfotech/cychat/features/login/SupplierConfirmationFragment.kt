@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.databinding.FragmentSupplierConfirmationBinding
@@ -43,7 +44,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter(requireContext(),
+        var spinnerArrayAdapter = ArrayAdapter(requireContext(),
                 R.layout.item_spinner_country,
                 mutableListOf<String>())
 
@@ -59,18 +60,13 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
             return@setOnEditorActionListener false
         }
 
-//        views.supplierField.doOnTextChanged { text, _, _, _ ->
-//            if (text?.isNotEmpty() == true)
-//                views.supplierField.error = null
-//        }
-
         loginViewModel.observeViewEvents {
             if (it is LoginViewEvents.OnUserTypeConfirmed) {
                 allSettings = it.userTypeParent
                 val list = mutableListOf<String>()
                 it.userTypeParent.data.forEach { name -> list.add(name.name) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
-                        list)
+                        mutableListOf(getString(R.string.please_select_type_of_user)) + list)
                 views.spinner.adapter = spinnerArrayAdapter
                 views.spinner.onItemSelectedListener = this
             }
@@ -87,25 +83,29 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
     }
 
     private fun submit() {
-        selectedCountry?.let {
-            BASE_URL = it.cychat_url
-            if (it.verify_mode == NetworkConstants.NONE)
-                loginViewModel.handleSupplierConfirmation(
-                        it.verify_mode == NetworkConstants.NONE,
-                        "",
-                        it.utype_id,
-                        it.cychat_token)
-            else {
-                if (views.supplierField.text.toString().isEmpty())
-                    views.tvSupplierTil.error = getString(R.string.please_enter_code)
-                else
+        if (selectedCountry != null)
+            selectedCountry?.let {
+                BASE_URL = it.cychat_url
+                if (it.verify_mode == NetworkConstants.NONE)
                     loginViewModel.handleSupplierConfirmation(
                             it.verify_mode == NetworkConstants.NONE,
-                            views.supplierField.text.toString(),
+                            "",
                             it.utype_id,
-                            it.cychat_token)
-            }
-        }
+                            it.cychat_token,
+                            it.setup_id)
+                else {
+                    if (views.supplierField.text.toString().isEmpty())
+                        views.tvSupplierTil.error = getString(R.string.please_enter_code)
+                    else
+                        loginViewModel.handleSupplierConfirmation(
+                                it.verify_mode == NetworkConstants.NONE,
+                                views.supplierField.text.toString(),
+                                it.utype_id,
+                                it.cychat_token,
+                                it.setup_id)
+                }
+            } else
+            Toast.makeText(requireContext(), getString(R.string.please_select_type_of_user), Toast.LENGTH_LONG).show()
     }
 
     override fun onError(throwable: Throwable) {
@@ -120,16 +120,20 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         allSettings?.data?.let {
-            selectedCountry = it[position]
-            views.tvUserDescription.text = selectedCountry?.utype_desc
-            selectedCountry?.verify_mode?.let { verifyMode ->
-                views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
-                views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
-                    getString(R.string.check_code)
-                else
-                    getString(R.string.auth_submit)
-            }
+            if (position != 0) {
+                selectedCountry = it[position - 1]
+                views.tvUserDescription.text = selectedCountry?.utype_desc
+                selectedCountry?.verify_mode?.let { verifyMode ->
+                    views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
+                    views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
+                        getString(R.string.check_code)
+                    else
+                        getString(R.string.auth_submit)
+                }
+            } else
+                selectedCountry = null
         }
+        views.btnSubmit.isEnabled = selectedCountry != null
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}

@@ -49,12 +49,10 @@ interface CyAuthAPI {
     @POST(ROOT_API)
     fun getSettings(@FieldMap map: HashMap<String, String>): Single<GetSettingsParent>
 
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @POST(NetworkConstants.RESENT_OTP)
-    fun resendOTP(
-            @Header("Authorization") auth: String?,
-            @Header("reqid") reqId: String?,
-            @Body map: HashMap<String, String>): Single<BaseResponse>
+    @POST(ROOT_API)
+    fun resendOTP(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
 
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.VALIDATE_SECURITY_CODE)

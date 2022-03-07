@@ -22,45 +22,35 @@ import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import retrofit2.http.Query
-import retrofit2.http.QueryMap
 
 interface CyCoreAPI {
-    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @GET(NetworkConstants.GET_DOMAIN_DETAILS)
-    fun getDomainDetails(
-            @Header("Authorization") auth: String?,
-            @Header("reqid") reqId: String?,
-            @Query("user_id") userId: String?): Single<DomainDetails>
 
-    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000", "no-encr:Y")
-    @POST(NetworkConstants.UPDATE_RECOVERY_KEY)
-    fun updateRecoveryKey(
-            @Header("Authorization") auth: String?,
-            @Header("reqid") reqId: String?,
-            @Body map: HashMap<String, String>): Single<BaseResponse>
-
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @DELETE(NetworkConstants.DELETE_OLD_SESSION)
-    fun deleteOldSessions(
-            @Header("Authorization") auth: String?,
-            @Header("reqid") reqId: String?,
-            @QueryMap map: HashMap<String, String>): Single<BaseResponse>
+    @POST(NetworkConstants.ROOT_API)
+    fun getDomainDetails(@FieldMap map: HashMap<String, String>): Single<DomainDetails>
 
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @POST(NetworkConstants.LIST_FEDERATED_DOMAINS)
-    fun getFederatedDomains(
-            @Header("Authorization") auth: String?,
-            @Header("reqid") reqId: String?,
-            @Body map: HashMap<String, String>): Single<FederatedDomainList>
+    @POST(NetworkConstants.ROOT_API)
+    fun updateRecoveryKey(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
 
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
-    @DELETE(NetworkConstants.DEFAULT_URLS)
-    fun getDefaultURLs(@Header("Authorization") auth: String?): Single<DefaultURLParent>
+    @POST(NetworkConstants.ROOT_API)
+    fun deleteOldSessions(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun getFederatedDomains(@FieldMap map: HashMap<String, String>): Single<FederatedDomainList>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun getDefaultURLs(@FieldMap map: HashMap<String, String>): Single<DefaultURLParent>
 }

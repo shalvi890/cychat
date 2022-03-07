@@ -72,7 +72,6 @@ import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 import org.matrix.android.sdk.internal.network.NetworkConstants
-import org.matrix.android.sdk.internal.network.NetworkConstants.AUTH_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.CHECK_CODE_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.CHECK_OTP_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
@@ -103,8 +102,10 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.OP
 import org.matrix.android.sdk.internal.network.NetworkConstants.REF_CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.REF_CODE_DASH
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.RESENT_OTP_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.RE_CHECK_REF_CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
+import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.TYPE
@@ -224,11 +225,12 @@ class LoginViewModel @AssistedInject constructor(
     }
 
     /** CyChat API- Start */
-    fun handleSupplierConfirmation(isSkipApi: Boolean, code: String, utypeId: String, clid: String) {
+    fun handleSupplierConfirmation(isSkipApi: Boolean, code: String, utypeId: String, clid: String, setupId: String) {
         pref.edit {
             putString(CLID, clid)
             putString(USER_TYPE, utypeId)
             putString(REF_CODE, code)
+            putString(SETUP_ID,setupId)
             apply()
         }
         if (isSkipApi) {
@@ -311,6 +313,7 @@ class LoginViewModel @AssistedInject constructor(
                         )
                     }
                 else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                     setState {
                         copy(
                                 asyncSupplierReConfirmed = Fail(Throwable(t.message))
@@ -370,6 +373,7 @@ class LoginViewModel @AssistedInject constructor(
                         )
                     }
                 } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                     setState {
                         copy(
                                 asyncUserMapped = Fail(Throwable(t.message))
@@ -526,6 +530,10 @@ class LoginViewModel @AssistedInject constructor(
                         startLogin(t)
                     } else {
                         reqId = t.data.req_id
+                        pref.edit {
+                            putString(REQ_ID, t.data.req_id)
+                            apply()
+                        }
                         _viewEvents.post(LoginViewEvents.OnMappingConfirmed)
                     }
 
@@ -651,7 +659,7 @@ class LoginViewModel @AssistedInject constructor(
                 "secr_code" to code,
                 "email_domain" to loginParams?.email.getEmailDomain()
         )
-        authenticationService.cyValidateSecurityCode(AUTH_KEY, map)
+        authenticationService.cyValidateSecurityCode("", map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(postValidateSecurityCode())
@@ -718,12 +726,14 @@ class LoginViewModel @AssistedInject constructor(
     fun resendOTP(type: String) {
         loginParams?.let {
             val map = hashMapOf(
-                    "type" to type,
-                    "mobile" to it.mobile,
-                    "email" to it.email,
-                    "req_id" to reqId!!
+                    SERVICE_NAME to LOGIN,
+                    CLIENT_NAME to CY_VERSE_ANDROID,
+                    CLID to (pref.getString(CLID, "") ?: ""),
+                    OP to RESENT_OTP_API,
+                    REQ_ID to (reqId ?: ""),
+                    TYPE to type
             )
-            authenticationService.cyResendOTP("", reqId, map)
+            authenticationService.cyResendOTP(map)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getResendOTPObserver())

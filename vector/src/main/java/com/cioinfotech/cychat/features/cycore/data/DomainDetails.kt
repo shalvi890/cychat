@@ -24,8 +24,8 @@ data class DomainDetails(
 ) : BaseResponse()
 
 data class DomainDetailsChild(
-        @SerializedName("comapany_name")
+        @SerializedName("company_name")
         val companyName: String? = null,
-        @SerializedName("logo")
+        @SerializedName("logo_url")
         val logo: String? = null
 )

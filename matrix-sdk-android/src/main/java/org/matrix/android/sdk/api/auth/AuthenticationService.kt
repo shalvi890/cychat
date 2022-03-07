@@ -123,7 +123,7 @@ interface AuthenticationService {
 
     fun getSettings(hashMap: HashMap<String, String>): Single<GetSettingsParent>
 
-    fun cyResendOTP(auth: String?, reqId: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
+    fun cyResendOTP(hashMap: HashMap<String, String>): Single<BaseResponse>
 
     fun cyValidateSecurityCode(auth: String?, hashMap: HashMap<String, String>): Single<BaseResponse>
 

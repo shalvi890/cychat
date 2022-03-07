@@ -35,6 +35,7 @@ import javax.inject.Inject
 class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentUserMappingBinding>(), AdapterView.OnItemSelectedListener {
 
     private var buttonEnabledByTimer = false
+    private var isSendCodeAPIHit = false
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentUserMappingBinding.inflate(layoutInflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,10 +111,12 @@ class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<Fragm
 
     private fun sendTokenToSupplier() {
         startCountDownForEmailOTP()
+        isSendCodeAPIHit = true
         loginViewModel.handleUserMapping(views.supplierField.text.toString())
     }
 
     private fun login() {
+        isSendCodeAPIHit = false
         loginViewModel.handleUserMappingConfirmed(views.secretCodeField.text.toString())
     }
 
@@ -123,12 +126,15 @@ class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<Fragm
                     Throwable(getString(R.string.something_went_wrong))
                 else throwable
         )
+        if(isSendCodeAPIHit) {
+            views.emailOTPTimer.isVisible = false
+            views.btnSubmitSupplier.isEnabled = true
+        }
     }
 
     override fun resetViewModel() {}
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-    }
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {}
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 }

@@ -18,7 +18,6 @@ package com.cioinfotech.cychat.features.cycore.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,15 +32,13 @@ import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
-import org.matrix.android.sdk.internal.network.NetworkConstants.ACCESS_TOKEN
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
+import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CURRENT_DOMAIN
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
-import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY_SMALL
-import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
-import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID_SMALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -52,10 +49,11 @@ class CyCoreViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var pref = DefaultSharedPreferences.getInstance(applicationContext)
-    private var url = pref.getString(BASE_URL, null)
-    private var userId = pref.getString(USER_ID, null)
+    private var url = pref.getString(BASE_URL, "") ?: ""
+    private val clid = pref.getString(CLID, "") ?: ""
+
+    //    private var userId = pref.getString(USER_ID, null)
     private var reqId = pref.getString(REQ_ID, null)
-    private var accessToken = pref.getString(ACCESS_TOKEN, null)
     private var email = pref.getString(EMAIL, null)
 
     private var domainMutData: MutableLiveData<Boolean> = MutableLiveData()
@@ -69,12 +67,16 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun handleCyGetDetails() {
-        url?.let {
-            cyCoreService.cyGetDomainDetails(accessToken, reqId, userId, it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getDomainDetails())
-        }
+        cyCoreService.cyGetDomainDetails(
+                hashMapOf(
+                        NetworkConstants.CLIENT_NAME to NetworkConstants.CY_VERSE_ANDROID,
+                        NetworkConstants.OP to NetworkConstants.GET_COMPANY_DETAILS_API,
+                        NetworkConstants.SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                        SETUP_ID to (pref.getString(SETUP_ID, "") ?: ""),
+                        CLID to clid
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getDomainDetails())
     }
 
     private fun getDomainDetails(): SingleObserver<DomainDetails> {
@@ -103,12 +105,16 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun handleUpdateRecoveryToken(text: String) {
-        url?.let {
-            cyCoreService.cyUpdateRecoveryKey(accessToken, reqId, hashMapOf(USER_ID_SMALL to userId!!, SECRET_KEY_SMALL to text), it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(updateRecoveryToken())
-        }
+        cyCoreService.cyUpdateRecoveryKey(hashMapOf(
+                NetworkConstants.CLIENT_NAME to NetworkConstants.CY_VERSE_ANDROID,
+                NetworkConstants.OP to NetworkConstants.SET_SECRET_KEY_API,
+                NetworkConstants.SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                CLID to clid,
+                REQ_ID to (reqId ?: ""),
+                NetworkConstants.SECRET_CODE_SMALL to text), url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(updateRecoveryToken())
     }
 
     private fun updateRecoveryToken(): SingleObserver<BaseResponse> {
@@ -123,12 +129,10 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun handleDeleteOldSessions(deviceId: String) {
-        url?.let {
-            cyCoreService.cyDeleteOldSessions(accessToken, reqId, hashMapOf(DEVICE_ID to deviceId), it)
+        cyCoreService.cyDeleteOldSessions(hashMapOf(DEVICE_ID to deviceId), url)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(deleteOldSessions())
-        }
     }
 
     private fun deleteOldSessions(): SingleObserver<BaseResponse> {
@@ -149,12 +153,10 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun getFederatedDomains() {
-        url?.let {
-            cyCoreService.cyGetFederatedDomains(accessToken, reqId, hashMapOf(CURRENT_DOMAIN to email.getEmailDomain()), it)
+        cyCoreService.cyGetFederatedDomains(hashMapOf(CURRENT_DOMAIN to email.getEmailDomain()), url)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(handleGetFederatedDomains())
-        }
     }
 
     private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
@@ -173,12 +175,10 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun handleGetDefaultURLs() {
-        url?.let {
-            cyCoreService.cyGetDefaultURLs(accessToken, it)
+        cyCoreService.cyGetDefaultURLs(hashMapOf(), url)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(getDefaultURLs())
-        }
     }
 
     private fun getDefaultURLs(): SingleObserver<DefaultURLParent> {
