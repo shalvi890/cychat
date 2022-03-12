@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.userdirectory
 
+import androidx.lifecycle.MutableLiveData
 import com.airbnb.mvrx.ActivityViewModelContext
 import com.airbnb.mvrx.FragmentViewModelContext
 import com.airbnb.mvrx.MvRxViewModelFactory
@@ -23,21 +24,19 @@ import com.airbnb.mvrx.ViewModelContext
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.extensions.toggle
 import com.cioinfotech.cychat.core.platform.VectorViewModel
+import com.cioinfotech.cychat.features.cycore.data.UserSearch
+import com.cioinfotech.cychat.features.cycore.service.CyCoreService
 import com.jakewharton.rxrelay2.BehaviorRelay
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import io.reactivex.Single
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import org.matrix.android.sdk.api.MatrixPatterns
+import io.reactivex.schedulers.Schedulers
 import org.matrix.android.sdk.api.session.Session
-import org.matrix.android.sdk.api.session.profile.ProfileService
-import org.matrix.android.sdk.api.session.user.model.User
-import org.matrix.android.sdk.api.util.Optional
-import org.matrix.android.sdk.api.util.toMatrixItem
-import org.matrix.android.sdk.api.util.toOptional
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomain
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.rx.rx
 import java.util.concurrent.TimeUnit
 
@@ -45,12 +44,12 @@ private typealias KnownUsersSearch = String
 private typealias DirectoryUsersSearch = String
 
 class UserListViewModel @AssistedInject constructor(@Assisted initialState: UserListViewState,
-                                                    private val session: Session)
+                                                    private val session: Session,
+                                                    private val cyCoreService: CyCoreService)
     : VectorViewModel<UserListViewState, UserListAction, UserListViewEvents>(initialState) {
 
     private val knownUsersSearch = BehaviorRelay.create<KnownUsersSearch>()
     private val directoryUsersSearch = BehaviorRelay.create<DirectoryUsersSearch>()
-
     private var currentUserSearchDisposable: Disposable? = null
 
     @AssistedFactory
@@ -75,7 +74,7 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
 
     override fun handle(action: UserListAction) {
         when (action) {
-            is UserListAction.SearchUsers                -> handleSearchUsers(action.value)
+            is UserListAction.SearchUsers                -> handleSearchUsers(action.value, action.baseURL, action.clid, action.uType,action.uid)
             is UserListAction.ClearSearchUsers           -> handleClearSearchUsers()
             is UserListAction.AddPendingSelection        -> handleSelectUser(action)
             is UserListAction.RemovePendingSelection     -> handleRemoveSelectedUser(action)
@@ -83,12 +82,41 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
         }.exhaustive
     }
 
-    private fun handleSearchUsers(searchTerm: String) {
+    private fun handleSearchUsers(searchTerm: String, baseURL: String, clid: String, uType: String, uid: String) {
         setState {
             copy(searchTerm = searchTerm)
         }
-        knownUsersSearch.accept(searchTerm)
-        directoryUsersSearch.accept(searchTerm)
+        cyCoreService.cyUserSearch(
+                hashMapOf(
+                        NetworkConstants.CLIENT_NAME to NetworkConstants.CY_VERSE_ANDROID,
+                        NetworkConstants.OP to NetworkConstants.SEARCH_USER_API,
+                        NetworkConstants.SERVICE_NAME to NetworkConstants.FEDERATION,
+                        NetworkConstants.USER_TYPE_DASH to uType,
+                        NetworkConstants.CLID to clid,
+                        NetworkConstants.SEARCH_TERM to searchTerm,
+                        NetworkConstants.USER_ID_SMALL to uid
+                ), baseURL).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getUserSearch())
+//        knownUsersSearch.accept(searchTerm)
+//        directoryUsersSearch.accept(searchTerm)
+    }
+
+    val userSearchLiveData = MutableLiveData<UserSearch>()
+
+    private fun getUserSearch(): SingleObserver<UserSearch> {
+        return object : SingleObserver<UserSearch> {
+
+            override fun onSuccess(t: UserSearch) {
+                if (t.status == "ok") {
+                    userSearchLiveData.postValue(t)
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {}
+        }
     }
 
     private fun handleShareMyMatrixToLink() {
@@ -118,50 +146,50 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
 
         currentUserSearchDisposable?.dispose()
 
-        directoryUsersSearch
-                .debounce(300, TimeUnit.MILLISECONDS)
-                .switchMapSingle { search ->
-                    val stream = if (search.isBlank()) {
-                        Single.just(emptyList())
-                    } else {
-                        val searchObservable = session.rx()
-                                .searchUsersDirectory(search, 50, state.excludedUserIds
-                                        ?: emptySet(), selectedDomain?.domain_name, selectedDomain?.access_token)
-                                .map { users ->
-                                    users.sortedBy { it.toMatrixItem().firstLetterOfDisplayName() }
-                                }
-                        // If it's a valid user id try to use Profile API
-                        // because directory only returns users that are in public rooms or share a room with you, where as
-                        // profile will work other federations
-                        if (!MatrixPatterns.isUserId(search)) {
-                            searchObservable
-                        } else {
-                            val profileObservable = session.rx().getProfileInfo(search)
-                                    .map { json ->
-                                        User(
-                                                userId = search,
-                                                displayName = json[ProfileService.DISPLAY_NAME_KEY] as? String,
-                                                avatarUrl = json[ProfileService.AVATAR_URL_KEY] as? String
-                                        ).toOptional()
-                                    }
-                                    .onErrorReturn { Optional.empty() }
-
-                            Single.zip(searchObservable, profileObservable, { searchResults, optionalProfile ->
-                                val profile = optionalProfile.getOrNull() ?: return@zip searchResults
-                                val searchContainsProfile = searchResults.indexOfFirst { it.userId == profile.userId } != -1
-                                if (searchContainsProfile)
-                                    searchResults
-                                else
-                                    listOf(profile) + searchResults
-                            })
-                        }
-                    }
-                    stream.toAsync {
-                        copy(directoryUsers = it)
-                    }
-                }
-                .subscribe()
-                .disposeOnClear()
+//        directoryUsersSearch
+//                .debounce(300, TimeUnit.MILLISECONDS)
+//                .switchMapSingle { search ->
+//                    val stream = if (search.isBlank()) {
+//                        Single.just(emptyList())
+//                    } else {
+//                        val searchObservable = session.rx()
+//                                .searchUsersDirectory(search, 50, state.excludedUserIds
+//                                        ?: emptySet(), selectedDomain?.domain_name, selectedDomain?.access_token)
+//                                .map { users ->
+//                                    users.sortedBy { it.toMatrixItem().firstLetterOfDisplayName() }
+//                                }
+//                        // If it's a valid user id try to use Profile API
+//                        // because directory only returns users that are in public rooms or share a room with you, where as
+//                        // profile will work other federations
+//                        if (!MatrixPatterns.isUserId(search)) {
+//                            searchObservable
+//                        } else {
+//                            val profileObservable = session.rx().getProfileInfo(search)
+//                                    .map { json ->
+//                                        User(
+//                                                userId = search,
+//                                                displayName = json[ProfileService.DISPLAY_NAME_KEY] as? String,
+//                                                avatarUrl = json[ProfileService.AVATAR_URL_KEY] as? String
+//                                        ).toOptional()
+//                                    }
+//                                    .onErrorReturn { Optional.empty() }
+//
+//                            Single.zip(searchObservable, profileObservable, { searchResults, optionalProfile ->
+//                                val profile = optionalProfile.getOrNull() ?: return@zip searchResults
+//                                val searchContainsProfile = searchResults.indexOfFirst { it.userId == profile.userId } != -1
+//                                if (searchContainsProfile)
+//                                    searchResults
+//                                else
+//                                    listOf(profile) + searchResults
+//                            })
+//                        }
+//                    }
+//                    stream.toAsync {
+//                        copy(directoryUsers = it)
+//                    }
+//                }
+//                .subscribe()
+//                .disposeOnClear()
     }
 
     private fun handleSelectUser(action: UserListAction.AddPendingSelection) = withState { state ->
@@ -176,9 +204,7 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
 
     private var selectedDomain: FederatedDomain? = null
 
-    fun setDomain(item: FederatedDomain? = null, defaultDomain: String? = null) {
-        selectedDomain = if (defaultDomain?.contains(item?.domain_name.toString()) == true
-                || item?.domain_name?.contains(defaultDomain.toString()) == true)
-            null else item
+    fun setDomain(item: FederatedDomain? = null) {
+        selectedDomain = item
     }
 }

@@ -3298,7 +3298,7 @@
     <string name="uat">UAT</string>
     <string name="cant_play_audio">Can\'t Play Audio</string>
     <string name="environment_connected">Environment Connected</string>
-    <string name="you_are_searching_in">You are searching in %s:</string>
+    <string name="you_are_searching_in">You are searching in:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
     <string name="hello_blank_fragment"> </string>
     <string name="please_select_server_to_search">Please select organization to search</string>
@@ -3369,5 +3369,6 @@
     <string name="search_server_name">Search server name</string>
     <string name="enter_referral_code">Enter code</string>
     <string name="verify_and_send_code"><![CDATA[Verify & Send Code]]></string>
+    <string name="no_users_found">No Users Found</string>
 
 </resources>

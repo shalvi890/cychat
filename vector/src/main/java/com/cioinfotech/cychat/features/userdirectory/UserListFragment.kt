@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.userdirectory
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -24,7 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
 import androidx.core.view.forEach
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.mvrx.activityViewModel
@@ -35,15 +35,17 @@ import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.ActiveSessionHolder
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.extensions.cleanup
-import com.cioinfotech.cychat.core.extensions.configureWith
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.core.utils.startSharePlainTextIntent
 import com.cioinfotech.cychat.databinding.FragmentUserListBinding
+import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
+import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
 import com.cioinfotech.cychat.features.homeserver.HomeServerCapabilitiesViewModel
 import com.cioinfotech.cychat.features.userdirectory.adapter.ServerListAdapter
+import com.cioinfotech.cychat.features.userdirectory.adapter.UserSearchAdapter
 import com.google.android.material.chip.Chip
 import com.jakewharton.rxbinding3.widget.textChanges
 import org.matrix.android.sdk.api.session.identity.ThreePid
@@ -53,22 +55,24 @@ import org.matrix.android.sdk.api.session.room.roomSummaryQueryParams
 import org.matrix.android.sdk.api.session.user.model.User
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomain
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
 import javax.inject.Inject
 
 class UserListFragment @Inject constructor(
         private val userListController: UserListController,
         private val dimensionConverter: DimensionConverter,
-        val homeServerCapabilitiesViewModelFactory: HomeServerCapabilitiesViewModel.Factory
+        val homeServerCapabilitiesViewModelFactory: HomeServerCapabilitiesViewModel.Factory,
+        private val avatarRenderer: AvatarRenderer
 ) : VectorBaseFragment<FragmentUserListBinding>(),
-        UserListController.Callback {
+        UserSearchAdapter.Callback {
     private var roomList = listOf<RoomSummary>()
     @Inject lateinit var sessionHolder: ActiveSessionHolder
-
-    companion object {
-        var selectedDomain: FederatedDomain? = null
-    }
-
+    private lateinit var userSearchAdapter: UserSearchAdapter
+    private var calledAtAttach = false
+    private var selectedDomain: FederatedDomain? = null
     private val args: UserListFragmentArgs by args()
+    private lateinit var cyCoreViewModel: CyCoreViewModel
     private val viewModel: UserListViewModel by activityViewModel()
     private val homeServerCapabilitiesViewModel: HomeServerCapabilitiesViewModel by fragmentViewModel()
     private lateinit var sharedActionViewModel: UserListSharedActionViewModel
@@ -78,23 +82,55 @@ class UserListFragment @Inject constructor(
 
     override fun getMenuRes() = args.menuResId
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        cyCoreViewModel = fragmentViewModelProvider.get(CyCoreViewModel::class.java)
+        cyCoreViewModel.getFederatedDomains()
+        calledAtAttach = true
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
+        userSearchAdapter = UserSearchAdapter(avatarRenderer, args.title == getString(R.string.fab_menu_create_chat))
+        userSearchAdapter.callback = this
+        if (calledAtAttach) {
+            views.pbProgress.isVisible = true
+            calledAtAttach = false
+            views.userListSearch.isEnabled = false
+            cyCoreViewModel.federatedDomainList.observe(viewLifecycleOwner) {
+                val defaultDomain = pref.getString(USER_TYPE, "")
+                for (item in it.data.fed_list) {
+                    if (defaultDomain == item.to_utype_id) {
+                        views.tvServerName.text = item.utype_name
+                        selectedDomain = item
+                        viewModel.setDomain(item)
+                        break
+                    }
+                }
+                views.userListSearch.isEnabled = true
+                views.userListSearch.requestFocus()
+                views.pbProgress.isVisible = false
+            }
+        } else
+            views.userListSearch.requestFocus()
+
         if (isOneToOneChatOpen && ::sessionHolder.isInitialized)
             sessionHolder.getSafeActiveSession()?.getRoomSummaries(roomSummaryQueryParams {
                 memberships = Membership.activeMemberships()
             })?.let {
                 roomList = it
             }
+
         sharedActionViewModel = activityViewModelProvider.get(UserListSharedActionViewModel::class.java)
         if (args.showToolbar) {
             views.userListTitle.text = args.title
             vectorBaseActivity.setSupportActionBar(views.userListToolbar)
             setupCloseView()
             views.userListToolbar.isVisible = true
-        } else {
+        } else
             views.userListToolbar.isVisible = false
-        }
+
         setupRecyclerView()
         setupSearchView()
 
@@ -120,32 +156,16 @@ class UserListFragment @Inject constructor(
                 }
             }
         }
-        val pref = DefaultSharedPreferences.getInstance(requireContext())
 
-        views.switchOrg.setOnCheckedChangeListener { _, isChecked ->
-            views.btnChangeOrg.isInvisible = !isChecked
-            if (!isChecked) {
-                selectedDomain = null
-                viewModel.setDomain()
-            }
-            views.tvSearchingIn.isVisible = selectedDomain != null
-        }
-        views.btnChangeOrg.setOnClickListener {
+        views.tvServerName.setOnClickListener {
             ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
                 override fun onClick(item: FederatedDomain) {
-                    views.tvSearchingIn.text = getString(R.string.you_are_searching_in, item.name)
+                    views.tvServerName.text = item.utype_name
                     selectedDomain = item
-                    viewModel.setDomain(item, pref.getString(NetworkConstants.API_SERVER, null))
-                    views.tvSearchingIn.isVisible = selectedDomain != null
+                    viewModel.setDomain(item)
                 }
-            }).show(childFragmentManager, "")
+            }, selectedDomain?.to_utype_id ?: "-1").show(childFragmentManager, "")
         }
-
-        if (selectedDomain != null) {
-            viewModel.setDomain(selectedDomain!!, pref.getString(NetworkConstants.API_SERVER, null))
-            views.tvSearchingIn.text = getString(R.string.you_are_searching_in, selectedDomain!!.name)
-        }
-        views.tvSearchingIn.isVisible = selectedDomain != null
     }
 
     override fun onDestroyView() {
@@ -161,6 +181,7 @@ class UserListFragment @Inject constructor(
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         withState(viewModel) {
+            it.excludedUserIds?.let { it1 -> userSearchAdapter.updateExcludeList(it1) }
             val showMenuItem = it.pendingSelections.isNotEmpty()
             menu.forEach { menuItem -> menuItem.isVisible = showMenuItem }
         }
@@ -173,9 +194,14 @@ class UserListFragment @Inject constructor(
     }
 
     private fun setupRecyclerView() {
-        userListController.callback = this
+        views.userListRecyclerView.adapter = userSearchAdapter
+        viewModel.userSearchLiveData.observe(viewLifecycleOwner) {
+            userSearchAdapter.setUserList(it.data.fed_list)
+            views.pbProgress.isVisible = false
+        }
+//        userListController.callback = this
         // Don't activate animation as we might have way to much item animation when filtering
-        views.userListRecyclerView.configureWith(userListController, disableItemAnimation = true)
+//        views.userListRecyclerView.configureWith(userListController, disableItemAnimation = true)
     }
 
     private fun setupSearchView() {
@@ -187,15 +213,21 @@ class UserListFragment @Inject constructor(
                 .startWith(views.userListSearch.text)
                 .subscribe { text ->
                     val searchValue = text.trim()
-                    val action = if (searchValue.isBlank())
+                    val action = if (searchValue.isBlank()) {
+                        userSearchAdapter.setUserList(mutableListOf())
                         UserListAction.ClearSearchUsers
-                    else
-                        UserListAction.SearchUsers(searchValue.toString(), selectedDomain?.domain_name, selectedDomain?.access_token)
+                    } else {
+                        views.pbProgress.isVisible = true
+                        val pref = DefaultSharedPreferences.getInstance(requireContext())
+                        UserListAction.SearchUsers(searchValue.toString(),
+                                selectedDomain?.cychat_url!!,
+                                pref.getString(CLID, "") ?: "",
+                                selectedDomain?.to_utype_id!!,
+                                pref.getString(NetworkConstants.USER_ID, "") ?: "")
+                    }
                     viewModel.handle(action)
                 }.disposeOnDestroyView()
-
 //        views.userListSearch.setupAsSearch()
-        views.userListSearch.requestFocus()
     }
 
     private fun setupCloseView() {
@@ -277,6 +309,10 @@ class UserListFragment @Inject constructor(
     override fun onThreePidClick(threePid: ThreePid) {
         view?.hideKeyboard()
         viewModel.handle(UserListAction.AddPendingSelection(PendingSelection.ThreePidPendingSelection(threePid)))
+    }
+
+    override fun showToastOnEmptyList(isListEmpty: Boolean) {
+        views.tvNoUsers.isVisible = views.userListSearch.text.toString().isNotEmpty() && isListEmpty
     }
 
     override fun onUseQRCode() {

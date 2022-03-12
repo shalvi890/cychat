@@ -34,11 +34,18 @@ import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
-import org.matrix.android.sdk.internal.network.NetworkConstants.CURRENT_DOMAIN
+import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
+import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
-import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
+import org.matrix.android.sdk.internal.network.NetworkConstants.EXCLUDE_USER_TYPE
+import org.matrix.android.sdk.internal.network.NetworkConstants.FEDERATION
+import org.matrix.android.sdk.internal.network.NetworkConstants.LIST_FEDERATED_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.OP
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_DASH
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -54,7 +61,7 @@ class CyCoreViewModel @Inject constructor(
 
     //    private var userId = pref.getString(USER_ID, null)
     private var reqId = pref.getString(REQ_ID, null)
-    private var email = pref.getString(EMAIL, null)
+//    private var email = pref.getString(EMAIL, null)
 
     private var domainMutData: MutableLiveData<Boolean> = MutableLiveData()
     val domainData: LiveData<Boolean> get() = domainMutData
@@ -69,9 +76,9 @@ class CyCoreViewModel @Inject constructor(
     fun handleCyGetDetails() {
         cyCoreService.cyGetDomainDetails(
                 hashMapOf(
-                        NetworkConstants.CLIENT_NAME to NetworkConstants.CY_VERSE_ANDROID,
-                        NetworkConstants.OP to NetworkConstants.GET_COMPANY_DETAILS_API,
-                        NetworkConstants.SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to NetworkConstants.GET_COMPANY_DETAILS_API,
+                        SERVICE_NAME to NetworkConstants.MISC_FUNC,
                         SETUP_ID to (pref.getString(SETUP_ID, "") ?: ""),
                         CLID to clid
                 ), url).subscribeOn(Schedulers.io())
@@ -106,9 +113,9 @@ class CyCoreViewModel @Inject constructor(
 
     fun handleUpdateRecoveryToken(text: String) {
         cyCoreService.cyUpdateRecoveryKey(hashMapOf(
-                NetworkConstants.CLIENT_NAME to NetworkConstants.CY_VERSE_ANDROID,
-                NetworkConstants.OP to NetworkConstants.SET_SECRET_KEY_API,
-                NetworkConstants.SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                OP to NetworkConstants.SET_SECRET_KEY_API,
+                SERVICE_NAME to NetworkConstants.MISC_FUNC,
                 CLID to clid,
                 REQ_ID to (reqId ?: ""),
                 NetworkConstants.SECRET_CODE_SMALL to text), url)
@@ -152,14 +159,21 @@ class CyCoreViewModel @Inject constructor(
         }
     }
 
-    fun getFederatedDomains() {
-        cyCoreService.cyGetFederatedDomains(hashMapOf(CURRENT_DOMAIN to email.getEmailDomain()), url)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(handleGetFederatedDomains())
+    fun getFederatedDomains(excludeDomain: String = "-1") {
+        cyCoreService.cyGetFederatedDomains(hashMapOf(
+                OP to LIST_FEDERATED_API,
+                SERVICE_NAME to FEDERATION,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                USER_TYPE_DASH to (pref.getString(USER_TYPE, "") ?: ""),
+                CLID to (pref.getString(CLID, "") ?: ""),
+                EXCLUDE_USER_TYPE to excludeDomain
+        ), url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(handleGetFederatedDomains())
     }
 
-    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
+//    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     private fun handleGetFederatedDomains(): SingleObserver<FederatedDomainList> {
         return object : SingleObserver<FederatedDomainList> {

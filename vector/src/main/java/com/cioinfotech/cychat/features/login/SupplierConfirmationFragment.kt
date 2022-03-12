@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentSupplierConfirmationBinding
 import com.cioinfotech.cychat.features.login.adapter.ServerListAdapter
 import org.matrix.android.sdk.internal.cy_auth.data.Group
@@ -86,6 +87,12 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
         if (selectedCountry != null)
             selectedCountry?.let {
                 BASE_URL = it.cychat_url
+                DefaultSharedPreferences.getInstance(requireContext()).edit().apply {
+                    putString(NetworkConstants.BASE_URL, it.cychat_url)
+                    putString(NetworkConstants.U_TYPE_NAME,it.name)
+                    apply()
+                }
+
                 if (it.verify_mode == NetworkConstants.NONE)
                     loginViewModel.handleSupplierConfirmation(
                             it.verify_mode == NetworkConstants.NONE,

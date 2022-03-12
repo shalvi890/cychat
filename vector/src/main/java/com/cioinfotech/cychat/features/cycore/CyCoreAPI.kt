@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.cycore
 
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
+import com.cioinfotech.cychat.features.cycore.data.UserSearch
 import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
@@ -53,4 +54,10 @@ interface CyCoreAPI {
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.ROOT_API)
     fun getDefaultURLs(@FieldMap map: HashMap<String, String>): Single<DefaultURLParent>
+
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun userSearch(@FieldMap map: HashMap<String, String>): Single<UserSearch>
 }

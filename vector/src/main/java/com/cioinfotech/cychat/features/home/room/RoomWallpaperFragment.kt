@@ -52,7 +52,7 @@ class RoomWallpaperFragment(private val roomId: String, private val itemListener
         dismiss()
     }
 
-    fun saveWallpaperToPreference(resource: Int) {
+    private fun saveWallpaperToPreference(resource: Int) {
         DefaultSharedPreferences.getInstance(requireContext()).edit().apply {
             if (resource == -1)
                 remove(roomId)

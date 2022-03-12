@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 New Vector Ltd
+ * Copyright (c) 2022 New Vector Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package org.matrix.android.sdk.internal.cy_auth.data
+package com.cioinfotech.cychat.features.cycore.data
 
-data class FederatedDomainList(
-        val data: FederatedDomainChild
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+
+data class UserSearch(
+        val data: UserSearchChild
 ) : BaseResponse()
 
-data class FederatedDomainChild(
-        val fed_list: List<FederatedDomain>
+data class UserSearchChild(
+        val fed_list: MutableList<SearchedUser>
+)
+
+data class SearchedUser(
+        val first_name: String?,
+        val last_name: String?,
+        val matrix_user_id: String
 )

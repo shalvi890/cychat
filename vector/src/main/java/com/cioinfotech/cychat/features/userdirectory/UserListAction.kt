@@ -19,7 +19,7 @@ package com.cioinfotech.cychat.features.userdirectory
 import com.cioinfotech.cychat.core.platform.VectorViewModelAction
 
 sealed class UserListAction : VectorViewModelAction {
-    data class SearchUsers(val value: String, val baseURL: String? = null, val accessToken: String? = null) : UserListAction()
+    data class SearchUsers(val value: String, val baseURL: String, val clid: String, val uType: String,val uid:String) : UserListAction()
     object ClearSearchUsers : UserListAction()
     data class AddPendingSelection(val pendingSelection: PendingSelection) : UserListAction()
     data class RemovePendingSelection(val pendingSelection: PendingSelection) : UserListAction()

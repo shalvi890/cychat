@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.cycore.service
 
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
+import com.cioinfotech.cychat.features.cycore.data.UserSearch
 import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
@@ -28,4 +29,5 @@ interface CyCoreService {
     fun cyDeleteOldSessions( hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
     fun cyGetFederatedDomains( hashMap: HashMap<String, String>, url: String): Single<FederatedDomainList>
     fun cyGetDefaultURLs(hashMap: HashMap<String, String>, url: String): Single<DefaultURLParent>
+    fun cyUserSearch(hashMap: HashMap<String, String>, url: String):Single<UserSearch>
 }

@@ -17,10 +17,10 @@
 package com.cioinfotech.cychat.features.cycore.service
 
 import com.cioinfotech.cychat.features.cycore.CyCoreAPI
+import com.cioinfotech.cychat.features.cycore.data.UserSearch
 import dagger.Lazy
 import io.reactivex.Single
 import okhttp3.OkHttpClient
-import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 import javax.inject.Inject
 
@@ -33,9 +33,10 @@ class DefaultCyCoreService @Inject constructor(
     override fun cyDeleteOldSessions(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).deleteOldSessions(hashMap)
     override fun cyGetFederatedDomains(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getFederatedDomains(hashMap)
     override fun cyGetDefaultURLs(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDefaultURLs(hashMap)
+    override fun cyUserSearch(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).userSearch(hashMap)
 
     private fun buildCyCoreAPI(url: String): CyCoreAPI {
-        return retrofitFactory.create(buildClient()).create(CyCoreAPI::class.java)
+        return retrofitFactory.createWithBaseURL(buildClient(), url).create(CyCoreAPI::class.java)
     }
 
     private fun buildClient(): OkHttpClient {

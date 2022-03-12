@@ -28,10 +28,10 @@ import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.userdirectory.adapter.ServerListAdapter
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomain
 
-class ServerListFragment(private val tempItemClickListener: ServerListAdapter.ItemClickListener) : VectorBaseDialogFragment<FragmentServerListBinding>(), ServerListAdapter.ItemClickListener {
+class ServerListFragment(private val tempItemClickListener: ServerListAdapter.ItemClickListener,private val selectedDomainId:String) : VectorBaseDialogFragment<FragmentServerListBinding>(), ServerListAdapter.ItemClickListener {
 
     companion object {
-        fun getInstance(itemClickListener: ServerListAdapter.ItemClickListener) = ServerListFragment(itemClickListener)
+        fun getInstance(itemClickListener: ServerListAdapter.ItemClickListener, selectedDomainId: String) = ServerListFragment(itemClickListener,selectedDomainId)
     }
 
     private lateinit var cyCoreViewModel: CyCoreViewModel
@@ -45,13 +45,13 @@ class ServerListFragment(private val tempItemClickListener: ServerListAdapter.It
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cyCoreViewModel = fragmentViewModelProvider.get(CyCoreViewModel::class.java)
-        cyCoreViewModel.getFederatedDomains()
+        cyCoreViewModel.getFederatedDomains(selectedDomainId)
         views.pbProgress.isVisible = true
         adapter.itemClickListener = this
         views.rvServerList.adapter = adapter
 
         cyCoreViewModel.federatedDomainList.observe(viewLifecycleOwner) {
-            federatedDomainList = it.data.toMutableList()
+            federatedDomainList = it.data.fed_list.toMutableList()
             adapter.updateData(federatedDomainList)
             views.pbProgress.isVisible = false
         }
@@ -60,7 +60,7 @@ class ServerListFragment(private val tempItemClickListener: ServerListAdapter.It
             if (text.isNullOrEmpty())
                 adapter.updateData(federatedDomainList)
             else
-                adapter.updateData(federatedDomainList.filter { it.name.lowercase().contains(text) }.toMutableList())
+                adapter.updateData(federatedDomainList.filter { it.utype_name.lowercase().contains(text) }.toMutableList())
         }
 
         views.ivDismiss.setOnClickListener { dismiss() }
