@@ -32,4 +32,6 @@ data class User(
      * Return the display name or the user id
      */
     fun getBestName() = displayName?.takeIf { it.isNotEmpty() } ?: userId
+
+    fun getUId() = userId
 }

@@ -99,7 +99,8 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                             "",
                             it.utype_id,
                             it.cychat_token,
-                            it.setup_id)
+                            it.setup_id,
+                            it.name)
                 else {
                     if (views.supplierField.text.toString().isEmpty())
                         views.tvSupplierTil.error = getString(R.string.please_enter_code)
@@ -109,7 +110,8 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                                 views.supplierField.text.toString(),
                                 it.utype_id,
                                 it.cychat_token,
-                                it.setup_id)
+                                it.setup_id,
+                                it.name)
                 }
             } else
             Toast.makeText(requireContext(), getString(R.string.please_select_type_of_user), Toast.LENGTH_LONG).show()

@@ -3301,7 +3301,7 @@
     <string name="you_are_searching_in">You are searching in:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
     <string name="hello_blank_fragment"> </string>
-    <string name="please_select_server_to_search">Please select organization to search</string>
+    <string name="please_select_server_to_search">Please select organization</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
     <string name="please_enter_security_code">Please enter verification code</string>
     <string name="please_enter_code">Please enter code</string>
@@ -3359,6 +3359,7 @@
     <string name="profile_settings_and_cache"><![CDATA[Profile settings & cache]]></string>
     <string name="something_went_wrong">Something Went Wrong! Please, try again after sometime.</string>
     <string name="please_select_type_of_user">Select Type Of User</string>
+    <string name="user_type">User Type</string>
     <string name="supplier">Supplier</string>
     <string name="check">Check</string>
     <string name="supplier_code">Supplier Code</string>

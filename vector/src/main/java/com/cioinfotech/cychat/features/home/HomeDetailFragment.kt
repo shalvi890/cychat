@@ -50,6 +50,7 @@ import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewSta
 import com.google.android.material.badge.BadgeDrawable
 import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_IMAGE
 import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_NAME
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_NAME
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -176,7 +177,14 @@ class HomeDetailFragment @Inject constructor(
         else
             avatarRenderer.render(GlideApp.with(requireActivity()), R.mipmap.ic_launcher_round, views.groupToolbarAvatarImageView)
 
-        views.groupToolbarTitleView.text = pref.getString(DOMAIN_NAME, "") ?: getString(R.string.app_name)
+        val domainName = pref.getString(DOMAIN_NAME, null)
+        val uTypeName = pref.getString(USER_TYPE_NAME, null)
+        views.groupToolbarTitleView.text = when {
+            !domainName.isNullOrEmpty() && !uTypeName.isNullOrEmpty() -> "$domainName - $uTypeName"
+            !domainName.isNullOrEmpty()                               -> domainName
+            !uTypeName.isNullOrEmpty()                                -> uTypeName
+            else                                                      -> getString(R.string.app_name)
+        }
     }
 
     override fun onResume() {

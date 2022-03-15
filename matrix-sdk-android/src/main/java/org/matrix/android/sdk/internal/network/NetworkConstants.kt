@@ -74,6 +74,7 @@ object NetworkConstants {
     const val SERVICE_NAME = "serviceName"
     const val CLIENT_NAME = "clientName"
     const val USER_TYPE = "userType"
+    const val USER_TYPE_NAME = "userTypeName"
     const val USER_TYPE_DASH = "user_type"
     const val EXCLUDE_USER_TYPE = "exclude_user_type"
     const val REF_CODE = "refCode"

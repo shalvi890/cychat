@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.userdirectory
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -40,6 +41,7 @@ import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.core.utils.startSharePlainTextIntent
 import com.cioinfotech.cychat.databinding.FragmentUserListBinding
+import com.cioinfotech.cychat.features.cycore.data.SearchedUser
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.home.HomeActivity.Companion.isOneToOneChatOpen
@@ -66,6 +68,8 @@ class UserListFragment @Inject constructor(
         private val avatarRenderer: AvatarRenderer
 ) : VectorBaseFragment<FragmentUserListBinding>(),
         UserSearchAdapter.Callback {
+    private lateinit var pref: SharedPreferences
+    private var userList = mutableListOf<SearchedUser>()
     private var roomList = listOf<RoomSummary>()
     @Inject lateinit var sessionHolder: ActiveSessionHolder
     private lateinit var userSearchAdapter: UserSearchAdapter
@@ -91,7 +95,7 @@ class UserListFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pref = DefaultSharedPreferences.getInstance(requireContext())
+        pref = DefaultSharedPreferences.getInstance(requireContext())
         userSearchAdapter = UserSearchAdapter(avatarRenderer, args.title == getString(R.string.fab_menu_create_chat))
         userSearchAdapter.callback = this
         if (calledAtAttach) {
@@ -140,6 +144,13 @@ class UserListFragment @Inject constructor(
 
         viewModel.selectSubscribe(this, UserListViewState::pendingSelections) {
             renderSelectedUsers(it)
+            val tempList = mutableListOf<SearchedUser>()
+            for (item in it)
+                for (item2 in userSearchAdapter.selectedUsers)
+                    if (item.getUId() == item2.matrix_user_id)
+                        tempList.add(item2)
+            userSearchAdapter.selectedUsers = tempList
+            userSearchAdapter.notifyDataSetChanged()
         }
 
         viewModel.observeViewEvents {
@@ -163,6 +174,12 @@ class UserListFragment @Inject constructor(
                     views.tvServerName.text = item.utype_name
                     selectedDomain = item
                     viewModel.setDomain(item)
+                    views.pbProgress.isVisible = true
+                    viewModel.handle(UserListAction.SearchUsers(views.userListSearch.text.toString(),
+                            selectedDomain?.cychat_url!!,
+                            pref.getString(CLID, "") ?: "",
+                            selectedDomain?.to_utype_id!!,
+                            pref.getString(NetworkConstants.USER_ID, "") ?: ""))
                 }
             }, selectedDomain?.to_utype_id ?: "-1").show(childFragmentManager, "")
         }
@@ -196,7 +213,9 @@ class UserListFragment @Inject constructor(
     private fun setupRecyclerView() {
         views.userListRecyclerView.adapter = userSearchAdapter
         viewModel.userSearchLiveData.observe(viewLifecycleOwner) {
-            userSearchAdapter.setUserList(it.data.fed_list)
+            userList = if (views.userListSearch.text.toString().isBlank())
+                mutableListOf() else it.data.fed_list
+            userSearchAdapter.setUserList(userList)
             views.pbProgress.isVisible = false
         }
 //        userListController.callback = this
@@ -215,10 +234,10 @@ class UserListFragment @Inject constructor(
                     val searchValue = text.trim()
                     val action = if (searchValue.isBlank()) {
                         userSearchAdapter.setUserList(mutableListOf())
+                        views.pbProgress.isVisible = false
                         UserListAction.ClearSearchUsers
                     } else {
                         views.pbProgress.isVisible = true
-                        val pref = DefaultSharedPreferences.getInstance(requireContext())
                         UserListAction.SearchUsers(searchValue.toString(),
                                 selectedDomain?.cychat_url!!,
                                 pref.getString(CLID, "") ?: "",

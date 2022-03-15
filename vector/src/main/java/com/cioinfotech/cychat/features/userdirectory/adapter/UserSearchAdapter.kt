@@ -36,7 +36,7 @@ class UserSearchAdapter(private val avatarRenderer: AvatarRenderer,
     var callback: Callback? = null
 
     private var userList = mutableListOf<SearchedUser>()
-    private var selectedUsers = mutableListOf<SearchedUser>()
+    var selectedUsers = mutableListOf<SearchedUser>()
     private var excludedUserIds = mutableListOf<String>()
 
     class UserSearchViewHolder(val itemBinding: ItemKnownUserBinding) : RecyclerView.ViewHolder(itemBinding.root)

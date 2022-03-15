@@ -112,6 +112,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USERTYPE_DATA
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_LOGIN_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.VALIDATE_CODE
 import timber.log.Timber
 import java.util.concurrent.CancellationException
@@ -225,12 +226,18 @@ class LoginViewModel @AssistedInject constructor(
     }
 
     /** CyChat API- Start */
-    fun handleSupplierConfirmation(isSkipApi: Boolean, code: String, utypeId: String, clid: String, setupId: String) {
+    fun handleSupplierConfirmation(isSkipApi: Boolean,
+                                   code: String,
+                                   utypeId: String,
+                                   clid: String,
+                                   setupId: String,
+                                   utypeName: String) {
         pref.edit {
             putString(CLID, clid)
             putString(USER_TYPE, utypeId)
+            putString(USER_TYPE_NAME, utypeName)
             putString(REF_CODE, code)
-            putString(SETUP_ID,setupId)
+            putString(SETUP_ID, setupId)
             apply()
         }
         if (isSkipApi) {

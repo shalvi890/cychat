@@ -29,4 +29,11 @@ sealed class PendingSelection {
             is ThreePidPendingSelection -> threePid.value
         }
     }
+
+    fun getUId(): String {
+        return when (this) {
+            is UserPendingSelection -> user.userId
+            else                    -> ""
+        }
+    }
 }
