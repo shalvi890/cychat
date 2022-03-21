@@ -109,7 +109,7 @@
         android:background="?riotx_background"
         app:itemIconSize="24dp"
         app:itemIconTint="@color/bottom_navigation_icon_tint_selector"
-        app:labelVisibilityMode="unlabeled"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -313,18 +313,15 @@ class LoginViewModel @AssistedInject constructor(
     private fun getHandleUserMappingObserver(): SingleObserver<BaseResponse> {
         return object : SingleObserver<BaseResponse> {
             override fun onSuccess(t: BaseResponse) {
-                if (t.status == "ok")
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnTokenSentConfirmed)
                     setState {
-                        copy(
-                                asyncSupplierReConfirmed = Success(Unit)
-                        )
+                        copy(asyncSupplierReConfirmed = Success(Unit))
                     }
-                else {
+                } else {
                     _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
                     setState {
-                        copy(
-                                asyncSupplierReConfirmed = Fail(Throwable(t.message))
-                        )
+                        copy(asyncSupplierReConfirmed = Fail(Throwable(t.message)))
                     }
                 }
             }

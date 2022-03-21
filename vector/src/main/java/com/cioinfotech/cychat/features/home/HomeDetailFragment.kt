@@ -158,10 +158,10 @@ class HomeDetailFragment @Inject constructor(
 
         sharedCallActionViewModel
                 .liveKnownCalls
-                .observe(viewLifecycleOwner, {
+                .observe(viewLifecycleOwner) {
                     activeCallViewHolder.updateCall(callManager.getCurrentCall(), callManager.getCalls())
                     invalidateOptionsMenu()
-                })
+                }
     }
 
     private fun setupDomainWithToolbar() {
@@ -177,11 +177,8 @@ class HomeDetailFragment @Inject constructor(
         else
             avatarRenderer.render(GlideApp.with(requireActivity()), R.mipmap.ic_launcher_round, views.groupToolbarAvatarImageView)
 
-        val domainName = pref.getString(DOMAIN_NAME, null)
         val uTypeName = pref.getString(USER_TYPE_NAME, null)
         views.groupToolbarTitleView.text = when {
-            !domainName.isNullOrEmpty() && !uTypeName.isNullOrEmpty() -> "$domainName - $uTypeName"
-            !domainName.isNullOrEmpty()                               -> domainName
             !uTypeName.isNullOrEmpty()                                -> uTypeName
             else                                                      -> getString(R.string.app_name)
         }

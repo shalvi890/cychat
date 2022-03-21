@@ -29,6 +29,7 @@ import androidx.core.widget.doOnTextChanged
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentUserMappingBinding
+import com.cioinfotech.cychat.features.home.HomeActivity
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import javax.inject.Inject
 
@@ -79,6 +80,17 @@ class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<Fragm
                         && views.secretCodeField.text.toString().length == 4 && it.isNotEmpty()) {
                     views.secretCodeField.error = null
                 }
+            }
+        }
+
+        loginViewModel.observeViewEvents {
+            if (it == LoginViewEvents.OnTokenSentConfirmed) {
+                if (!views.tvMessage.isVisible) {
+                    views.tvMessage.isVisible = true
+                    views.btnCheckCode.isVisible = true
+                    views.secretCodeTil.isVisible = true
+                }
+                (requireActivity() as LoginActivity).showSnackbar(getString(R.string.token_sent_to_supplier))
             }
         }
     }

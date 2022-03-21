@@ -52,4 +52,5 @@ sealed class LoginViewEvents : VectorViewEvents {
     data class OnGetGroupsConfirmed(val groupParent: GroupParent) : LoginViewEvents()
     data class OnUserTypeConfirmed(val userTypeParent: UserTypeParent) : LoginViewEvents()
     data class OnWebLoginError(val errorCode: Int, val description: String, val failingUrl: String) : LoginViewEvents()
+    object OnTokenSentConfirmed : LoginViewEvents()
 }

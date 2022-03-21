@@ -3371,5 +3371,6 @@
     <string name="enter_referral_code">Enter code</string>
     <string name="verify_and_send_code"><![CDATA[Verify & Send Code]]></string>
     <string name="no_users_found">No Users Found</string>
+    <string name="people">People</string>
 
 </resources>
