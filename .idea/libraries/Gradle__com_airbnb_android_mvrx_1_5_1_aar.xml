@@ -1,9 +1,6 @@
 <component name="libraryTable">
   <library name="Gradle: com.airbnb.android:mvrx:1.5.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8221d49c2066fc08272b6ed362631cf1/jetified-mvrx-1.5.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8221d49c2066fc08272b6ed362631cf1/jetified-mvrx-1.5.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8221d49c2066fc08272b6ed362631cf1/jetified-mvrx-1.5.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11efa546f3d1c2932159f3413fcef181/jetified-mvrx-1.5.1/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11efa546f3d1c2932159f3413fcef181/jetified-mvrx-1.5.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11efa546f3d1c2932159f3413fcef181/jetified-mvrx-1.5.1/jars/classes.jar!/" />

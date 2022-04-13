@@ -17,6 +17,7 @@ package com.cioinfotech.cychat.features.settings
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
@@ -27,7 +28,6 @@ import com.cioinfotech.cychat.core.extensions.replaceFragment
 import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.databinding.ActivityVectorSettingsBinding
 import com.cioinfotech.cychat.features.settings.devices.VectorSettingsDevicesFragment
-
 import org.matrix.android.sdk.api.failure.GlobalError
 import org.matrix.android.sdk.api.session.Session
 import timber.log.Timber
@@ -78,12 +78,20 @@ class VectorSettingsActivity : VectorBaseActivity<ActivityVectorSettingsBinding>
                     requestHighlightPreferenceKeyOnResume(VectorPreferences.SETTINGS_ENABLE_THIS_DEVICE_PREFERENCE_KEY)
                     replaceFragment(R.id.vector_settings_page, VectorSettingsNotificationPreferenceFragment::class.java, null, FRAGMENT_TAG)
                 }
-
                 else                                                 ->
                     replaceFragment(R.id.vector_settings_page, VectorSettingsRootFragment::class.java, null, FRAGMENT_TAG)
             }
         }
 
+        supportFragmentManager.addOnBackStackChangedListener(this)
+    }
+
+    fun changeFragment(bundle: Bundle? = null) {
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.right_in, R.anim.fade_out, R.anim.fade_in, R.anim.right_out)
+                .replace(R.id.vector_settings_page, CyverseAddRoleFragment::class.java, bundle)
+                .addToBackStack(null)
+                .commit()
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
@@ -93,9 +101,8 @@ class VectorSettingsActivity : VectorBaseActivity<ActivityVectorSettingsBinding>
     }
 
     override fun onBackStackChanged() {
-        if (0 == supportFragmentManager.backStackEntryCount) {
+        if (0 == supportFragmentManager.backStackEntryCount)
             supportActionBar?.title = getString(getTitleRes())
-        }
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
@@ -159,6 +166,8 @@ class VectorSettingsActivity : VectorBaseActivity<ActivityVectorSettingsBinding>
         const val EXTRA_DIRECT_ACCESS_SECURITY_PRIVACY_MANAGE_SESSIONS = 3
         const val EXTRA_DIRECT_ACCESS_GENERAL = 4
         const val EXTRA_DIRECT_ACCESS_NOTIFICATIONS = 5
+        const val EXTRA_PROFILE = 6
+        const val EXTRA_ADD_ROLE = 7
 
         private const val FRAGMENT_TAG = "VectorSettingsPreferencesFragment"
     }

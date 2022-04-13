@@ -144,10 +144,10 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
 
     private fun submit() {
         cleanupUi()
-        val firstName = views.firstNameField.text.toString()
-        val lastName = views.lastNameField.text.toString()
-        val emailOTP = views.otpEmailField.text.toString()
-        val mobileOTP = views.otpMobileField.text.toString()
+        val firstName = views.firstNameField.text.toString().trim()
+        val lastName = views.lastNameField.text.toString().trim()
+        val emailOTP = views.otpEmailField.text.toString().trim()
+        val mobileOTP = views.otpMobileField.text.toString().trim()
         var error = 0
         if (isSignUp) {
             if (firstName.isEmpty()) {
@@ -235,12 +235,14 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         }
 
         views.firstNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
+            if (!hasFocus) {
+                views.firstNameField.setText(views.firstNameField.text.toString().trim())
                 views.firstNameFieldTil.error = when {
                     views.firstNameField.text.toString().isEmpty()           -> getString(R.string.error_empty_field_enter_first_name)
                     !views.firstNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_first_name)
                     else                                                     -> null
                 }
+            }
         }
 
         views.firstNameField.doOnTextChanged { text, _, _, _ ->
@@ -251,12 +253,14 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
         }
 
         views.lastNameField.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus)
+            if (!hasFocus) {
+                views.lastNameField.setText(views.lastNameField.text.toString().trim())
                 views.lastNameFieldTil.error = when {
                     views.lastNameField.text.toString().isEmpty()           -> getString(R.string.error_empty_field_enter_last_name)
                     !views.lastNameField.text.toString().matches(nameRegex) -> getString(R.string.error_empty_field_enter_valid_last_name)
                     else                                                    -> null
                 }
+            }
         }
 
         views.lastNameField.doOnTextChanged { text, _, _, _ ->

@@ -1,9 +1,6 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-oss-licenses:17.0.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5a01fbaa2ca98a6abece1060d1dacb08/jetified-play-services-oss-licenses-17.0.0/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5a01fbaa2ca98a6abece1060d1dacb08/jetified-play-services-oss-licenses-17.0.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5a01fbaa2ca98a6abece1060d1dacb08/jetified-play-services-oss-licenses-17.0.0/jars/classes.jar!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e44c5e01f59ae0d9ac45627795091f4e/jetified-play-services-oss-licenses-17.0.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e44c5e01f59ae0d9ac45627795091f4e/jetified-play-services-oss-licenses-17.0.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e44c5e01f59ae0d9ac45627795091f4e/jetified-play-services-oss-licenses-17.0.0/AndroidManifest.xml" />

@@ -22,7 +22,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
+import com.cioinfotech.cychat.features.cycore.data.AddUserTypesResponse
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
+import com.cioinfotech.cychat.features.cycore.data.ErrorModel
+import com.cioinfotech.cychat.features.cycore.data.UserProfileData
+import com.cioinfotech.cychat.features.cycore.data.VerifyAddUserTypeResponse
 import com.cioinfotech.cychat.features.cycore.service.CyCoreService
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,16 +40,26 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
+import org.matrix.android.sdk.internal.network.NetworkConstants.DELETE_REQUEST
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.EXCLUDE_USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.FEDERATION
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_ADD_USER_TYPES
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_USER_PROFILE
 import org.matrix.android.sdk.internal.network.NetworkConstants.LIST_FEDERATED_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.OP
+import org.matrix.android.sdk.internal.network.NetworkConstants.OTP
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.RESEND_VERIFICATION_CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.SET_VISIBILITY
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_DASH
+import org.matrix.android.sdk.internal.network.NetworkConstants.VERIFY_ADD_USER_TYPE
+import org.matrix.android.sdk.internal.network.NetworkConstants.VERIFY_OTP
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -210,6 +224,237 @@ class CyCoreViewModel @Inject constructor(
             override fun onSubscribe(d: Disposable) {}
 
             override fun onError(e: Throwable) {}
+        }
+    }
+
+    val addUserTypesLiveData = MutableLiveData<AddUserTypesResponse>()
+    fun handleAddUserTypes() {
+        cyCoreService.getAddUserTypes(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to GET_ADD_USER_TYPES,
+                        SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
+                        CLID to clid,
+                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getAddUserTypes())
+    }
+
+    private fun getAddUserTypes(): SingleObserver<AddUserTypesResponse> {
+        return object : SingleObserver<AddUserTypesResponse> {
+
+            override fun onSuccess(t: AddUserTypesResponse) {
+                if (t.status == "ok")
+                    addUserTypesLiveData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(GET_ADD_USER_TYPES, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun handleVerifyAddUserType(uTypeId: String, code: String) {
+        cyCoreService.verifyAddUserType(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to VERIFY_ADD_USER_TYPE,
+                        SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
+                        CLID to clid,
+                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: ""),
+                        NetworkConstants.CODE to code,
+                        USER_TYPE_DASH to uTypeId
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(verifyAddUserType())
+    }
+
+    val verifyAddUserTypeResponse = MutableLiveData<VerifyAddUserTypeResponse>()
+    private fun verifyAddUserType(): SingleObserver<VerifyAddUserTypeResponse> {
+        return object : SingleObserver<VerifyAddUserTypeResponse> {
+
+            override fun onSuccess(t: VerifyAddUserTypeResponse) {
+                if (t.status == "ok") {
+                    verifyAddUserTypeResponse.postValue(t)
+                } else
+                    errorData.postValue(ErrorModel(VERIFY_ADD_USER_TYPE, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun handleVerifyOTP(reqId: String, uTypeId: String, otp: String) {
+        cyCoreService.verifyOTP(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to VERIFY_OTP,
+                        SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
+                        CLID to clid,
+                        USER_TYPE_DASH to uTypeId,
+                        REQ_ID to reqId,
+                        OTP to otp
+
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(verifyOTP())
+    }
+
+    val otpVerifiedData = MutableLiveData<BaseResponse>()
+    private fun verifyOTP(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok")
+                    otpVerifiedData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(VERIFY_OTP, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun handleGetProfileDetails() {
+        cyCoreService.getProfileDetails(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to GET_USER_PROFILE,
+                        SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
+                        CLID to clid,
+                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getProfileDetails())
+    }
+
+    val userProfileData = MutableLiveData<UserProfileData>()
+    private fun getProfileDetails(): SingleObserver<UserProfileData> {
+        return object : SingleObserver<UserProfileData> {
+
+            override fun onSuccess(t: UserProfileData) {
+                if (t.status == "ok")
+                    userProfileData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(GET_USER_PROFILE, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun handleResendVerificationCode() {
+        cyCoreService.resendVerificationCode(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to RESEND_VERIFICATION_CODE,
+                        SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
+                        CLID to clid,
+                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resendVerificationCode())
+    }
+
+    val resendVerificationCode = MutableLiveData<BaseResponse>()
+    private fun resendVerificationCode(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok")
+                    resendVerificationCode.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(RESEND_VERIFICATION_CODE, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    val errorData = MutableLiveData<ErrorModel?>()
+
+    fun setVisibility() {
+        cyCoreService.setVisibility(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to SET_VISIBILITY,
+                        SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                        CLID to clid,
+                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getVisibility())
+    }
+
+    val visibilityLiveData = MutableLiveData<BaseResponse?>()
+    private fun getVisibility(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok")
+                    visibilityLiveData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(SET_VISIBILITY, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun deleteRequest(reqId: String) {
+        cyCoreService.deleteRequest(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to DELETE_REQUEST,
+                        SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                        CLID to clid,
+                        REQ_ID to reqId
+                ), url).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(handleDeleteRequest())
+    }
+
+    val deleteRequestLiveData = MutableLiveData<BaseResponse?>()
+    private fun handleDeleteRequest(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status == "ok")
+                    deleteRequestLiveData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(DELETE_REQUEST, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
         }
     }
 }

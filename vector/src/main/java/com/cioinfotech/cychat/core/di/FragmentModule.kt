@@ -88,6 +88,7 @@ import com.cioinfotech.cychat.features.roomprofile.settings.RoomSettingsFragment
 import com.cioinfotech.cychat.features.roomprofile.uploads.RoomUploadsFragment
 import com.cioinfotech.cychat.features.roomprofile.uploads.files.RoomUploadsFilesFragment
 import com.cioinfotech.cychat.features.roomprofile.uploads.media.RoomUploadsMediaFragment
+import com.cioinfotech.cychat.features.settings.CyverseAddRoleFragment
 import com.cioinfotech.cychat.features.settings.VectorSettingsAdvancedNotificationPreferenceFragment
 import com.cioinfotech.cychat.features.settings.VectorSettingsGeneralFragment
 import com.cioinfotech.cychat.features.settings.VectorSettingsHelpAboutFragment
@@ -96,6 +97,7 @@ import com.cioinfotech.cychat.features.settings.VectorSettingsNotificationPrefer
 import com.cioinfotech.cychat.features.settings.VectorSettingsNotificationsTroubleshootFragment
 import com.cioinfotech.cychat.features.settings.VectorSettingsPinFragment
 import com.cioinfotech.cychat.features.settings.VectorSettingsPreferencesFragment
+import com.cioinfotech.cychat.features.settings.CyverseSettingsProfileFragment
 import com.cioinfotech.cychat.features.settings.VectorSettingsSecurityPrivacyFragment
 import com.cioinfotech.cychat.features.settings.account.deactivation.DeactivateAccountFragment
 import com.cioinfotech.cychat.features.settings.crosssigning.CrossSigningSettingsFragment
@@ -298,6 +300,16 @@ interface FragmentModule {
     @IntoMap
     @FragmentKey(VectorSettingsGeneralFragment::class)
     fun bindVectorSettingsGeneralFragment(fragment: VectorSettingsGeneralFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(CyverseSettingsProfileFragment::class)
+    fun bindCyverseSettingsProfileFragment(fragment: CyverseSettingsProfileFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(CyverseAddRoleFragment::class)
+    fun bindVectorCyverseAddRoleFragment(fragment: CyverseAddRoleFragment): Fragment
 
     @Binds
     @IntoMap

@@ -3372,5 +3372,21 @@
     <string name="verify_and_send_code"><![CDATA[Verify & Send Code]]></string>
     <string name="no_users_found">No Users Found</string>
     <string name="people">People</string>
+    <string name="my_profile">My Profile</string>
+    <string name="visibility">Visibility</string>
+    <string name="roles">Roles:</string>
+    <string name="pending_requests">Pending Request: %s</string>
+    <string name="request_for_new_role">Request for new Role</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="add_user_role">Add User Role</string>
+    <string name="please_enter_otp">Please, enter OTP.</string>
+    <string name="please_enter_valid_otp">Please, enter valid OTP</string>
+    <string name="change_display_name">Change Display Name</string>
+    <string name="name_can_not_be_empty">Display name can not be empty</string>
+    <string name="enter_display_name">Enter display name</string>
+    <string name="you_have_pending_request_for_role">You have pending request for role: %s</string>
+    <string name="role_added">Role Added</string>
+    <string name="verification_code_sent_to_supplier">Verification code sent to supplier.</string>
 
 </resources>

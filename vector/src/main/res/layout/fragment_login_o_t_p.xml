@@ -59,7 +59,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login_signin_last_name_hint"
                 android:visibility="gone"
-                app:errorEnabled="true">
+                app:errorEnabled="true"
+                tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/lastNameField"

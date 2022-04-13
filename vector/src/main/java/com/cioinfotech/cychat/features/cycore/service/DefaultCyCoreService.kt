@@ -17,9 +17,7 @@
 package com.cioinfotech.cychat.features.cycore.service
 
 import com.cioinfotech.cychat.features.cycore.CyCoreAPI
-import com.cioinfotech.cychat.features.cycore.data.UserSearch
 import dagger.Lazy
-import io.reactivex.Single
 import okhttp3.OkHttpClient
 import org.matrix.android.sdk.internal.network.RetrofitFactory
 import javax.inject.Inject
@@ -34,6 +32,13 @@ class DefaultCyCoreService @Inject constructor(
     override fun cyGetFederatedDomains(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getFederatedDomains(hashMap)
     override fun cyGetDefaultURLs(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDefaultURLs(hashMap)
     override fun cyUserSearch(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).userSearch(hashMap)
+    override fun getAddUserTypes(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getAddUserTypes(hashMap)
+    override fun verifyAddUserType(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).verifyAddUserType(hashMap)
+    override fun verifyOTP(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).verifyOTP(hashMap)
+    override fun getProfileDetails(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getProfileDetails(hashMap)
+    override fun setVisibility(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).setVisibility(hashMap)
+    override fun resendVerificationCode(hashMap: HashMap<String, String>, url: String)= buildCyCoreAPI(url).resendVerificationCode(hashMap)
+    override fun deleteRequest(mapOf: HashMap<String, String>, url: String)= buildCyCoreAPI(url).deleteRequest(mapOf)
 
     private fun buildCyCoreAPI(url: String): CyCoreAPI {
         return retrofitFactory.createWithBaseURL(buildClient(), url).create(CyCoreAPI::class.java)

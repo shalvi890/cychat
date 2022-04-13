@@ -3,45 +3,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
-        android:key="SETTINGS_USER_SETTINGS_PREFERENCE_KEY"
-        android:title="@string/settings_user_settings">
+    <!--    <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory-->
+    <!--        android:key="SETTINGS_USER_SETTINGS_PREFERENCE_KEY"-->
+    <!--        android:title="@string/settings_user_settings">-->
 
-        <com.cioinfotech.cychat.core.preference.UserAvatarPreference
-            android:key="SETTINGS_PROFILE_PICTURE_PREFERENCE_KEY"
-            android:title="@string/settings_profile_picture" />
+    <com.cioinfotech.cychat.core.preference.UserAvatarPreference
+        android:key="SETTINGS_PROFILE_PICTURE_PREFERENCE_KEY"
+        android:title="@string/settings_user_settings"
+        app:fragment="com.cioinfotech.cychat.features.settings.CyverseSettingsProfileFragment"/>
 
-        <com.cioinfotech.cychat.core.preference.VectorEditTextPreference
-            android:key="SETTINGS_DISPLAY_NAME_PREFERENCE_KEY"
-            android:persistent="false"
-            android:title="@string/settings_display_name" />
+    <!--        <com.cioinfotech.cychat.core.preference.VectorEditTextPreference-->
+    <!--            android:key="SETTINGS_DISPLAY_NAME_PREFERENCE_KEY"-->
+    <!--            android:persistent="true"-->
+    <!--            android:title="@string/settings_display_name" />-->
 
-        <com.cioinfotech.cychat.core.preference.VectorEditTextPreference
-            android:key="SETTINGS_DISPLAY_USERNAME"
-            android:persistent="false"
-            android:title="@string/username" />
+    <!--        <com.cioinfotech.cychat.core.preference.VectorEditTextPreference-->
+    <!--            android:key="SETTINGS_DISPLAY_USERNAME"-->
+    <!--            android:persistent="true"-->
+    <!--            android:title="@string/username" />-->
 
-        <com.cioinfotech.cychat.core.preference.VectorPreference
-            android:key="SETTINGS_CHANGE_PASSWORD_PREFERENCE_KEY"
-            android:summary="@string/change_password_summary"
-            android:title="@string/settings_password"
-            app:isPreferenceVisible="false" />
+    <!--        <com.cioinfotech.cychat.core.preference.VectorPreference-->
+    <!--            android:key="SETTINGS_CHANGE_PASSWORD_PREFERENCE_KEY"-->
+    <!--            android:summary="@string/change_password_summary"-->
+    <!--            android:title="@string/settings_password"-->
+    <!--            app:isPreferenceVisible="false" />-->
 
-        <com.cioinfotech.cychat.core.preference.VectorPreference
-            android:key="SETTINGS_EMAILS_AND_PHONE_NUMBERS_PREFERENCE_KEY"
-            android:summary="@string/settings_emails_and_phone_numbers_summary"
-            android:title="@string/settings_emails_and_phone_numbers_title"
-            app:fragment="com.cioinfotech.cychat.features.settings.threepids.ThreePidsSettingsFragment"
-            app:isPreferenceVisible="false" />
+    <!--        <com.cioinfotech.cychat.core.preference.VectorPreference-->
+    <!--            android:key="SETTINGS_EMAILS_AND_PHONE_NUMBERS_PREFERENCE_KEY"-->
+    <!--            android:summary="@string/settings_emails_and_phone_numbers_summary"-->
+    <!--            android:title="@string/settings_emails_and_phone_numbers_title"-->
+    <!--            app:fragment="com.cioinfotech.cychat.features.settings.threepids.ThreePidsSettingsFragment"-->
+    <!--            app:isPreferenceVisible="false" />-->
 
-        <com.cioinfotech.cychat.core.preference.VectorPreference
-            android:persistent="false"
-            android:summary="@string/settings_discovery_manage"
-            android:title="@string/settings_discovery_category"
-            app:fragment="com.cioinfotech.cychat.features.discovery.DiscoverySettingsFragment"
-            app:isPreferenceVisible="false" />
+    <!--        <com.cioinfotech.cychat.core.preference.VectorPreference-->
+    <!--            android:persistent="false"-->
+    <!--            android:summary="@string/settings_discovery_manage"-->
+    <!--            android:title="@string/settings_discovery_category"-->
+    <!--            app:fragment="com.cioinfotech.cychat.features.discovery.DiscoverySettingsFragment"-->
+    <!--            app:isPreferenceVisible="false" />-->
 
-    </com.cioinfotech.cychat.core.preference.VectorPreferenceCategory>
+    <!--    </com.cioinfotech.cychat.core.preference.VectorPreferenceCategory>-->
 
     <com.cioinfotech.cychat.core.preference.VectorPreferenceCategory
         android:key="SETTINGS_CONTACT_PREFERENCE_KEYS"

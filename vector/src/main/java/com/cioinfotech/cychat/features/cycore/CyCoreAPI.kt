@@ -16,8 +16,11 @@
 
 package com.cioinfotech.cychat.features.cycore
 
+import com.cioinfotech.cychat.features.cycore.data.AddUserTypesResponse
 import com.cioinfotech.cychat.features.cycore.data.DomainDetails
+import com.cioinfotech.cychat.features.cycore.data.UserProfileData
 import com.cioinfotech.cychat.features.cycore.data.UserSearch
+import com.cioinfotech.cychat.features.cycore.data.VerifyAddUserTypeResponse
 import io.reactivex.Single
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
@@ -55,9 +58,43 @@ interface CyCoreAPI {
     @POST(NetworkConstants.ROOT_API)
     fun getDefaultURLs(@FieldMap map: HashMap<String, String>): Single<DefaultURLParent>
 
-
     @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.ROOT_API)
     fun userSearch(@FieldMap map: HashMap<String, String>): Single<UserSearch>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun getAddUserTypes(@FieldMap map: HashMap<String, String>): Single<AddUserTypesResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun verifyAddUserType(@FieldMap map: HashMap<String, String>): Single<VerifyAddUserTypeResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun verifyOTP(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun getProfileDetails(@FieldMap map: HashMap<String, String>): Single<UserProfileData>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun setVisibility(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun resendVerificationCode(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun deleteRequest(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
 }

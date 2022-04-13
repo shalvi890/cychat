@@ -9,20 +9,9 @@
         android:id="@+id/tv_server_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/alerter_padding_default"
-        android:paddingTop="@dimen/alerter_padding_small"
-        android:paddingEnd="@dimen/alerter_padding_default"
-        android:paddingBottom="@dimen/alerter_padding_small"
-        android:textColor="?android:textColorPrimary"
-        android:textSize="18sp"
+        android:padding="@dimen/alerter_padding_small"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="something" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/emoji_gray20"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_server_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

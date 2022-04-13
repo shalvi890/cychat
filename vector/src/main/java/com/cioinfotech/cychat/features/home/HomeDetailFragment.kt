@@ -49,7 +49,6 @@ import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewMod
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.google.android.material.badge.BadgeDrawable
 import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_IMAGE
-import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_NAME
 import timber.log.Timber
 import javax.inject.Inject

@@ -27,14 +27,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.EditTextPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.SwitchPreference
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.cache.DiskCache
 import com.cioinfotech.cychat.R
-import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.dialogs.GalleryOrCameraDialogHelper
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.core.extensions.showPassword
@@ -59,7 +56,6 @@ import kotlinx.coroutines.withContext
 import org.matrix.android.sdk.api.failure.isInvalidPassword
 import org.matrix.android.sdk.api.session.integrationmanager.IntegrationManagerConfig
 import org.matrix.android.sdk.api.session.integrationmanager.IntegrationManagerService
-import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.rx.rx
 import org.matrix.android.sdk.rx.unwrap
 import java.io.File
@@ -75,37 +71,37 @@ class VectorSettingsGeneralFragment @Inject constructor(
     override var titleRes = R.string.settings_general_title
     override val preferenceXmlRes = R.xml.vector_settings_general
 
-    private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
+//    private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
 
-    private val mUserSettingsCategory by lazy {
-        findPreference<PreferenceCategory>(VectorPreferences.SETTINGS_USER_SETTINGS_PREFERENCE_KEY)!!
-    }
+    //    private val mUserSettingsCategory by lazy {
+//        findPreference<PreferenceCategory>(VectorPreferences.SETTINGS_USER_SETTINGS_PREFERENCE_KEY)!!
+//    }
     private val mUserAvatarPreference by lazy {
         findPreference<UserAvatarPreference>(VectorPreferences.SETTINGS_PROFILE_PICTURE_PREFERENCE_KEY)!!
     }
-    private val mDisplayNamePreference by lazy {
-        findPreference<EditTextPreference>("SETTINGS_DISPLAY_NAME_PREFERENCE_KEY")!!
-    }
+//    private val mDisplayNamePreference by lazy {
+//        findPreference<EditTextPreference>("SETTINGS_DISPLAY_NAME_PREFERENCE_KEY")!!
+//    }
 
-    private val mDisplayUserName by lazy {
-        findPreference<EditTextPreference>("SETTINGS_DISPLAY_USERNAME")!!
-    }
+//    private val mDisplayUserName by lazy {
+//        findPreference<EditTextPreference>("SETTINGS_DISPLAY_USERNAME")!!
+//    }
 
-    private val mPasswordPreference by lazy {
-        findPreference<VectorPreference>(VectorPreferences.SETTINGS_CHANGE_PASSWORD_PREFERENCE_KEY)!!
-    }
-    private val mIdentityServerPreference by lazy {
-        findPreference<VectorPreference>(VectorPreferences.SETTINGS_IDENTITY_SERVER_PREFERENCE_KEY)!!
-    }
-
-    // Local contacts
-    private val mContactSettingsCategory by lazy {
-        findPreference<PreferenceCategory>(VectorPreferences.SETTINGS_CONTACT_PREFERENCE_KEYS)!!
-    }
-
-    private val mContactPhonebookCountryPreference by lazy {
-        findPreference<VectorPreference>(VectorPreferences.SETTINGS_CONTACTS_PHONEBOOK_COUNTRY_PREFERENCE_KEY)!!
-    }
+//    private val mPasswordPreference by lazy {
+//        findPreference<VectorPreference>(VectorPreferences.SETTINGS_CHANGE_PASSWORD_PREFERENCE_KEY)!!
+//    }
+//    private val mIdentityServerPreference by lazy {
+//        findPreference<VectorPreference>(VectorPreferences.SETTINGS_IDENTITY_SERVER_PREFERENCE_KEY)!!
+//    }
+//
+//    // Local contacts
+//    private val mContactSettingsCategory by lazy {
+//        findPreference<PreferenceCategory>(VectorPreferences.SETTINGS_CONTACT_PREFERENCE_KEYS)!!
+//    }
+//
+//    private val mContactPhonebookCountryPreference by lazy {
+//        findPreference<VectorPreference>(VectorPreferences.SETTINGS_CONTACTS_PHONEBOOK_COUNTRY_PREFERENCE_KEY)!!
+//    }
 
     private val integrationServiceListener = object : IntegrationManagerService.Listener {
         override fun onConfigurationChanged(configs: List<IntegrationManagerConfig>) {
@@ -120,13 +116,13 @@ class VectorSettingsGeneralFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeUserAvatar()
-        observeUserDisplayName()
-        val pref = DefaultSharedPreferences.getInstance(requireContext())
-        mDisplayUserName.let {
-            it.summary = pref.getString(NetworkConstants.EMAIL, null)
-            it.text = pref.getString(NetworkConstants.EMAIL, null)
-        }
+//        observeUserAvatar()
+//        observeUserDisplayName()
+//        val pref = DefaultSharedPreferences.getInstance(requireContext())
+//        mDisplayUserName.let {
+//            it.summary = pref.getString(NetworkConstants.EMAIL, null)
+//            it.text = pref.getString(NetworkConstants.EMAIL, null)
+//        }
     }
 
     private fun observeUserAvatar() {
@@ -139,51 +135,52 @@ class VectorSettingsGeneralFragment @Inject constructor(
                 .disposeOnDestroyView()
     }
 
-    private fun observeUserDisplayName() {
-        session.rx()
-                .liveUser(session.myUserId)
-                .unwrap()
-                .map { it.displayName ?: "" }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { displayName ->
-                    mDisplayNamePreference.let {
-                        it.summary = displayName
-                        it.text = displayName
-                    }
-                }
-                .disposeOnDestroyView()
-    }
+//    private fun observeUserDisplayName() {
+//        session.rx()
+//                .liveUser(session.myUserId)
+//                .unwrap()
+//                .map { it.displayName ?: "" }
+//                .distinctUntilChanged()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe { displayName ->
+//                    mDisplayNamePreference.let {
+//                        it.summary = displayName
+//                        it.text = displayName
+//                    }
+//                }
+//                .disposeOnDestroyView()
+//    }
 
     override fun bindPref() {
         // Avatar
-        mUserAvatarPreference.let {
-            it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                galleryOrCameraDialogHelper.show()
-                false
-            }
-        }
+//        mUserAvatarPreference.let {
+//            it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//                galleryOrCameraDialogHelper.show()
+//                (requireActivity() as VectorSettingsActivity).changeFragment(VectorSettingsActivity.EXTRA_PROFILE)
+//                false
+//            }
+//        }
 
         // Display name
-        mDisplayNamePreference.let {
-            it.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
-                newValue
-                        ?.let { value -> (value as? String)?.trim() }
-                        ?.let { value -> onDisplayNameChanged(value) }
-                false
-            }
-        }
+//        mDisplayNamePreference.let {
+//            it.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+//                newValue
+//                        ?.let { value -> (value as? String)?.trim() }
+//                        ?.let { value -> onDisplayNameChanged(value) }
+//                false
+//            }
+//        }
 
         // Password
         // Hide the preference if password can not be updated
-        if (session.getHomeServerCapabilities().canChangePassword) {
-            mPasswordPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                onPasswordUpdateClick()
-                false
-            }
-        } else {
-            mPasswordPreference.isVisible = false
-        }
+//        if (session.getHomeServerCapabilities().canChangePassword) {
+//            mPasswordPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+//                onPasswordUpdateClick()
+//                false
+//            }
+//        } else {
+//            mPasswordPreference.isVisible = false
+//        }
 
         // Advanced settings
 
@@ -276,7 +273,7 @@ class VectorSettingsGeneralFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         // Refresh identity server summary
-        mIdentityServerPreference.summary = session.identityService().getCurrentIdentityServerUrl() ?: getString(R.string.identity_server_not_defined)
+//        mIdentityServerPreference.summary = session.identityService().getCurrentIdentityServerUrl() ?: getString(R.string.identity_server_not_defined)
         refreshIntegrationManagerSettings()
         session.integrationManagerService().addListener(integrationServiceListener)
     }
@@ -479,26 +476,26 @@ class VectorSettingsGeneralFragment @Inject constructor(
     /**
      * Update the displayname.
      */
-    private fun onDisplayNameChanged(value: String) {
-        val currentDisplayName = session.getUser(session.myUserId)?.displayName ?: ""
-        if (currentDisplayName != value) {
-            displayLoadingView()
-
-            lifecycleScope.launch {
-                val result = runCatching { session.setDisplayName(session.myUserId, value) }
-                if (!isAdded) return@launch
-                result.fold(
-                        {
-                            // refresh the settings value
-                            mDisplayNamePreference.summary = value
-                            mDisplayNamePreference.text = value
-                            onCommonDone(null)
-                        },
-                        {
-                            onCommonDone(it.localizedMessage)
-                        }
-                )
-            }
-        }
-    }
+//    private fun onDisplayNameChanged(value: String) {
+//        val currentDisplayName = session.getUser(session.myUserId)?.displayName ?: ""
+//        if (currentDisplayName != value) {
+//            displayLoadingView()
+//
+//            lifecycleScope.launch {
+//                val result = runCatching { session.setDisplayName(session.myUserId, value) }
+//                if (!isAdded) return@launch
+//                result.fold(
+//                        {
+//                            // refresh the settings value
+//                            mDisplayNamePreference.summary = value
+//                            mDisplayNamePreference.text = value
+//                            onCommonDone(null)
+//                        },
+//                        {
+//                            onCommonDone(it.localizedMessage)
+//                        }
+//                )
+//            }
+//        }
+//    }
 }
