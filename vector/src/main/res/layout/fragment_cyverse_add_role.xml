@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
-                android:text="@string/please_select_type_of_user"
+                android:text="@string/select_your_organization"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

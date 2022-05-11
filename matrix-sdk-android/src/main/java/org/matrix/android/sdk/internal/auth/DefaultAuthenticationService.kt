@@ -400,11 +400,15 @@ internal class DefaultAuthenticationService @Inject constructor(
 
     override fun getSettings(hashMap: HashMap<String, String>) = buildCyAuthAPI().getSettings(hashMap)
 
-    override fun cyResendOTP( hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(hashMap)
+    override fun cyResendOTP(hashMap: HashMap<String, String>) = buildCyAuthAPI().resendOTP(hashMap)
 
     override fun cyValidateSecurityCode(auth: String?, hashMap: HashMap<String, String>) = buildCyAuthAPI().validateSecurityCode(auth, hashMap)
 
     override fun cyGetUserType(map: HashMap<String, String>) = buildCyCentralServer().getUserType(map)
+
+    override fun cyGetOrganizations(map: HashMap<String, String>) = buildCyCentralServer().cyGetOrganizations(map)
+
+    override fun cyIndividualUserType(map: HashMap<String, String>) = buildCyCentralServer().cyIndividualUserType(map)
 
     override fun cyGetGroups(map: HashMap<String, String>) = buildCyCentralServer().getGroups(map)
 

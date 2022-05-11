@@ -75,7 +75,7 @@ class CyverseAddRoleFragment @Inject constructor(
                 val list = mutableListOf<String>()
                 it.data.available_utypes.forEach { name -> list.add(name.utype_name) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
-                        mutableListOf(getString(R.string.please_select_type_of_user)) + list)
+                        mutableListOf(getString(R.string.select_your_organization)) + list)
                 binding.spinner.adapter = spinnerArrayAdapter
                 binding.spinner.onItemSelectedListener = this
                 binding.progressBar.isVisible = false
@@ -165,7 +165,7 @@ class CyverseAddRoleFragment @Inject constructor(
                 }
             }
         else
-            Toast.makeText(requireContext(), getString(R.string.please_select_type_of_user), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.select_your_organization), Toast.LENGTH_LONG).show()
     }
 
     private fun startCountDownForEmailOTP() {

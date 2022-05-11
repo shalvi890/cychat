@@ -19,6 +19,7 @@ package com.cioinfotech.cychat.features.login
 import com.cioinfotech.cychat.core.platform.VectorViewEvents
 import org.matrix.android.sdk.api.auth.registration.FlowResult
 import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
+import org.matrix.android.sdk.internal.cy_auth.data.OrganizationParent
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 
 /**
@@ -51,6 +52,8 @@ sealed class LoginViewEvents : VectorViewEvents {
     object OnMappingConfirmed : LoginViewEvents()
     data class OnGetGroupsConfirmed(val groupParent: GroupParent) : LoginViewEvents()
     data class OnUserTypeConfirmed(val userTypeParent: UserTypeParent) : LoginViewEvents()
+    data class OnOrganizationConfirmed(val orgParent: OrganizationParent) : LoginViewEvents()
+    data class OnIndividualConfirmed(val userTypeParent: UserTypeParent) : LoginViewEvents()
     data class OnWebLoginError(val errorCode: Int, val description: String, val failingUrl: String) : LoginViewEvents()
     object OnTokenSentConfirmed : LoginViewEvents()
 }

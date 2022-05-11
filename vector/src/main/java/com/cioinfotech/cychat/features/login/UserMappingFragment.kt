@@ -29,7 +29,6 @@ import androidx.core.widget.doOnTextChanged
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentUserMappingBinding
-import com.cioinfotech.cychat.features.home.HomeActivity
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import javax.inject.Inject
 
@@ -41,9 +40,9 @@ class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<Fragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
         views.btnSubmitSupplier.setOnClickListener { sendTokenToSupplier() }
-
+        views.tvSupplierTil.hint = pref.getString(NetworkConstants.U_REG_TITLE, "")
         views.supplierField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 sendTokenToSupplier()
@@ -62,7 +61,7 @@ class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<Fragm
             return@setOnEditorActionListener false
         }
 
-        val pref = DefaultSharedPreferences.getInstance(requireContext())
+
         views.supplierField.setText(pref.getString(NetworkConstants.REF_CODE, null))
 
         views.supplierField.doOnTextChanged { text, _, _, _ ->
@@ -90,7 +89,7 @@ class UserMappingFragment @Inject constructor() : AbstractSSOLoginFragment<Fragm
                     views.btnCheckCode.isVisible = true
                     views.secretCodeTil.isVisible = true
                 }
-                (requireActivity() as LoginActivity).showSnackbar(getString(R.string.token_sent_to_supplier))
+                (requireActivity() as LoginActivity).showSnackbar(getString(R.string.verification_code_sent_to_supplier))
             }
         }
     }

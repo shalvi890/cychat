@@ -29,6 +29,8 @@ import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
+import org.matrix.android.sdk.internal.cy_auth.data.OrganizationParent
+import org.matrix.android.sdk.internal.cy_auth.data.RecheckCodeResponse
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 
 /**
@@ -129,11 +131,15 @@ interface AuthenticationService {
 
     fun cyGetUserType(map: HashMap<String, String>): Single<UserTypeParent>
 
+    fun cyGetOrganizations(map: HashMap<String, String>): Single<OrganizationParent>
+
+    fun cyIndividualUserType(map: HashMap<String, String>): Single<UserTypeParent>
+
     fun cyGetGroups(map: HashMap<String, String>): Single<GroupParent>
 
     fun cyNewCheckCode(map: HashMap<String, String>): Single<BaseResponse>
 
-    fun recheckReferralCode(map: HashMap<String, String>): Single<BaseResponse>
+    fun recheckReferralCode(map: HashMap<String, String>): Single<RecheckCodeResponse>
 
     fun validateCodeBySupplier(map: HashMap<String, String>): Single<CheckOTPResponse>
 }

@@ -36,6 +36,7 @@ data class LoginViewState(
         val asyncUserMapped: Async<Unit> = Uninitialized,
         val asyncGetGroup: Async<Unit> = Uninitialized,
         val asyncGetUserType: Async<Unit> = Uninitialized,
+        val asyncGetOrganization: Async<Unit> = Uninitialized,
         val asyncCyCheckOTP: Async<Unit> = Uninitialized,
         val asyncGetCountryList: Async<Unit> = Uninitialized,
         val resendOTP: Async<Unit> = Uninitialized,
@@ -68,6 +69,7 @@ data class LoginViewState(
                 || asyncResetPassword is Loading
                 || asyncResetMailConfirmed is Loading
                 || asyncRegistration is Loading
+                || asyncGetOrganization is Loading
                 // Keep loading when it is success because of the delay to switch to the next Activity
                 || asyncLoginAction is Success
                 || asyncCyCheckOTP is Loading

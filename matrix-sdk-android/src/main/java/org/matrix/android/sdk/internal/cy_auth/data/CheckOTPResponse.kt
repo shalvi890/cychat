@@ -33,5 +33,7 @@ data class MatrixLoginData(
         val user_id: String,
         val mapped: String,
         val secret_key: String? = null,
-        val req_id: String? = null
+        val req_id: String? = null,
+        val email: String? = null,
+        val name: String? = null
 )

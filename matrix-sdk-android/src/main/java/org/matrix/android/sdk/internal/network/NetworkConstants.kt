@@ -55,7 +55,9 @@ object NetworkConstants {
 
     const val ROOT_API = "/api/root_api.php"
     const val GET_GROUPS_API = "getGroups"
-    const val GET_USER_TYPE_API = "getUserType"
+    const val GET_USER_TYPE_API = "getOrgUserTypes"
+    const val GET_IND_TYPE_API = "getIndType"
+    const val GET_ORGANIZATION_API = "getOrgTypes"
     const val GET_SETTINGS_API = "getSettings"
     const val RE_CHECK_REF_CODE = "reCheckRefCode"
     const val VALIDATE_CODE = "validateCode"
@@ -99,6 +101,7 @@ object NetworkConstants {
     const val GET_SETTINGS = "get_settings"
     const val CY_VERSE_API_CLID = "96e9a8b6be83be41955ab39c8e738c2c"
     const val CY_INSTANCE_API_CLID = "21d835b600d0cd31e9144e66f73b5b7e"
+    const val USER_CAT_ID = "user_cat_id"
 
     // Cy Chat APIs
     const val LOGIN = "login"
@@ -115,6 +118,10 @@ object NetworkConstants {
     const val CY_CHAT_ENV = "CY_CHAT_ENV"
     const val BASE_URL = "BASE_URL"
     const val U_TYPE_NAME = "U_TYPE_NAME"
+    const val U_TYPE_MODE = "U_TYPE_MODE"
+    const val U_REG_TITLE = "U_REG_TITLE"
+    const val U_TYPE_MODE_INDIVIDUAL = "ind"
+    const val U_TYPE_MODE_ORGANIZATION = "org"
     const val USER_ID = "USER_ID"
     const val USER_ID_SMALL = "user_id"
     const val EMAIL = "EMAIL"

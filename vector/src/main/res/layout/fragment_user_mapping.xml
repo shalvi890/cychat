@@ -25,14 +25,14 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
-        android:id="@+id/loginDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_vertical_margin_big"
-        android:text="@string/supplier_code"
-        android:textAppearance="@style/TextAppearance.Vector.Login.Text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_view_logo" />
+                android:id="@+id/loginDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_vertical_margin_big"
+                android:textAppearance="@style/TextAppearance.Vector.Login.Text"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_view_logo" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tvSupplierTil"
@@ -40,7 +40,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:hint="@string/supplier_code"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_vertical_margin"
         android:visibility="gone"
-        android:text="@string/token_sent_to_supplier"
+        android:text="@string/verification_code_sent_to_supplier"
         android:textAppearance="@style/TextAppearance.Vector.Login.Text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnSubmitSupplier" />

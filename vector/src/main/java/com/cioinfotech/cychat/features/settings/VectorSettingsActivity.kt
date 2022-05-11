@@ -74,6 +74,10 @@ class VectorSettingsActivity : VectorBaseActivity<ActivityVectorSettingsBinding>
                             VectorSettingsDevicesFragment::class.java,
                             null,
                             FRAGMENT_TAG)
+                EXTRA_PROFILE                                        -> replaceFragment(R.id.vector_settings_page,
+                        CyverseSettingsProfileFragment::class.java,
+                        null,
+                        FRAGMENT_TAG)
                 EXTRA_DIRECT_ACCESS_NOTIFICATIONS                    -> {
                     requestHighlightPreferenceKeyOnResume(VectorPreferences.SETTINGS_ENABLE_THIS_DEVICE_PREFERENCE_KEY)
                     replaceFragment(R.id.vector_settings_page, VectorSettingsNotificationPreferenceFragment::class.java, null, FRAGMENT_TAG)

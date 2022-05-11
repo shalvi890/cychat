@@ -3358,14 +3358,11 @@
     <string name="setup_and_configuration_of_notices"><![CDATA[Setup & configuration of notices]]></string>
     <string name="profile_settings_and_cache"><![CDATA[Profile settings & cache]]></string>
     <string name="something_went_wrong">Something Went Wrong! Please, try again after sometime.</string>
-    <string name="please_select_type_of_user">Select Type Of User</string>
     <string name="user_type">User Type</string>
     <string name="supplier">Supplier</string>
     <string name="check">Check</string>
-    <string name="supplier_code">Supplier Code</string>
     <string name="send_code">Send Code</string>
     <string name="check_code">Verify</string>
-    <string name="token_sent_to_supplier">Verification code sent to supplier</string>
     <string name="please_select_server">Please, select environment</string>
     <string name="search_server_name">Search server name</string>
     <string name="enter_referral_code">Enter code</string>
@@ -3387,6 +3384,13 @@
     <string name="enter_display_name">Enter display name</string>
     <string name="you_have_pending_request_for_role">You have pending request for role: %s</string>
     <string name="role_added">Role Added</string>
-    <string name="verification_code_sent_to_supplier">Verification code sent to supplier.</string>
-
+    <string name="verification_code_sent_to_supplier">Verification code sent.</string>
+    <string name="individual_user">Individual User</string>
+    <string name="organization_user">Organization User</string>
+    <string name="now_you_can_add_roles_from_settings_profile">Now, you can add new role using Settings -> General -> Profile -> Add Role</string>
+    <string name="you_are_signing_for">You are doing sign-in or sign-up for %s</string>
+    <string name="select_organization">Select Organization Type</string>
+    <string name="search_organization">Search Organization Type</string>
+    <string name="select_your_organization">Select Your Organization</string>
+    <string name="search_your_organization">Search Your Organization</string>
 </resources>

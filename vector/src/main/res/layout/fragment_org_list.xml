@@ -10,10 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="?riotx_attachment_selector_background"
+        android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.95"
-        android:padding="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.95">
@@ -37,19 +37,21 @@
             android:padding="@dimen/alerter_padding_default"
             android:text="@string/please_select_server_to_search"
             android:textSize="16sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/iv_dismiss"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/et_search"
-            android:layout_width="match_parent"
-            android:autofillHints="@null"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/alerter_padding_half"
-            android:layout_marginEnd="@dimen/alerter_padding_half"
-            android:hint="@string/search_company_name"
+            android:layout_margin="8dp"
+            android:autofillHints="@null"
+            android:hint="@null"
             android:inputType="text"
+            app:layout_constraintEnd_toStartOf="@id/iv_dismiss"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <androidx.recyclerview.widget.RecyclerView

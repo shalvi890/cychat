@@ -69,7 +69,10 @@ import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponseChild
+import org.matrix.android.sdk.internal.cy_auth.data.MatrixLoginData
+import org.matrix.android.sdk.internal.cy_auth.data.OrganizationParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.cy_auth.data.RecheckCodeResponse
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.CHECK_CODE_API
@@ -87,6 +90,8 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.FIRST_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.F_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.GENERAL_DATA
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_GROUPS_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_IND_TYPE_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_ORGANIZATION_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_SETTINGS
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_SETTINGS_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_USER_TYPE_API
@@ -110,6 +115,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USERTYPE_DATA
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_CAT_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_LOGIN_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_NAME
@@ -179,15 +185,15 @@ class LoginViewModel @AssistedInject constructor(
 
     private val matrixOrgUrl = stringProvider.getString(R.string.matrix_org_server_url).ensureTrailingSlash()
 
-    val currentThreePid: String? get() = registrationWizard?.currentThreePid
+    val currentThreePid: String? get() = registrationWizard.currentThreePid
 
     // True when login and password has been sent with success to the homeserver
     val isRegistrationStarted: Boolean
         get() = authenticationService.isRegistrationStarted
 
-    private val registrationWizard: RegistrationWizard? get() = authenticationService.getRegistrationWizard()
+    private val registrationWizard: RegistrationWizard get() = authenticationService.getRegistrationWizard()
 
-    private val loginWizard: LoginWizard? get() = authenticationService.getLoginWizard()
+    private val loginWizard: LoginWizard get() = authenticationService.getLoginWizard()
 
     private var loginConfig: LoginConfig? = null
 
@@ -226,8 +232,7 @@ class LoginViewModel @AssistedInject constructor(
     }
 
     /** CyChat API- Start */
-    fun handleSupplierConfirmation(isSkipApi: Boolean,
-                                   code: String,
+    fun handleSupplierConfirmation(code: String,
                                    utypeId: String,
                                    clid: String,
                                    setupId: String,
@@ -240,29 +245,29 @@ class LoginViewModel @AssistedInject constructor(
             putString(SETUP_ID, setupId)
             apply()
         }
-        if (isSkipApi) {
-            _viewEvents.post(LoginViewEvents.OnSupplierConfirmed)
-            setState {
-                copy(
-                        asyncSupplierConfirmed = Success(Unit)
-                )
-            }
-        } else {
-            val tempMap = hashMapOf(
-                    CLIENT_NAME to CY_VERSE_ANDROID,
-                    GROUP_VALUE to groupValue,
-                    OP to CHECK_CODE_API,
-                    REF_CODE to code,
-                    USER_TYPE to utypeId,
-                    SERVICE_NAME to USERTYPE_DATA,
-                    CLID to clid
-            )
-            authenticationService.cyNewCheckCode(tempMap)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(checkCodeObserver())
-            setState { copy(asyncSupplierConfirmed = Loading()) }
-        }
+//        if (isSkipApi) {
+//            _viewEvents.post(LoginViewEvents.OnSupplierConfirmed)
+//            setState {
+//                copy(
+//                        asyncSupplierConfirmed = Success(Unit)
+//                )
+//            }
+//        } else {
+        val tempMap = hashMapOf(
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                GROUP_VALUE to groupValue,
+                OP to CHECK_CODE_API,
+                REF_CODE to code,
+                USER_TYPE to utypeId,
+                SERVICE_NAME to USERTYPE_DATA,
+                CLID to clid
+        )
+        authenticationService.cyNewCheckCode(tempMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(checkCodeObserver())
+        setState { copy(asyncSupplierConfirmed = Loading()) }
+//        }
     }
 
     private fun checkCodeObserver(): SingleObserver<BaseResponse> {
@@ -286,9 +291,6 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    /** CyChat Get Country List / Get Settings API Implementation-
-     * No Params just to get all countries with codes.
-     * */
     fun handleUserMapping(supplierCode: String) {
         val tempMap = hashMapOf(
                 SERVICE_NAME to LOGIN,
@@ -296,7 +298,9 @@ class LoginViewModel @AssistedInject constructor(
                 OP to RE_CHECK_REF_CODE,
                 REF_CODE_DASH to supplierCode,
                 REQ_ID to (reqId ?: ""),
-                CLID to (pref.getString(CLID, "") ?: "")
+                CLID to (pref.getString(CLID, "") ?: ""),
+                FIRST_NAME to (pref.getString(F_NAME, "") ?: ""),
+                LAST_NAME to (pref.getString(L_NAME, "") ?: "")
         )
         authenticationService.recheckReferralCode(tempMap)
                 .subscribeOn(Schedulers.io())
@@ -310,11 +314,14 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Get Settings API Implementation-
      * Function waits for Get Country List API Response
      * */
-    private fun getHandleUserMappingObserver(): SingleObserver<BaseResponse> {
-        return object : SingleObserver<BaseResponse> {
-            override fun onSuccess(t: BaseResponse) {
+    private fun getHandleUserMappingObserver(): SingleObserver<RecheckCodeResponse> {
+        return object : SingleObserver<RecheckCodeResponse> {
+            override fun onSuccess(t: RecheckCodeResponse) {
                 if (t.status == "ok") {
-                    _viewEvents.post(LoginViewEvents.OnTokenSentConfirmed)
+                    if (t.data?.email != null)
+                        _viewEvents.post(LoginViewEvents.OnTokenSentConfirmed)
+                    else if (t.data != null)
+                        startLogin(t.data!!)
                     setState {
                         copy(asyncSupplierReConfirmed = Success(Unit))
                     }
@@ -370,7 +377,7 @@ class LoginViewModel @AssistedInject constructor(
         return object : SingleObserver<CheckOTPResponse> {
             override fun onSuccess(t: CheckOTPResponse) {
                 if (t.status == "ok") {
-                    startLogin(t)
+                    startLogin(t.data)
                     setState {
                         copy(
                                 asyncUserMapped = Success(Unit)
@@ -399,7 +406,7 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
+//    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     /** CyChat Login API Implementation-
      * @param passwordLoginParams- Mobile Number & Email of User
@@ -444,10 +451,10 @@ class LoginViewModel @AssistedInject constructor(
                     signUpSignInData.postValue(t.data)
                     pref.edit {
                         putString(REQ_ID, t.data.req_id)
-//                        putString(NetworkConstants.ACCESS_TOKEN, t.data.access_token.attachBearer())
+                        putString(F_NAME, t.data.fname)
+                        putString(L_NAME, t.data.lname)
                         putString(EMAIL, email)
                         reqId = t.data.req_id
-//                        accessToken = t.data.access_token.attachBearer()
                         if (t.data.type == SIGN_UP_SMALL)
                             putBoolean(SIGNING_MODE, true)
                         else
@@ -487,7 +494,7 @@ class LoginViewModel @AssistedInject constructor(
      * @param emailOTP (Email OTP sent to User)
      * @param mobileOTP (Mobile OTP sent to User)
      * @param firstName (optional, first name for signup)
-     * @param lastName (optional, first name for signup)
+     * @param lastName (optional, last name for signup)
      * */
     fun handleCyCheckOTP(emailOTP: String, mobileOTP: String, firstName: String, lastName: String) {
         loginParams?.let {
@@ -530,9 +537,9 @@ class LoginViewModel @AssistedInject constructor(
                         putString(L_NAME, lastName)
                         apply()
                     }
-                    if (t.data.mapped == "Y") {
-                        startLogin(t)
-                    } else {
+                    if (t.data.mapped == "Y")
+                        startLogin(t.data)
+                    else {
                         reqId = t.data.req_id
                         pref.edit {
                             putString(REQ_ID, t.data.req_id)
@@ -540,7 +547,6 @@ class LoginViewModel @AssistedInject constructor(
                         }
                         _viewEvents.post(LoginViewEvents.OnMappingConfirmed)
                     }
-
                     setState {
                         copy(
                                 asyncCyCheckOTP = Success(Unit)
@@ -569,11 +575,11 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    private fun startLogin(t: CheckOTPResponse) {
+    private fun startLogin(data: MatrixLoginData) {
         pref.edit().apply {
-            putString(NetworkConstants.USER_ID, t.data.user_id)
-            putString(NetworkConstants.SECRET_KEY, t.data.secret_key)
-            putString(NetworkConstants.API_SERVER, t.data.api_server)
+            putString(NetworkConstants.USER_ID, data.user_id)
+            putString(NetworkConstants.SECRET_KEY, data.secret_key)
+            putString(NetworkConstants.API_SERVER, data.api_server)
             if (pref.getBoolean(SIGNING_MODE, false))
                 putString(NetworkConstants.FULL_NAME, "${pref.getString(F_NAME, "")} ${pref.getString(L_NAME, "")}")
             apply()
@@ -581,11 +587,11 @@ class LoginViewModel @AssistedInject constructor(
         val email = pref.getString(EMAIL, "") ?: ""
         handle(
                 LoginAction.UpdateHomeServer(
-                        t.data.api_server,
+                        data.api_server,
                         email.replace("@", "-at-"),
                         AES.decrypt(
-                                t.data.password,
-                                AES.createSecretKey(t.data.user_id, email)
+                                data.password,
+                                AES.createSecretKey(data.user_id, email)
                         )
                 )
         )
@@ -654,74 +660,74 @@ class LoginViewModel @AssistedInject constructor(
 
     private val isUserValidated: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    /** CyChat Validate Security Code API Implementation-
-     * Function waits for Resend OTP API Response
-     * @param code - this parameter is code for that domain
-     * */
-    fun validateSecurityCode(code: String) {
-        val map = hashMapOf(
-                "secr_code" to code,
-                "email_domain" to loginParams?.email.getEmailDomain()
-        )
-        authenticationService.cyValidateSecurityCode("", map)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(postValidateSecurityCode())
-        setState {
-            copy(
-                    asyncCyValidateSecurityCode = Loading()
-            )
-        }
-    }
+//    /** CyChat Validate Security Code API Implementation-
+//     * Function waits for Resend OTP API Response
+//     * @param code - this parameter is code for that domain
+//     * */
+//    fun validateSecurityCode(code: String) {
+//        val map = hashMapOf(
+//                "secr_code" to code,
+//                "email_domain" to loginParams?.email.getEmailDomain()
+//        )
+//        authenticationService.cyValidateSecurityCode("", map)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(postValidateSecurityCode())
+//        setState {
+//            copy(
+//                    asyncCyValidateSecurityCode = Loading()
+//            )
+//        }
+//    }
 
     /** CyChat Validate Security Code API Implementation-
      * Function waits for Security Code API Response
      * */
-    private fun postValidateSecurityCode(): SingleObserver<BaseResponse> {
-        return object : SingleObserver<BaseResponse> {
-
-            override fun onSuccess(t: BaseResponse) {
-                if (t.status == "ok") {
-                    setState {
-                        copy(
-                                asyncCyValidateSecurityCode = Success(Unit)
-                        )
-                    }
-                    val map = hashMapOf(
-                            SERVICE_NAME to LOGIN,
-                            CLIENT_NAME to CY_VERSE_ANDROID,
-                            CLID to (pref.getString(CLID, "") ?: ""),
-                            OP to USER_LOGIN_API,
-                            MOBILE to loginParams!!.mobile,
-                            EMAIL_SMALL to loginParams!!.email,
-                            IMEI to loginParams!!.imei_no,
-                            COUNTRY_CODE to loginParams!!.country_code
-                    )
-                    authenticationService.cyLogin(map)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(getCyLoginObserver(loginParams!!.email))
-                } else {
-                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
-                    setState {
-                        copy(
-                                asyncCyValidateSecurityCode = Fail(Throwable(t.message))
-                        )
-                    }
-                }
-            }
-
-            override fun onSubscribe(d: Disposable) {}
-
-            override fun onError(e: Throwable) {
-                setState {
-                    copy(
-                            asyncCyValidateSecurityCode = Fail(e)
-                    )
-                }
-            }
-        }
-    }
+//    private fun postValidateSecurityCode(): SingleObserver<BaseResponse> {
+//        return object : SingleObserver<BaseResponse> {
+//
+//            override fun onSuccess(t: BaseResponse) {
+//                if (t.status == "ok") {
+//                    setState {
+//                        copy(
+//                                asyncCyValidateSecurityCode = Success(Unit)
+//                        )
+//                    }
+//                    val map = hashMapOf(
+//                            SERVICE_NAME to LOGIN,
+//                            CLIENT_NAME to CY_VERSE_ANDROID,
+//                            CLID to (pref.getString(CLID, "") ?: ""),
+//                            OP to USER_LOGIN_API,
+//                            MOBILE to loginParams!!.mobile,
+//                            EMAIL_SMALL to loginParams!!.email,
+//                            IMEI to loginParams!!.imei_no,
+//                            COUNTRY_CODE to loginParams!!.country_code
+//                    )
+//                    authenticationService.cyLogin(map)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(getCyLoginObserver(loginParams!!.email))
+//                } else {
+//                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+//                    setState {
+//                        copy(
+//                                asyncCyValidateSecurityCode = Fail(Throwable(t.message))
+//                        )
+//                    }
+//                }
+//            }
+//
+//            override fun onSubscribe(d: Disposable) {}
+//
+//            override fun onError(e: Throwable) {
+//                setState {
+//                    copy(
+//                            asyncCyValidateSecurityCode = Fail(e)
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     /** CyChat Resend OTP API Implementation-
      * Function waits for Resend OTP API Response
@@ -845,13 +851,13 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Get User Types API-
      * Function waits to get all groups API Response
      * */
-    fun getUserType() {
+    fun getUserType(orgId: String) {
         val tempMap = hashMapOf(
                 SERVICE_NAME to GENERAL_DATA,
                 CLIENT_NAME to CY_VERSE_ANDROID,
+                OP to GET_USER_TYPE_API,
                 CLID to CY_VERSE_API_CLID,
-                GROUP_VALUE to groupValue,
-                OP to GET_USER_TYPE_API
+                USER_CAT_ID to orgId
         )
         authenticationService.cyGetUserType(tempMap)
                 .subscribeOn(Schedulers.io())
@@ -882,6 +888,92 @@ class LoginViewModel @AssistedInject constructor(
                 setState {
                     copy(asyncGetUserType = Fail(e))
                 }
+            }
+        }
+    }
+
+    /** CyChat Get User Types API-
+     * Function waits to get all groups API Response
+     * */
+    fun getOrganizations() {
+        val tempMap = hashMapOf(
+                SERVICE_NAME to GENERAL_DATA,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                OP to GET_ORGANIZATION_API,
+                CLID to CY_VERSE_API_CLID
+        )
+        authenticationService.cyGetOrganizations(tempMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getOrganizationsObserver())
+        setState { copy(asyncGetOrganization = Loading()) }
+    }
+
+    /** Get Get User Types API Implementation-
+     * Function waits for Get Group API Response
+     * */
+    private fun getOrganizationsObserver(): SingleObserver<OrganizationParent> {
+        return object : SingleObserver<OrganizationParent> {
+
+            override fun onSuccess(t: OrganizationParent) {
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnOrganizationConfirmed(t))
+                    setState { copy(asyncGetOrganization = Success(Unit)) }
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+                    setState { copy(asyncGetOrganization = Fail(Throwable(t.message))) }
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                setState {
+                    copy(asyncGetOrganization = Fail(e))
+                }
+            }
+        }
+    }
+
+    /** CyChat Get User Types API-
+     * Function waits to get all groups API Response
+     * */
+    fun getIndividualType() {
+        val tempMap = hashMapOf(
+                SERVICE_NAME to GENERAL_DATA,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                OP to GET_IND_TYPE_API,
+                CLID to CY_VERSE_API_CLID
+        )
+        authenticationService.cyGetUserType(tempMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getIndividualTypeObserver())
+//        setState { copy(asyncGetUserType = Loading()) }
+    }
+
+    /** Get Get User Types API Implementation-
+     * Function waits for Get Group API Response
+     * */
+    private fun getIndividualTypeObserver(): SingleObserver<UserTypeParent> {
+        return object : SingleObserver<UserTypeParent> {
+
+            override fun onSuccess(t: UserTypeParent) {
+                if (t.status == "ok") {
+                    _viewEvents.post(LoginViewEvents.OnIndividualConfirmed(t))
+//                    setState { copy(asyncGetUserType = Success(Unit)) }
+                } else {
+                    _viewEvents.post(LoginViewEvents.Failure(Throwable(t.message)))
+//                    setState { copy(asyncGetUserType = Fail(Throwable(t.message))) }
+                }
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+//                setState {
+//                    copy(asyncGetUserType = Fail(e))
+//                }
             }
         }
     }
@@ -922,33 +1014,25 @@ class LoginViewModel @AssistedInject constructor(
     private fun handleLoginWithToken(action: LoginAction.LoginWithToken) {
         val safeLoginWizard = loginWizard
 
-        if (safeLoginWizard == null) {
-            setState {
-                copy(
-                        asyncLoginAction = Fail(Throwable("Bad configuration"))
-                )
-            }
-        } else {
-            setState {
-                copy(
-                        asyncLoginAction = Loading()
-                )
-            }
+        setState {
+            copy(
+                    asyncLoginAction = Loading()
+            )
+        }
 
-            currentJob = viewModelScope.launch {
-                try {
-                    safeLoginWizard.loginWithToken(action.loginToken)
-                } catch (failure: Throwable) {
-                    _viewEvents.post(LoginViewEvents.Failure(failure))
-                    setState {
-                        copy(
-                                asyncLoginAction = Fail(failure)
-                        )
-                    }
-                    null
+        currentJob = viewModelScope.launch {
+            try {
+                safeLoginWizard.loginWithToken(action.loginToken)
+            } catch (failure: Throwable) {
+                _viewEvents.post(LoginViewEvents.Failure(failure))
+                setState {
+                    copy(
+                            asyncLoginAction = Fail(failure)
+                    )
                 }
-                        ?.let { onSessionCreated(it) }
+                null
             }
+                    ?.let { onSessionCreated(it) }
         }
     }
 
@@ -1000,7 +1084,7 @@ class LoginViewModel @AssistedInject constructor(
         }
         return viewModelScope.launch {
             try {
-                registrationWizard?.let { block(it) }
+                block(registrationWizard)
                 /*
                    // Simulate registration disabled
                    throw Failure.ServerError(MatrixError(
@@ -1033,7 +1117,7 @@ class LoginViewModel @AssistedInject constructor(
         setState { copy(asyncRegistration = Loading()) }
         currentJob = viewModelScope.launch {
             try {
-                registrationWizard?.addThreePid(action.threePid)
+                registrationWizard.addThreePid(action.threePid)
             } catch (failure: Throwable) {
                 _viewEvents.post(LoginViewEvents.Failure(failure))
             }
@@ -1049,7 +1133,7 @@ class LoginViewModel @AssistedInject constructor(
         setState { copy(asyncRegistration = Loading()) }
         currentJob = viewModelScope.launch {
             try {
-                registrationWizard?.sendAgainThreePid()
+                registrationWizard.sendAgainThreePid()
             } catch (failure: Throwable) {
                 _viewEvents.post(LoginViewEvents.Failure(failure))
             }
@@ -1186,7 +1270,7 @@ class LoginViewModel @AssistedInject constructor(
 
         // If there is a pending email validation continue on this step
         try {
-            if (registrationWizard?.isRegistrationStarted == true) {
+            if (registrationWizard.isRegistrationStarted) {
                 currentThreePid?.let {
                     handle(LoginAction.PostViewEvent(LoginViewEvents.OnSendEmailSuccess(it)))
                 }
@@ -1200,83 +1284,65 @@ class LoginViewModel @AssistedInject constructor(
     private fun handleResetPassword(action: LoginAction.ResetPassword) {
         val safeLoginWizard = loginWizard
 
-        if (safeLoginWizard == null) {
-            setState {
-                copy(
-                        asyncResetPassword = Fail(Throwable("Bad configuration")),
-                        asyncResetMailConfirmed = Uninitialized
-                )
-            }
-        } else {
-            setState {
-                copy(
-                        asyncResetPassword = Loading(),
-                        asyncResetMailConfirmed = Uninitialized
-                )
-            }
+        setState {
+            copy(
+                    asyncResetPassword = Loading(),
+                    asyncResetMailConfirmed = Uninitialized
+            )
+        }
 
-            currentJob = viewModelScope.launch {
-                try {
-                    safeLoginWizard.resetPassword(action.email, action.newPassword)
-                } catch (failure: Throwable) {
-                    setState {
-                        copy(
-                                asyncResetPassword = Fail(failure)
-                        )
-                    }
-                    return@launch
-                }
-
+        currentJob = viewModelScope.launch {
+            try {
+                safeLoginWizard.resetPassword(action.email, action.newPassword)
+            } catch (failure: Throwable) {
                 setState {
                     copy(
-                            asyncResetPassword = Success(Unit),
-                            resetPasswordEmail = action.email
+                            asyncResetPassword = Fail(failure)
                     )
                 }
-
-                _viewEvents.post(LoginViewEvents.OnResetPasswordSendThreePidDone)
+                return@launch
             }
+
+            setState {
+                copy(
+                        asyncResetPassword = Success(Unit),
+                        resetPasswordEmail = action.email
+                )
+            }
+
+            _viewEvents.post(LoginViewEvents.OnResetPasswordSendThreePidDone)
         }
     }
 
     private fun handleResetPasswordMailConfirmed() {
         val safeLoginWizard = loginWizard
 
-        if (safeLoginWizard == null) {
-            setState {
-                copy(
-                        asyncResetPassword = Uninitialized,
-                        asyncResetMailConfirmed = Fail(Throwable("Bad configuration"))
-                )
-            }
-        } else {
-            setState {
-                copy(
-                        asyncResetPassword = Uninitialized,
-                        asyncResetMailConfirmed = Loading()
-                )
-            }
+        setState {
+            copy(
+                    asyncResetPassword = Uninitialized,
+                    asyncResetMailConfirmed = Loading()
+            )
+        }
 
-            currentJob = viewModelScope.launch {
-                try {
-                    safeLoginWizard.resetPasswordMailConfirmed()
-                } catch (failure: Throwable) {
-                    setState {
-                        copy(
-                                asyncResetMailConfirmed = Fail(failure)
-                        )
-                    }
-                    return@launch
-                }
+        currentJob = viewModelScope.launch {
+            try {
+                safeLoginWizard.resetPasswordMailConfirmed()
+            } catch (failure: Throwable) {
                 setState {
                     copy(
-                            asyncResetMailConfirmed = Success(Unit),
-                            resetPasswordEmail = null
+                            asyncResetMailConfirmed = Fail(failure)
                     )
                 }
-
-                _viewEvents.post(LoginViewEvents.OnResetPasswordMailConfirmationSuccess)
+                return@launch
             }
+            setState {
+                copy(
+                        asyncResetMailConfirmed = Success(Unit),
+                        resetPasswordEmail = null
+                )
+            }
+
+            _viewEvents.post(LoginViewEvents.OnResetPasswordMailConfirmationSuccess)
         }
     }
 
@@ -1384,37 +1450,29 @@ class LoginViewModel @AssistedInject constructor(
     private fun handleLogin(action: LoginAction.LoginOrRegister) {
         val safeLoginWizard = loginWizard
 
-        if (safeLoginWizard == null) {
-            setState {
-                copy(
-                        asyncLoginAction = Fail(Throwable("Bad configuration"))
-                )
-            }
-        } else {
-            setState {
-                copy(
-                        asyncLoginAction = Loading()
-                )
-            }
+        setState {
+            copy(
+                    asyncLoginAction = Loading()
+            )
+        }
 
-            currentJob = viewModelScope.launch {
-                try {
-                    safeLoginWizard.login(
-                            action.username,
-                            action.password,
-                            action.initialDeviceName
+        currentJob = viewModelScope.launch {
+            try {
+                safeLoginWizard.login(
+                        action.username,
+                        action.password,
+                        action.initialDeviceName
+                )
+            } catch (failure: Throwable) {
+                setState {
+                    copy(
+                            asyncLoginAction = Fail(failure)
                     )
-                } catch (failure: Throwable) {
-                    setState {
-                        copy(
-                                asyncLoginAction = Fail(failure)
-                        )
-                    }
-                    null
-                }?.let {
-                    reAuthHelper.data = action.password
-                    onSessionCreated(it)
                 }
+                null
+            }?.let {
+                reAuthHelper.data = action.password
+                onSessionCreated(it)
             }
         }
     }
@@ -1545,7 +1603,7 @@ class LoginViewModel @AssistedInject constructor(
         }
     }
 
-    fun getInitialHomeServerUrl() = loginConfig?.homeServerUrl
+//    fun getInitialHomeServerUrl() = loginConfig?.homeServerUrl
 
     fun getSsoUrl(redirectUrl: String, deviceId: String?, providerId: String?): String? {
         return authenticationService.getSsoUrl(redirectUrl, deviceId, providerId)

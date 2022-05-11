@@ -53,6 +53,7 @@ import com.cioinfotech.cychat.features.crypto.recover.BootstrapViewEvents
 import com.cioinfotech.cychat.features.crypto.verification.VerificationAction
 import com.cioinfotech.cychat.features.cycore.AES
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
+import com.cioinfotech.cychat.features.home.room.RoleAddAlertDialogFragment
 import com.cioinfotech.cychat.features.matrixto.MatrixToBottomSheet
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
 import com.cioinfotech.cychat.features.permalink.NavigationInterceptor
@@ -92,6 +93,8 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.SESSION_UPDATED
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.U_TYPE_MODE
+import org.matrix.android.sdk.internal.network.NetworkConstants.U_TYPE_MODE_INDIVIDUAL
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -113,7 +116,7 @@ class HomeActivity :
         ToolbarConfigurable,
         UnknownDeviceDetectorSharedViewModel.Factory,
         ServerBackupStatusViewModel.Factory,
-        NavigationInterceptor {
+        NavigationInterceptor, RoleAddAlertDialogFragment.ItemClickListener {
 
     private lateinit var sharedActionViewModel: HomeSharedActionViewModel
 
@@ -302,6 +305,9 @@ class HomeActivity :
             }
         }
         if (pref.getBoolean(SIGNING_MODE, false)) {
+            if (pref.getString(U_TYPE_MODE, null) == U_TYPE_MODE_INDIVIDUAL)
+                RoleAddAlertDialogFragment(this).show(supportFragmentManager, null)
+
             pref.getString(FULL_NAME, null)?.let { name ->
                 lifecycleScope.launch {
                     val session = activeSessionHolder.getActiveSession()
@@ -681,5 +687,9 @@ class HomeActivity :
     override fun onStop() {
         super.onStop()
         removeInstallStateUpdateListener()
+    }
+
+    override fun onItemClicked() { // To show Add Role Dialog & Take to settings
+        navigator.openSettings(this, VectorSettingsActivity.EXTRA_PROFILE)
     }
 }

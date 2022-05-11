@@ -30,6 +30,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.airbnb.mvrx.Incomplete
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.core.extensions.hideKeyboard
 import com.cioinfotech.cychat.core.platform.showOptimizedSnackbar
 import com.cioinfotech.cychat.databinding.FragmentLoginBinding
@@ -37,6 +38,7 @@ import com.cioinfotech.cychat.databinding.FragmentValidateSecurityCodeBinding
 import org.matrix.android.sdk.internal.cy_auth.data.CountryCode
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.PasswordLoginParams
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -85,6 +87,13 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             }
         }
 
+        val pref = DefaultSharedPreferences.getInstance(requireContext())
+//        if (pref.getString(NetworkConstants.U_TYPE_MODE, null) == NetworkConstants.U_TYPE_MODE_INDIVIDUAL)
+//            views.loginTitle.isVisible = false
+//        else {
+//            views.loginTitle.isVisible = true
+        views.loginTitle.text = getString(R.string.you_are_signing_for, pref.getString(NetworkConstants.U_TYPE_NAME, ""))
+//        }
 
         setupSubmitButton()
 //        setupForgottenPasswordButton()

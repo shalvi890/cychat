@@ -16,15 +16,13 @@
 
 package org.matrix.android.sdk.internal.cy_auth.data
 
-data class UserTypeParent(
-        val data: UserTypeData? = null
-) : BaseResponse()
-
-data class UserTypeData(
-        val user_types: List<UserType>? = null,
-        val modes: List<UserTypeMode>? = null
-)
-
-data class UserTypeMode(
-        val utype_mode: String? = null
+data class Organization(
+    val cluster: String,
+    val relevance: String,
+    val ut_cat_desc: String,
+    val ut_cat_id: String,
+    val ut_cat_name: String,
+    val ut_mode: String,
+    val ut_parent_id: String,
+    val ut_show: String
 )

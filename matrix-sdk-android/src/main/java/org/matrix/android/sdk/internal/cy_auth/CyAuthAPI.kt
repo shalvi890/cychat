@@ -22,6 +22,8 @@ import org.matrix.android.sdk.internal.cy_auth.data.CheckOTPResponse
 import org.matrix.android.sdk.internal.cy_auth.data.GetSettingsParent
 import org.matrix.android.sdk.internal.cy_auth.data.GroupParent
 import org.matrix.android.sdk.internal.cy_auth.data.LoginResponse
+import org.matrix.android.sdk.internal.cy_auth.data.OrganizationParent
+import org.matrix.android.sdk.internal.cy_auth.data.RecheckCodeResponse
 import org.matrix.android.sdk.internal.cy_auth.data.UserTypeParent
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.ROOT_API
@@ -71,6 +73,16 @@ interface CyAuthAPI {
     fun getUserType(@FieldMap map: HashMap<String, String>): Single<UserTypeParent>
 
     @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun cyIndividualUserType(@FieldMap map: HashMap<String, String>): Single<UserTypeParent>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(ROOT_API)
+    fun cyGetOrganizations(@FieldMap map: HashMap<String, String>): Single<OrganizationParent>
+
+    @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:10000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(ROOT_API)
     fun cyNewCheckCode(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
@@ -83,5 +95,5 @@ interface CyAuthAPI {
     @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(ROOT_API)
-    fun recheckReferralCode(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+    fun recheckReferralCode(@FieldMap map: HashMap<String, String>): Single<RecheckCodeResponse>
 }

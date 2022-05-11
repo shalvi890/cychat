@@ -16,15 +16,6 @@
 
 package org.matrix.android.sdk.internal.cy_auth.data
 
-data class UserTypeParent(
-        val data: UserTypeData? = null
+data class RecheckCodeResponse(
+        val data: MatrixLoginData? = null
 ) : BaseResponse()
-
-data class UserTypeData(
-        val user_types: List<UserType>? = null,
-        val modes: List<UserTypeMode>? = null
-)
-
-data class UserTypeMode(
-        val utype_mode: String? = null
-)
