@@ -71,9 +71,9 @@ class CyverseAddRoleFragment @Inject constructor(
         } else {
             cyCoreViewModel.handleAddUserTypes()
             cyCoreViewModel.addUserTypesLiveData.observe(viewLifecycleOwner) {
-                allTypes = it.data.available_utypes
+                allTypes = it.data.availableUTypes
                 val list = mutableListOf<String>()
-                it.data.available_utypes.forEach { name -> list.add(name.utype_name) }
+                it.data.availableUTypes.forEach { name -> list.add(name.utypeName) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
                         mutableListOf(getString(R.string.select_your_organization)) + list)
                 binding.spinner.adapter = spinnerArrayAdapter
@@ -83,11 +83,11 @@ class CyverseAddRoleFragment @Inject constructor(
         }
 
         cyCoreViewModel.verifyAddUserTypeResponse.observe(viewLifecycleOwner) {
-            it.data.req_id?.let { tempReqId ->
+            it.data.reqID?.let { tempReqId ->
                 reqId = tempReqId
             }
             binding.progressBar.isVisible = false
-            if (selectedType?.verify_mode == NONE || selectedType?.verify_mode == COMMON) {
+            if (selectedType?.verifyMode == NONE || selectedType?.verifyMode == COMMON) {
                 Snackbar.make(requireView(), getString(R.string.role_added), BaseTransientBottomBar.LENGTH_SHORT).show()
                 parentFragmentManager.popBackStack()
             } else
@@ -145,10 +145,10 @@ class CyverseAddRoleFragment @Inject constructor(
     private fun submit() {
         if (selectedType != null)
             selectedType?.let {
-                if (it.verify_mode == NONE) {
+                if (it.verifyMode == NONE) {
                     binding.progressBar.isVisible = true
                     cyCoreViewModel.handleVerifyAddUserType(
-                            it.utype_id,
+                            it.utypeID,
                             ""
                     )
                 } else {
@@ -158,7 +158,7 @@ class CyverseAddRoleFragment @Inject constructor(
                     } else {
                         binding.progressBar.isVisible = true
                         cyCoreViewModel.handleVerifyAddUserType(
-                                it.utype_id,
+                                it.utypeID,
                                 binding.supplierField.text.toString()
                         )
                     }
@@ -208,7 +208,7 @@ class CyverseAddRoleFragment @Inject constructor(
                 binding.progressBar.isVisible = true
                 cyCoreViewModel.handleVerifyOTP(
                         reqId,
-                        selectedType?.utype_id ?: "",
+                        selectedType?.utypeID ?: "",
                         binding.otpField.text.toString()
                 )
             }
@@ -228,7 +228,7 @@ class CyverseAddRoleFragment @Inject constructor(
             if (position != 0) {
                 selectedType = it[position - 1]
                 binding.tvUserDescription.text = selectedType?.description
-                selectedType?.verify_mode?.let { verifyMode ->
+                selectedType?.verifyMode?.let { verifyMode ->
                     binding.tvSupplierTil.isVisible = verifyMode != NONE
                     binding.btnSubmit.text = if (verifyMode != NONE)
                         getString(R.string.verify_code)

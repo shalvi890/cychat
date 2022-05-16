@@ -105,7 +105,6 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.MOBILE
 import org.matrix.android.sdk.internal.network.NetworkConstants.MOBILE_OTP
 import org.matrix.android.sdk.internal.network.NetworkConstants.OP
 import org.matrix.android.sdk.internal.network.NetworkConstants.REF_CODE
-import org.matrix.android.sdk.internal.network.NetworkConstants.REF_CODE_DASH
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.RESENT_OTP_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.RE_CHECK_REF_CODE
@@ -296,7 +295,7 @@ class LoginViewModel @AssistedInject constructor(
                 SERVICE_NAME to LOGIN,
                 CLIENT_NAME to CY_VERSE_ANDROID,
                 OP to RE_CHECK_REF_CODE,
-                REF_CODE_DASH to supplierCode,
+                REF_CODE to supplierCode,
                 REQ_ID to (reqId ?: ""),
                 CLID to (pref.getString(CLID, "") ?: ""),
                 FIRST_NAME to (pref.getString(F_NAME, "") ?: ""),
@@ -355,7 +354,7 @@ class LoginViewModel @AssistedInject constructor(
                 CLIENT_NAME to CY_VERSE_ANDROID,
                 OP to VALIDATE_CODE,
                 EMAIL_VAL to supplierCode,
-                REF_CODE_DASH to (pref.getString(REF_CODE, "") ?: ""),
+                REF_CODE to (pref.getString(REF_CODE, "") ?: ""),
                 FIRST_NAME to (pref.getString(F_NAME, "") ?: ""),
                 LAST_NAME to (pref.getString(L_NAME, "") ?: ""),
                 REQ_ID to (reqId ?: ""),
@@ -422,10 +421,8 @@ class LoginViewModel @AssistedInject constructor(
                 MOBILE to loginParams!!.mobile,
                 EMAIL_SMALL to loginParams!!.email,
                 IMEI to loginParams!!.imei_no,
-                COUNTRY_CODE to loginParams!!.country_code
+                COUNTRY_CODE to loginParams!!.countryCode
         )
-//        if (secCodeDomains?.contains(loginParams?.email.getEmailDomain()) != true
-//                || (secCodeDomains.contains(loginParams?.email.getEmailDomain()) && isUserValidated.value == true)) {
         authenticationService.cyLogin(map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -435,7 +432,6 @@ class LoginViewModel @AssistedInject constructor(
                     asyncCyLogin = Loading()
             )
         }
-//        }
     }
 
     /** CyChat Login API Implementation-
@@ -450,11 +446,11 @@ class LoginViewModel @AssistedInject constructor(
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                     signUpSignInData.postValue(t.data)
                     pref.edit {
-                        putString(REQ_ID, t.data.req_id)
+                        putString(REQ_ID, t.data.reqId)
                         putString(F_NAME, t.data.fname)
                         putString(L_NAME, t.data.lname)
                         putString(EMAIL, email)
-                        reqId = t.data.req_id
+                        reqId = t.data.reqId
                         if (t.data.type == SIGN_UP_SMALL)
                             putBoolean(SIGNING_MODE, true)
                         else
@@ -540,9 +536,9 @@ class LoginViewModel @AssistedInject constructor(
                     if (t.data.mapped == "Y")
                         startLogin(t.data)
                     else {
-                        reqId = t.data.req_id
+                        reqId = t.data.reqId
                         pref.edit {
-                            putString(REQ_ID, t.data.req_id)
+                            putString(REQ_ID, t.data.reqId)
                             apply()
                         }
                         _viewEvents.post(LoginViewEvents.OnMappingConfirmed)
@@ -577,9 +573,9 @@ class LoginViewModel @AssistedInject constructor(
 
     private fun startLogin(data: MatrixLoginData) {
         pref.edit().apply {
-            putString(NetworkConstants.USER_ID, data.user_id)
-            putString(NetworkConstants.SECRET_KEY, data.secret_key)
-            putString(NetworkConstants.API_SERVER, data.api_server)
+            putString(NetworkConstants.USER_ID, data.userID)
+            putString(NetworkConstants.SECRET_KEY, data.secretKey)
+            putString(NetworkConstants.API_SERVER, data.apiServer)
             if (pref.getBoolean(SIGNING_MODE, false))
                 putString(NetworkConstants.FULL_NAME, "${pref.getString(F_NAME, "")} ${pref.getString(L_NAME, "")}")
             apply()
@@ -587,11 +583,11 @@ class LoginViewModel @AssistedInject constructor(
         val email = pref.getString(EMAIL, "") ?: ""
         handle(
                 LoginAction.UpdateHomeServer(
-                        data.api_server,
+                        data.apiServer,
                         email.replace("@", "-at-"),
                         AES.decrypt(
                                 data.password,
-                                AES.createSecretKey(data.user_id, email)
+                                AES.createSecretKey(data.userID, email)
                         )
                 )
         )

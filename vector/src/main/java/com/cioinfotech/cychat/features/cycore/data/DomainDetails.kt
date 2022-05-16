@@ -16,7 +16,6 @@
 
 package com.cioinfotech.cychat.features.cycore.data
 
-import com.google.gson.annotations.SerializedName
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 
 data class DomainDetails(
@@ -24,8 +23,7 @@ data class DomainDetails(
 ) : BaseResponse()
 
 data class DomainDetailsChild(
-        @SerializedName("company_name")
         val companyName: String? = null,
-        @SerializedName("logo_url")
-        val logo: String? = null
+        val logoURL: String? = null,
+        val appName: String? = null
 )

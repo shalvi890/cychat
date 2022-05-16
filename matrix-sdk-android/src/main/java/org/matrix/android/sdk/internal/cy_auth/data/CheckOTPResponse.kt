@@ -24,16 +24,16 @@ data class CheckOTPResponse(
 
 data class MatrixLoginData(
         @SerializedName("api-server")
-        val api_server: String,
+        val apiServer: String,
         @SerializedName("client-name")
-        val client_name: String,
+        val clientName: String,
         @SerializedName("pwd")
         val password: String,
         val id: String,
-        val user_id: String,
+        val userID: String,
         val mapped: String,
-        val secret_key: String? = null,
-        val req_id: String? = null,
+        val secretKey: String? = null,
+        val reqId: String? = null,
         val email: String? = null,
         val name: String? = null
 )

@@ -19,7 +19,7 @@ package org.matrix.android.sdk.internal.cy_auth.data
 data class CountryCode(
         val name: String?,
         val code: String,
-        val calling_code: String?,
-        val local_code: String?,
-        var mobile_size: String
+        val callingCode: String?,
+        val localCode: String?,
+        var mobileSize: String
 )

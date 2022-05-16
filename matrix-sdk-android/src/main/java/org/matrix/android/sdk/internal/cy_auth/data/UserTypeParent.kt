@@ -21,10 +21,5 @@ data class UserTypeParent(
 ) : BaseResponse()
 
 data class UserTypeData(
-        val user_types: List<UserType>? = null,
-        val modes: List<UserTypeMode>? = null
-)
-
-data class UserTypeMode(
-        val utype_mode: String? = null
+        val userTypes: List<UserType>? = null
 )

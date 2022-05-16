@@ -17,8 +17,8 @@
 package com.cioinfotech.cychat.features.cycore.data
 
 data class AvailableUtype(
-        val utype_id: String,
-        val utype_name: String,
-        val verify_mode: String,
+        val utypeID: String,
+        val utypeName: String,
+        val verifyMode: String,
         val description: String? = null
 )

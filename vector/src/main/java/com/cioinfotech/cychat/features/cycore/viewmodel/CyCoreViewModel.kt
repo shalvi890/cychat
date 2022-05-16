@@ -55,9 +55,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SET_VISIBILITY
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
-import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
-import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_DASH
 import org.matrix.android.sdk.internal.network.NetworkConstants.VERIFY_ADD_USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.VERIFY_OTP
 import timber.log.Timber
@@ -109,8 +107,10 @@ class CyCoreViewModel @Inject constructor(
                     pref.edit().apply {
                         if (!data.companyName.isNullOrEmpty())
                             this.putString(NetworkConstants.DOMAIN_NAME, data.companyName)
-                        if (!data.logo.isNullOrEmpty())
-                            this.putString(NetworkConstants.DOMAIN_IMAGE, data.logo)
+                        if (!data.logoURL.isNullOrEmpty())
+                            this.putString(NetworkConstants.DOMAIN_IMAGE, data.logoURL)
+                        if (!data.appName.isNullOrEmpty())
+                            this.putString(NetworkConstants.DOMAIN_IMAGE, data.appName)
                         apply()
                         domainMutData.postValue(true)
                     }
@@ -178,7 +178,7 @@ class CyCoreViewModel @Inject constructor(
                 OP to LIST_FEDERATED_API,
                 SERVICE_NAME to FEDERATION,
                 CLIENT_NAME to CY_VERSE_ANDROID,
-                USER_TYPE_DASH to (pref.getString(USER_TYPE, "") ?: ""),
+                USER_TYPE to (pref.getString(USER_TYPE, "") ?: ""),
                 CLID to (pref.getString(CLID, "") ?: ""),
                 EXCLUDE_USER_TYPE to excludeDomain
         ), url)
@@ -186,8 +186,6 @@ class CyCoreViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(handleGetFederatedDomains())
     }
-
-//    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     private fun handleGetFederatedDomains(): SingleObserver<FederatedDomainList> {
         return object : SingleObserver<FederatedDomainList> {
@@ -235,7 +233,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to GET_ADD_USER_TYPES,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to (pref.getString(USER_ID, "") ?: "")
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getAddUserTypes())
@@ -266,9 +264,9 @@ class CyCoreViewModel @Inject constructor(
                         OP to VERIFY_ADD_USER_TYPE,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: ""),
+                        USER_ID to (pref.getString(USER_ID, "") ?: ""),
                         NetworkConstants.CODE to code,
-                        USER_TYPE_DASH to uTypeId
+                        USER_TYPE to uTypeId
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(verifyAddUserType())
@@ -300,7 +298,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to VERIFY_OTP,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_TYPE_DASH to uTypeId,
+                        USER_TYPE to uTypeId,
                         REQ_ID to reqId,
                         OTP to otp
 
@@ -335,7 +333,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to GET_USER_PROFILE,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to (pref.getString(USER_ID, "") ?: "")
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getProfileDetails())
@@ -367,7 +365,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to RESEND_VERIFICATION_CODE,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to (pref.getString(USER_ID, "") ?: "")
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resendVerificationCode())
@@ -400,8 +398,7 @@ class CyCoreViewModel @Inject constructor(
                         CLIENT_NAME to CY_VERSE_ANDROID,
                         OP to SET_VISIBILITY,
                         SERVICE_NAME to NetworkConstants.MISC_FUNC,
-                        CLID to clid,
-                        USER_ID_SMALL to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to (pref.getString(USER_ID, "") ?: "")
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getVisibility())

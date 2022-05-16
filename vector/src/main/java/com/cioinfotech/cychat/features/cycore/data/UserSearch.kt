@@ -23,11 +23,11 @@ data class UserSearch(
 ) : BaseResponse()
 
 data class UserSearchChild(
-        val fed_list: MutableList<SearchedUser>
+        val fedList: MutableList<SearchedUser>
 )
 
 data class SearchedUser(
-        val first_name: String?,
-        val last_name: String?,
-        val matrix_user_id: String
+        val firstName: String?,
+        val lastName: String?,
+        val matrixUserID: String
 )

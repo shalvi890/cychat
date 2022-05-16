@@ -65,14 +65,14 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
         loginViewModel.observeViewEvents {
             when (it) {
                 is LoginViewEvents.OnOrganizationConfirmed -> {
-                    organizations = it.orgParent.data.user_types
+                    organizations = it.orgParent.data.userTypes
                     views.rbOrganization.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked)
                             setOrganizationsView()
                     }
                 }
                 is LoginViewEvents.OnIndividualConfirmed   -> {
-                    it.userTypeParent.data?.user_types?.let { individualTypes ->
+                    it.userTypeParent.data?.userTypes?.let { individualTypes ->
                         individualType = individualTypes[0]
                         views.rbIndividual.isVisible = true
                         views.rbIndividual.setOnCheckedChangeListener { _, isChecked ->
@@ -85,7 +85,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                                 selectedUserType = individualType
 //                                views.tvUserDescription.isVisible = true
 //                                views.tvUserDescription.text = selectedUserType?.ut_cat_desc
-                                selectedUserType?.verify_mode?.let { verifyMode ->
+                                selectedUserType?.verifyMode?.let { verifyMode ->
                                     views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
                                     views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
                                         getString(R.string.check_code)
@@ -120,21 +120,20 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
         views.spinnerOrganization.setText("")
         views.spinnerOrganization.isVisible = true
         views.btnSubmit.isVisible = false
-//        views.tvOrgDescription.isVisible = false
-//        views.tvUserDescription.isVisible = false
+        views.tvSupplierTil.isVisible = false
         views.tvSelectOrg.isVisible = true
         views.spinnerOrganization.setOnClickListener {
             OrgListFragment.getInstance(object : OrgListAdapter.ItemClickListener {
                 override fun onClick(name: String) {
                     var org: Organization? = null
                     for (tempOrg in organizations)
-                        if (name == tempOrg.ut_cat_name) {
+                        if (name == tempOrg.utCatName) {
                             org = tempOrg
                             break
                         }
-                    org?.ut_cat_id?.let { loginViewModel.getUserType(it) }
+                    org?.utCatID?.let { loginViewModel.getUserType(it) }
                     views.spinner.setText("")
-                    views.spinnerOrganization.setText(org?.ut_cat_name)
+                    views.spinnerOrganization.setText(org?.utCatName)
 //                    views.tvOrgDescription.isVisible = true
 //                    views.tvOrgDescription.text = org?.ut_cat_desc
                     views.spinner.isVisible = false
@@ -144,7 +143,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
 //                    views.tvUserDescription.text = null
                 }
             },
-                    organizations.map { org -> org.ut_cat_name }.toMutableList(),
+                    organizations.map { org -> org.utCatName }.toMutableList(),
                     getString(R.string.search_organization)).show(parentFragmentManager, "")
         }
     }
@@ -153,8 +152,8 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
         views.spinner.isVisible = true
         views.tvSelectUser.isVisible = true
         val list = mutableListOf<String>()
-        allSettings?.data?.user_types?.forEach { type ->
-            list.add(type.utype_name)
+        allSettings?.data?.userTypes?.forEach { type ->
+            list.add(type.utypeName)
             userTypes.add(type)
         }
 
@@ -162,17 +161,17 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
             OrgListFragment.getInstance(object : OrgListAdapter.ItemClickListener {
                 override fun onClick(name: String) {
                     for (temp in userTypes)
-                        if (name == temp.utype_name) {
+                        if (name == temp.utypeName) {
                             selectedUserType = temp
                             break
                         }
 //                    views.tvUserDescription.text = selectedUserType?.ut_cat_desc
 //                    views.tvUserDescription.isVisible = true
-                    views.spinner.setText(selectedUserType?.ut_cat_name)
-                    selectedUserType?.verify_mode?.let { verifyMode ->
+                    views.spinner.setText(selectedUserType?.utCatName)
+                    selectedUserType?.verifyMode?.let { verifyMode ->
                         views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
-                        if (verifyMode != NetworkConstants.NONE && selectedUserType?.reg_title != null) {
-                            views.tvSupplierTil.hint = selectedUserType?.reg_title
+                        if (verifyMode != NetworkConstants.NONE && selectedUserType?.regTitle != null) {
+                            views.tvSupplierTil.hint = selectedUserType?.regTitle
                         }
                         views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
                             getString(R.string.check_code)
@@ -192,32 +191,32 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
     private fun submit() {
         if (selectedUserType != null)
             selectedUserType?.let {
-                BASE_URL = it.cychat_url
+                BASE_URL = it.cychatURL
                 DefaultSharedPreferences.getInstance(requireContext()).edit().apply {
-                    putString(NetworkConstants.BASE_URL, it.cychat_url)
-                    putString(NetworkConstants.U_TYPE_NAME, it.utype_name)
-                    putString(NetworkConstants.U_TYPE_MODE, it.verify_mode)
-                    putString(U_REG_TITLE, it.reg_title)
+                    putString(NetworkConstants.BASE_URL, it.cychatURL)
+                    putString(NetworkConstants.U_TYPE_NAME, it.utypeName)
+                    putString(NetworkConstants.U_TYPE_MODE, it.verifyMode)
+                    putString(U_REG_TITLE, it.regTitle)
                     apply()
                 }
 
-                if (it.verify_mode == NetworkConstants.NONE)
+                if (it.verifyMode == NetworkConstants.NONE)
                     loginViewModel.handleSupplierConfirmation(
                             "",
-                            it.utype_id,
-                            it.cychat_token,
-                            it.setup_id,
-                            it.utype_name)
+                            it.utypeID,
+                            it.cychatToken,
+                            it.setupID,
+                            it.utypeName)
                 else {
                     if (views.supplierField.text.toString().isEmpty())
                         views.tvSupplierTil.error = getString(R.string.please_enter_code)
                     else
                         loginViewModel.handleSupplierConfirmation(
                                 views.supplierField.text.toString(),
-                                it.utype_id,
-                                it.cychat_token,
-                                it.setup_id,
-                                it.utype_name)
+                                it.utypeID,
+                                it.cychatToken,
+                                it.setupID,
+                                it.utypeName)
                 }
             } else
             Toast.makeText(requireContext(), getString(R.string.select_your_organization), Toast.LENGTH_LONG).show()

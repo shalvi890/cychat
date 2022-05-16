@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:visibility="gone"
-                android:text="@string/select_organization"
+                android:text="@string/organization_type"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/radio_group" />
@@ -105,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/select_your_organization"
+                android:text="@string/your_organization"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"

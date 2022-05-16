@@ -17,8 +17,8 @@
 package com.cioinfotech.cychat.features.cycore.data
 
 data class PendingRoles(
-        val utype_desc: String,
-        val utype_id: String,
-        val utype_name: String,
-        val req_id: String
+        val utypeDesc: String,
+        val utypeID: String,
+        val utypeName: String,
+        val reqID: String
 )

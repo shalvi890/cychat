@@ -21,5 +21,5 @@ data class OrganizationParent(
 ) : BaseResponse()
 
 data class OrganizationData(
-        val user_types: MutableList<Organization> = mutableListOf()
+        val userTypes: MutableList<Organization> = mutableListOf()
 )

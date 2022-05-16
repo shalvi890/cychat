@@ -23,7 +23,4 @@ data class GetSettingsParent(
 
 data class CountryData(
         val countries: MutableList<CountryCode>
-//        @SerializedName("secr_code_domains")
-//        val secCodeDomains: MutableList<String>,
-
 )

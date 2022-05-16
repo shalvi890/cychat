@@ -34,7 +34,7 @@ class CyverseRoleAdapter : RecyclerView.Adapter<CyverseRoleAdapter.RoleViewHolde
     )
 
     override fun onBindViewHolder(holder: RoleViewHolder, position: Int) {
-        holder.itemBinding.tvServerName.text = list[position].utype_name
+        holder.itemBinding.tvServerName.text = list[position].utypeName
 //        holder.itemBinding.root.setOnClickListener {
 //            itemClickListener?.onClick(list[position])
 //        }

@@ -51,7 +51,7 @@ class ServerListFragment(private val tempItemClickListener: ServerListAdapter.It
         views.rvServerList.adapter = adapter
 
         cyCoreViewModel.federatedDomainList.observe(viewLifecycleOwner) {
-            federatedDomainList = it.data.fed_list.toMutableList()
+            federatedDomainList = it.data.fedList.toMutableList()
             adapter.updateData(federatedDomainList)
             views.pbProgress.isVisible = false
         }
@@ -60,7 +60,7 @@ class ServerListFragment(private val tempItemClickListener: ServerListAdapter.It
             if (text.isNullOrEmpty())
                 adapter.updateData(federatedDomainList)
             else
-                adapter.updateData(federatedDomainList.filter { it.utype_name.lowercase().contains(text) }.toMutableList())
+                adapter.updateData(federatedDomainList.filter { it.utypeName.lowercase().contains(text) }.toMutableList())
         }
 
         views.ivDismiss.setOnClickListener { dismiss() }

@@ -104,9 +104,9 @@ class UserListFragment @Inject constructor(
             views.userListSearch.isEnabled = false
             cyCoreViewModel.federatedDomainList.observe(viewLifecycleOwner) {
                 val defaultDomain = pref.getString(USER_TYPE, "")
-                for (item in it.data.fed_list) {
-                    if (defaultDomain == item.to_utype_id) {
-                        views.tvServerName.text = item.utype_name
+                for (item in it.data.fedList) {
+                    if (defaultDomain == item.toUtypeInt) {
+                        views.tvServerName.text = item.utypeName
                         selectedDomain = item
                         viewModel.setDomain(item)
                         break
@@ -147,7 +147,7 @@ class UserListFragment @Inject constructor(
             val tempList = mutableListOf<SearchedUser>()
             for (item in it)
                 for (item2 in userSearchAdapter.selectedUsers)
-                    if (item.getUId() == item2.matrix_user_id)
+                    if (item.getUId() == item2.matrixUserID)
                         tempList.add(item2)
             userSearchAdapter.selectedUsers = tempList
             userSearchAdapter.notifyDataSetChanged()
@@ -171,17 +171,17 @@ class UserListFragment @Inject constructor(
         views.tvServerName.setOnClickListener {
             ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
                 override fun onClick(item: FederatedDomain) {
-                    views.tvServerName.text = item.utype_name
+                    views.tvServerName.text = item.utypeName
                     selectedDomain = item
                     viewModel.setDomain(item)
                     views.pbProgress.isVisible = true
                     viewModel.handle(UserListAction.SearchUsers(views.userListSearch.text.toString(),
-                            selectedDomain?.cychat_url!!,
+                            selectedDomain?.cychatURL!!,
                             pref.getString(CLID, "") ?: "",
-                            selectedDomain?.to_utype_id!!,
+                            selectedDomain?.toUtypeInt!!,
                             pref.getString(NetworkConstants.USER_ID, "") ?: ""))
                 }
-            }, selectedDomain?.to_utype_id ?: "-1").show(childFragmentManager, "")
+            }, selectedDomain?.toUtypeInt ?: "-1").show(childFragmentManager, "")
         }
     }
 
@@ -214,7 +214,7 @@ class UserListFragment @Inject constructor(
         views.userListRecyclerView.adapter = userSearchAdapter
         viewModel.userSearchLiveData.observe(viewLifecycleOwner) {
             userList = if (views.userListSearch.text.toString().isBlank())
-                mutableListOf() else it.data.fed_list
+                mutableListOf() else it.data.fedList
             userSearchAdapter.setUserList(userList)
             views.pbProgress.isVisible = false
         }
@@ -239,9 +239,9 @@ class UserListFragment @Inject constructor(
                     } else {
                         views.pbProgress.isVisible = true
                         UserListAction.SearchUsers(searchValue.toString(),
-                                selectedDomain?.cychat_url!!,
+                                selectedDomain?.cychatURL!!,
                                 pref.getString(CLID, "") ?: "",
-                                selectedDomain?.to_utype_id!!,
+                                selectedDomain?.toUtypeInt!!,
                                 pref.getString(NetworkConstants.USER_ID, "") ?: "")
                     }
                     viewModel.handle(action)

@@ -19,10 +19,10 @@ package org.matrix.android.sdk.internal.cy_auth.data
 data class Organization(
     val cluster: String,
     val relevance: String,
-    val ut_cat_desc: String,
-    val ut_cat_id: String,
-    val ut_cat_name: String,
-    val ut_mode: String,
-    val ut_parent_id: String,
-    val ut_show: String
+    val utCatDesc: String,
+    val utCatID: String,
+    val utCatName: String,
+    val ucMode: String,
+    val utParentId: String,
+    val utShow: String
 )

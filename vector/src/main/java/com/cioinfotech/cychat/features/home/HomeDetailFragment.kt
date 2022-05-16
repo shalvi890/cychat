@@ -48,6 +48,7 @@ import com.cioinfotech.cychat.features.themes.ThemeUtils
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewModel
 import com.cioinfotech.cychat.features.workers.signout.ServerBackupStatusViewState
 import com.google.android.material.badge.BadgeDrawable
+import org.matrix.android.sdk.internal.network.NetworkConstants.APP_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.DOMAIN_IMAGE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_NAME
 import timber.log.Timber
@@ -176,7 +177,7 @@ class HomeDetailFragment @Inject constructor(
         else
             avatarRenderer.render(GlideApp.with(requireActivity()), R.mipmap.ic_launcher_round, views.groupToolbarAvatarImageView)
 
-        val uTypeName = pref.getString(USER_TYPE_NAME, null)
+        val uTypeName = pref.getString(APP_NAME, null)
         views.groupToolbarTitleView.text = when {
             !uTypeName.isNullOrEmpty()                                -> uTypeName
             else                                                      -> getString(R.string.app_name)

@@ -20,5 +20,5 @@ data class PasswordLoginParams(
         val email: String,
         val mobile: String,
         val imei_no: String,
-        val country_code: String
+        val countryCode: String
 )

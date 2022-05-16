@@ -79,7 +79,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             if (it != null && it.data.countries.isNotEmpty()) {
                 allSettings = it
                 val list = mutableListOf<String>()
-                it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.calling_code) }
+                it.data.countries.forEach { countryCode -> list.add(countryCode.code + " " + countryCode.callingCode) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
                         list)
                 views.spinnerList.adapter = spinnerArrayAdapter
@@ -117,20 +117,20 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
     private fun invalidMobileNumber(): Boolean {
         return if (views.mobileNumberField.text.toString().isNotBlank()) {
             if (selectedCountry != null && isMobileLengthInvalid()) {
-                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size?.replace(",", " or ") ?: "10"
+                views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobileSize?.replace(",", " or ") ?: "10"
                 )
                 return true
             }
             false
         } else {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size?.replace(",", "\\"))
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobileSize?.replace(",", "\\"))
             true
         }
     }
 
     private fun isMobileLengthInvalid(): Boolean {
         try {
-            val list = selectedCountry?.mobile_size?.split(",") ?: mutableListOf()
+            val list = selectedCountry?.mobileSize?.split(",") ?: mutableListOf()
             for (item in list) {
                 if (views.mobileNumberField.text?.trim()?.length == Integer.parseInt(item))
                     return false
@@ -188,7 +188,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
             error++
         }
         if (!mobileNo.isDigitsOnly()) {
-            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobile_size)
+            views.mobileNumberTil.error = getString(R.string.error_empty_field_enter_digit_mobile, selectedCountry?.mobileSize)
             error++
         }
         if (invalidMobileNumber()) error++
@@ -444,11 +444,11 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         else
             invalidMobileNumber()
 
-        if (selectedCountry?.local_code.isNullOrEmpty()) {
+        if (selectedCountry?.localCode.isNullOrEmpty()) {
             views.optionalDigit.isVisible = false
         } else {
             views.optionalDigit.isVisible = true
-            views.optionalDigit.text = selectedCountry?.local_code
+            views.optionalDigit.text = selectedCountry?.localCode
         }
     }
 

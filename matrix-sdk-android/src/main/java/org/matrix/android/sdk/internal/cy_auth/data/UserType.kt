@@ -17,20 +17,20 @@
 package org.matrix.android.sdk.internal.cy_auth.data
 
 data class UserType(
-        val utype_id: String,
-        val utype_name: String,
-        val verify_mode: String,
-        val reg_title: String,
-        val ut_cat_id: String,
-        val reg_type: String,
-        val ut_parent_id: String,
-        val ut_cat_name: String,
-        val ut_cat_desc: String,
-        val relevance: String,
-        val cluster: String,
-        val ut_show: String,
-        val ut_mode: String,
-        val setup_id: String,
-        val cychat_url: String,
-        val cychat_token: String
-) : BaseResponse()
+    val cluster: String,
+    val cychatToken: String,
+    val cychatURL: String,
+    val regTitle: String,
+    val regType: String,
+    val relevance: String,
+    val setupID: String,
+    val ucMode: String,
+    val utCatDesc: String,
+    val utCatID: String,
+    val utCatName: String,
+    val utParentId: String,
+    val utShow: String,
+    val utypeID: String,
+    val utypeName: String,
+    val verifyMode: String
+): BaseResponse()

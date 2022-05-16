@@ -102,18 +102,18 @@ class CyverseSettingsProfileFragment @Inject constructor(
         binding.progressBar.isVisible = true
         cyCoreViewModel.userProfileData.observe(viewLifecycleOwner) {
             binding.rvRoles.adapter = CyverseRoleAdapter().apply {
-                updateData(it.data.active_roles.toMutableList())
+                updateData(it.data.activeRoles.toMutableList())
             }
             binding.switchVisibility.isEnabled = true
-            binding.switchVisibility.isVisible = it.data.allow_visible == "Y"
-            binding.tvSwitchDescription.isVisible = it.data.allow_visible == "Y" && it.data.tooltip != null
-            if (it.data.allow_visible == "Y")
+            binding.switchVisibility.isVisible = it.data.allowVisible == "Y"
+            binding.tvSwitchDescription.isVisible = it.data.allowVisible == "Y" && it.data.tooltip != null
+            if (it.data.allowVisible == "Y")
                 binding.switchVisibility.isChecked = it.data.visible == "Y"
 
             it.data.tooltip?.let { tooltip ->
                 binding.tvSwitchDescription.text = tooltip
             }
-            if (it.data.pending_roles == null) {
+            if (it.data.pendingRoles == null) {
                 binding.btnNewRole.isVisible = true
                 binding.tvPendingRequestsTitle.isVisible = false
                 binding.ivDelete.isVisible = false
@@ -121,19 +121,19 @@ class CyverseSettingsProfileFragment @Inject constructor(
                 binding.btnNewRole.isVisible = false
                 binding.ivDelete.isVisible = true
                 binding.tvPendingRequestsTitle.isVisible = true
-                binding.tvPendingRequestsTitle.text = getString(R.string.pending_requests, it.data.pending_roles.utype_name)
+                binding.tvPendingRequestsTitle.text = getString(R.string.pending_requests, it.data.pendingRoles.utypeName)
                 binding.tvPendingRequestsTitle.setOnClickListener { _ ->
                     (requireActivity() as VectorSettingsActivity).changeFragment(
                             bundleOf(
-                                    "typeName" to it.data.pending_roles.utype_name,
-                                    "typeId" to it.data.pending_roles.utype_id,
-                                    "typeDescription" to it.data.pending_roles.utype_desc,
-                                    "reqId" to it.data.pending_roles.req_id
+                                    "typeName" to it.data.pendingRoles.utypeName,
+                                    "typeId" to it.data.pendingRoles.utypeID,
+                                    "typeDescription" to it.data.pendingRoles.utypeDesc,
+                                    "reqId" to it.data.pendingRoles.reqID
                             )
                     )
                 }
                 binding.ivDelete.setOnClickListener { _ ->
-                    cyCoreViewModel.deleteRequest(it.data.pending_roles.req_id)
+                    cyCoreViewModel.deleteRequest(it.data.pendingRoles.reqID)
                     binding.progressBar.isVisible = true
                 }
             }

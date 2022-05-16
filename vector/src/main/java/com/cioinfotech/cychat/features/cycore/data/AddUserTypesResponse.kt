@@ -23,5 +23,6 @@ data class AddUserTypesResponse(
 ) : BaseResponse()
 
 data class AvailableUserTypes(
-        val available_utypes: MutableList<AvailableUtype> = mutableListOf()
+        val pendingReq: String? = null,
+        val availableUTypes: MutableList<AvailableUtype> = mutableListOf()
 )

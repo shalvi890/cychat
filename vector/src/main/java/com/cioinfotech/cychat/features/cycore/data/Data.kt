@@ -17,8 +17,8 @@
 package com.cioinfotech.cychat.features.cycore.data
 
 data class Data(
-        val req_status: String,
+        val reqStatus: String,
         val type: String,
-        val user_id: String,
-        val req_id: String? = null
+        val userID: String,
+        val reqID: String? = null
 )

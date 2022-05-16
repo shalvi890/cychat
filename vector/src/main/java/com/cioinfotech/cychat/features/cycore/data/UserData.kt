@@ -17,12 +17,12 @@
 package com.cioinfotech.cychat.features.cycore.data
 
 data class UserData(
-        val active_roles: MutableList<ActiveRole>,
-        val allow_visible: String,
-        val first_name: String,
-        val last_name: String,
+        val activeRoles: MutableList<ActiveRole>,
+        val allowVisible: String,
+        val firstName: String,
+        val lastName: String,
         val visible: String,
-        val pending_roles: PendingRoles? = null,
-        val profile_pic_url: String? = null,
+        val pendingRoles: PendingRoles? = null,
+        val profilePicURL: String? = null,
         val tooltip: String? = null
 )

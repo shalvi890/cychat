@@ -21,5 +21,5 @@ data class FederatedDomainList(
 ) : BaseResponse()
 
 data class FederatedDomainChild(
-        val fed_list: List<FederatedDomain>
+        val fedList: List<FederatedDomain>
 )

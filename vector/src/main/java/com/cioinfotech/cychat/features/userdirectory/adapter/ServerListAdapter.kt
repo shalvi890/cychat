@@ -34,7 +34,7 @@ class ServerListAdapter : RecyclerView.Adapter<ServerListAdapter.ServerListViewH
     )
 
     override fun onBindViewHolder(holder: ServerListViewHolder, position: Int) {
-        holder.itemBinding.tvServerName.text = serverList[position].utype_name
+        holder.itemBinding.tvServerName.text = serverList[position].utypeName
         holder.itemBinding.root.setOnClickListener {
             itemClickListener?.onClick(serverList[position])
         }

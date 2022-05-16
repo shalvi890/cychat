@@ -48,8 +48,8 @@ class UserSearchAdapter(private val avatarRenderer: AvatarRenderer,
     override fun onBindViewHolder(holder: UserSearchViewHolder, position: Int) {
         val itemBinding = holder.itemBinding
         val user = userList[position]
-        val matrixItem = MatrixItem.UserItem(user.matrix_user_id,
-                user.first_name + user.last_name,
+        val matrixItem = MatrixItem.UserItem(user.matrixUserID,
+                user.firstName + user.lastName,
                 null)
 
         avatarRenderer.render(matrixItem, itemBinding.knownUserAvatar)
@@ -61,15 +61,15 @@ class UserSearchAdapter(private val avatarRenderer: AvatarRenderer,
                     selectedUsers.add(user)
                 notifyDataSetChanged()
             }
-            callback?.onItemClick(User(user.matrix_user_id, user.first_name + user.last_name, null))
+            callback?.onItemClick(User(user.matrixUserID, user.firstName + user.lastName, null))
         }
-        if (user.first_name.isNullOrEmpty() && user.last_name.isNullOrEmpty()) {
+        if (user.firstName.isNullOrEmpty() && user.lastName.isNullOrEmpty()) {
             itemBinding.knownUserID.visibility = View.GONE
-            itemBinding.knownUserName.text = user.matrix_user_id.toNormalEmail()
+            itemBinding.knownUserName.text = user.matrixUserID.toNormalEmail()
         } else {
             itemBinding.knownUserID.visibility = View.VISIBLE
-            itemBinding.knownUserName.text = "${user.first_name} ${user.last_name}"
-            itemBinding.knownUserID.text = user.matrix_user_id.toNormalEmail()
+            itemBinding.knownUserName.text = "${user.firstName} ${user.lastName}"
+            itemBinding.knownUserID.text = user.matrixUserID.toNormalEmail()
         }
 
         if (!isOneToOneChat) {
@@ -93,7 +93,7 @@ class UserSearchAdapter(private val avatarRenderer: AvatarRenderer,
     fun setUserList(list: MutableList<SearchedUser>) {
         userList.clear()
         list.forEach {
-            if (!excludedUserIds.contains(it.matrix_user_id))
+            if (!excludedUserIds.contains(it.matrixUserID))
                 userList.add(it)
         }
         callback?.showToastOnEmptyList(userList.isNullOrEmpty())

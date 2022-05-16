@@ -91,10 +91,10 @@ class UserListViewModel @AssistedInject constructor(@Assisted initialState: User
                         NetworkConstants.CLIENT_NAME to NetworkConstants.CY_VERSE_ANDROID,
                         NetworkConstants.OP to NetworkConstants.SEARCH_USER_API,
                         NetworkConstants.SERVICE_NAME to NetworkConstants.FEDERATION,
-                        NetworkConstants.USER_TYPE_DASH to uType,
+                        NetworkConstants.USER_TYPE to uType,
                         NetworkConstants.CLID to clid,
                         NetworkConstants.SEARCH_TERM to searchTerm,
-                        NetworkConstants.USER_ID_SMALL to uid
+                        NetworkConstants.USER_ID to uid
                 ), baseURL).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserSearch())
