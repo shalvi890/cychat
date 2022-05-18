@@ -17,7 +17,7 @@
 package org.matrix.android.sdk.internal.cy_auth.data
 
 data class FederatedDomain(
-        val toUtypeInt: String,
+        val toUtypeID: String,
         val utypeName: String,
         val cychatURL: String
 )

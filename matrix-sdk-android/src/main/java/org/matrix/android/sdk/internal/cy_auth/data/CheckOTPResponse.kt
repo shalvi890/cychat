@@ -23,9 +23,7 @@ data class CheckOTPResponse(
 ) : BaseResponse()
 
 data class MatrixLoginData(
-        @SerializedName("api-server")
         val apiServer: String,
-        @SerializedName("client-name")
         val clientName: String,
         @SerializedName("pwd")
         val password: String,
@@ -33,7 +31,7 @@ data class MatrixLoginData(
         val userID: String,
         val mapped: String,
         val secretKey: String? = null,
-        val reqId: String? = null,
+        val reqID: String? = null,
         val email: String? = null,
         val name: String? = null
 )

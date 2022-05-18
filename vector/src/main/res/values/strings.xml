@@ -3392,6 +3392,7 @@
     <string name="select_organization">Select Organization Type</string>
     <string name="search_organization">Search Organization Type</string>
     <string name="select_your_organization">Select Your Organization</string>
+    <string name="select_new_role">Select New Role</string>
     <string name="search_your_organization">Search Your Organization</string>
     <string name="organization_type">Organization Type</string>
     <string name="your_organization">Your Organization</string>

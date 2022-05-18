@@ -446,11 +446,11 @@ class LoginViewModel @AssistedInject constructor(
                     _viewEvents.post(LoginViewEvents.OnSendOTPs)
                     signUpSignInData.postValue(t.data)
                     pref.edit {
-                        putString(REQ_ID, t.data.reqId)
-                        putString(F_NAME, t.data.fname)
-                        putString(L_NAME, t.data.lname)
+                        putString(REQ_ID, t.data.reqID)
+                        putString(F_NAME, t.data.firstName)
+                        putString(L_NAME, t.data.lastName)
                         putString(EMAIL, email)
-                        reqId = t.data.reqId
+                        reqId = t.data.reqID
                         if (t.data.type == SIGN_UP_SMALL)
                             putBoolean(SIGNING_MODE, true)
                         else
@@ -536,9 +536,9 @@ class LoginViewModel @AssistedInject constructor(
                     if (t.data.mapped == "Y")
                         startLogin(t.data)
                     else {
-                        reqId = t.data.reqId
+                        reqId = t.data.reqID
                         pref.edit {
-                            putString(REQ_ID, t.data.reqId)
+                            putString(REQ_ID, t.data.reqID)
                             apply()
                         }
                         _viewEvents.post(LoginViewEvents.OnMappingConfirmed)

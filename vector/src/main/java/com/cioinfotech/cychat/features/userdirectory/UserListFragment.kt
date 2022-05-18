@@ -105,7 +105,7 @@ class UserListFragment @Inject constructor(
             cyCoreViewModel.federatedDomainList.observe(viewLifecycleOwner) {
                 val defaultDomain = pref.getString(USER_TYPE, "")
                 for (item in it.data.fedList) {
-                    if (defaultDomain == item.toUtypeInt) {
+                    if (defaultDomain == item.toUtypeID) {
                         views.tvServerName.text = item.utypeName
                         selectedDomain = item
                         viewModel.setDomain(item)
@@ -178,10 +178,10 @@ class UserListFragment @Inject constructor(
                     viewModel.handle(UserListAction.SearchUsers(views.userListSearch.text.toString(),
                             selectedDomain?.cychatURL!!,
                             pref.getString(CLID, "") ?: "",
-                            selectedDomain?.toUtypeInt!!,
+                            selectedDomain?.toUtypeID!!,
                             pref.getString(NetworkConstants.USER_ID, "") ?: ""))
                 }
-            }, selectedDomain?.toUtypeInt ?: "-1").show(childFragmentManager, "")
+            }, selectedDomain?.toUtypeID ?: "-1").show(childFragmentManager, "")
         }
     }
 
@@ -241,7 +241,7 @@ class UserListFragment @Inject constructor(
                         UserListAction.SearchUsers(searchValue.toString(),
                                 selectedDomain?.cychatURL!!,
                                 pref.getString(CLID, "") ?: "",
-                                selectedDomain?.toUtypeInt!!,
+                                selectedDomain?.toUtypeID!!,
                                 pref.getString(NetworkConstants.USER_ID, "") ?: "")
                     }
                     viewModel.handle(action)

@@ -165,7 +165,7 @@ class CyverseAddRoleFragment @Inject constructor(
                 }
             }
         else
-            Toast.makeText(requireContext(), getString(R.string.select_your_organization), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.select_new_role), Toast.LENGTH_LONG).show()
     }
 
     private fun startCountDownForEmailOTP() {
@@ -239,6 +239,8 @@ class CyverseAddRoleFragment @Inject constructor(
                 selectedType = null
         }
         binding.tvUserDescription.isVisible = selectedType != null
+        if (selectedType == null)
+            binding.tvSupplierTil.isVisible = false
         binding.btnSubmit.isEnabled = selectedType != null
     }
 

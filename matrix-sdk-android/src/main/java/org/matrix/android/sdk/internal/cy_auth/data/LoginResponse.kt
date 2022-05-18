@@ -22,8 +22,8 @@ data class LoginResponse(
 
 data class LoginResponseChild(
         val type: String,
-        val reqId: String,
-        val utypeId: String,
-        val fname: String? = null,
-        val lname: String? = null
+        val reqID: String,
+        val utypeID: String,
+        val firstName: String? = null,
+        val lastName: String? = null
 )

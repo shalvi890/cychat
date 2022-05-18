@@ -53,7 +53,7 @@ class LoginOTPFragment : AbstractLoginFragment<FragmentLoginOTPBinding>() {
                 views.lastNameFieldTil.isVisible = false
                 views.loginTitle.text = getString(R.string.sign_in_pf)
                 views.loginWelcome.isVisible = true
-                views.loginWelcome.text = getString(R.string.welcome_back, it.fname, it.lname)
+                views.loginWelcome.text = getString(R.string.welcome_back, it.firstName, it.lastName)
             }
         }
         setupSubmitButton()
