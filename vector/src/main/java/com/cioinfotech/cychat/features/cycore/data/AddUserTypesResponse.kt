@@ -24,5 +24,5 @@ data class AddUserTypesResponse(
 
 data class AvailableUserTypes(
         val pendingReq: String? = null,
-        val availableUTypes: MutableList<AvailableUtype> = mutableListOf()
+        val availableUtypes: MutableList<AvailableUtype> = mutableListOf()
 )

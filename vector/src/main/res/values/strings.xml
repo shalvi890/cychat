@@ -588,6 +588,8 @@
     <string name="auth_resend_email_otp_query_min">You can resend Email OTP in %d mins %d secs</string>
     <string name="auth_resend_mobile_otp_query_min">You can resend Mobile no OTP in %d mins %d ecs</string>
     <string name="auth_resend_email_otp_query">You can resend Email OTP in %d secs</string>
+    <string name="auth_resend_otp_query_min">You can resend OTP in %d mins %d secs</string>
+    <string name="auth_resend_otp_query">You can resend OTP in %d secs</string>
     <string name="auth_resend_mobile_otp_query">You can resend Mobile no OTP in %d secs</string>
     <string name="auth_secs"> secs</string>
     <string name="auth_enter_email_otp">Enter Email OTP*</string>

@@ -107,17 +107,6 @@
             app:layout_constraintTop_toBottomOf="@id/cl_select_role"
             tools:visibility="visible">
 
-            <TextView
-                android:id="@+id/tvVerifyOtp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/auth_verify_otp"
-                android:textAppearance="@style/TextAppearance.Vector.Login.Text"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tvOTPTil"
                 style="@style/VectorTextInputLayout"
@@ -128,7 +117,7 @@
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvVerifyOtp"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -150,7 +139,7 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvOTPTil"
-                tools:text="@string/auth_resend_email_otp_query" />
+                tools:text="@string/auth_resend_otp_query" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnVerifyOTP"

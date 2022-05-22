@@ -20,5 +20,6 @@ data class Data(
         val reqStatus: String,
         val type: String,
         val userID: String,
-        val reqID: String? = null
+        val reqID: String?,
+        val userRoleID: String?
 )

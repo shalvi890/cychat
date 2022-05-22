@@ -72,7 +72,7 @@ object NetworkConstants {
     const val VERIFY_OTP = "verifyOTP"
     const val GET_USER_PROFILE = "getUserProfileDetails"
     const val SET_VISIBILITY = "setVisible"
-    const val RESEND_VERIFICATION_CODE = "RESEND_VERIFICATION_CODE"
+    const val RESEND_VERIFICATION_CODE = "resendIndividualCode"
     const val DELETE_REQUEST = "deleteRequest"
     const val LIST_FEDERATED_API = "listFederated"
     const val SEARCH_USER_API = "searchUsers"
@@ -145,5 +145,6 @@ object NetworkConstants {
     const val EMAIL_OTP = "emailOtp"
     const val MOBILE_OTP = "mobileOtp"
     const val OTP = "otp"
+    const val USER_ROLE_ID = "userRoleID"
     const val EMAIL_VAL = "emailVal"
 }

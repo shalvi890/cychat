@@ -128,7 +128,8 @@ class CyverseSettingsProfileFragment @Inject constructor(
                                     "typeName" to it.data.pendingRoles.utypeName,
                                     "typeId" to it.data.pendingRoles.utypeID,
                                     "typeDescription" to it.data.pendingRoles.utypeDesc,
-                                    "reqId" to it.data.pendingRoles.reqID
+                                    "reqId" to it.data.pendingRoles.reqID,
+                                    "userRoleId" to it.data.pendingRoles.userRoleID
                             )
                     )
                 }

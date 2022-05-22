@@ -20,5 +20,7 @@ data class PendingRoles(
         val utypeDesc: String,
         val utypeID: String,
         val utypeName: String,
-        val reqID: String
+        val reqID: String,
+        val userID: String?,
+        val userRoleID: String?
 )

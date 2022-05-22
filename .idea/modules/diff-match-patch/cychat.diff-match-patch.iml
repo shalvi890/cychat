@@ -19,7 +19,6 @@
     <output-test url="file://$MODULE_DIR$/../../../diff-match-patch/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../diff-match-patch">
-      <sourceFolder url="file://$MODULE_DIR$/../../../diff-match-patch/src/main/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../../../diff-match-patch/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../diff-match-patch/build" />
     </content>

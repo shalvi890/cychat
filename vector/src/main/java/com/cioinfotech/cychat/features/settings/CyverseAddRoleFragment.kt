@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.settings
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -27,10 +28,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.cioinfotech.cychat.R
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentCyverseAddRoleBinding
 import com.cioinfotech.cychat.features.cycore.data.AvailableUtype
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import org.matrix.android.sdk.internal.network.NetworkConstants.CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.COMMON
 import org.matrix.android.sdk.internal.network.NetworkConstants.INDIVIDUAL
 import org.matrix.android.sdk.internal.network.NetworkConstants.NONE
@@ -43,8 +46,10 @@ class CyverseAddRoleFragment @Inject constructor(
     private var allTypes = mutableListOf<AvailableUtype>()
     private var selectedType: AvailableUtype? = null
     private var reqId: String = ""
+    private var userRoleId: String = ""
     private val binding: FragmentCyverseAddRoleBinding get() = viewBinding!!
     private var viewBinding: FragmentCyverseAddRoleBinding? = null
+    private lateinit var pref: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentCyverseAddRoleBinding.inflate(inflater, container, false)
@@ -55,6 +60,7 @@ class CyverseAddRoleFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         var spinnerArrayAdapter: ArrayAdapter<String>
         binding.progressBar.isVisible = true
+        pref = DefaultSharedPreferences.getInstance(requireContext())
         if (arguments?.getString("typeId") != null) {
             arguments?.let {
                 selectedType = AvailableUtype(
@@ -64,6 +70,7 @@ class CyverseAddRoleFragment @Inject constructor(
                         it.getString("typeDescription") ?: "",
                 )
                 reqId = it.getString("reqId", "") ?: ""
+                userRoleId = it.getString("userRoleId", "") ?: ""
             }
             binding.progressBar.isVisible = false
             binding.clSelectRole.isVisible = false
@@ -71,11 +78,11 @@ class CyverseAddRoleFragment @Inject constructor(
         } else {
             cyCoreViewModel.handleAddUserTypes()
             cyCoreViewModel.addUserTypesLiveData.observe(viewLifecycleOwner) {
-                allTypes = it.data.availableUTypes
+                allTypes = it.data.availableUtypes
                 val list = mutableListOf<String>()
-                it.data.availableUTypes.forEach { name -> list.add(name.utypeName) }
+                it.data.availableUtypes.forEach { name -> list.add(name.utypeName) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
-                        mutableListOf(getString(R.string.select_your_organization)) + list)
+                        mutableListOf(getString(R.string.select_new_role)) + list)
                 binding.spinner.adapter = spinnerArrayAdapter
                 binding.spinner.onItemSelectedListener = this
                 binding.progressBar.isVisible = false
@@ -85,6 +92,9 @@ class CyverseAddRoleFragment @Inject constructor(
         cyCoreViewModel.verifyAddUserTypeResponse.observe(viewLifecycleOwner) {
             it.data.reqID?.let { tempReqId ->
                 reqId = tempReqId
+            }
+            it.data.userRoleID?.let { tempUserRoleId ->
+                userRoleId = tempUserRoleId
             }
             binding.progressBar.isVisible = false
             if (selectedType?.verifyMode == NONE || selectedType?.verifyMode == COMMON) {
@@ -128,7 +138,7 @@ class CyverseAddRoleFragment @Inject constructor(
         }
 
         binding.btnResendOTP.setOnClickListener {
-            cyCoreViewModel.handleResendVerificationCode()
+            cyCoreViewModel.handleResendVerificationCode(reqId)
         }
 
         cyCoreViewModel.errorData.observe(viewLifecycleOwner) {
@@ -157,6 +167,10 @@ class CyverseAddRoleFragment @Inject constructor(
                         binding.tvSupplierTil.error = getString(R.string.please_enter_code)
                     } else {
                         binding.progressBar.isVisible = true
+                        pref.edit().apply {
+                            putString(CODE, binding.supplierField.text.toString())
+                            apply()
+                        }
                         cyCoreViewModel.handleVerifyAddUserType(
                                 it.utypeID,
                                 binding.supplierField.text.toString()
@@ -176,9 +190,9 @@ class CyverseAddRoleFragment @Inject constructor(
             override fun onTick(millisUntilFinished: Long) {
                 try {
                     binding.emailOTPTimer.text = if (counter > 60)
-                        getString(R.string.auth_resend_email_otp_query_min, counter / 60, counter % 60)
+                        getString(R.string.auth_resend_otp_query_min, counter / 60, counter % 60)
                     else
-                        getString(R.string.auth_resend_mobile_otp_query, counter)
+                        getString(R.string.auth_resend_otp_query, counter)
                     counter--
                 } catch (ex: Exception) {
                 }
@@ -209,7 +223,8 @@ class CyverseAddRoleFragment @Inject constructor(
                 cyCoreViewModel.handleVerifyOTP(
                         reqId,
                         selectedType?.utypeID ?: "",
-                        binding.otpField.text.toString()
+                        binding.otpField.text.toString(),
+                        userRoleId
                 )
             }
         }

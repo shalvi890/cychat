@@ -39,6 +39,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.BASE_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
+import org.matrix.android.sdk.internal.network.NetworkConstants.CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
 import org.matrix.android.sdk.internal.network.NetworkConstants.DELETE_REQUEST
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
@@ -55,6 +56,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SET_VISIBILITY
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ROLE_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.VERIFY_ADD_USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.VERIFY_OTP
@@ -265,7 +267,7 @@ class CyCoreViewModel @Inject constructor(
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
                         USER_ID to (pref.getString(USER_ID, "") ?: ""),
-                        NetworkConstants.CODE to code,
+                        CODE to code,
                         USER_TYPE to uTypeId
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -291,7 +293,7 @@ class CyCoreViewModel @Inject constructor(
         }
     }
 
-    fun handleVerifyOTP(reqId: String, uTypeId: String, otp: String) {
+    fun handleVerifyOTP(reqId: String, uTypeId: String, otp: String, userRoleID: String) {
         cyCoreService.verifyOTP(
                 hashMapOf(
                         CLIENT_NAME to CY_VERSE_ANDROID,
@@ -300,7 +302,8 @@ class CyCoreViewModel @Inject constructor(
                         CLID to clid,
                         USER_TYPE to uTypeId,
                         REQ_ID to reqId,
-                        OTP to otp
+                        OTP to otp,
+                        USER_ROLE_ID to userRoleID
 
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -358,14 +361,15 @@ class CyCoreViewModel @Inject constructor(
         }
     }
 
-    fun handleResendVerificationCode() {
+    fun handleResendVerificationCode(reqId: String) {
         cyCoreService.resendVerificationCode(
                 hashMapOf(
                         CLIENT_NAME to CY_VERSE_ANDROID,
                         OP to RESEND_VERIFICATION_CODE,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID to (pref.getString(USER_ID, "") ?: "")
+                        REQ_ID to reqId,
+                        CODE to (pref.getString(CODE, "") ?: "")
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resendVerificationCode())
