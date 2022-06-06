@@ -17,6 +17,7 @@
 package org.matrix.android.sdk.internal.network
 
 object NetworkConstants {
+
     // Homeserver
     private const val URI_API_PREFIX_PATH = "_matrix/client"
     const val URI_API_PREFIX_PATH_ = "$URI_API_PREFIX_PATH/"
@@ -147,4 +148,7 @@ object NetworkConstants {
     const val OTP = "otp"
     const val USER_ROLE_ID = "userRoleID"
     const val EMAIL_VAL = "emailVal"
+
+    const val ACTIVE = "active"
+
 }

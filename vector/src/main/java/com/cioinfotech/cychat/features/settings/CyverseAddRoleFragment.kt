@@ -33,6 +33,7 @@ import com.cioinfotech.cychat.databinding.FragmentCyverseAddRoleBinding
 import com.cioinfotech.cychat.features.cycore.data.AvailableUtype
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.NetworkConstants.CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.COMMON
 import org.matrix.android.sdk.internal.network.NetworkConstants.INDIVIDUAL
@@ -75,6 +76,8 @@ class CyverseAddRoleFragment @Inject constructor(
             binding.progressBar.isVisible = false
             binding.clSelectRole.isVisible = false
             binding.clOtp.isVisible = true
+            binding.tvSelectedRole.isVisible = true
+            binding.tvSelectedRole.text = getString(R.string.selected_new_role, selectedType?.utypeName)
         } else {
             cyCoreViewModel.handleAddUserTypes()
             cyCoreViewModel.addUserTypesLiveData.observe(viewLifecycleOwner) {
@@ -97,7 +100,7 @@ class CyverseAddRoleFragment @Inject constructor(
                 userRoleId = tempUserRoleId
             }
             binding.progressBar.isVisible = false
-            if (selectedType?.verifyMode == NONE || selectedType?.verifyMode == COMMON) {
+            if (it.data.reqStatus == NetworkConstants.ACTIVE || selectedType?.verifyMode == NONE || selectedType?.verifyMode == COMMON) {
                 Snackbar.make(requireView(), getString(R.string.role_added), BaseTransientBottomBar.LENGTH_SHORT).show()
                 parentFragmentManager.popBackStack()
             } else
@@ -114,7 +117,6 @@ class CyverseAddRoleFragment @Inject constructor(
             startCountDownForEmailOTP()
             binding.progressBar.isVisible = false
             Snackbar.make(requireView(), getString(R.string.verification_code_sent_to_supplier), BaseTransientBottomBar.LENGTH_SHORT).show()
-            parentFragmentManager.popBackStack()
         }
 
         binding.btnSubmit.setOnClickListener { submit() }
