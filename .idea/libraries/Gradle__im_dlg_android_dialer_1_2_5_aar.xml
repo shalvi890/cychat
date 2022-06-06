@@ -1,11 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: im.dlg:android-dialer:1.2.5@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5efaa99a1fca37c497a927bd005e3c1/jetified-android-dialer-1.2.5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5efaa99a1fca37c497a927bd005e3c1/jetified-android-dialer-1.2.5/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5efaa99a1fca37c497a927bd005e3c1/jetified-android-dialer-1.2.5/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5bebbf7f30317ccf1fe63ecac0e0d224/jetified-android-dialer-1.2.5/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5bebbf7f30317ccf1fe63ecac0e0d224/jetified-android-dialer-1.2.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5bebbf7f30317ccf1fe63ecac0e0d224/jetified-android-dialer-1.2.5/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5bebbf7f30317ccf1fe63ecac0e0d224/jetified-android-dialer-1.2.5/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>

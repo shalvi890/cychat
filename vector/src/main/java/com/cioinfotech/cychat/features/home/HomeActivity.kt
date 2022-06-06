@@ -608,6 +608,10 @@ class HomeActivity :
                 navigator.openSettings(this)
                 return true
             }
+            R.id.menu_plugins -> {
+                navigator.openPlugins(this)
+                return true
+            }
 //            R.id.menu_invite_by_qr -> {
 //                UserCodeActivity.newIntent(this, sharedActionViewModel.session.myUserId).let {
 //                    val options =

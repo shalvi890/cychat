@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".features.plugins.ui.PluginRegistrationFragment">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_initials"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="name"
+            android:hint="@string/enter_initials"
+            android:inputType="text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="name"
+            android:hint="@string/login_signin_first_name_hint"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/et_initials" />
+
+        <EditText
+            android:id="@+id/et_last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="name"
+            android:hint="@string/login_signin_last_name_hint"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/et_first_name" />
+
+        <EditText
+            android:id="@+id/et_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="phoneNumber"
+            android:hint="@string/enter_mobile_number"
+            android:inputType="number"
+            app:layout_constraintTop_toBottomOf="@id/et_last_name" />
+
+        <EditText
+            android:id="@+id/et_dob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="phoneNumber"
+            android:hint="@string/select_dob"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/et_mobile" />
+
+        <EditText
+            android:id="@+id/et_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="phoneNumber"
+            android:hint="@string/enter_id"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/et_dob" />
+
+        <EditText
+            android:id="@+id/et_organization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:autofillHints="phoneNumber"
+            android:hint="@string/enter_organization_name"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/et_id" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:text="@string/auth_submit"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@id/et_organization" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

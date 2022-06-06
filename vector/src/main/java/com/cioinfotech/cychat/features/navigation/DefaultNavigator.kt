@@ -55,6 +55,7 @@ import com.cioinfotech.cychat.features.media.VectorAttachmentViewerActivity
 import com.cioinfotech.cychat.features.pin.PinActivity
 import com.cioinfotech.cychat.features.pin.PinArgs
 import com.cioinfotech.cychat.features.pin.PinMode
+import com.cioinfotech.cychat.features.plugins.PluginsActivity
 import com.cioinfotech.cychat.features.roomdirectory.RoomDirectoryActivity
 import com.cioinfotech.cychat.features.roomdirectory.createroom.CreateRoomActivity
 import com.cioinfotech.cychat.features.roomdirectory.roompreview.RoomPreviewActivity
@@ -222,6 +223,10 @@ class DefaultNavigator @Inject constructor(
     override fun openSettings(context: Context, directAccess: Int) {
         val intent = VectorSettingsActivity.getIntent(context, directAccess)
         context.startActivity(intent)
+    }
+
+    override fun openPlugins(context: Context) {
+        context.startActivity(PluginsActivity.getIntent(context))
     }
 
     override fun openKeysBackupSetup(context: Context, showManualExport: Boolean) {

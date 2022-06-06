@@ -66,6 +66,8 @@ interface Navigator {
 
     fun openSettings(context: Context, directAccess: Int = VectorSettingsActivity.EXTRA_DIRECT_ACCESS_ROOT)
 
+    fun openPlugins(context: Context)
+
     fun openKeysBackupSetup(context: Context, showManualExport: Boolean)
 
     fun open4SSetup(context: Context, setupMode: SetupMode)

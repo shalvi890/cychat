@@ -58,6 +58,7 @@ import com.cioinfotech.cychat.features.media.VectorAttachmentViewerActivity
 import com.cioinfotech.cychat.features.navigation.Navigator
 import com.cioinfotech.cychat.features.permalink.PermalinkHandlerActivity
 import com.cioinfotech.cychat.features.pin.PinLocker
+import com.cioinfotech.cychat.features.plugins.PluginsActivity
 import com.cioinfotech.cychat.features.qrcode.QrCodeScannerActivity
 import com.cioinfotech.cychat.features.rageshake.BugReportActivity
 import com.cioinfotech.cychat.features.rageshake.BugReporter
@@ -149,6 +150,7 @@ interface ScreenComponent {
     fun inject(activity: CallTransferActivity)
     fun inject(activity: ReAuthActivity)
     fun inject(activity: RoomDevToolActivity)
+    fun inject(activity: PluginsActivity)
 
     /* ==========================================================================================
      * BottomSheets

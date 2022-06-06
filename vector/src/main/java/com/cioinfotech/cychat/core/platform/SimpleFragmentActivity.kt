@@ -89,10 +89,8 @@ abstract class SimpleFragmentActivity : VectorBaseActivity<ActivityBinding>() {
     }
 
     override fun onBackPressed() {
-        if (waitingView!!.isVisible) {
-            // ignore
+        if (waitingView?.isVisible == true)
             return
-        }
         super.onBackPressed()
     }
 }

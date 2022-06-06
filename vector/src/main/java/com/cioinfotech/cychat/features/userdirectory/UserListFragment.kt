@@ -214,7 +214,7 @@ class UserListFragment @Inject constructor(
         views.userListRecyclerView.adapter = userSearchAdapter
         viewModel.userSearchLiveData.observe(viewLifecycleOwner) {
             userList = if (views.userListSearch.text.toString().isBlank())
-                mutableListOf() else it.data.fedList
+                mutableListOf() else it.data.fedList ?: mutableListOf()
             userSearchAdapter.setUserList(userList)
             views.pbProgress.isVisible = false
         }

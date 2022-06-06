@@ -23,7 +23,7 @@ data class UserSearch(
 ) : BaseResponse()
 
 data class UserSearchChild(
-        val fedList: MutableList<SearchedUser>
+        val fedList: MutableList<SearchedUser>? = null
 )
 
 data class SearchedUser(

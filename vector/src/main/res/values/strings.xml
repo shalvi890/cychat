@@ -3399,5 +3399,14 @@
     <string name="organization_type">Organization Type</string>
     <string name="your_organization">Your Organization</string>
     <string name="selected_new_role">Selected New Role: %s</string>
+    <string name="plugins">Plugins</string>
+    <string name="not_now">Not Now</string>
+    <string name="next">Next</string>
+    <string name="initials">Initials</string>
+    <string name="enter_initials">Enter Initials*</string>
+    <string name="enter_organization_name">Enter Organization Name*</string>
+    <string name="enter_id">Enter ID*</string>
+    <string name="select_dob">Select Date Of Birth*</string>
+    <string name="enter_mobile_number">Enter Mobile Number*</string>
 
 </resources>

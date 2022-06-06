@@ -35,7 +35,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.airbnb.mvrx.BaseMvRxFragment
 import com.bumptech.glide.util.Util.assertMainThread
-import com.jakewharton.rxbinding3.view.clicks
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.di.DaggerScreenComponent
 import com.cioinfotech.cychat.core.di.HasScreenInjector
@@ -44,10 +43,10 @@ import com.cioinfotech.cychat.core.dialogs.UnrecognizedCertificateDialog
 import com.cioinfotech.cychat.core.error.ErrorFormatter
 import com.cioinfotech.cychat.core.extensions.toMvRxBundle
 import com.cioinfotech.cychat.features.navigation.Navigator
+import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -113,7 +112,7 @@ abstract class VectorBaseFragment<VB: ViewBinding> : BaseMvRxFragment(), HasScre
         }
     }
 
-    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Timber.i("onCreateView Fragment ${javaClass.simpleName}")
         _binding = getBinding(inflater, container)
         return views.root
