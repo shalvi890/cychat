@@ -26,21 +26,43 @@ import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.databinding.FragmentPluginListBinding
 import com.cioinfotech.cychat.features.plugins.PluginsActivity
 import com.cioinfotech.cychat.features.plugins.adapter.PluginsAdapter
+import com.cioinfotech.cychat.features.plugins.model.UserPlugin
+import com.cioinfotech.cychat.features.plugins.viewModel.PluginViewModel
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 
 class PluginListFragment : VectorBaseFragment<FragmentPluginListBinding>(), PluginsAdapter.ItemClickListener {
+
+    private lateinit var pluginViewModel: PluginViewModel
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentPluginListBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showLoading(null)
         (requireActivity() as PluginsActivity).setToolbarTitle("Plugins")
-        views.rvPlugins.adapter = PluginsAdapter().apply {
-            setData(mutableListOf("Plugin 1", "Plugin 2", "Plugin 3", "Plugin 4"))
-            itemClickListener = this@PluginListFragment
+        pluginViewModel = fragmentViewModelProvider.get(PluginViewModel::class.java)
+        pluginViewModel.handleGetUserPlugins()
+        pluginViewModel.pluginListLiveData.observe(viewLifecycleOwner) {
+            views.rvPlugins.adapter = PluginsAdapter().apply {
+                it.data.userPlugins?.let { it1 -> setData(it1) }
+                itemClickListener = this@PluginListFragment
+            }
+            dismissLoadingDialog()
+        }
+
+        pluginViewModel.errorData.observe(viewLifecycleOwner) {
+            dismissLoadingDialog()
+            if (it != null) {
+                Snackbar.make(requireView(), it.error ?: getString(R.string.something_went_wrong), BaseTransientBottomBar.LENGTH_SHORT).show()
+//                when(it.error){
+//
+//                }
+            }
         }
     }
 
-    override fun onItemClicked(model: String) {
-        addFragmentToBackstack(R.id.container, PluginsDetailFragment::class.java, allowStateLoss = false)
+    override fun onItemClicked(model: UserPlugin) {
+        addFragmentToBackstack(R.id.container, PluginsDetailFragment::class.java, allowStateLoss = false, params = model)
     }
 }

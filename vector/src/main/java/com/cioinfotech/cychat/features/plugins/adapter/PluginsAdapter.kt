@@ -19,12 +19,14 @@ package com.cioinfotech.cychat.features.plugins.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.cioinfotech.cychat.databinding.ItemPluginsBinding
+import com.cioinfotech.cychat.features.plugins.model.UserPlugin
 
 class PluginsAdapter : RecyclerView.Adapter<PluginsAdapter.PluginsViewHolder>() {
 
     lateinit var itemClickListener: ItemClickListener
-    private var listOfPlugins = mutableListOf<String>()
+    private var listOfPlugins = mutableListOf<UserPlugin>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PluginsViewHolder(
             ItemPluginsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -32,23 +34,28 @@ class PluginsAdapter : RecyclerView.Adapter<PluginsAdapter.PluginsViewHolder>() 
 
     override fun onBindViewHolder(holder: PluginsViewHolder, position: Int) {
         val binding = holder.itemBinding
-        binding.tvDescription.text = "adklfhsldhg ladli ghsghldh isdgh siogh oisfhoghsoidg os dugsogupspd pogud psogpsfgp osufpg"
-        binding.tvTitle.text = listOfPlugins[position]
+        val model = listOfPlugins[position]
+        binding.tvDescription.text = model.name
+        binding.tvTitle.text = model.plDesc
         binding.root.setOnClickListener {
             itemClickListener.onItemClicked(listOfPlugins[position])
         }
+
+        Glide.with(binding.root.context)
+                .load(model.plImgURL)
+                .into(binding.ivLogo)
     }
 
     override fun getItemCount() = listOfPlugins.size
 
     inner class PluginsViewHolder(val itemBinding: ItemPluginsBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
-    fun setData(listOfPlugins: MutableList<String>) {
+    fun setData(listOfPlugins: MutableList<UserPlugin>) {
         this.listOfPlugins = listOfPlugins
         notifyDataSetChanged()
     }
 
     interface ItemClickListener {
-        fun onItemClicked(model: String)
+        fun onItemClicked(model: UserPlugin)
     }
 }

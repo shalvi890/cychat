@@ -80,6 +80,8 @@ object NetworkConstants {
     const val GENERAL_DATA = "general_data"
     const val FEDERATION = "federation"
     const val CY_VERSE_ANDROID = "cyVerseAndroid"
+    const val GET_USER_PLUGINS = "getUserPlugins"
+
     const val LIVE = "LIVE"
     const val OP = "op"
     const val SERVICE_NAME = "serviceName"
@@ -95,6 +97,7 @@ object NetworkConstants {
     const val NONE = "None"
     const val COMMON = "Common"
     const val USERTYPE_DATA = "usertype_data"
+    const val PLUGINS = "plugins"
     const val MISC_FUNC = "misc_functions"
     const val SETUP_ID = "setupID"
     const val GET_SETTINGS = "get_settings"

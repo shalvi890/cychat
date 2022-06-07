@@ -3408,5 +3408,6 @@
     <string name="enter_id">Enter ID*</string>
     <string name="select_dob">Select Date Of Birth*</string>
     <string name="enter_mobile_number">Enter Mobile Number*</string>
+    <string name="proceed">Proceed</string>
 
 </resources>

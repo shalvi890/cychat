@@ -52,6 +52,7 @@ import com.cioinfotech.cychat.features.notifications.NotificationUtils
 import com.cioinfotech.cychat.features.notifications.PushRuleTriggerListener
 import com.cioinfotech.cychat.features.pin.PinCodeStore
 import com.cioinfotech.cychat.features.pin.PinLocker
+import com.cioinfotech.cychat.features.plugins.service.PluginService
 import com.cioinfotech.cychat.features.popup.PopupAlertManager
 import com.cioinfotech.cychat.features.rageshake.BugReporter
 import com.cioinfotech.cychat.features.rageshake.VectorFileLogger
@@ -174,6 +175,8 @@ interface VectorComponent {
     fun okHttpClient(): OkHttpClient
 
     fun cyChatService(): CyCoreService
+
+    fun pluginService(): PluginService
 
     fun jitsiActiveConferenceHolder(): JitsiActiveConferenceHolder
 }

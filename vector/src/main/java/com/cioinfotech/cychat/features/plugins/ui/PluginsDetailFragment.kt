@@ -20,12 +20,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.airbnb.mvrx.MvRx
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.addFragmentToBackstack
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.databinding.FragmentPluginsDetailBinding
 import com.cioinfotech.cychat.features.plugins.PluginsActivity
-import com.cioinfotech.cychat.features.settings.VectorSettingsUrls.COPYRIGHT
+import com.cioinfotech.cychat.features.plugins.model.UserPlugin
 
 class PluginsDetailFragment : VectorBaseFragment<FragmentPluginsDetailBinding>() {
 
@@ -34,9 +35,12 @@ class PluginsDetailFragment : VectorBaseFragment<FragmentPluginsDetailBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as PluginsActivity).setToolbarTitle("Info")
-        views.webview.loadUrl(COPYRIGHT)
-        views.btnContinue.setOnClickListener {
-            addFragmentToBackstack(R.id.container, PluginConsentFormFragment::class.java, allowStateLoss = false)
+        val plugin = requireArguments().getParcelable<UserPlugin>(MvRx.KEY_ARG)
+        plugin?.plIntroURL?.let {
+            views.webview.loadUrl(it)
+            views.btnContinue.setOnClickListener {
+                addFragmentToBackstack(R.id.container, PluginConsentFormFragment::class.java, allowStateLoss = false)
+            }
         }
         views.btnNotNow.setOnClickListener {
             requireFragmentManager().popBackStack()

@@ -18,6 +18,8 @@ package com.cioinfotech.cychat.features.cycore
 
 import com.cioinfotech.cychat.features.cycore.service.CyCoreService
 import com.cioinfotech.cychat.features.cycore.service.DefaultCyCoreService
+import com.cioinfotech.cychat.features.plugins.service.DefaultPluginService
+import com.cioinfotech.cychat.features.plugins.service.PluginService
 import dagger.Binds
 import dagger.Module
 
@@ -26,4 +28,7 @@ internal abstract class CyChatModule {
 
     @Binds
     abstract fun bindCyCoreService(service: DefaultCyCoreService): CyCoreService
+
+    @Binds
+    abstract fun bindPluginService(service: DefaultPluginService): PluginService
 }

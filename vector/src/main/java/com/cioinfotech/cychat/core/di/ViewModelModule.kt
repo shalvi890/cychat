@@ -30,6 +30,7 @@ import com.cioinfotech.cychat.features.home.HomeSharedActionViewModel
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailSharedActionViewModel
 import com.cioinfotech.cychat.features.home.room.detail.timeline.action.MessageSharedActionViewModel
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedActionViewModel
+import com.cioinfotech.cychat.features.plugins.viewModel.PluginViewModel
 import com.cioinfotech.cychat.features.reactions.EmojiChooserViewModel
 import com.cioinfotech.cychat.features.roomdirectory.RoomDirectorySharedActionViewModel
 import com.cioinfotech.cychat.features.roomprofile.RoomProfileSharedActionViewModel
@@ -148,4 +149,9 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(CyCoreViewModel::class)
     fun bindCyCoreViewModel(viewModel: CyCoreViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PluginViewModel::class)
+    fun bindPluginViewModel(viewModel: PluginViewModel): ViewModel
 }

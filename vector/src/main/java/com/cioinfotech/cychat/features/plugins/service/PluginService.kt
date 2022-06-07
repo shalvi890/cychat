@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 New Vector Ltd
+ * Copyright (c) 2022 New Vector Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.cioinfotech.cychat.features.settings
+package com.cioinfotech.cychat.features.plugins.service
 
-object VectorSettingsUrls {
+import com.cioinfotech.cychat.features.plugins.model.PluginListParentModel
+import io.reactivex.Single
 
-    const val COPYRIGHT = "http://cyverse.co.za/legal/copyrights.html"
-    const val TAC = "http://cyverse.co.za/legal/terms.html"
-    const val PRIVACY_POLICY = "http://cyverse.co.za/legal/privacy.html"
-    const val THIRD_PARTY_LICENSES = "file:///android_asset/open_source_licenses.html"
+interface PluginService {
+    fun getPlugins(hashMap: HashMap<String, String>, url: String, clid: String): Single<PluginListParentModel>
 }
