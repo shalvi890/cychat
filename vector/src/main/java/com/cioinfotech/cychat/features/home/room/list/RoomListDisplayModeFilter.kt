@@ -35,6 +35,7 @@ class RoomListDisplayModeFilter(private val displayMode: RoomListDisplayMode) : 
             RoomListDisplayMode.FILTERED      -> roomSummary.membership == Membership.JOIN
             RoomListDisplayMode.HOME          -> true
             RoomListDisplayMode.FAV           -> true
+            RoomListDisplayMode.NOTICE_BOARD -> true
         }
     }
 }

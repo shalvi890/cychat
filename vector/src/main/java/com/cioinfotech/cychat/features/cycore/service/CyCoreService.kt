@@ -21,7 +21,12 @@ import com.cioinfotech.cychat.features.cycore.data.DomainDetails
 import com.cioinfotech.cychat.features.cycore.data.UserProfileData
 import com.cioinfotech.cychat.features.cycore.data.UserSearch
 import com.cioinfotech.cychat.features.cycore.data.VerifyAddUserTypeResponse
+import com.cioinfotech.cychat.features.home.notice.model.NoticeBoardParent
+import com.cioinfotech.cychat.features.home.notice.model.NoticeListParent
+import com.cioinfotech.cychat.features.home.notice.model.TimezoneParent
+import com.cioinfotech.cychat.features.home.notice.model.UpdateNoticeModel
 import io.reactivex.Single
+import okhttp3.RequestBody
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
@@ -40,4 +45,9 @@ interface CyCoreService {
     fun setVisibility(hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
     fun resendVerificationCode(hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
     fun deleteRequest(mapOf: HashMap<String, String>, url: String): Single<BaseResponse>
+    fun getNoticeBoards(hashMapOf: HashMap<String, String>): Single<NoticeBoardParent>
+    fun getPostList(map: HashMap<String, String>): Single<NoticeListParent>
+    fun updatePostDetails(clid: String, map: MutableMap<String, RequestBody>): Single<UpdateNoticeModel>
+    fun uploadMedia(clid: String, map: MutableMap<String, RequestBody>): Single<BaseResponse>
+    fun getTimeZones(map: HashMap<String, String>): Single<TimezoneParent>
 }

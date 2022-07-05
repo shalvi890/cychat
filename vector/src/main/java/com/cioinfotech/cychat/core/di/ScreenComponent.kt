@@ -38,6 +38,7 @@ import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomShe
 import com.cioinfotech.cychat.features.devtools.RoomDevToolActivity
 import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.home.HomeModule
+import com.cioinfotech.cychat.features.home.notice.NoticeBoardActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailActivity
 import com.cioinfotech.cychat.features.home.room.detail.readreceipts.DisplayReadReceiptsBottomSheet
 import com.cioinfotech.cychat.features.home.room.detail.search.SearchActivity
@@ -118,6 +119,7 @@ interface ScreenComponent {
      * ========================================================================================== */
 
     fun inject(activity: HomeActivity)
+    fun inject(activity: NoticeBoardActivity)
     fun inject(activity: RoomDetailActivity)
     fun inject(activity: RoomProfileActivity)
     fun inject(activity: RoomMemberProfileActivity)

@@ -28,10 +28,17 @@ import com.cioinfotech.cychat.features.cycore.data.ErrorModel
 import com.cioinfotech.cychat.features.cycore.data.UserProfileData
 import com.cioinfotech.cychat.features.cycore.data.VerifyAddUserTypeResponse
 import com.cioinfotech.cychat.features.cycore.service.CyCoreService
+import com.cioinfotech.cychat.features.home.notice.model.EventModel
+import com.cioinfotech.cychat.features.home.notice.model.Notice
+import com.cioinfotech.cychat.features.home.notice.model.NoticeBoardParent
+import com.cioinfotech.cychat.features.home.notice.model.NoticeListParent
+import com.cioinfotech.cychat.features.home.notice.model.UpdateNoticeModel
+import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.RequestBody
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
@@ -41,20 +48,30 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.CLID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
+import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_API_CLID
 import org.matrix.android.sdk.internal.network.NetworkConstants.DELETE_REQUEST
 import org.matrix.android.sdk.internal.network.NetworkConstants.DEVICE_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.EXCLUDE_USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.FEDERATION
+import org.matrix.android.sdk.internal.network.NetworkConstants.FETCH_COUNT
+import org.matrix.android.sdk.internal.network.NetworkConstants.FILTERS
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_ADD_USER_TYPES
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_NOTICES
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_NOTICE_BOARDS
+import org.matrix.android.sdk.internal.network.NetworkConstants.GET_TIMEZONES
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_USER_PROFILE
+import org.matrix.android.sdk.internal.network.NetworkConstants.LAST_POST
 import org.matrix.android.sdk.internal.network.NetworkConstants.LIST_FEDERATED_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.OP
 import org.matrix.android.sdk.internal.network.NetworkConstants.OTP
+import org.matrix.android.sdk.internal.network.NetworkConstants.POST_GET_ALL
+import org.matrix.android.sdk.internal.network.NetworkConstants.POST_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.REQ_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.RESEND_VERIFICATION_CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SERVICE_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.SETUP_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.SET_VISIBILITY
+import org.matrix.android.sdk.internal.network.NetworkConstants.UPDATE_POST_DETAILS
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ROLE_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
@@ -71,9 +88,10 @@ class CyCoreViewModel @Inject constructor(
 
     private var pref = DefaultSharedPreferences.getInstance(applicationContext)
     private var url = pref.getString(BASE_URL, "") ?: ""
+
     private val clid = pref.getString(CLID, "") ?: ""
 
-    //    private var userId = pref.getString(USER_ID, null)
+    private var userId = pref.getString(USER_ID, null) ?: ""
     private var reqId = pref.getString(REQ_ID, null)
 //    private var email = pref.getString(EMAIL, null)
 
@@ -235,7 +253,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to GET_ADD_USER_TYPES,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to userId
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getAddUserTypes())
@@ -266,7 +284,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to VERIFY_ADD_USER_TYPE,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID to (pref.getString(USER_ID, "") ?: ""),
+                        USER_ID to userId,
                         CODE to code,
                         USER_TYPE to uTypeId
                 ), url).subscribeOn(Schedulers.io())
@@ -336,7 +354,7 @@ class CyCoreViewModel @Inject constructor(
                         OP to GET_USER_PROFILE,
                         SERVICE_NAME to NetworkConstants.USERTYPE_DATA,
                         CLID to clid,
-                        USER_ID to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to userId
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getProfileDetails())
@@ -402,7 +420,7 @@ class CyCoreViewModel @Inject constructor(
                         CLIENT_NAME to CY_VERSE_ANDROID,
                         OP to SET_VISIBILITY,
                         SERVICE_NAME to NetworkConstants.MISC_FUNC,
-                        USER_ID to (pref.getString(USER_ID, "") ?: "")
+                        USER_ID to userId
                 ), url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getVisibility())
@@ -458,4 +476,111 @@ class CyCoreViewModel @Inject constructor(
             }
         }
     }
+
+    fun getNoticeBoards(postId: Int = 0) {
+        cyCoreService.getNoticeBoards(
+                hashMapOf(
+                        CLIENT_NAME to CY_VERSE_ANDROID,
+                        OP to GET_NOTICE_BOARDS,
+                        SERVICE_NAME to NetworkConstants.EDIT_POSTS,
+                        USER_ID to userId,
+                        POST_ID to postId.toString(),
+                        CLID to CY_VERSE_API_CLID
+                )).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(handleGetNoticeBoards())
+    }
+
+    val noticeBoardsLiveData = MutableLiveData<NoticeBoardParent>()
+    private fun handleGetNoticeBoards(): SingleObserver<NoticeBoardParent> {
+        return object : SingleObserver<NoticeBoardParent> {
+
+            override fun onSuccess(t: NoticeBoardParent) {
+                if (t.status == "ok")
+                    noticeBoardsLiveData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(GET_NOTICE_BOARDS, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    var selectedNotice = MutableLiveData<Notice?>()
+
+    fun getPostList(lastPost: Int = -1, postType: String = POST_GET_ALL): Single<NoticeListParent> {
+        val map = hashMapOf(
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                OP to GET_NOTICES,
+                SERVICE_NAME to NetworkConstants.POST_DATA,
+                USER_ID to userId,
+                FILTERS to "{\"type\": \"${postType}\"}",
+                FETCH_COUNT to "50",
+                CLID to CY_VERSE_API_CLID
+        )
+        if (lastPost != -1)
+            map[LAST_POST] = lastPost.toString()
+        return cyCoreService.getPostList(map)
+    }
+
+    fun updatePostDetails(map: MutableMap<String, RequestBody>) {
+        cyCoreService.updatePostDetails(CY_VERSE_API_CLID, map).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(handleUpdatePostDetails())
+    }
+
+    val postDetailsLiveData = MutableLiveData<UpdateNoticeModel>()
+    private fun handleUpdatePostDetails(): SingleObserver<UpdateNoticeModel> {
+        return object : SingleObserver<UpdateNoticeModel> {
+
+            override fun onSuccess(t: UpdateNoticeModel) {
+                if (t.status == "ok")
+                    postDetailsLiveData.postValue(t)
+                else
+                    errorData.postValue(ErrorModel(UPDATE_POST_DETAILS, t.message))
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun uploadMedia(map: MutableMap<String, RequestBody>) {
+        cyCoreService.uploadMedia(CY_VERSE_API_CLID, map)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(handleUploadMedia())
+    }
+
+    val postUploadedLiveData = MutableLiveData<BaseResponse>()
+    private fun handleUploadMedia(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                postUploadedLiveData.postValue(t)
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Timber.log(1, e)
+            }
+        }
+    }
+
+    fun getTimeZones() = cyCoreService.getTimeZones(hashMapOf(
+            CLIENT_NAME to CY_VERSE_ANDROID,
+            OP to GET_TIMEZONES,
+            SERVICE_NAME to NetworkConstants.TIME_ZONES,
+            CLID to CY_VERSE_API_CLID
+    ))
+
+    val eventLiveData = MutableLiveData<EventModel?>()
 }

@@ -61,6 +61,7 @@ class RetrofitFactory @Inject constructor(private val moshi: Moshi) {
                 .baseUrl(NetworkConstants.CENTRAL_SERVER_URL)
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
                 .build()

@@ -240,7 +240,7 @@ class LoginFragment @Inject constructor() : AbstractSSOLoginFragment<FragmentLog
         }
     }
 
-    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
+//    private fun String?.getEmailDomain() = this?.substring(this.lastIndexOf("@") + 1, this.length) ?: ""
 
     private fun cleanupUi() {
         views.loginSubmit.hideKeyboard()

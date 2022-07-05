@@ -1,11 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: io.noties.markwon:html:4.1.2@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ea9aa2fcaa05cc6b47e7e74cbaf008/jetified-html-4.1.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98a4e1ee5565d77bf8b1b9f219ce3cd9/jetified-html-4.1.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/682958f3e249456c027098c6b2f8f634/transformed/jetified-html-4.1.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ea9aa2fcaa05cc6b47e7e74cbaf008/jetified-html-4.1.2/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ea9aa2fcaa05cc6b47e7e74cbaf008/jetified-html-4.1.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ea9aa2fcaa05cc6b47e7e74cbaf008/jetified-html-4.1.2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ea9aa2fcaa05cc6b47e7e74cbaf008/jetified-html-4.1.2/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.noties.markwon/html/4.1.2/b0d800d776bfbf1f6d66ae4defedc843eaf2cbc4/html-4.1.2-javadoc.jar!/" />

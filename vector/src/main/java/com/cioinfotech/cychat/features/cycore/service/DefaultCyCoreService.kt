@@ -17,14 +17,19 @@
 package com.cioinfotech.cychat.features.cycore.service
 
 import com.cioinfotech.cychat.features.cycore.CyCoreAPI
-import dagger.Lazy
+import com.cioinfotech.cychat.features.home.notice.model.UpdateNoticeModel
+import io.reactivex.Single
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.logging.HttpLoggingInterceptor
+import org.matrix.android.sdk.BuildConfig
+import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
+import org.matrix.android.sdk.internal.network.NetworkConstants
 import org.matrix.android.sdk.internal.network.RetrofitFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class DefaultCyCoreService @Inject constructor(
-        private val okHttpClient: Lazy<OkHttpClient>,
-        private val retrofitFactory: RetrofitFactory) : CyCoreService {
+class DefaultCyCoreService @Inject constructor(private val retrofitFactory: RetrofitFactory) : CyCoreService {
 
     override fun cyGetDomainDetails(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDomainDetails(hashMap)
     override fun cyUpdateRecoveryKey(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(hashMap)
@@ -37,16 +42,36 @@ class DefaultCyCoreService @Inject constructor(
     override fun verifyOTP(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).verifyOTP(hashMap)
     override fun getProfileDetails(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getProfileDetails(hashMap)
     override fun setVisibility(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).setVisibility(hashMap)
-    override fun resendVerificationCode(hashMap: HashMap<String, String>, url: String)= buildCyCoreAPI(url).resendVerificationCode(hashMap)
-    override fun deleteRequest(mapOf: HashMap<String, String>, url: String)= buildCyCoreAPI(url).deleteRequest(mapOf)
+    override fun resendVerificationCode(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).resendVerificationCode(hashMap)
+    override fun deleteRequest(mapOf: HashMap<String, String>, url: String) = buildCyCoreAPI(url).deleteRequest(mapOf)
+    override fun getNoticeBoards(hashMapOf: HashMap<String, String>) = buildCreateCentralAPI().getNoticeBoards(hashMapOf[NetworkConstants.CLID]
+            ?: "", hashMapOf)
+
+    override fun getPostList(map: HashMap<String, String>) = buildCreateCentralAPI().getPostList(map[NetworkConstants.CLID] ?: "", map)
+    override fun updatePostDetails(clid: String, map: MutableMap<String, RequestBody>): Single<UpdateNoticeModel> {
+        return buildCreateCentralAPI().updatePostDetails(clid, map)
+    }
+
+    override fun uploadMedia(clid: String, map: MutableMap<String, RequestBody>): Single<BaseResponse> {
+        return buildCreateCentralAPI().uploadMedia(clid, map)
+    }
+
+    override fun getTimeZones(map: java.util.HashMap<String, String>) = buildCreateCentralAPI().getTimeZones(map[NetworkConstants.CLID] ?: "", map)
 
     private fun buildCyCoreAPI(url: String): CyCoreAPI {
         return retrofitFactory.createWithBaseURL(buildClient(), url).create(CyCoreAPI::class.java)
     }
 
+    private fun buildCreateCentralAPI(): CyCoreAPI {
+        return retrofitFactory.createCentralServer(buildClient()).create(CyCoreAPI::class.java)
+    }
+
     private fun buildClient(): OkHttpClient {
-        return okHttpClient.get()
-                .newBuilder()
-                .build()
+        return OkHttpClient.Builder().apply {
+            addInterceptor(HttpLoggingInterceptor().apply { this.level = BuildConfig.OKHTTP_LOGGING_LEVEL })
+            connectTimeout(1, TimeUnit.MINUTES)
+            readTimeout(1, TimeUnit.MINUTES)
+            writeTimeout(1, TimeUnit.MINUTES)
+        }.build()
     }
 }

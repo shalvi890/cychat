@@ -2090,6 +2090,7 @@
 
     <string name="room_list_catchup_empty_title">You’re all caught up!</string>
     <string name="room_list_catchup_empty_body">You have no more unread messages</string>
+    <string name="room_list_catchup_empty_body_notices">You have no more unread notices</string>
     <string name="room_list_catchup_welcome_title">Welcome home!</string>
     <string name="room_list_catchup_welcome_body">Catch up on unread messages here</string>
     <string name="room_list_people_empty_title">Conversations</string>
@@ -3302,7 +3303,7 @@
     <string name="environment_connected">Environment Connected</string>
     <string name="you_are_searching_in">You are searching in:</string>
     <string name="no_one_present_in_chat">You are the only one on this chat..</string>
-    <string name="hello_blank_fragment"> </string>
+    <string name="hello_blank_fragment">Hi </string>
     <string name="please_select_server_to_search">Please select organization</string>
     <string name="valid_send_otp"><![CDATA[Verify & Send OTP]]></string>
     <string name="please_enter_security_code">Please enter verification code</string>
@@ -3399,5 +3400,37 @@
     <string name="organization_type">Organization Type</string>
     <string name="your_organization">Your Organization</string>
     <string name="selected_new_role">Selected New Role: %s</string>
+    <string name="bottom_notice_board">Notice Board</string>
+    <string name="notice_board">Notice Board</string>
+    <string name="select_notice_board">Select Notice Board</string>
+    <string name="enter_text_above_post">Enter text on the top of post</string>
+    <string name="enter_text_bottom_post">Enter text on the bottom of post</string>
+    <string name="attach_a_photo_video">Attach photo</string>
+    <string name="create_notice">Create Notice</string>
+    <string name="create_new_notice">Create New Notice</string>
+    <string name="manage_notices">Manage Notices</string>
+    <string name="add_notice">Add Notice</string>
+    <string name="new_notice_created">New Notice Created</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="no_notice_boards_found">No Notice Boards Found</string>
+    <string name="posted_by">Posted by: %s</string>
+    <string name="posted_on">Posted on: %s</string>
+    <string name="posted_at">Posted at: %s</string>
+    <string name="search_board_by_name">Search Board By Name</string>
+    <string name="update_notice">Update Notice</string>
+    <string name="enter_notice">Enter Notice</string>
+    <string name="attach_document">Attach Document</string>
+    <string name="create_event">Create Event</string>
+    <string name="select_start_date_and_time">Select Start Date And Time</string>
+    <string name="select_end_date_and_time">Select End Date And Time</string>
+    <string name="enter_link">Enter Event Link</string>
+    <string name="select_event_type">Select Event Type</string>
+    <string name="online_event">Online Event</string>
+    <string name="live_event">Live Event</string>
+    <string name="enter_address">Enter Address</string>
+    <string name="enter_venue">Enter Venue</string>
+    <string name="asia_kolkata">Asia/Kolkata</string>
+    <string name="select_timezone">Select Timezone</string>
+    <string name="add_to_calendar">Add to calendar</string>
 
 </resources>
