@@ -33,10 +33,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.airbnb.mvrx.args
 import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.mvrx.withState
-import com.yalantis.ucrop.UCrop
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.cleanup
 import com.cioinfotech.cychat.core.extensions.insertBeforeLast
@@ -48,6 +46,7 @@ import com.cioinfotech.cychat.core.utils.SnapOnScrollListener
 import com.cioinfotech.cychat.core.utils.attachSnapHelperWithListener
 import com.cioinfotech.cychat.databinding.FragmentAttachmentsPreviewBinding
 import com.cioinfotech.cychat.features.media.createUCropWithDefaultSettings
+import com.yalantis.ucrop.UCrop
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.extensions.orFalse
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
@@ -65,7 +64,7 @@ class AttachmentsPreviewFragment @Inject constructor(
         private val colorProvider: ColorProvider
 ) : VectorBaseFragment<FragmentAttachmentsPreviewBinding>(), AttachmentMiniaturePreviewController.Callback {
 
-    private val fragmentArgs: AttachmentsPreviewArgs by args()
+    //    private val fragmentArgs: AttachmentsPreviewArgs by args()
     private val viewModel: AttachmentsPreviewViewModel by fragmentViewModel()
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentAttachmentsPreviewBinding {

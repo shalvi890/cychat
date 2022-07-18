@@ -21,15 +21,23 @@ import com.cioinfotech.cychat.features.cycore.data.DomainDetails
 import com.cioinfotech.cychat.features.cycore.data.UserProfileData
 import com.cioinfotech.cychat.features.cycore.data.UserSearch
 import com.cioinfotech.cychat.features.cycore.data.VerifyAddUserTypeResponse
+import com.cioinfotech.cychat.features.home.notice.model.NoticeBoardParent
+import com.cioinfotech.cychat.features.home.notice.model.NoticeListParent
+import com.cioinfotech.cychat.features.home.notice.model.TimezoneParent
+import com.cioinfotech.cychat.features.home.notice.model.UpdateNoticeModel
 import io.reactivex.Single
+import okhttp3.RequestBody
 import org.matrix.android.sdk.internal.cy_auth.data.BaseResponse
 import org.matrix.android.sdk.internal.cy_auth.data.DefaultURLParent
 import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 import org.matrix.android.sdk.internal.network.NetworkConstants
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PartMap
 
 interface CyCoreAPI {
 
@@ -97,4 +105,26 @@ interface CyCoreAPI {
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.ROOT_API)
     fun deleteRequest(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun getNoticeBoards(@Header("Authorization") auth: String, @FieldMap map: HashMap<String, String>): Single<NoticeBoardParent>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
+    fun getPostList(@Header("Authorization") auth: String, @FieldMap map: HashMap<String, String>): Single<NoticeListParent>
+
+    @POST(NetworkConstants.ROOT_API)
+    @Multipart
+    fun updatePostDetails(@Header("Authorization") clid: String, @PartMap map: MutableMap<String, RequestBody>): Single<UpdateNoticeModel>
+
+    @POST(NetworkConstants.ROOT_API)
+    @Multipart
+    fun uploadMedia(@Header("Authorization") clid: String, @PartMap map: MutableMap<String, RequestBody>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @POST(NetworkConstants.ROOT_API)
+    fun getTimeZones(@Header("Authorization") auth: String, @FieldMap map: HashMap<String, String>): Single<TimezoneParent>
 }

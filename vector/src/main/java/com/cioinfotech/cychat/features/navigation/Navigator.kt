@@ -121,4 +121,6 @@ interface Navigator {
     fun openDevTools(context: Context, roomId: String)
 
     fun openCallTransfer(context: Context, callId: String)
+
+    fun openNoticeBoardActivity(context: Context, createMode: Boolean)
 }

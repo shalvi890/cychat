@@ -25,5 +25,6 @@ enum class RoomListDisplayMode(@StringRes val titleRes: Int) {
     ROOMS(R.string.bottom_action_rooms),
     HOME(R.string.bottom_action_home),
     FAV(R.string.bottom_action_favourites),
+    NOTICE_BOARD(R.string.bottom_notice_board),
     FILTERED(/* Not used */ 0)
 }

@@ -27,7 +27,7 @@ import com.cioinfotech.cychat.features.home.AvatarRenderer
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import org.matrix.android.sdk.api.util.toMatrixItem
 
-class ProfileFullScreenFragment(private val room: RoomSummary, private var avatarRenderer: AvatarRenderer) : VectorBaseDialogFragment<FragmentProfileFullScreenBinding>() {
+class ProfileFullScreenFragment(private val room: RoomSummary?, private var avatarRenderer: AvatarRenderer?, private val url: String? = null) : VectorBaseDialogFragment<FragmentProfileFullScreenBinding>() {
     override fun invalidate() {}
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentProfileFullScreenBinding.inflate(inflater, container, false)
@@ -37,24 +37,13 @@ class ProfileFullScreenFragment(private val room: RoomSummary, private var avata
         views.ivBack.setOnClickListener {
             requireDialog().dismiss()
         }
-        views.tvTitle.text = room.displayName
-        if (!room.toMatrixItem().avatarUrl.isNullOrEmpty()) {
-//            avatarRenderer.render(room.toMatrixItem(), views.ivProfile)
-//        else
-            views.ivProfile.showImage(avatarRenderer.getURL(room.toMatrixItem())?.toUri())
-//            Glide.with(requireContext())
-//                    .load(avatarRenderer.getURL(room.toMatrixItem()))
-//                    .placeholder(showCircularProgressDrawable(requireContext()))
-//                    .error(R.mipmap.ic_launcher)
-//                    .into(views.ivProfile)
+        room?.let {
+            views.tvTitle.text = it.displayName
+            if (!room.toMatrixItem().avatarUrl.isNullOrEmpty())
+                views.ivProfile.showImage(avatarRenderer?.getURL(room.toMatrixItem())?.toUri())
+        }
+        url?.let {
+            views.ivProfile.showImage(url.toUri())
         }
     }
-
-//    private fun showCircularProgressDrawable(context: Context): CircularProgressDrawable {
-//        return CircularProgressDrawable(context).apply {
-//            strokeWidth = 8f
-//            centerRadius = 48f
-//            start()
-//        }
-//    }
 }

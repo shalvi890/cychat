@@ -41,6 +41,7 @@ import com.cioinfotech.cychat.features.call.SharedKnownCallsViewModel
 import com.cioinfotech.cychat.features.call.VectorCallActivity
 import com.cioinfotech.cychat.features.call.webrtc.WebRtcCallManager
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
+import com.cioinfotech.cychat.features.home.notice.NoticeBoardFragment
 import com.cioinfotech.cychat.features.home.room.list.RoomListFragment
 import com.cioinfotech.cychat.features.home.room.list.RoomListParams
 import com.cioinfotech.cychat.features.settings.VectorPreferences
@@ -190,16 +191,17 @@ class HomeDetailFragment @Inject constructor(
     }
 
     private fun checkNotificationTabStatus() {
-        val wasVisible = views.bottomNavigationView.menu.findItem(R.id.bottom_action_notification).isVisible
-        views.bottomNavigationView.menu.findItem(R.id.bottom_action_notification).isVisible = vectorPreferences.labAddNotificationTab()
-        if (wasVisible && !vectorPreferences.labAddNotificationTab()) {
-            // As we hide it check if it's not the current item!
-            withState(viewModel) {
-                if (it.displayMode.toMenuId() == R.id.bottom_action_notification) {
-                    viewModel.handle(HomeDetailAction.SwitchDisplayMode(RoomListDisplayMode.PEOPLE))
-                }
-            }
-        }
+//        val wasVisible = views.bottomNavigationView.menu.findItem(R.id.bottom_action_notification).isVisible
+//
+//        views.bottomNavigationView.menu.findItem(R.id.bottom_action_notification).isVisible = vectorPreferences.labAddNotificationTab()
+//        if (wasVisible && !vectorPreferences.labAddNotificationTab()) {
+//            // As we hide it check if it's not the current item!
+//            withState(viewModel) {
+//                if (it.displayMode.toMenuId() == R.id.bottom_action_notification) {
+//                    viewModel.handle(HomeDetailAction.SwitchDisplayMode(RoomListDisplayMode.PEOPLE))
+//                }
+//            }
+//        }
     }
 
 //    private fun promptForNewUnknownDevices(uid: String, state: UnknownDevicesState, newest: DeviceInfo) {
@@ -290,24 +292,26 @@ class HomeDetailFragment @Inject constructor(
 
     private fun setupToolbar() {
         val parentActivity = vectorBaseActivity
-        if (parentActivity is ToolbarConfigurable) {
+        if (parentActivity is ToolbarConfigurable)
             parentActivity.configure(views.groupToolbar)
-        }
-        views.groupToolbar.title = ""
-        views.groupToolbarAvatarImageView.debouncedClicks {
-            sharedActionViewModel.post(HomeActivitySharedAction.OpenDrawer)
-        }
+
+//        views.groupToolbar.title = ""
+//        views.groupToolbarAvatarImageView.debouncedClicks {
+//            sharedActionViewModel.post(HomeActivitySharedAction.OpenDrawer)
+//        }
     }
 
     private fun setupBottomNavigationView() {
-        views.bottomNavigationView.menu.findItem(R.id.bottom_action_notification).isVisible = vectorPreferences.labAddNotificationTab()
+        views.bottomNavigationView.menu.findItem(R.id.bottom_action_notice_board).isVisible = true
+//        views.bottomNavigationView.menu.findItem(R.id.bottom_action_notification).isVisible = vectorPreferences.labAddNotificationTab()
         views.bottomNavigationView.setOnNavigationItemSelectedListener {
             val displayMode = when (it.itemId) {
-                R.id.bottom_action_people -> RoomListDisplayMode.PEOPLE
-                R.id.bottom_action_rooms  -> RoomListDisplayMode.ROOMS
-                R.id.bottom_fav           -> RoomListDisplayMode.FAV
-                R.id.bottom_home          -> RoomListDisplayMode.HOME
-                else                      -> RoomListDisplayMode.NOTIFICATIONS
+                R.id.bottom_action_people       -> RoomListDisplayMode.PEOPLE
+                R.id.bottom_action_rooms        -> RoomListDisplayMode.ROOMS
+                R.id.bottom_fav                 -> RoomListDisplayMode.FAV
+                R.id.bottom_home                -> RoomListDisplayMode.HOME
+                R.id.bottom_action_notice_board -> RoomListDisplayMode.NOTICE_BOARD
+                else                            -> RoomListDisplayMode.NOTIFICATIONS
             }
             viewModel.handle(HomeDetailAction.SwitchDisplayMode(displayMode))
             true
@@ -341,11 +345,12 @@ class HomeDetailFragment @Inject constructor(
                         detach(it)
                     }
             if (fragmentToShow == null) {
-                val params = RoomListParams(displayMode)
-                add(R.id.roomListContainer, RoomListFragment::class.java, params.toMvRxBundle(), fragmentTag)
-            } else {
+                if (displayMode == RoomListDisplayMode.NOTICE_BOARD)
+                    add(R.id.roomListContainer, NoticeBoardFragment::class.java, null, fragmentTag)
+                else
+                    add(R.id.roomListContainer, RoomListFragment::class.java, RoomListParams(displayMode).toMvRxBundle(), fragmentTag)
+            } else
                 attach(fragmentToShow)
-            }
         }
     }
 
@@ -365,7 +370,7 @@ class HomeDetailFragment @Inject constructor(
         Timber.v(it.toString())
         views.bottomNavigationView.getOrCreateBadge(R.id.bottom_action_people).render(it.notificationCountPeople, it.notificationHighlightPeople)
         views.bottomNavigationView.getOrCreateBadge(R.id.bottom_action_rooms).render(it.notificationCountRooms, it.notificationHighlightRooms)
-        views.bottomNavigationView.getOrCreateBadge(R.id.bottom_action_notification).render(it.notificationCountCatchup, it.notificationHighlightCatchup)
+//        views.bottomNavigationView.getOrCreateBadge(R.id.bottom_action_notification).render(it.notificationCountCatchup, it.notificationHighlightCatchup)
         views.syncStateView.render(it.syncState)
 
         hasUnreadRooms = it.hasUnreadMessages
@@ -376,17 +381,16 @@ class HomeDetailFragment @Inject constructor(
         number = count
         maxCharacterCount = 3
         badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
-        backgroundColor = if (highlight) {
+        backgroundColor = if (highlight)
             ContextCompat.getColor(requireContext(), R.color.riotx_notice)
-        } else {
+        else
             ThemeUtils.getColor(requireContext(), R.attr.riotx_unread_room_badge)
-        }
     }
 
     private fun RoomListDisplayMode.toMenuId() = when (this) {
         RoomListDisplayMode.PEOPLE -> R.id.bottom_action_people
-        RoomListDisplayMode.ROOMS  -> R.id.bottom_action_rooms
-        else                       -> R.id.bottom_action_notification
+        else                       -> R.id.bottom_action_rooms
+//        else                       -> R.id.bottom_action_notification
     }
 
     override fun onTapToReturnToCall() {

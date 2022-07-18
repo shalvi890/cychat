@@ -392,6 +392,12 @@ class RoomListFragment @Inject constructor(
                             message = null
                     )
                 }
+                RoomListDisplayMode.NOTICE_BOARD           -> {
+                    StateView.State.Empty(
+                            title = getString(R.string.room_list_catchup_empty_title),
+                            image = ContextCompat.getDrawable(requireContext(), R.drawable.ic_noun_party_popper),
+                            message = getString(R.string.room_list_catchup_empty_body_notices))
+                }
                 RoomListDisplayMode.HOME          -> {
                     StateView.State.Empty(
                             title = getString(R.string.room_list_people_empty_title),

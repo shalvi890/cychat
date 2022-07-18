@@ -82,11 +82,9 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.CLIENT_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.COUNTRY_CODE
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_ANDROID
 import org.matrix.android.sdk.internal.network.NetworkConstants.CY_VERSE_API_CLID
-import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL_OTP
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL_VAL
-import org.matrix.android.sdk.internal.network.NetworkConstants.FIRST_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.F_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.GENERAL_DATA
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_GROUPS_API
@@ -97,7 +95,6 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.GET_SETTINGS_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_USER_TYPE_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.GROUP_VALUE
 import org.matrix.android.sdk.internal.network.NetworkConstants.IMEI
-import org.matrix.android.sdk.internal.network.NetworkConstants.LAST_NAME
 import org.matrix.android.sdk.internal.network.NetworkConstants.LIVE
 import org.matrix.android.sdk.internal.network.NetworkConstants.LOGIN
 import org.matrix.android.sdk.internal.network.NetworkConstants.L_NAME
@@ -115,6 +112,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.SIGN_UP_SMALL
 import org.matrix.android.sdk.internal.network.NetworkConstants.TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USERTYPE_DATA
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_CAT_ID
+import org.matrix.android.sdk.internal.network.NetworkConstants.USER_ID
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_LOGIN_API
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE
 import org.matrix.android.sdk.internal.network.NetworkConstants.USER_TYPE_NAME
@@ -298,8 +296,8 @@ class LoginViewModel @AssistedInject constructor(
                 REF_CODE to supplierCode,
                 REQ_ID to (reqId ?: ""),
                 CLID to (pref.getString(CLID, "") ?: ""),
-                FIRST_NAME to (pref.getString(F_NAME, "") ?: ""),
-                LAST_NAME to (pref.getString(L_NAME, "") ?: "")
+                F_NAME to (pref.getString(F_NAME, "") ?: ""),
+                L_NAME to (pref.getString(L_NAME, "") ?: "")
         )
         authenticationService.recheckReferralCode(tempMap)
                 .subscribeOn(Schedulers.io())
@@ -355,8 +353,8 @@ class LoginViewModel @AssistedInject constructor(
                 OP to VALIDATE_CODE,
                 EMAIL_VAL to supplierCode,
                 REF_CODE to (pref.getString(REF_CODE, "") ?: ""),
-                FIRST_NAME to (pref.getString(F_NAME, "") ?: ""),
-                LAST_NAME to (pref.getString(L_NAME, "") ?: ""),
+                F_NAME to (pref.getString(F_NAME, "") ?: ""),
+                L_NAME to (pref.getString(L_NAME, "") ?: ""),
                 REQ_ID to (reqId ?: ""),
                 CLID to (pref.getString(CLID, "") ?: "")
         )
@@ -426,7 +424,7 @@ class LoginViewModel @AssistedInject constructor(
         authenticationService.cyLogin(map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getCyLoginObserver(passwordLoginParams.email))
+                .subscribe(getCyLoginObserver(passwordLoginParams.mobile))
         setState {
             copy(
                     asyncCyLogin = Loading()
@@ -437,7 +435,7 @@ class LoginViewModel @AssistedInject constructor(
     /** CyChat Login API Implementation-
      * Function waits for Login API Response
      * */
-    private fun getCyLoginObserver(email: String): SingleObserver<LoginResponse> {
+    private fun getCyLoginObserver(mobile: String): SingleObserver<LoginResponse> {
         return object : SingleObserver<LoginResponse> {
 
             override fun onSuccess(t: LoginResponse) {
@@ -449,7 +447,8 @@ class LoginViewModel @AssistedInject constructor(
                         putString(REQ_ID, t.data.reqID)
                         putString(F_NAME, t.data.firstName)
                         putString(L_NAME, t.data.lastName)
-                        putString(EMAIL, email)
+                        putString(MOBILE, mobile)
+
                         reqId = t.data.reqID
                         if (t.data.type == SIGN_UP_SMALL)
                             putBoolean(SIGNING_MODE, true)
@@ -573,21 +572,21 @@ class LoginViewModel @AssistedInject constructor(
 
     private fun startLogin(data: MatrixLoginData) {
         pref.edit().apply {
-            putString(NetworkConstants.USER_ID, data.userID)
+            putString(USER_ID, data.userID)
             putString(NetworkConstants.SECRET_KEY, data.secretKey)
             putString(NetworkConstants.API_SERVER, data.apiServer)
             if (pref.getBoolean(SIGNING_MODE, false))
                 putString(NetworkConstants.FULL_NAME, "${pref.getString(F_NAME, "")} ${pref.getString(L_NAME, "")}")
             apply()
         }
-        val email = pref.getString(EMAIL, "") ?: ""
+        val mobile = pref.getString(MOBILE, "") ?: ""
         handle(
                 LoginAction.UpdateHomeServer(
                         data.apiServer,
-                        email.replace("@", "-at-"),
+                        "${data.userID}-$mobile",
                         AES.decrypt(
                                 data.password,
-                                AES.createSecretKey(data.userID, email)
+                                AES.createSecretKey(data.userID, mobile)
                         )
                 )
         )

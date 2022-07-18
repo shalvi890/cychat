@@ -43,6 +43,7 @@ import com.cioinfotech.cychat.features.crypto.recover.SetupMode
 import com.cioinfotech.cychat.features.crypto.verification.SupportedVerificationMethodsProvider
 import com.cioinfotech.cychat.features.crypto.verification.VerificationBottomSheet
 import com.cioinfotech.cychat.features.devtools.RoomDevToolActivity
+import com.cioinfotech.cychat.features.home.notice.NoticeBoardActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailActivity
 import com.cioinfotech.cychat.features.home.room.detail.RoomDetailArgs
 import com.cioinfotech.cychat.features.home.room.detail.search.SearchActivity
@@ -354,6 +355,10 @@ class DefaultNavigator @Inject constructor(
     override fun openCallTransfer(context: Context, callId: String) {
         val intent = CallTransferActivity.newIntent(context, callId)
         context.startActivity(intent)
+    }
+
+    override fun openNoticeBoardActivity(context: Context, createMode: Boolean) {
+        context.startActivity(NoticeBoardActivity.getIntent(context, createMode))
     }
 
     private fun startActivity(context: Context, intent: Intent, buildTask: Boolean) {

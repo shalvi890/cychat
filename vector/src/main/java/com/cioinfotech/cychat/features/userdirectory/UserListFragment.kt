@@ -238,13 +238,16 @@ class UserListFragment @Inject constructor(
                         UserListAction.ClearSearchUsers
                     } else {
                         views.pbProgress.isVisible = true
-                        UserListAction.SearchUsers(searchValue.toString(),
-                                selectedDomain?.cychatURL!!,
-                                pref.getString(CLID, "") ?: "",
-                                selectedDomain?.toUtypeID!!,
-                                pref.getString(NetworkConstants.USER_ID, "") ?: "")
+                        selectedDomain?.cychatURL?.let {
+                            UserListAction.SearchUsers(searchValue.toString(),
+                                    it,
+                                    pref.getString(CLID, "") ?: "",
+                                    selectedDomain?.toUtypeID ?: "",
+                                    pref.getString(NetworkConstants.USER_ID, "") ?: "")
+                        }
                     }
-                    viewModel.handle(action)
+                    if (action != null)
+                        viewModel.handle(action)
                 }.disposeOnDestroyView()
 //        views.userListSearch.setupAsSearch()
     }

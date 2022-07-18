@@ -87,8 +87,8 @@ import org.matrix.android.sdk.api.session.crypto.crosssigning.SELF_SIGNING_KEY_S
 import org.matrix.android.sdk.api.session.crypto.crosssigning.USER_SIGNING_KEY_SSSS_NAME
 import org.matrix.android.sdk.api.session.initsync.InitialSyncProgressService
 import org.matrix.android.sdk.api.session.permalinks.PermalinkService
-import org.matrix.android.sdk.internal.network.NetworkConstants.EMAIL
 import org.matrix.android.sdk.internal.network.NetworkConstants.FULL_NAME
+import org.matrix.android.sdk.internal.network.NetworkConstants.MOBILE
 import org.matrix.android.sdk.internal.network.NetworkConstants.SECRET_KEY
 import org.matrix.android.sdk.internal.network.NetworkConstants.SESSION_UPDATED
 import org.matrix.android.sdk.internal.network.NetworkConstants.SIGNING_MODE
@@ -333,7 +333,7 @@ class HomeActivity :
                             event.key.recoveryKey,
                             AES.createSecretKey(
                                     pref.getString(USER_ID, "")!!,
-                                    pref.getString(EMAIL, "")!!
+                                    pref.getString(MOBILE, "")!!
                             )
                     )
 
@@ -454,7 +454,7 @@ class HomeActivity :
                     it,
                     AES.createSecretKey(
                             pref.getString(USER_ID, "")!!,
-                            pref.getString(EMAIL, "")!!
+                            pref.getString(MOBILE, "")!!
                     )
             )
             viewModel.handle(SharedSecureStorageAction.SubmitKey(key))

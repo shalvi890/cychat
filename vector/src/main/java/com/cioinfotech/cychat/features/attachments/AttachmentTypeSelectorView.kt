@@ -34,6 +34,8 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.core.view.doOnNextLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.cioinfotech.cychat.R
@@ -54,7 +56,8 @@ private const val ANIMATION_DURATION = 250
  */
 class AttachmentTypeSelectorView(context: Context,
                                  inflater: LayoutInflater,
-                                 var callback: Callback?)
+                                 var callback: Callback?,
+                                 onlyImageVideoSelector: Boolean = false)
     : PopupWindow(context) {
 
     interface Callback {
@@ -77,6 +80,12 @@ class AttachmentTypeSelectorView(context: Context,
         views.attachmentAudioButton.configure(Type.AUDIO)
         views.attachmentContactButton.configure(Type.CONTACT)
         views.attachmentRecordButton.configure(Type.RECORD)
+        if (onlyImageVideoSelector) {
+            views.llAudio.isVisible = false
+            views.llContact.isVisible = false
+            views.llSticker.isVisible = false
+            views.llFile.isInvisible = true
+        }
         width = LinearLayout.LayoutParams.MATCH_PARENT
         height = LinearLayout.LayoutParams.WRAP_CONTENT
         animationStyle = 0

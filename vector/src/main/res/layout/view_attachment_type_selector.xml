@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:id="@+id/ll_camera"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -49,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:id="@+id/ll_gallery"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -71,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:id="@+id/ll_file"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -101,6 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:id="@+id/ll_audio"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -124,6 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:id="@+id/ll_contact"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -142,6 +147,7 @@
 
 
             <LinearLayout
+                android:id="@+id/ll_sticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
