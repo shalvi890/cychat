@@ -26,7 +26,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.CalendarContract
 import android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME
 import android.provider.CalendarContract.EXTRA_EVENT_END_TIME
 import android.view.LayoutInflater
@@ -42,6 +41,7 @@ import com.cioinfotech.cychat.features.home.notice.model.Notice
 import com.cioinfotech.cychat.features.home.notice.model.NoticeListParent
 import com.cioinfotech.cychat.features.home.notice.pagination.PaginationScrollListener
 import com.cioinfotech.cychat.features.home.notice.widget.NoticeFabMenuView
+import com.cioinfotech.cychat.features.home.room.list.ProfileFullScreenFragment
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -81,7 +81,10 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
         val linearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         views.rvNoticeBoard.adapter = noticesAdapter
         views.rvNoticeBoard.layoutManager = linearLayoutManager
-        views.createChatFabMenu.listener = this
+//        views.createChatFabMenu.listener = this
+        views.btnAdd.setOnClickListener {
+            fabOpenRoomDirectory()
+        }
         views.rvNoticeBoard.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItems() {
                 isLoading = true
@@ -172,11 +175,15 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
     override fun onClickListener(notice: Notice) {
     }
 
+    override fun onPhotoClicked(url: String) {
+        ProfileFullScreenFragment(null, null, url).show(childFragmentManager, "")
+    }
+
     private var enqueue: Long = 0L
     override fun onAttachmentClicked(url: String) {
         (requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager).apply {
             val request = DownloadManager.Request(Uri.parse(url))
-            val fileName = url.substring(url.lastIndexOf("/" + 1, url.length - 1))
+            val fileName = if (url.contains("/")) url.substring(url.lastIndexOf("/") + 1, url.length) else url
             request.setTitle(fileName)
             request.setDescription("Downloading $fileName")
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
@@ -233,7 +240,7 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
 //                            val uriString: String = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
                             startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
                         } catch (ex: Exception) {
-
+                            Toast.makeText(requireContext(), "No Calendar App Found!", Toast.LENGTH_LONG).show()
                         } finally {
                             Toast.makeText(context, "File downloaded in downloads folder", Toast.LENGTH_LONG).show()
                         }

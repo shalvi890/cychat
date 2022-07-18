@@ -16,6 +16,7 @@
 
 package com.cioinfotech.cychat.features.home.notice.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -31,6 +32,10 @@ import com.cioinfotech.cychat.core.utils.DimensionConverter
 import com.cioinfotech.cychat.databinding.ItemNoticeBoardBinding
 import com.cioinfotech.cychat.features.home.notice.model.Notice
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -51,6 +56,7 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val notice = notices[position]
         if (holder is NoticeBoardViewHolder && (notice.isLoadingItem == null || notice.isLoadingItem == false)) {
@@ -62,7 +68,7 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
             binding.tvTextAfter.text = notice.textAfter
             binding.tvTextBefore.isVisible = !notice.textBefore.isNullOrEmpty()
             binding.tvTextAfter.isVisible = !notice.textAfter.isNullOrEmpty()
-            binding.tvDate.text = binding.root.context.getString(R.string.posted_on, notice.createdAt)
+            binding.tvDate.text = binding.root.context.getString(R.string.posted_on, notice.createdAt!!.toDate().formatTo())
             binding.ivMenu.isVisible = showMenu && notice.canEditPost == NetworkConstants.EDIT_POST_YES
             binding.ivThumbnail.isVisible = notice.media.isNotEmpty()
             notice.boardImage?.let {
@@ -78,8 +84,14 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
                 }
             }
 
-            if (notice.media.isNotEmpty())
-                notice.media[0].path?.let { binding.ivThumbnail.render(it) }
+            if (notice.media.isNotEmpty()) {
+                notice.media[0].path?.let { url ->
+                    binding.ivThumbnail.render(url)
+                    binding.ivThumbnail.setOnClickListener {
+                        clickListener?.onPhotoClicked(url)
+                    }
+                }
+            }
 
             if (showMenu)
                 binding.ivMenu.setOnClickListener {
@@ -98,11 +110,28 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
                 binding.btnAddToCalendar.setOnClickListener {
                     clickListener?.onAddToCalendarClicked(notice)
                 }
-                binding.tvStartTime.text = "Start Time: " + notice.event?.eventStart
-                binding.tvEndTime.text = "End Time: " + notice.event?.eventEnd
-                binding.tvVenue.text = "Venue: " + notice.event?.eventVenue
+
+                binding.tvStartTime.text = "Start Time: " + notice.event!!.eventStart.toDate(TimeZone.getTimeZone(notice.event?.eventTzName)).formatTo()
+                binding.tvEndTime.text = "End Time: " + notice.event!!.eventEnd.toDate(TimeZone.getTimeZone(notice.event?.eventTzName)).formatTo()
+                if (!notice.event?.eventVenue.isNullOrEmpty())
+                    binding.tvVenue.text = if (notice.event?.eventType == NetworkConstants.EVENT_ONLINE)
+                        "Event Link: " + notice.event?.eventVenue
+                    else
+                        "Venue: " + notice.event?.eventVenue
             }
         }
+    }
+
+    fun String.toDate(timeZone: TimeZone = TimeZone.getTimeZone("UTC")): Date {
+        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        parser.timeZone = timeZone
+        return parser.parse(this)!!
+    }
+
+    fun Date.formatTo(): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        formatter.timeZone = TimeZone.getDefault()
+        return formatter.format(this)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -140,6 +169,7 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
 
     interface ClickListener {
         fun onClickListener(notice: Notice)
+        fun onPhotoClicked(url: String)
         fun onAttachmentClicked(url: String)
         fun onAddToCalendarClicked(notice: Notice)
     }

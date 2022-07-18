@@ -14,11 +14,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.cioinfotech.cychat.features.home.notice.widget.NoticeFabMenuView
-        android:id="@+id/createChatFabMenu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutDescription="@xml/motion_scene_notice_board_fab_menu"
-        tools:showPaths="true" />
-
+    <!--    <com.cioinfotech.cychat.features.home.notice.widget.NoticeFabMenuView-->
+    <!--        android:id="@+id/createChatFabMenu"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        app:layoutDescription="@xml/motion_scene_notice_board_fab_menu"-->
+    <!--        tools:showPaths="true" />-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:contentDescription="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

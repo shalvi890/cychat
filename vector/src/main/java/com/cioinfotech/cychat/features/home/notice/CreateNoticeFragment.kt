@@ -56,9 +56,12 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import org.matrix.android.sdk.internal.network.NetworkConstants.MEDIA_ATTACHMENT
+import org.matrix.android.sdk.internal.network.NetworkConstants.POST
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), AttachmentsHelper.Callback, AttachmentTypeSelectorView.Callback {
@@ -143,7 +146,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
             selectedImages?.let { it1 -> createUploadMediaBody(it1, NetworkConstants.MEDIA_IMAGE, it.data.postID.toString()) }?.let { it2 -> cyCoreViewModel.uploadMedia(it2) }
 
 //            for (media in selectedAttachments)
-            selectedAttachments?.let { it1 -> createUploadMediaBody(it1, NetworkConstants.MEDIA_ATTACHMENT, it.data.postID.toString()) }?.let { it2 -> cyCoreViewModel.uploadMedia(it2) }
+            selectedAttachments?.let { it1 -> createUploadMediaBody(it1, MEDIA_ATTACHMENT, it.data.postID.toString()) }?.let { it2 -> cyCoreViewModel.uploadMedia(it2) }
 
             if (totalCountOfAttachments == 0) {
                 dismissLoadingDialog()
@@ -176,9 +179,8 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
 
         views.tvAttachPhoto.setOnClickListener {
             isAttachmentsClicked = false
-            if (!::attachmentTypeSelector.isInitialized) {
+            if (!::attachmentTypeSelector.isInitialized)
                 attachmentTypeSelector = AttachmentTypeSelectorView(vectorBaseActivity, vectorBaseActivity.layoutInflater, this@CreateNoticeFragment, true)
-            }
             attachmentTypeSelector.show(views.tvAttachPhoto, keyboardStateUtils.isKeyboardShowing)
         }
 
@@ -211,6 +213,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
                     myCalendar[Calendar.DAY_OF_MONTH]
             )
             datePicker.setTitle("Select End Date")
+            datePicker.datePicker.minDate = Date().time
             datePicker.datePicker.touchables[0].performClick()
             datePicker.show()
         }
@@ -225,7 +228,10 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
 
                 views.tvStartTime.text = "Start Time: " + it.eventStart
                 views.tvEndTime.text = "End Time: " + it.eventEnd
-                views.tvVenue.text = "Venue: " + it.eventVenue
+                views.tvVenue.text = if (it.eventType == NetworkConstants.EVENT_ONLINE)
+                    "Event Link: " + it.eventVenue
+                else
+                    "Venue: " + it.eventVenue
             } else
                 views.clEvent.isVisible = false
         }
@@ -260,7 +266,8 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         partList[NetworkConstants.POST_ID] = postId.toRequestBody("text/plain".toMediaTypeOrNull())
         FilePathHelper.getRealPath(context, selectedAttachment.queryUri)?.let { fileUri ->
             val imgFile = File(fileUri.path!!)
-            partList["media\"; filename=\"${selectedAttachment.name}"] = imgFile.asRequestBody("image/*".toMediaTypeOrNull())
+            val format = if (type == MEDIA_ATTACHMENT) "application/*" else "image/*"
+            partList["media\"; filename=\"${selectedAttachment.name}"] = imgFile.asRequestBody(format.toMediaTypeOrNull())
         }
         partList[NetworkConstants.TYPE] = type.toRequestBody("text/plain".toMediaTypeOrNull())
         return partList
@@ -279,6 +286,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         partList[NetworkConstants.TEXT_BEFORE] = views.etTextBefore.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         partList[NetworkConstants.POST_STATUS] = NetworkConstants.POST_STATUS_TYPE_PUBLISH.toRequestBody("text/plain".toMediaTypeOrNull())
         partList[NetworkConstants.POST_ID] = noticeId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        partList[NetworkConstants.POST_TYPE] = POST.toRequestBody("text/plain".toMediaTypeOrNull())
         eventAdded?.let {
             partList[NetworkConstants.EVENT_VENUE] = it.eventVenue.toRequestBody("text/plain".toMediaTypeOrNull())
             partList[NetworkConstants.EVENT_START] = it.eventStart.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -287,7 +295,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
             partList[NetworkConstants.TIMEZONE] = it.eventTzName.toRequestBody("text/plain".toMediaTypeOrNull())
         }
         if (eventAdded == null)
-            partList[NetworkConstants.TIMEZONE] = NetworkConstants.POST.toRequestBody("text/plain".toMediaTypeOrNull())
+            partList[NetworkConstants.TIMEZONE] = "Asia/Kolkata".toRequestBody("text/plain".toMediaTypeOrNull())
         return partList
     }
 
@@ -395,7 +403,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
 
     private val attachmentFileActivityResultLauncher = registerStartForActivityResult {
         if (it.resultCode == Activity.RESULT_OK)
-            attachmentsHelper.onImageResult(it.data)
+            attachmentsHelper.onFileResult(it.data)
     }
 
     private val attachmentImageActivityResultLauncher = registerStartForActivityResult {

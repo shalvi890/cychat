@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.databinding.FragmentCreateEventBinding
@@ -39,10 +40,12 @@ import org.matrix.android.sdk.internal.network.NetworkConstants
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
 
+    private lateinit var selectedDate: Date
     private lateinit var cyCoreViewModel: CyCoreViewModel
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentCreateEventBinding.inflate(inflater, container, false)
     private val myCalendar: Calendar = Calendar.getInstance()
@@ -53,7 +56,14 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as NoticeBoardActivity).setToolbarTitle(getString(R.string.create_event))
         cyCoreViewModel = (requireActivity() as NoticeBoardActivity).cyCoreViewModel
-
+//        views.rbLiveEvent.setOnCheckedChangeListener { _, isChecked ->
+//            views.etEventLink.isVisible = !isChecked
+//            views.etVenue.isVisible = isChecked
+//        }
+        views.rbOnlineEvent.setOnCheckedChangeListener { _, isChecked ->
+            views.tlEventLink.isVisible = isChecked
+            views.tlVenue.isVisible = !isChecked
+        }
         views.etStartDateAndTime.setOnClickListener {
             startDateSelected = true
             val datePicker = DatePickerDialog(
@@ -62,6 +72,7 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
                     myCalendar[Calendar.DAY_OF_MONTH]
             )
             datePicker.setTitle("Select Start Date")
+            datePicker.datePicker.minDate = Date().time
             datePicker.datePicker.touchables[0].performClick()
             datePicker.show()
         }
@@ -75,27 +86,30 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
             )
             datePicker.setTitle("Select End Date")
             datePicker.datePicker.touchables[0].performClick()
+            datePicker.datePicker.minDate = selectedDate.time
             datePicker.show()
         }
         views.btnCreateEvent.setOnClickListener {
             val eventType = if (views.rbLiveEvent.isChecked) NetworkConstants.EVENT_LIVE else NetworkConstants.EVENT_ONLINE
             val startDate = views.etStartDateAndTime.text.toString()
             val endDate = views.etEndDateAndTime.text.toString()
-            val venue = views.etVenue.text.toString()
+            val venue = if (views.rbLiveEvent.isChecked) views.etVenue.text.toString() else views.etEventLink.text.toString()
             val timeZone = views.etTimeZone.text.toString()
+
+            if (eventType == NetworkConstants.EVENT_LIVE && venue.isEmpty())
+                views.etVenue.error = "Please, enter Event Venue"
+
+            if (eventType == NetworkConstants.EVENT_ONLINE && venue.isEmpty())
+                views.etEventLink.error = "Please, enter Event Link"
 
             if (startDate.isEmpty())
                 views.etStartDateAndTime.error = "Please, select Start Date & Time"
             else if (endDate.isEmpty())
                 views.etEndDateAndTime.error = "Please, select End Date & Time"
-            else if (venue.isEmpty())
-                views.etVenue.error = "Please, enter Venue"
             else if (timeZone.isEmpty())
                 views.etTimeZone.error = "Please, select Timezone"
             else {
-                cyCoreViewModel.eventLiveData.postValue(EventModel(
-                        startDate, endDate, venue, timeZone, eventType
-                ))
+                cyCoreViewModel.eventLiveData.postValue(EventModel(startDate, endDate, venue, timeZone, eventType))
                 requireFragmentManager().popBackStack()
             }
         }
@@ -126,6 +140,7 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
                 views.rbOnlineEvent.isChecked = it.eventType == NetworkConstants.EVENT_ONLINE
             }
         }
+
         cyCoreViewModel.getTimeZones().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(handleNextPostList())
@@ -160,6 +175,8 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
             else
                 " $newHour:0$selectedMinute:00"
             if (startDateSelected) {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                selectedDate = dateFormat.parse(dateFormat.format(myCalendar.time))!!
                 views.etStartDateAndTime.setText(dateText)
                 views.etStartDateAndTime.error = null
             } else {

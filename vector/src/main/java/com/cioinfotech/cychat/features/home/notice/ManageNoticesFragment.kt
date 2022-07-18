@@ -34,6 +34,7 @@ import com.cioinfotech.cychat.features.home.notice.adapters.NoticeBoardAdapter
 import com.cioinfotech.cychat.features.home.notice.model.Notice
 import com.cioinfotech.cychat.features.home.notice.model.NoticeListParent
 import com.cioinfotech.cychat.features.home.notice.pagination.PaginationScrollListener
+import com.cioinfotech.cychat.features.home.room.list.ProfileFullScreenFragment
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -152,6 +153,9 @@ class ManageNoticesFragment : VectorBaseFragment<FragmentManageNoticesBinding>()
     }
 
     override fun onAddToCalendarClicked(notice: Notice) {
+    }
 
+    override fun onPhotoClicked(url: String) {
+        ProfileFullScreenFragment(null, null, url).show(childFragmentManager, "")
     }
 }
