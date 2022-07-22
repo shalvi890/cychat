@@ -63,6 +63,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), AttachmentsHelper.Callback, AttachmentTypeSelectorView.Callback {
 
@@ -106,8 +107,16 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         cyCoreViewModel.noticeBoardsLiveData.observe(viewLifecycleOwner) {
             listOfBoards = it.data.boards
             if (listOfBoards.isEmpty()) {
-                Snackbar.make(requireView(), getString(R.string.no_notice_boards_found), BaseTransientBottomBar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), getString(R.string.no_notice_boards_found), BaseTransientBottomBar.LENGTH_LONG).show()
                 views.btnNotice.isEnabled = false
+                views.etTitle.isEnabled = false
+                views.etTextAfter.isEnabled = false
+                views.etTextBefore.isEnabled = false
+                views.etTextBefore.isEnabled = false
+                views.tvAttachPhoto.isClickable = false
+                views.tvAttachEvent.isClickable = false
+                views.tvAttachDocument.isClickable = false
+                views.spinner.error = getString(R.string.no_notice_boards_found)
             }
             dismissLoadingDialog()
             setUpdateMode()
@@ -126,7 +135,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
                 }
             },
                     listOfBoards.map { org -> org.bb_name }.toMutableList(),
-                    getString(R.string.search_board_by_name)).show(parentFragmentManager, "")
+                    getString(R.string.search_board_by_name)).show(childFragmentManager, "")
         }
 
         cyCoreViewModel.errorData.observe(viewLifecycleOwner) {
@@ -289,14 +298,26 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         partList[NetworkConstants.POST_TYPE] = POST.toRequestBody("text/plain".toMediaTypeOrNull())
         eventAdded?.let {
             partList[NetworkConstants.EVENT_VENUE] = it.eventVenue.toRequestBody("text/plain".toMediaTypeOrNull())
-            partList[NetworkConstants.EVENT_START] = it.eventStart.toRequestBody("text/plain".toMediaTypeOrNull())
-            partList[NetworkConstants.EVENT_END] = it.eventEnd.toRequestBody("text/plain".toMediaTypeOrNull())
+            partList[NetworkConstants.EVENT_START] = it.eventStart.toDate(TimeZone.getDefault()).formatTo(TimeZone.getTimeZone("UTC")).toRequestBody("text/plain".toMediaTypeOrNull())
+            partList[NetworkConstants.EVENT_END] = it.eventEnd.toDate(TimeZone.getDefault()).formatTo(TimeZone.getTimeZone("UTC")).toRequestBody("text/plain".toMediaTypeOrNull())
             partList[NetworkConstants.POST_TYPE] = it.eventType.toRequestBody("text/plain".toMediaTypeOrNull())
             partList[NetworkConstants.TIMEZONE] = it.eventTzName.toRequestBody("text/plain".toMediaTypeOrNull())
         }
         if (eventAdded == null)
             partList[NetworkConstants.TIMEZONE] = "Asia/Kolkata".toRequestBody("text/plain".toMediaTypeOrNull())
         return partList
+    }
+
+    fun String.toDate(timeZone: TimeZone = TimeZone.getTimeZone("UTC")): Date {
+        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        parser.timeZone = timeZone
+        return parser.parse(this)!!
+    }
+
+    fun Date.formatTo(timeZone: TimeZone = TimeZone.getDefault()): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        formatter.timeZone = timeZone
+        return formatter.format(this)
     }
 
     fun setUpdateMode() {
@@ -316,13 +337,14 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onContentAttachmentsReady(attachments: List<ContentAttachmentData>) {
         if (attachments.isNotEmpty()) {
             if (isAttachmentsClicked) {
                 selectedAttachments = attachments[0]//.toMutableList()
                 views.tvPreviewAttachment.isVisible = true
                 views.ivRemoveAttachment.isVisible = true
-                views.tvPreviewAttachment.text = selectedAttachments?.name
+                views.tvPreviewAttachment.text = "Document Attached"
             } else {
                 selectedImages = attachments[0]//.toMutableList()
                 selectedImages?.queryUri.let {

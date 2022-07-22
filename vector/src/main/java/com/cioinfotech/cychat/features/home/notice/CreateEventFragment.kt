@@ -28,16 +28,7 @@ import com.cioinfotech.cychat.core.platform.VectorBaseFragment
 import com.cioinfotech.cychat.databinding.FragmentCreateEventBinding
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.home.notice.model.EventModel
-import com.cioinfotech.cychat.features.home.notice.model.Timezone
-import com.cioinfotech.cychat.features.home.notice.model.TimezoneParent
-import com.cioinfotech.cychat.features.login.OrgListFragment
-import com.cioinfotech.cychat.features.login.adapter.OrgListAdapter
-import io.reactivex.SingleObserver
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import org.matrix.android.sdk.internal.network.NetworkConstants
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -50,7 +41,7 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentCreateEventBinding.inflate(inflater, container, false)
     private val myCalendar: Calendar = Calendar.getInstance()
     private var startDateSelected = false
-    private var timeZones = mutableListOf<Timezone>()
+//    private var timeZones = mutableListOf<Timezone>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,7 +85,7 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
             val startDate = views.etStartDateAndTime.text.toString()
             val endDate = views.etEndDateAndTime.text.toString()
             val venue = if (views.rbLiveEvent.isChecked) views.etVenue.text.toString() else views.etEventLink.text.toString()
-            val timeZone = views.etTimeZone.text.toString()
+//            val timeZone = views.etTimeZone.text.toString()
 
             if (eventType == NetworkConstants.EVENT_LIVE && venue.isEmpty())
                 views.etVenue.error = "Please, enter Event Venue"
@@ -106,60 +97,60 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
                 views.etStartDateAndTime.error = "Please, select Start Date & Time"
             else if (endDate.isEmpty())
                 views.etEndDateAndTime.error = "Please, select End Date & Time"
-            else if (timeZone.isEmpty())
-                views.etTimeZone.error = "Please, select Timezone"
+//            else if (timeZone.isEmpty())
+//                views.etTimeZone.error = "Please, select Timezone"
             else {
-                cyCoreViewModel.eventLiveData.postValue(EventModel(startDate, endDate, venue, timeZone, eventType))
+                cyCoreViewModel.eventLiveData.postValue(EventModel(startDate, endDate, venue, "Asia/Kolkata", eventType))
                 requireFragmentManager().popBackStack()
             }
         }
 
-        views.etTimeZone.setOnClickListener {
-            OrgListFragment.getInstance(object : OrgListAdapter.ItemClickListener {
-                override fun onClick(name: String) {
-                    var org: Timezone? = null
-                    for (tempOrg in timeZones)
-                        if (name.contains(tempOrg.tz_name)) {
-                            org = tempOrg
-                            break
-                        }
-                    views.etTimeZone.setText(org?.tz_name)
-                }
-            },
-                    timeZones.map { org -> org.tz_name + org.std_offset }.toMutableList(),
-                    getString(R.string.select_timezone)).show(parentFragmentManager, "")
-        }
+//        views.etTimeZone.setOnClickListener {
+//            OrgListFragment.getInstance(object : OrgListAdapter.ItemClickListener {
+//                override fun onClick(name: String) {
+//                    var org: Timezone? = null
+//                    for (tempOrg in timeZones)
+//                        if (name.contains(tempOrg.tz_name)) {
+//                            org = tempOrg
+//                            break
+//                        }
+//                    views.etTimeZone.setText(org?.tz_name)
+//                }
+//            },
+//                    timeZones.map { org -> org.tz_name + org.std_offset }.toMutableList(),
+//                    getString(R.string.select_timezone)).show(parentFragmentManager, "")
+//        }
 
         cyCoreViewModel.eventLiveData.observe(viewLifecycleOwner) {
             it?.let { event ->
                 views.etStartDateAndTime.setText(event.eventStart)
                 views.etEndDateAndTime.setText(event.eventEnd)
-                views.etTimeZone.setText(event.eventTzName)
+//                views.etTimeZone.setText(event.eventTzName)
                 views.etVenue.setText(event.eventVenue)
                 views.rbLiveEvent.isChecked = it.eventType == NetworkConstants.EVENT_LIVE
                 views.rbOnlineEvent.isChecked = it.eventType == NetworkConstants.EVENT_ONLINE
             }
         }
 
-        cyCoreViewModel.getTimeZones().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(handleNextPostList())
+//        cyCoreViewModel.getTimeZones().subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(handleNextPostList())
     }
 
-    private fun handleNextPostList(): SingleObserver<TimezoneParent> {
-        return object : SingleObserver<TimezoneParent> {
-
-            override fun onSuccess(t: TimezoneParent) {
-                timeZones = t.data
-            }
-
-            override fun onSubscribe(d: Disposable) {}
-
-            override fun onError(e: Throwable) {
-                Timber.log(1, e)
-            }
-        }
-    }
+//    private fun handleNextPostList(): SingleObserver<TimezoneParent> {
+//        return object : SingleObserver<TimezoneParent> {
+//
+//            override fun onSuccess(t: TimezoneParent) {
+//                timeZones = t.data
+//            }
+//
+//            override fun onSubscribe(d: Disposable) {}
+//
+//            override fun onError(e: Throwable) {
+//                Timber.log(1, e)
+//            }
+//        }
+//    }
 
     private var dateListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         myCalendar.set(Calendar.YEAR, year)

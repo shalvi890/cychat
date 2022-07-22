@@ -20,31 +20,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.airbnb.mvrx.MvRx
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.extensions.addFragmentToBackstack
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
-import com.cioinfotech.cychat.databinding.FragmentPluginsDetailBinding
+import com.cioinfotech.cychat.databinding.FragmentPluginDocumentsBinding
 import com.cioinfotech.cychat.features.plugins.PluginsActivity
-import com.cioinfotech.cychat.features.plugins.model.UserPlugin
+import com.cioinfotech.cychat.features.plugins.adapter.PluginDocumentAdapter
+import com.google.android.material.tabs.TabLayout
 
-class PluginsDetailFragment : VectorBaseFragment<FragmentPluginsDetailBinding>() {
-
-    override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentPluginsDetailBinding.inflate(inflater)
+class PluginDocumentsFragment : VectorBaseFragment<FragmentPluginDocumentsBinding>(), PluginDocumentAdapter.ItemClickListener {
+    override fun getBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentPluginDocumentsBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as PluginsActivity).setToolbarTitle(getString(R.string.settings_privacy_policy))
-        val plugin = requireArguments().getParcelable<UserPlugin>(MvRx.KEY_ARG)
-        plugin?.plIntroURL?.let {
-            views.webview.loadUrl(it)
+        (requireActivity() as PluginsActivity).setToolbarTitle(getString(R.string.my_documents))
+        views.tabLayout.addTab(views.tabLayout.newTab().setText("Uploaded Documents"))
+        views.tabLayout.addTab(views.tabLayout.newTab().setText("Downloaded Documents"))
+        views.tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+        views.rvDocuments.adapter = PluginDocumentAdapter().apply {
+            itemClickListener = this@PluginDocumentsFragment
+        }
+        views.btnNewDoc.setOnClickListener {
+            addFragmentToBackstack(R.id.container, PluginAttachDocumentFragment::class.java, allowStateLoss = false)
+        }
+    }
 
-        }
-        views.btnContinue.setOnClickListener {
-                addFragmentToBackstack(R.id.container, PluginDocumentsFragment::class.java, allowStateLoss = false)
-        }
-        views.btnNotNow.setOnClickListener {
-            requireFragmentManager().popBackStack()
-        }
+    override fun onItemClicked() {
     }
 }

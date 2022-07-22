@@ -567,7 +567,7 @@ class HomeActivity :
         configureToolbar(toolbar, false)
     }
 
-    override fun getMenuRes() = R.menu.home
+//    override fun getMenuRes() = R.menu.home
 
 //    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
 //        menu.findItem(R.id.menu_home_init_sync_legacy)?.isVisible = vectorPreferences.developerMode()

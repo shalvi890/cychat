@@ -77,8 +77,6 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
 
             binding.tvPreviewAttachment.isVisible = notice.attachments.isNotEmpty()
             if (notice.attachments.isNotEmpty()) {
-                val url = notice.attachments[0].path ?: ""
-                binding.tvPreviewAttachment.text = url.substring(url.lastIndexOf("/") + 1, url.length)
                 binding.tvPreviewAttachment.setOnClickListener {
                     clickListener?.onAttachmentClicked(notice.attachments[0].path.toString())
                 }
@@ -111,8 +109,8 @@ class NoticeBoardAdapter(private val showMenu: Boolean = false) : RecyclerView.A
                     clickListener?.onAddToCalendarClicked(notice)
                 }
 
-                binding.tvStartTime.text = "Start Time: " + notice.event!!.eventStart.toDate(TimeZone.getTimeZone(notice.event?.eventTzName)).formatTo()
-                binding.tvEndTime.text = "End Time: " + notice.event!!.eventEnd.toDate(TimeZone.getTimeZone(notice.event?.eventTzName)).formatTo()
+                binding.tvStartTime.text = "Start Time: " + notice.event!!.eventStart.toDate().formatTo()
+                binding.tvEndTime.text = "End Time: " + notice.event!!.eventEnd.toDate().formatTo()
                 if (!notice.event?.eventVenue.isNullOrEmpty())
                     binding.tvVenue.text = if (notice.event?.eventType == NetworkConstants.EVENT_ONLINE)
                         "Event Link: " + notice.event?.eventVenue

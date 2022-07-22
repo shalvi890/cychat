@@ -122,6 +122,7 @@
             android:autofillHints="@null"
             android:background="@drawable/item_optional_digit_border"
             android:focusable="false"
+            android:visibility="gone"
             android:hint="@string/select_timezone"
             android:inputType="datetime"
             android:padding="8dp"

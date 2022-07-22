@@ -19,7 +19,6 @@ package com.cioinfotech.cychat.features.plugins.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.cioinfotech.cychat.databinding.ItemPluginsBinding
 import com.cioinfotech.cychat.features.plugins.model.UserPlugin
 
@@ -41,9 +40,9 @@ class PluginsAdapter : RecyclerView.Adapter<PluginsAdapter.PluginsViewHolder>() 
             itemClickListener.onItemClicked(listOfPlugins[position])
         }
 
-        Glide.with(binding.root.context)
-                .load(model.plImgURL)
-                .into(binding.ivLogo)
+//        Glide.with(binding.root.context)
+//                .load(model.plImgURL)
+//                .into(binding.ivLogo)
     }
 
     override fun getItemCount() = listOfPlugins.size

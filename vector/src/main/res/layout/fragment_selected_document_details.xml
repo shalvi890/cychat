@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    tools:context=".features.plugins.ui.SelectedDocumentDetailsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Aadhar Card"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_document_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:autofillHints="@null"
+            android:background="@drawable/item_optional_digit_border"
+            android:hint="Aadhar Number"
+            android:inputType="text"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_text" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="Aadhar number is displayed on right top of your card"
+            android:textColor="?android:textColorSecondary"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_document_key" />
+
+        <EditText
+            android:id="@+id/et_document_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:autofillHints="@null"
+            android:background="@drawable/item_optional_digit_border"
+            android:hint="Date"
+            android:inputType="datetime"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_description" />
+
+        <TextView
+            android:id="@+id/tv_date_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="(example: 12-12-2021)"
+            android:textColor="?android:textColorSecondary"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_document_date" />
+
+        <EditText
+            android:id="@+id/et_text_after"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:autofillHints="@null"
+            android:background="@drawable/item_optional_digit_border"
+            android:gravity="start"
+            android:hint="@string/remark"
+            android:inputType="textMultiLine"
+            android:lines="6"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_date_description" />
+
+        <Button
+            android:id="@+id/btn_choose_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_file"
+            app:layout_constraintTop_toBottomOf="@id/et_text_after" />
+
+        <TextView
+            android:id="@+id/tv_preview_attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_attachments"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:gravity="center|start"
+            android:lines="1"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="8dp"
+            android:text="@string/document_attached"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_paperclip"
+            app:layout_constraintTop_toBottomOf="@id/btn_choose_file"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_remove_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_check_off"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_preview_attachment"
+            app:layout_constraintEnd_toEndOf="@id/tv_preview_attachment"
+            app:layout_constraintTop_toTopOf="@id/tv_preview_attachment"
+            app:tint="@color/black"
+            tools:visibility="visible" />
+
+
+        <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/upload"
+            app:layout_constraintTop_toBottomOf="@id/tv_preview_attachment" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

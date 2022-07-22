@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 New Vector Ltd
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -71,12 +71,22 @@ abstract class Picker<T> {
 
     abstract fun createIntent(): Intent
 
+    private val DOC = "application/msword"
+    private val DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    private val TEXT = "text/*"
+    private val PDF = "application/pdf"
+    private val XLS = "application/vnd.ms-excel"
+
     /**
      * Start Storage Access Framework UI by using a ActivityResultLauncher.
      * @param activityResultLauncher to handle the result.
      */
     fun startWith(activityResultLauncher: ActivityResultLauncher<Intent>) {
-        activityResultLauncher.launch(createIntent().apply { addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) })
+        activityResultLauncher.launch(createIntent().apply {
+            val mimetypes = arrayOf(DOC, DOCX, TEXT, PDF, XLS)
+            putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        })
     }
 
     protected fun getSelectedUriList(data: Intent?): List<Uri> {

@@ -18,15 +18,14 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_chat.xml" value="0.23697916666666666" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_home_bottom_group.xml" value="0.23697916666666666" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_required.xml" value="0.1" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_more_vertical.xml" value="0.1555" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/ic_required.xml" value="0.1" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/item_bg_event.xml" value="0.18" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/item_optional_digit_border.xml" value="0.2275" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/drawable/item_select_document.xml" value="0.148" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity.xml" value="0.1778537836682343" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_call.xml" value="0.176" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_home.xml" value="0.10443995963673057" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_plugins.xml" value="0.20606884057971014" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_notice_board.xml" value="0.1778537836682343" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_plugins.xml" value="0.20606884057971014" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/activity_vector_settings.xml" value="0.21666666666666667" />
@@ -48,7 +47,9 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_manage_notices.xml" value="0.1778537836682343" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_notice_board.xml" value="0.1778537836682343" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_org_list.xml" value="0.21666666666666667" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_plugin_attach_document.xml" value="0.1671195652173913" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_plugin_consent_form.xml" value="0.1778537836682343" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_plugin_documents.xml" value="0.1671195652173913" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_plugin_list.xml" value="0.1984375" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_plugin_registration.xml" value="0.176" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_plugins_detail.xml" value="0.1" />
@@ -56,7 +57,9 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_role_add_alert_dialog.xml" value="0.264" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_detail.xml" value="0.17777777777777778" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_room_list.xml" value="0.1778537836682343" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_select_document.xml" value="0.1671195652173913" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_select_env.xml" value="0.10885416666666667" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_selected_document_details.xml" value="0.264" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_server_list.xml" value="0.176" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_supplier_confirmation.xml" value="0.176" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/fragment_user_list.xml" value="0.4" />
@@ -65,20 +68,20 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_attachment_big_preview.xml" value="0.17777777777777778" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_attachment_miniature_preview.xml" value="0.17777777777777778" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_choice.xml" value="0.1778537836682343" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_choice.xml" value="0.1778537836682343" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_home_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_known_user.xml" value="0.6" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_notice_attachment.xml" value="0.1585144927536232" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_notice_board.xml" value="0.4" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_plugin_attachment.xml" value="0.1671195652173913" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_plugin_document.xml" value="0.264" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_plugins.xml" value="0.1" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_plugins_consent_form.xml" value="0.152" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_progress.xml" value="0.536" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_plugins.xml" value="0.1" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_plugins_consent_form.xml" value="0.152" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_category.xml" value="0.13697916666666668" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_filter_footer.xml" value="0.1" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_room_invitation.xml" value="0.21666666666666667" />
+        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_select_document.xml" value="0.152" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_server_list.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_spinner_country.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/item_spinner_notice.xml" value="0.1" />
@@ -91,7 +94,6 @@
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/motion_notice_fab_menu_merge.xml" value="0.1" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/view_attachment_type_selector.xml" value="0.4" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/view_call_controls.xml" value="0.264" />
-        <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/menu/home.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/layout/view_file_icon.xml" value="0.17777777777777778" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/menu/home.xml" value="0.21666666666666667" />
         <entry key="..\:/Projects/AndroidStudioProjects/cychat/vector/src/main/res/menu/home_bottom_navigation.xml" value="0.21666666666666667" />

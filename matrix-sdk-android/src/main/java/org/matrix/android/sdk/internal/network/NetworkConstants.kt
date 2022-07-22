@@ -45,13 +45,12 @@ object NetworkConstants {
     const val QA_URL = "https://cyberiaqa-api.cioinfotech.com"
     const val UAT_URL = "https://cychat-ct.cioinfotech.com"
     const val PRODUCTION_URL = "https://cyverse-production1.cioinfotech.com"
-//    const val CENTRAL_SERVER_URL = "https://dev.cyverse.api.cioinfotech.com"
-    const val CENTRAL_SERVER_URL = "https://cyverse.api.cioinfotech.com"
+    const val CENTRAL_SERVER_URL = "https://central.cyverse.co.za"
+//    const val CENTRAL_SERVER_URL = "https://cyverse.api.cioinfotech.com"
     const val DEV = "Development"
     const val QA = "QA"
     const val UAT = "UAT"
     const val PRODUCTION = "PRODUCTION"
-
     // Cy Central Server APIs
 
     const val ROOT_API = "/api/root_api.php"

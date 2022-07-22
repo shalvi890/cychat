@@ -23,17 +23,24 @@ import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME
 import android.provider.CalendarContract.EXTRA_EVENT_END_TIME
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
+import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_WRITING_FILES
+import com.cioinfotech.cychat.core.utils.checkPermissions
+import com.cioinfotech.cychat.core.utils.registerForPermissionsResult
 import com.cioinfotech.cychat.databinding.FragmentNoticeBoardBinding
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.home.notice.adapters.NoticeBoardAdapter
@@ -47,6 +54,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.io.File
 import java.util.Calendar
 
 class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), NoticeFabMenuView.Listener, NoticeBoardAdapter.ClickListener {
@@ -59,12 +67,19 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
     private var lastPost = -1
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentNoticeBoardBinding {
+        setHasOptionsMenu(true)
+        requireActivity().invalidateOptionsMenu()
+        invalidateOptionsMenu()
         return FragmentNoticeBoardBinding.inflate(inflater, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.findItem(R.id.menu_home_filter).isVisible = false
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onResume() {
         super.onResume()
-
         cyCoreViewModel = fragmentViewModelProvider.get(CyCoreViewModel::class.java)
         setupPagination()
     }
@@ -72,6 +87,12 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
+        views.btnAdd.setOnClickListener {
+            fabOpenRoomDirectory()
+        }
+        views.btnRefresh.setOnClickListener {
+            setupPagination()
+        }
     }
 
     private fun setupPagination() {
@@ -81,10 +102,6 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
         val linearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         views.rvNoticeBoard.adapter = noticesAdapter
         views.rvNoticeBoard.layoutManager = linearLayoutManager
-//        views.createChatFabMenu.listener = this
-        views.btnAdd.setOnClickListener {
-            fabOpenRoomDirectory()
-        }
         views.rvNoticeBoard.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItems() {
                 isLoading = true
@@ -154,14 +171,9 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
     }
 
     private fun setupToolbar() {
-//        val parentActivit/ = vectorBaseActivity
+//        val parentActivity = vectorBaseActivity
 //        if (parentActivity is ToolbarConfigurable)
 //            parentActivity.configure(views.groupToolbar)
-
-//        views.groupToolbar.title = ""
-//        views.groupToolbarAvatarImageView.debouncedClicks {
-//            sharedActionViewModel.post(HomeActivitySharedAction.OpenDrawer)
-//        }
     }
 
     override fun fabCreateDirectChat() {
@@ -179,18 +191,46 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
         ProfileFullScreenFragment(null, null, url).show(childFragmentManager, "")
     }
 
+    private val permissionActivityResultLauncher = this.registerForPermissionsResult { allGranted ->
+        if (allGranted)
+            onAttachmentClicked(downloadUrl)
+        else
+            Toast.makeText(context, "File Download & Save Permission Not Granted!", Toast.LENGTH_LONG).show()
+
+    }
+
     private var enqueue: Long = 0L
+    private lateinit var downloadUrl: String
     override fun onAttachmentClicked(url: String) {
-        (requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager).apply {
-            val request = DownloadManager.Request(Uri.parse(url))
+        downloadUrl = url
+        if (checkPermissions(PERMISSIONS_FOR_WRITING_FILES, requireActivity(), permissionActivityResultLauncher)) {
             val fileName = if (url.contains("/")) url.substring(url.lastIndexOf("/") + 1, url.length) else url
-            request.setTitle(fileName)
-            request.setDescription("Downloading $fileName")
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-            enqueue = this.enqueue(request)
+            if (!File(Environment.DIRECTORY_DOWNLOADS + "/$fileName").exists()) {
+                (requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager).apply {
+                    val request = DownloadManager.Request(Uri.parse(url))
+                    request.setTitle(fileName)
+                    request.setDescription("Downloading $fileName")
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                    enqueue = this.enqueue(request)
+                }
+                requireContext().registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+            } else {
+                try {
+                    startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
+                } catch (ex: Exception) {
+
+                } finally {
+                    Toast.makeText(context, "File downloaded in downloads folder", Toast.LENGTH_LONG).show()
+                }
+            }
         }
-        requireContext().registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            onAttachmentClicked(downloadUrl)
     }
 
     override fun onAddToCalendarClicked(notice: Notice) {
@@ -198,7 +238,7 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
             val calendarEvent = Calendar.getInstance().apply {
                 val startDate = notice.event?.eventStart ?: ""
                 val year = Integer.valueOf(startDate.substring(0, 4))
-                val month = Integer.valueOf(startDate.substring(5, 7))-1
+                val month = Integer.valueOf(startDate.substring(5, 7)) - 1
                 val day = Integer.valueOf(startDate.substring(8, 10))
                 val hourOfDay = Integer.valueOf(startDate.substring(11, 13))
                 val minute = Integer.valueOf(startDate.substring(14, 16))
@@ -211,7 +251,7 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
             val calendarEventEnd = Calendar.getInstance().apply {
                 val startDate = notice.event?.eventEnd ?: ""
                 val year = Integer.valueOf(startDate.substring(0, 4))
-                val month = Integer.valueOf(startDate.substring(5, 7))-1
+                val month = Integer.valueOf(startDate.substring(5, 7)) - 1
                 val day = Integer.valueOf(startDate.substring(8, 10))
                 val hourOfDay = Integer.valueOf(startDate.substring(11, 13))
                 val minute = Integer.valueOf(startDate.substring(14, 16))

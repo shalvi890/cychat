@@ -3413,9 +3413,8 @@
     <string name="new_notice_created">New Notice Created</string>
     <string name="enter_title">Enter Title</string>
     <string name="no_notice_boards_found">No Notice Boards Found</string>
-    <string name="posted_by">Posted by: %s</string>
-    <string name="posted_on">Posted on: %s</string>
-    <string name="posted_at">Posted at: %s</string>
+    <string name="posted_by">By: %s</string>
+    <string name="posted_on">On: %s</string>
     <string name="search_board_by_name">Search Board By Name</string>
     <string name="update_notice">Update Notice</string>
     <string name="enter_notice">Enter Notice</string>
@@ -3442,5 +3441,15 @@
     <string name="select_dob">Select Date Of Birth*</string>
     <string name="enter_mobile_number">Enter Mobile Number*</string>
     <string name="proceed">Proceed</string>
+    <string name="aadhar_card">Aadhar Card</string>
+    <string name="new_document">New Document</string>
+    <string name="my_documents">My Documents</string>
+    <string name="documents_you_might_need">Documents you might need</string>
+    <string name="document_providers">Document Providers</string>
+    <string name="remark">Remark</string>
+    <string name="choose_file">Choose File</string>
+    <string name="upload">Upload</string>
+    <string name="document_attached">Document Attached</string>
+    <string name="select_document">Select Document</string>
 
 </resources>

@@ -18,6 +18,8 @@ package com.cioinfotech.cychat.features.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -70,6 +72,7 @@ class HomeDetailFragment @Inject constructor(
         ServerBackupStatusViewModel.Factory {
 
     private val viewModel: HomeDetailViewModel by fragmentViewModel()
+    private var displayMode: RoomListDisplayMode? = null
 
     //    private val unknownDeviceDetectorSharedViewModel: UnknownDeviceDetectorSharedViewModel by activityViewModel()
 //    private val serverBackupStatusViewModel: ServerBackupStatusViewModel by activityViewModel()
@@ -86,8 +89,12 @@ class HomeDetailFragment @Inject constructor(
             }
         }
 
-    override fun getMenuRes() = R.menu.room_list
+    override fun getMenuRes() = R.menu.home
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu?.findItem(R.id.menu_home_filter)?.isVisible = displayMode != RoomListDisplayMode.NOTICE_BOARD
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 //        when (item.itemId) {
 //            R.id.menu_home_mark_all_as_read -> {
@@ -295,10 +302,6 @@ class HomeDetailFragment @Inject constructor(
         if (parentActivity is ToolbarConfigurable)
             parentActivity.configure(views.groupToolbar)
 
-//        views.groupToolbar.title = ""
-//        views.groupToolbarAvatarImageView.debouncedClicks {
-//            sharedActionViewModel.post(HomeActivitySharedAction.OpenDrawer)
-//        }
     }
 
     private fun setupBottomNavigationView() {
@@ -336,7 +339,7 @@ class HomeDetailFragment @Inject constructor(
 
     private fun updateSelectedFragment(displayMode: RoomListDisplayMode) {
         val fragmentTag = "FRAGMENT_TAG_${displayMode.name}"
-//        isOneToOneChatOpen = displayMode == RoomListDisplayMode.PEOPLE
+        this.displayMode = displayMode
         val fragmentToShow = childFragmentManager.findFragmentByTag(fragmentTag)
         childFragmentManager.commitTransaction {
             childFragmentManager.fragments
@@ -352,6 +355,8 @@ class HomeDetailFragment @Inject constructor(
             } else
                 attach(fragmentToShow)
         }
+        requireActivity().invalidateOptionsMenu()
+        invalidateOptionsMenu()
     }
 
     /* ==========================================================================================
