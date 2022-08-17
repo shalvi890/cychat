@@ -168,6 +168,9 @@ class UserListFragment @Inject constructor(
             }
         }
 
+         views.txtShare.setOnClickListener {
+             viewModel.handle(UserListAction.ComputeMatrixToLinkForSharing)
+         }
         views.tvServerName.setOnClickListener {
             ServerListFragment.getInstance(object : ServerListAdapter.ItemClickListener {
                 override fun onClick(item: FederatedDomain) {
