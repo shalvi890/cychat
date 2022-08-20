@@ -86,6 +86,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:visibility="gone"
             android:text="@string/you_are_searching_in"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,6 +100,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:visibility="gone"
             android:background="@drawable/bg_server_name"
             android:gravity="center"
             android:padding="8dp"
@@ -107,6 +109,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_searching_in"
             tools:text="@string/you_are_searching_in" />
+
+        <TextView
+            android:id="@+id/txt_invite_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginLeft="@dimen/layout_horizontal_margin"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/change_org"
+            android:drawableStart="@drawable/ic_share"
+            android:drawablePadding="8dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:text="@string/invite_friends"
+            android:textAlignment="gravity"
+            android:textColor="?riotx_text_secondary"
+            app:drawableTint="?riotx_text_primary"
+            app:layout_constraintTop_toBottomOf="@id/userListFilterDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
+
 
         <EditText
             android:id="@+id/userListSearch"
@@ -120,10 +142,11 @@
             android:hint="@string/user_directory_search_hint"
             android:importantForAutofill="no"
             android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/userListToolbar"
             android:maxHeight="80dp"
             android:padding="8dp"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/tv_server_name" />
+            />
 
         <!--        <androidx.appcompat.widget.SwitchCompat-->
         <!--            android:id="@+id/switch_org"-->
@@ -185,7 +208,7 @@
             android:textColor="?riotx_text_secondary"
             android:textSize="14sp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/userListFilterDivider"
+            app:layout_constraintTop_toBottomOf="@id/txt_invite_friend"
             tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -229,7 +252,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
