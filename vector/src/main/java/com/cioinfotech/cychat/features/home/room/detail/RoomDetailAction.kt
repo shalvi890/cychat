@@ -119,4 +119,6 @@ sealed class RoomDetailAction : VectorViewModelAction {
 
     // Voice Message
     object EndAllVoiceActions : RoomDetailAction()
+
+    data class JWTToken(val romID:String,val userId:String ) :  RoomDetailAction()
 }

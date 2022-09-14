@@ -18,6 +18,9 @@ package com.cioinfotech.cychat.features.home.room.detail
 
 import android.net.Uri
 import androidx.annotation.IdRes
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.airbnb.mvrx.Async
 import com.airbnb.mvrx.Fail
@@ -42,6 +45,7 @@ import com.cioinfotech.cychat.features.command.ParsedCommand
 import com.cioinfotech.cychat.features.createdirect.DirectRoomHelper
 import com.cioinfotech.cychat.features.crypto.keysrequest.OutboundSessionKeySharingStrategy
 import com.cioinfotech.cychat.features.crypto.verification.SupportedVerificationMethodsProvider
+import com.cioinfotech.cychat.features.cycore.data.ErrorModel
 import com.cioinfotech.cychat.features.home.HomeActivity
 import com.cioinfotech.cychat.features.home.room.detail.composer.rainbow.RainbowGenerator
 import com.cioinfotech.cychat.features.home.room.detail.sticker.StickerPickerActionHandler
@@ -49,8 +53,12 @@ import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.RoomSumm
 import com.cioinfotech.cychat.features.home.room.detail.timeline.helper.TimelineSettingsFactory
 import com.cioinfotech.cychat.features.home.room.detail.timeline.url.PreviewUrlRetriever
 import com.cioinfotech.cychat.features.home.room.typing.TypingHelper
+import com.cioinfotech.cychat.features.plugins.model.PluginListParentModel
+import com.cioinfotech.cychat.features.plugins.service.PluginService
 import com.cioinfotech.cychat.features.powerlevel.PowerLevelsObservableFactory
 import com.cioinfotech.cychat.features.settings.VectorPreferences
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import dagger.assisted.Assisted
@@ -65,6 +73,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
+import org.json.JSONObject
+import org.matrix.android.sdk.OneTimeEvent
 import org.matrix.android.sdk.api.MatrixCallback
 import org.matrix.android.sdk.api.MatrixPatterns
 import org.matrix.android.sdk.api.extensions.tryOrNull
@@ -103,6 +113,9 @@ import org.matrix.android.sdk.api.util.toOptional
 import org.matrix.android.sdk.internal.crypto.model.event.WithHeldCode
 import org.matrix.android.sdk.rx.rx
 import org.matrix.android.sdk.rx.unwrap
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -117,7 +130,9 @@ class RoomDetailViewModel @AssistedInject constructor(
         private val stickerPickerActionHandler: StickerPickerActionHandler,
         private val roomSummariesHolder: RoomSummariesHolder,
         private val typingHelper: TypingHelper,
+        private val pluginService: PluginService,
         private val callManager: WebRtcCallManager,
+
         private val chatEffectManager: ChatEffectManager,
         private val directRoomHelper: DirectRoomHelper,
         private val activeConferenceHolder: JitsiActiveConferenceHolder,
@@ -125,7 +140,8 @@ class RoomDetailViewModel @AssistedInject constructor(
         timelineSettingsFactory: TimelineSettingsFactory
 ) : VectorViewModel<RoomDetailViewState, RoomDetailAction, RoomDetailViewEvents>(initialState),
         Timeline.Listener, ChatEffectManager.Delegate, PSTNProtocolChecker.Listener {
-
+    val pluginListLiveData = MutableLiveData<PluginListParentModel>()
+    val errorData = MutableLiveData<ErrorModel?>()
     private val room = session.getRoom(initialState.roomId)!!
     private val eventId = initialState.eventId
     private val invisibleEventsObservable = BehaviorRelay.create<RoomDetailAction.TimelineEventTurnsInvisible>()
@@ -133,6 +149,7 @@ class RoomDetailViewModel @AssistedInject constructor(
     private val timelineSettings = timelineSettingsFactory.create()
     private var timelineEvents = PublishRelay.create<List<TimelineEvent>>()
     val timeline = room.createTimeline(eventId, timelineSettings)
+    private val eventListener: MediatorLiveData<OneTimeEvent> = MediatorLiveData()
 
     // Same lifecycle than the ViewModel (survive to screen rotation)
     val previewUrlRetriever = PreviewUrlRetriever(session, viewModelScope)
@@ -153,6 +170,8 @@ class RoomDetailViewModel @AssistedInject constructor(
     companion object : MvRxViewModelFactory<RoomDetailViewModel, RoomDetailViewState> {
 
         const val PAGINATION_COUNT = 50
+        var TOKEN :String = "0";
+         var METTING_URL :String = "https://cyverse-prod-jitsi.cioinfotech.com/";
 
         @JvmStatic
         override fun create(viewModelContext: ViewModelContext, state: RoomDetailViewState): RoomDetailViewModel {
@@ -212,6 +231,9 @@ class RoomDetailViewModel @AssistedInject constructor(
         }
     }
 
+    /*fun onEvent(): LiveData<OneTimeEvent?>? {
+        return eventListener
+    }*/
     private fun observePowerLevel() {
         PowerLevelsObservableFactory(room).createObservable()
                 .subscribe {
@@ -333,6 +355,7 @@ class RoomDetailViewModel @AssistedInject constructor(
             RoomDetailAction.QuickActionInvitePeople             -> handleInvitePeople()
             RoomDetailAction.QuickActionSetAvatar                -> handleQuickSetAvatar()
             is RoomDetailAction.SetAvatarAction                  -> handleSetNewAvatar(action)
+            is RoomDetailAction.JWTToken                         -> subscribeJWtToken(action.userId, action.userId)
             RoomDetailAction.QuickActionSetTopic                 -> _viewEvents.post(RoomDetailViewEvents.OpenRoomSettings)
             is RoomDetailAction.ShowRoomAvatarFullScreen         -> {
                 _viewEvents.post(
@@ -380,6 +403,27 @@ class RoomDetailViewModel @AssistedInject constructor(
                 _viewEvents.post(RoomDetailViewEvents.ActionFailure(action, failure))
             }
         }
+    }
+
+    private fun subscribeJWtToken(roomId: String, cntx_user_name: String) {
+        jitsiService.getJWTToken(
+                "createMeeting", "create_meeting",
+                "cyVerseAndroid",
+                cntx_user_name,"2baebdf70ba55b31be83c38f573cdd43"
+        ).enqueue(object :  Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+               /* IS_TOKEN_GENRATE = true;
+                IS_TOKEN_GENRATE_SUCESSFULL = false;*/
+            }
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                val jsonObject = JSONObject(Gson().toJson(response.body()))
+                METTING_URL= jsonObject.getJSONObject("data").getString("meetingURL")
+                 TOKEN = jsonObject.getJSONObject("data").getString("token")
+                 eventListener.value = OneTimeEvent()
+
+            }
+        })
+
     }
 
     private fun handleInvitePeople() {
@@ -1528,4 +1572,11 @@ class RoomDetailViewModel @AssistedInject constructor(
         callManager.removePstnSupportListener(this)
         super.onCleared()
     }
+
+    fun onEvent() : LiveData<OneTimeEvent> {
+        return eventListener
+    }
 }
+
+
+

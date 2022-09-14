@@ -38,6 +38,9 @@ import com.cioinfotech.cychat.core.di.ScreenComponent
 import com.cioinfotech.cychat.core.extensions.exhaustive
 import com.cioinfotech.cychat.core.platform.VectorBaseActivity
 import com.cioinfotech.cychat.databinding.ActivityJitsiBinding
+import com.cioinfotech.cychat.features.home.room.detail.RoomDetailViewModel
+import com.cioinfotech.cychat.features.home.room.detail.RoomDetailViewModel.Companion.METTING_URL
+import com.cioinfotech.cychat.features.home.room.detail.RoomDetailViewModel.Companion.TOKEN
 import com.facebook.react.modules.core.PermissionListener
 import kotlinx.parcelize.Parcelize
 import org.jitsi.meet.sdk.BroadcastEvent
@@ -151,7 +154,7 @@ class VectorJitsiActivity : VectorBaseActivity<ActivityJitsiBinding>(), JitsiMee
                 .setVideoMuted(!startConference.enableVideo)
                 .setUserInfo(startConference.userInfo)
                 .apply {
-                    tryOrNull { URL(startConference.jitsiUrl) }?.let {
+                    tryOrNull { URL(METTING_URL) }?.let {
                         setServerURL(it)
                     }
                 }
@@ -163,7 +166,8 @@ class VectorJitsiActivity : VectorBaseActivity<ActivityJitsiBinding>(), JitsiMee
                 .setFeatureFlag("call-integration.enabled", false)
                 .setRoom(startConference.confId)
                 .setSubject(startConference.subject)
-                .build()
+                .setToken(TOKEN)
+                 .build()
         jitsiMeetView?.join(jitsiMeetConferenceOptions)
     }
 
@@ -257,4 +261,6 @@ class VectorJitsiActivity : VectorBaseActivity<ActivityJitsiBinding>(), JitsiMee
             }
         }
     }
+
+
 }

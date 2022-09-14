@@ -186,4 +186,6 @@ object NetworkConstants {
     const val EVENT_ONLINE = "event-online"
     const val EVENT_LIVE = "event-live"
     const val POST = "post"
+    const val JWT_TOKEN_JITSI ="https://instance01.cyverse.co.za/api/root_api.php/"
+
 }
