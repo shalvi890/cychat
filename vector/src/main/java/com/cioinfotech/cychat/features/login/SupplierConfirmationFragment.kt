@@ -68,6 +68,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                     organizations = it.orgParent.data.userTypes
                     views.rbOrganization.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked)
+                            views.rbIndividual.isChecked = false
                             setOrganizationsView()
                     }
                 }
@@ -77,6 +78,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                         views.rbIndividual.isVisible = true
                         views.rbIndividual.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
+                                views.rbOrganization.isChecked = false
                                 views.spinnerOrganization.isVisible = false
                                 views.tvSelectOrg.isVisible = false
                                 views.spinner.isVisible = false

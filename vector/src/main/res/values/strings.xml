@@ -3391,7 +3391,7 @@
     <string name="individual_user">Individual User</string>
     <string name="individual_user_selection_hint">Register as individual user on this App</string>
     <string name="organization_user">Organization User</string>
-    <string name="organization_user_selection_hint">Register as a user of the Participating Organization.\nClick this option only if your organization has purchased this App for Corporate use \nand have instructed you to register as user from your organization.</string>
+    <string name="organization_user_selection_hint">Register as a user of the Participating Organization.\nClick this option only if your organization has purchased this App for Corporate use and have instructed you to register as user from your organization.</string>
     <string name="now_you_can_add_roles_from_settings_profile">Now, you can add new role using Settings -> General -> Profile -> Add Role</string>
     <string name="you_are_signing_for">You are doing sign-in or sign-up for %s</string>
     <string name="select_organization">Select the type of your organization</string>
