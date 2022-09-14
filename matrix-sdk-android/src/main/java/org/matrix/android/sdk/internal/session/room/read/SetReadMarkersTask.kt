@@ -73,12 +73,16 @@ internal class DefaultSetReadMarkersTask @Inject constructor(
         val readReceiptEventId = if (params.forceReadReceipt) {
             latestSyncedEventId
         } else {
+            Timber.v("in else block when print params.readReceiptEventId")
+
             params.readReceiptEventId
         }
         if (fullyReadEventId != null && !isReadMarkerMoreRecent(monarchy.realmConfiguration, params.roomId, fullyReadEventId)) {
             if (LocalEcho.isLocalEchoId(fullyReadEventId)) {
                 Timber.w("Can't set read marker for local event $fullyReadEventId")
             } else {
+                Timber.v("in else block when print markers fullyReadEventId")
+
                 markers[READ_MARKER] = fullyReadEventId
             }
         }
@@ -87,6 +91,8 @@ internal class DefaultSetReadMarkersTask @Inject constructor(
             if (LocalEcho.isLocalEchoId(readReceiptEventId)) {
                 Timber.w("Can't set read receipt for local event $readReceiptEventId")
             } else {
+                Timber.v("in else block when print markers[READ_RECEIPT]")
+
                 markers[READ_RECEIPT] = readReceiptEventId
             }
         }
@@ -102,7 +108,8 @@ internal class DefaultSetReadMarkersTask @Inject constructor(
             ) {
                 if (markers[READ_MARKER] == null) {
                     if (readReceiptEventId != null) {
-                        roomAPI.sendReceipt(params.roomId, READ_RECEIPT, readReceiptEventId)
+                        Timber.v("in readReceiptEventId")
+                   roomAPI.sendReceipt(params.roomId, READ_RECEIPT, readReceiptEventId)
                     }
                 } else {
                     // "m.fully_read" value is mandatory to make this call

@@ -8,6 +8,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 buildscript {
     repositories {
+        google()
         maven { url 'https://jitpack.io' }
         jcenter()
     }
@@ -435,7 +436,6 @@ dependencies {
     implementation "com.github.piasy:GlideImageLoader:$big_image_viewer_version"
     implementation "com.github.piasy:ProgressPieIndicator:$big_image_viewer_version"
     implementation "com.github.piasy:GlideImageViewFactory:$big_image_viewer_version"
-
     // implementation 'com.github.MikeOrtiz:TouchImageView:3.0.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 

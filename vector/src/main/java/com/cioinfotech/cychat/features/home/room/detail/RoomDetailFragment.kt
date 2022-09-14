@@ -52,6 +52,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -184,6 +185,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -191,6 +193,7 @@ import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import org.billcarsonfr.jsonviewer.JSonViewerDialog
 import org.commonmark.parser.Parser
+import org.matrix.android.sdk.OneTimeEvent
 import org.matrix.android.sdk.api.session.Session
 import org.matrix.android.sdk.api.session.content.ContentAttachmentData
 import org.matrix.android.sdk.api.session.events.model.Event
@@ -238,6 +241,7 @@ class RoomDetailFragment @Inject constructor(
         private val session: Session,
         private val avatarRenderer: AvatarRenderer,
         private val timelineEventController: TimelineEventController,
+
         autoCompleterFactory: AutoCompleter.Factory,
         private val permalinkHandler: PermalinkHandler,
         private val notificationDrawerManager: NotificationDrawerManager,
@@ -283,6 +287,7 @@ class RoomDetailFragment @Inject constructor(
 
     private val galleryOrCameraDialogHelper = GalleryOrCameraDialogHelper(this, colorProvider)
     private var summary: RoomSummary? = null
+    private var repeatJob :Job? = null
     private val roomDetailArgs: RoomDetailArgs by args()
     private val glideRequests by lazy {
         GlideApp.with(this)
@@ -311,6 +316,7 @@ class RoomDetailFragment @Inject constructor(
     private lateinit var sharedActionViewModel: MessageSharedActionViewModel
     private lateinit var knownCallsViewModel: SharedKnownCallsViewModel
 
+    private  lateinit var  roomName : String
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var jumpToBottomViewVisibilityManager: JumpToBottomViewVisibilityManager
     private var modelBuildListener: OnModelBuildFinishedListener? = null
@@ -609,19 +615,39 @@ class RoomDetailFragment @Inject constructor(
         views.activeConferenceView.callback = object : ActiveConferenceView.Callback {
             override fun onTapJoinAudio(jitsiWidget: Widget) {
                 // need to check if allowed first
-                roomDetailViewModel.handle(RoomDetailAction.EnsureNativeWidgetAllowed(
-                        widget = jitsiWidget,
-                        userJustAccepted = false,
-                        grantedEvents = RoomDetailViewEvents.JoinJitsiConference(jitsiWidget, false))
-                )
+
+
+                roomDetailViewModel.handle(RoomDetailAction.JWTToken(roomDetailArgs.roomId,roomName))
+                //     repeatJob= startRepeatingJob(1000L , true);
+
+                roomDetailViewModel.onEvent().observe(activity!!, Observer<OneTimeEvent> { oneTimeEvent ->
+                    if (oneTimeEvent.receive()) {
+                        roomDetailViewModel.handle(RoomDetailAction.EnsureNativeWidgetAllowed(
+                                widget = jitsiWidget,
+                                userJustAccepted = false,
+                                grantedEvents = RoomDetailViewEvents.JoinJitsiConference(jitsiWidget, false))
+                        )
+                    }
+                })
+
             }
 
             override fun onTapJoinVideo(jitsiWidget: Widget) {
-                roomDetailViewModel.handle(RoomDetailAction.EnsureNativeWidgetAllowed(
-                        widget = jitsiWidget,
-                        userJustAccepted = false,
-                        grantedEvents = RoomDetailViewEvents.JoinJitsiConference(jitsiWidget, true))
-                )
+
+                roomDetailViewModel.handle(RoomDetailAction.JWTToken(roomDetailArgs.roomId,roomName))
+                //     repeatJob= startRepeatingJob(1000L , true);
+
+                roomDetailViewModel.onEvent().observe(activity!!, Observer<OneTimeEvent> { oneTimeEvent ->
+                    if (oneTimeEvent.receive()) {
+                        roomDetailViewModel.handle(RoomDetailAction.EnsureNativeWidgetAllowed(
+                                widget = jitsiWidget,
+                                userJustAccepted = false,
+                                grantedEvents = RoomDetailViewEvents.JoinJitsiConference(jitsiWidget, true))
+                        )
+                    }
+                })
+
+
             }
 
             override fun onDelete(jitsiWidget: Widget) {
@@ -916,11 +942,26 @@ class RoomDetailFragment @Inject constructor(
 //                true
 //            }
             R.id.voice_call       -> {
-                callActionsHandler.onVoiceCallClicked()
+                roomDetailViewModel.handle(RoomDetailAction.JWTToken(roomDetailArgs.roomId,roomName))
+                roomDetailViewModel.onEvent().observe(this, Observer<OneTimeEvent> { oneTimeEvent ->
+                    if (oneTimeEvent.receive()) {
+                        // do something on event
+                        callActionsHandler.onVoiceCallClicked()
+                    }
+                })
                 true
             }
             R.id.video_call       -> {
-                callActionsHandler.onVideoCallClicked()
+                roomDetailViewModel.handle(RoomDetailAction.JWTToken(roomDetailArgs.roomId,roomName))
+           //     repeatJob= startRepeatingJob(1000L , true);
+
+                roomDetailViewModel.onEvent().observe(this, Observer<OneTimeEvent> { oneTimeEvent ->
+                    if (oneTimeEvent.receive()) {
+                         callActionsHandler.onVideoCallClicked()
+                    }
+
+                })
+
                 true
             }
             R.id.hangup_call      -> {
@@ -1382,6 +1423,7 @@ class RoomDetailFragment @Inject constructor(
         } else {
             views.roomToolbarContentView.isClickable = roomSummary.membership == Membership.JOIN
             views.roomToolbarTitleView.text = roomSummary.displayName
+            roomName = roomSummary.displayName
             avatarRenderer.render(roomSummary.toMatrixItem(), views.roomToolbarAvatarImageView)
 
             renderSubTitle(typingMessage, roomSummary.topic)
@@ -2279,4 +2321,5 @@ class RoomDetailFragment @Inject constructor(
             mRecorder = null
         }
     }
+
 }

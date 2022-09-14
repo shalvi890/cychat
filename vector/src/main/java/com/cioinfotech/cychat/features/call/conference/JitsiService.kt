@@ -23,12 +23,24 @@ import com.cioinfotech.cychat.core.network.await
 import com.cioinfotech.cychat.core.resources.StringProvider
 import com.cioinfotech.cychat.core.utils.ensureProtocol
 import com.cioinfotech.cychat.core.utils.toBase32String
+import com.cioinfotech.cychat.features.JitsiRequest
+import com.cioinfotech.cychat.features.call.conference.api.JWTApi
 import com.cioinfotech.cychat.features.call.conference.jwt.JitsiJWTFactory
+import com.cioinfotech.cychat.features.home.room.detail.RoomDetailViewModel.Companion.TOKEN
+import com.cioinfotech.cychat.features.plugins.model.JWTTokenModel
+import com.cioinfotech.cychat.features.plugins.model.PluginListParentModel
 import com.cioinfotech.cychat.features.raw.wellknown.ElementWellKnown
 import com.cioinfotech.cychat.features.raw.wellknown.ElementWellKnownMapper
 import com.cioinfotech.cychat.features.settings.VectorLocale
 import com.cioinfotech.cychat.features.themes.ThemeProvider
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import io.reactivex.Single
+import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import org.jitsi.meet.sdk.JitsiMeetUserInfo
 import org.matrix.android.sdk.api.MatrixPatterns.getDomain
 import org.matrix.android.sdk.api.auth.data.SessionParams
@@ -41,6 +53,9 @@ import org.matrix.android.sdk.api.util.appendParamToUrl
 import org.matrix.android.sdk.api.util.toMatrixItem
 import org.matrix.android.sdk.internal.di.MoshiProvider
 import org.matrix.android.sdk.internal.network.NetworkConstants
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URL
 import java.util.UUID
 import javax.inject.Inject
@@ -65,6 +80,11 @@ class JitsiService @Inject constructor(
         JitsiWidgetDataFactory(jitsiURL) { widget ->
             session.widgetService().getWidgetComputedUrl(widget, themeProvider.isLightTheme())
         }
+    }
+
+    fun getJWTToken(op:String, serviceName:String, clientName :String ,meetingName:String ,clied:String): Call<
+            JsonObject> {
+        return buildCyCoreAPI(NetworkConstants.JWT_TOKEN_JITSI).getJWTToken(op,serviceName,clientName, meetingName ,clied)
     }
 
     suspend fun createJitsiWidget(roomId: String, withVideo: Boolean): Widget {
@@ -111,25 +131,21 @@ class JitsiService @Inject constructor(
     suspend fun joinConference(roomId: String, jitsiWidget: Widget, enableVideo: Boolean): JitsiCallViewEvents.JoinConference {
         val me = session.getRoomMember(session.myUserId, roomId)?.toMatrixItem()
         val userDisplayName = me?.getBestName()
-        val userAvatar = me?.avatarUrl?.let { session.contentUrlResolver().resolveFullSize(it) }
+        val userAvatar = me?.avatarUrl?.let { session.contentUrlResolver().resolveFullSize(it)
+        }
         val userInfo = JitsiMeetUserInfo().apply {
             this.displayName = userDisplayName
             this.avatar = userAvatar?.let { URL(it) }
         }
         val roomName = session.getRoomSummary(roomId)?.displayName
         val widgetData = jitsiWidgetDataFactory.create(jitsiWidget)
-        val token = if (widgetData.isOpenIdJWTAuthenticationRequired()) {
-            getOpenIdJWTToken(roomId, widgetData.domain, userDisplayName ?: session.myUserId, userAvatar ?: "")
-        } else {
-            null
-        }
         return JitsiCallViewEvents.JoinConference(
                 enableVideo = enableVideo,
                 jitsiUrl = widgetData.domain.ensureProtocol(),
                 subject = roomName ?: "",
-                confId = widgetData.confId,
+                confId = roomName ?: "",
                 userInfo = userInfo,
-                token = token
+                token = TOKEN
         )
     }
 
@@ -181,6 +197,33 @@ class JitsiService @Inject constructor(
             MoshiProvider.providesMoshi().adapter(JitsiWellKnown::class.java).fromJson(json)?.auth
         }
     }
+
+     //fun getPlugins(hashMap: HashMap<String, String>, url: String, clid: String) = buildCyCoreAPI(url).getUserPlugins(clid,hashMap)
+
+    private fun buildCyCoreAPI(url: String): JWTApi {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.apply {
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        }
+         val client = OkHttpClient.Builder()
+                 .addNetworkInterceptor(httpLoggingInterceptor).build()
+
+        return createWithBaseURL(client, url).create(JWTApi::class.java)
+    }
+
+
+}
+
+fun createWithBaseURL(okHttpClient: OkHttpClient, baseUrl: String): Retrofit {
+    val gson: Gson = GsonBuilder()
+            .setLenient()
+            .create()
+    return Retrofit.Builder()
+            .baseUrl(baseUrl.ensureProtocol())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(okHttpClient)
+            .build()
 }
 
 suspend fun RawService.getElementWellknown(sessionParams: SessionParams): ElementWellKnown? {
@@ -189,6 +232,7 @@ suspend fun RawService.getElementWellknown(sessionParams: SessionParams): Elemen
     return tryOrNull { getWellknown(domain) }
             ?.let { ElementWellKnownMapper.from(it) }
 }
+
 
 fun ElementWellKnown.isE2EByDefault() = elementE2E?.e2eDefault ?: riotE2E?.e2eDefault ?: true
 

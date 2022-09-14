@@ -35,43 +35,51 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
 
-            <RadioGroup
-                android:id="@+id/radio_group"
+
+            <RadioButton
+                android:id="@+id/rb_individual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_vertical_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/image_view_logo">
+                android:text="@string/individual_user"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/image_view_logo" />
 
-                <RadioButton
-                    android:id="@+id/rb_individual"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/individual_user"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_individual"
+                android:text="@string/individual_user_selection_hint"
+                app:layout_constraintTop_toBottomOf="@id/rb_individual"
+/>
 
-                <RadioButton
-                    android:id="@+id/rb_organization"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/organization_user"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </RadioGroup>
+            <RadioButton
+                android:id="@+id/rb_organization"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/organization_user"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/txt_individual" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_organization"
+                android:text="@string/organization_user_selection_hint"
+                app:layout_constraintTop_toBottomOf="@id/rb_organization"
+                />
 
             <TextView
                 android:id="@+id/tv_select_org"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
                 android:text="@string/organization_type"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/radio_group" />
+                app:layout_constraintTop_toBottomOf="@id/txt_organization" />
 
             <EditText
                 android:id="@+id/spinner_organization"
@@ -79,7 +87,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:autofillHints="@null"
-                android:visibility="gone"
                 android:background="@drawable/item_optional_digit_border"
                 android:completionHint="@string/select_organization"
                 android:completionThreshold="1"
@@ -88,6 +95,7 @@
                 android:inputType="text"
                 android:padding="8dp"
                 android:paddingHorizontal="4dp"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/tv_select_org" />
 
             <TextView
@@ -95,8 +103,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spinner_organization" />
 
@@ -134,8 +142,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spinner" />
 
