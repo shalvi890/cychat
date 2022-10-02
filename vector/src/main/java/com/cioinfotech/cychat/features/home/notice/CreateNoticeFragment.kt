@@ -22,6 +22,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +97,8 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         attachmentsHelper = AttachmentsHelper(requireContext(), this).register()
         keyboardStateUtils = KeyboardStateUtils(requireActivity())
         cyCoreViewModel = (requireActivity() as NoticeBoardActivity).cyCoreViewModel
+        views.tvAttachPhoto.isClickable = false
+        views.tvAttachDocument.isClickable = false
         showLoading(null)
         cyCoreViewModel.selectedNotice.observe(viewLifecycleOwner) {
             it.let { notice ->
@@ -132,6 +135,9 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
                         }
                     views.btnNotice.isEnabled = true
                     views.spinner.setText(selectedBoard?.bb_name)
+                    views.tvAttachPhoto.isClickable = true
+                    views.tvAttachDocument.isClickable = true
+
                 }
             },
                     listOfBoards.map { org -> org.bb_name }.toMutableList(),
@@ -152,7 +158,10 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
             totalCountOfAttachments += (if (selectedImages != null) 1 else 0)
             totalCountOfAttachments += (if (selectedAttachments != null) 1 else 0)
 //            for (media in selectedImages)
-            selectedImages?.let { it1 -> createUploadMediaBody(it1, NetworkConstants.MEDIA_IMAGE, it.data.postID.toString()) }?.let { it2 -> cyCoreViewModel.uploadMedia(it2) }
+            selectedImages?.let { it1 -> createUploadMediaBody(it1, NetworkConstants.MEDIA_IMAGE, it.data.postID.toString()) }?.let {
+
+                it2 -> cyCoreViewModel.uploadMedia(it2
+            ) }
 
 //            for (media in selectedAttachments)
             selectedAttachments?.let { it1 -> createUploadMediaBody(it1, MEDIA_ATTACHMENT, it.data.postID.toString()) }?.let { it2 -> cyCoreViewModel.uploadMedia(it2) }
@@ -187,15 +196,19 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         }
 
         views.tvAttachPhoto.setOnClickListener {
-            isAttachmentsClicked = false
-            if (!::attachmentTypeSelector.isInitialized)
-                attachmentTypeSelector = AttachmentTypeSelectorView(vectorBaseActivity, vectorBaseActivity.layoutInflater, this@CreateNoticeFragment, true)
-            attachmentTypeSelector.show(views.tvAttachPhoto, keyboardStateUtils.isKeyboardShowing)
+            if(views.spinner.text.isNotEmpty()) {
+                isAttachmentsClicked = false
+                if (!::attachmentTypeSelector.isInitialized)
+                    attachmentTypeSelector = AttachmentTypeSelectorView(vectorBaseActivity, vectorBaseActivity.layoutInflater, this@CreateNoticeFragment, true)
+                attachmentTypeSelector.show(views.tvAttachPhoto, keyboardStateUtils.isKeyboardShowing)
+            }
         }
 
         views.tvAttachDocument.setOnClickListener {
-            isAttachmentsClicked = true
-            onTypeSelected(AttachmentTypeSelectorView.Type.FILE)
+            if (views.spinner.text.isNotEmpty()) {
+                isAttachmentsClicked = true
+                onTypeSelected(AttachmentTypeSelectorView.Type.FILE)
+            }
         }
 
         views.ivRemove.setOnClickListener {
@@ -275,7 +288,8 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         partList[NetworkConstants.POST_ID] = postId.toRequestBody("text/plain".toMediaTypeOrNull())
         FilePathHelper.getRealPath(context, selectedAttachment.queryUri)?.let { fileUri ->
             val imgFile = File(fileUri.path!!)
-            val format = if (type == MEDIA_ATTACHMENT) "application/*" else "image/*"
+            Log.e("path",imgFile.toString())
+            val format = if (type == MEDIA_ATTACHMENT) "attachment/*" else "image/*"
             partList["media\"; filename=\"${selectedAttachment.name}"] = imgFile.asRequestBody(format.toMediaTypeOrNull())
         }
         partList[NetworkConstants.TYPE] = type.toRequestBody("text/plain".toMediaTypeOrNull())

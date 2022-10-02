@@ -198,6 +198,7 @@ interface RoomService {
      */
     fun getNotificationCountForRooms(queryParams: RoomSummaryQueryParams): RoomAggregateNotificationCount
 
+
     private val defaultPagedListConfig
         get() = PagedList.Config.Builder()
                 .setPageSize(300)

@@ -354,6 +354,9 @@ internal interface RoomAPI {
                        @Path("tag") tag: String,
                        @Body body: TagBody)
 
+
+
+
     /**
      * Delete a tag from a room.
      */

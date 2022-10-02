@@ -49,7 +49,7 @@ object QRCodeBitmapDecodeHelper {
         val width = bitmap.width
         val height = bitmap.height
         if (bitmap.config != Bitmap.Config.ARGB_8888) {
-            bitmap.copy(Bitmap.Config.ARGB_8888, true)
+            bitmap.copy(Bitmap.Config.ARGB_8888, false)
         } else {
             bitmap
         }.getPixels(pixels, 0, width, 0, 0, width, height)

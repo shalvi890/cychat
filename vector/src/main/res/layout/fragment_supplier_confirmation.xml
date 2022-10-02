@@ -102,9 +102,8 @@
                 android:id="@+id/tv_org_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spinner_organization" />
 
@@ -141,9 +140,8 @@
                 android:id="@+id/tv_user_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:textAppearance="@style/TextAppearance.Vector.Login.Text"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spinner" />
 

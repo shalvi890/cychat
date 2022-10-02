@@ -34,6 +34,7 @@ import org.matrix.android.sdk.internal.cy_auth.data.FederatedDomainList
 interface CyCoreService {
     fun cyGetDomainDetails(hashMap: HashMap<String, String>, url: String): Single<DomainDetails>
     fun cyUpdateRecoveryKey(hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
+    fun cyDisplayname(hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
     fun cyDeleteOldSessions(hashMap: HashMap<String, String>, url: String): Single<BaseResponse>
     fun cyGetFederatedDomains(hashMap: HashMap<String, String>, url: String): Single<FederatedDomainList>
     fun cyGetDefaultURLs(hashMap: HashMap<String, String>, url: String): Single<DefaultURLParent>

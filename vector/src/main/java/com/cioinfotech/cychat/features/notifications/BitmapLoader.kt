@@ -55,7 +55,7 @@ class BitmapLoader @Inject constructor(private val context: Context) {
                 Glide.with(context)
                         .asBitmap()
                         .load(path)
-                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .format(DecodeFormat.PREFER_ARGB_8888 )
                         .submit()
                         .get()
             } catch (e: Exception) {

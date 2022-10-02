@@ -53,7 +53,7 @@ class UserListController @Inject constructor(private val session: Session,
         val currentState = state ?: return
 
         // Build generic items
-        if (currentState.searchTerm.isBlank()) {
+        if (!currentState.searchTerm.isBlank()) {
             if (currentState.showInviteActions()) {
                 actionItem {
                     id(R.drawable.ic_share)

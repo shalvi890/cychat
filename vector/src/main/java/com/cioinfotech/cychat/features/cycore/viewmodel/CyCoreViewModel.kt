@@ -18,6 +18,7 @@ package com.cioinfotech.cychat.features.cycore.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -62,6 +63,7 @@ import org.matrix.android.sdk.internal.network.NetworkConstants.GET_TIMEZONES
 import org.matrix.android.sdk.internal.network.NetworkConstants.GET_USER_PROFILE
 import org.matrix.android.sdk.internal.network.NetworkConstants.LAST_POST
 import org.matrix.android.sdk.internal.network.NetworkConstants.LIST_FEDERATED_API
+import org.matrix.android.sdk.internal.network.NetworkConstants.MATRIX_URL
 import org.matrix.android.sdk.internal.network.NetworkConstants.OP
 import org.matrix.android.sdk.internal.network.NetworkConstants.OTP
 import org.matrix.android.sdk.internal.network.NetworkConstants.POST_GET_ALL
@@ -170,10 +172,34 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun handleDeleteOldSessions(deviceId: String) {
-        cyCoreService.cyDeleteOldSessions(hashMapOf(DEVICE_ID to deviceId), url)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(deleteOldSessions())
+        Log.e("@@", "@@ handleDeleteOldSession ")
+        cyCoreService.cyDeleteOldSessions(hashMapOf(
+                DEVICE_ID to deviceId,
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                MATRIX_URL to "https://awscyberia2.cioinfotech.com",
+                OP to NetworkConstants.DELETE_SESSION_API,
+                SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                USER_ID to userId,
+                CLID to clid,
+        ), url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deleteOldSessions())
+    }
+
+    fun handleDisplayName(displayName: String) {
+        Log.e("@@", "@@ handleDisplayName ")
+        cyCoreService.cyDisplayname(hashMapOf(
+                CLIENT_NAME to CY_VERSE_ANDROID,
+                OP to NetworkConstants.OP_SET_NAME,
+                SERVICE_NAME to NetworkConstants.MISC_FUNC,
+                "displayName" to displayName,
+                USER_ID to userId,
+                CLID to clid,
+        ), url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(displaySetName())
     }
 
     private fun deleteOldSessions(): SingleObserver<BaseResponse> {
@@ -181,15 +207,34 @@ class CyCoreViewModel @Inject constructor(
 
             override fun onSuccess(t: BaseResponse) {
                 if (t.status != "error")
-                    pref.edit().apply {
-                        putBoolean(NetworkConstants.SESSION_UPDATED, true)
-                        apply()
-                    }
+                    Log.e("delete session @@", "Success")
+                pref.edit().apply {
+                    putBoolean(NetworkConstants.SESSION_UPDATED, true)
+                    apply()
+                }
             }
 
             override fun onSubscribe(d: Disposable) {}
 
-            override fun onError(e: Throwable) {}
+            override fun onError(e: Throwable) {
+                Log.e("delete session @@", "onError")
+            }
+        }
+    }
+
+    private fun displaySetName(): SingleObserver<BaseResponse> {
+        return object : SingleObserver<BaseResponse> {
+
+            override fun onSuccess(t: BaseResponse) {
+                if (t.status != "error")
+                    Log.e("displaySetName session @@", "Success")
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onError(e: Throwable) {
+                Log.e("displaySetName session @@", "onError")
+            }
         }
     }
 
@@ -222,9 +267,9 @@ class CyCoreViewModel @Inject constructor(
 
     fun handleGetDefaultURLs() {
         cyCoreService.cyGetDefaultURLs(hashMapOf(), url)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(getDefaultURLs())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getDefaultURLs())
     }
 
     private fun getDefaultURLs(): SingleObserver<DefaultURLParent> {
@@ -553,6 +598,7 @@ class CyCoreViewModel @Inject constructor(
     }
 
     fun uploadMedia(map: MutableMap<String, RequestBody>) {
+        Log.e("@@",map.toString())
         cyCoreService.uploadMedia(CY_VERSE_API_CLID, map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -564,13 +610,17 @@ class CyCoreViewModel @Inject constructor(
         return object : SingleObserver<BaseResponse> {
 
             override fun onSuccess(t: BaseResponse) {
+                Log.e("@@","Suceess" )
                 postUploadedLiveData.postValue(t)
             }
 
-            override fun onSubscribe(d: Disposable) {}
+            override fun onSubscribe(d: Disposable) {
+
+            }
 
             override fun onError(e: Throwable) {
-                Timber.log(1, e)
+                Log.e("@@ in error",e.toString())
+
             }
         }
     }

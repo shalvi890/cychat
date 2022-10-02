@@ -32,5 +32,6 @@ data class UserType(
     val utShow: String,
     val utypeID: String,
     val utypeName: String,
-    val verifyMode: String
+    val verifyMode: String,
+    val utypeDesc :String
 ): BaseResponse()

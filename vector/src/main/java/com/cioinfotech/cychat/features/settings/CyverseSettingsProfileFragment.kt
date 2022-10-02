@@ -31,6 +31,7 @@ import com.cioinfotech.cychat.core.dialogs.GalleryOrCameraDialogHelper
 import com.cioinfotech.cychat.core.intent.getFilenameFromUri
 import com.cioinfotech.cychat.core.resources.ColorProvider
 import com.cioinfotech.cychat.databinding.FragmentCyverseSettingsProfileBinding
+import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
 import com.cioinfotech.cychat.features.home.AvatarRenderer
 import com.cioinfotech.cychat.features.settings.adapter.CyverseRoleAdapter
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
@@ -204,6 +205,7 @@ class CyverseSettingsProfileFragment @Inject constructor(
             val currentDisplayName = session.getUser(session.myUserId)?.displayName ?: ""
             if (currentDisplayName != value) {
                 binding.progressBar.isVisible = true
+                cyCoreViewModel.handleDisplayName(value)
                 lifecycleScope.launch {
                     val result = runCatching { session.setDisplayName(session.myUserId, value) }
                     if (!isAdded) return@launch

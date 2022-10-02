@@ -33,6 +33,7 @@ class DefaultCyCoreService @Inject constructor(private val retrofitFactory: Retr
 
     override fun cyGetDomainDetails(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDomainDetails(hashMap)
     override fun cyUpdateRecoveryKey(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).updateRecoveryKey(hashMap)
+    override fun cyDisplayname(hashMap: HashMap<String, String>, url: String) =buildCyCoreAPI(url).setDisplayName(hashMap)
     override fun cyDeleteOldSessions(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).deleteOldSessions(hashMap)
     override fun cyGetFederatedDomains(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getFederatedDomains(hashMap)
     override fun cyGetDefaultURLs(hashMap: HashMap<String, String>, url: String) = buildCyCoreAPI(url).getDefaultURLs(hashMap)

@@ -59,6 +59,11 @@ interface CyCoreAPI {
     @FormUrlEncoded
     @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
     @POST(NetworkConstants.ROOT_API)
+    fun setDisplayName(@FieldMap map: HashMap<String, String>): Single<BaseResponse>
+
+    @FormUrlEncoded
+    @Headers("CONNECT_TIMEOUT:60000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000")
+    @POST(NetworkConstants.ROOT_API)
     fun getFederatedDomains(@FieldMap map: HashMap<String, String>): Single<FederatedDomainList>
 
     @FormUrlEncoded

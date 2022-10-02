@@ -22,6 +22,7 @@ import android.content.IntentSender.SendIntentException
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -295,9 +296,11 @@ class HomeActivity :
             cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
             cyChatViewModel.handleCyGetDetails()
         }
+        Log.e("@@",pref.getBoolean(SESSION_UPDATED, false).toString())
         if (!pref.getBoolean(SESSION_UPDATED, false)) {
             GlobalScope.launch(Dispatchers.IO) {
                 activeSessionHolder.getActiveSession().sessionParams.deviceId?.let {
+                    Log.e("@@","@@ getActiveSession ")
                     if (!::cyChatViewModel.isInitialized)
                         cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
                     cyChatViewModel.handleDeleteOldSessions(it)

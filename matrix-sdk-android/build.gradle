@@ -6,7 +6,8 @@ apply plugin: 'realm-android'
 
 buildscript {
     repositories {
-        // mavenCentral()
+        mavenCentral()
+        google()
         //noinspection GrDeprecatedAPIUsage
         jcenter()
     }
@@ -73,6 +74,7 @@ android {
 
     lintOptions {
         lintConfig file("lint.xml")
+        abortOnError false
     }
 
     compileOptions {

@@ -16,6 +16,8 @@
 
 package org.matrix.android.sdk.internal.network
 
+import retrofit2.http.DELETE
+
 object NetworkConstants {
 
     // Homeserver
@@ -66,6 +68,8 @@ object NetworkConstants {
     const val USER_LOGIN_API = "userLogin"
     const val RESENT_OTP_API = "resendOtp"
     const val SET_SECRET_KEY_API = "setSecretKey"
+    const val DELETE_SESSION_API ="deleteSessions"
+    const val OP_SET_NAME = "setName"
     const val GET_COMPANY_DETAILS_API = "getCompanyNameAndLogo"
     const val GET_ADD_USER_TYPES = "getAddUserTypes"
     const val VERIFY_ADD_USER_TYPE = "verifyAddUserType"
@@ -86,6 +90,7 @@ object NetworkConstants {
     const val SERVICE_NAME = "serviceName"
     const val CLIENT_NAME = "clientName"
     const val USER_TYPE = "userType"
+    const val MATRIX_URL ="matrixURL"
     const val USER_TYPE_NAME = "userTypeName"
     const val EXCLUDE_USER_TYPE = "excludeUserType"
     const val REF_CODE = "refCode"

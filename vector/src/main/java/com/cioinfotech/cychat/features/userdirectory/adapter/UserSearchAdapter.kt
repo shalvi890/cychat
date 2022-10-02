@@ -69,7 +69,7 @@ class UserSearchAdapter(private val avatarRenderer: AvatarRenderer,
         } else {
             itemBinding.knownUserID.visibility = View.VISIBLE
             itemBinding.knownUserName.text = "${user.firstName} ${user.lastName}"
-            itemBinding.knownUserID.text = user.matrixUserID.toNormalEmail()
+            itemBinding.knownUserID.text = user.email.toNormalEmail()
         }
 
         if (!isOneToOneChat) {

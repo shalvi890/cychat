@@ -79,6 +79,7 @@ class CallService : VectorService() {
         alertManager = vectorComponent().alertManager()
         callRingPlayerIncoming = CallRingPlayerIncoming(applicationContext, notificationUtils)
         callRingPlayerOutgoing = CallRingPlayerOutgoing(applicationContext)
+        Timber.v("@@@ Service call started")
     }
 
     override fun onDestroy() {

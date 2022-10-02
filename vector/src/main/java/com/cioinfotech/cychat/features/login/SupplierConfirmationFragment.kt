@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,7 +70,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                     views.rbOrganization.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked)
                             views.rbIndividual.isChecked = false
-                            setOrganizationsView()
+                        setOrganizationsView()
                     }
                 }
                 is LoginViewEvents.OnIndividualConfirmed   -> {
@@ -79,6 +80,8 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                         views.rbIndividual.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
                                 views.rbOrganization.isChecked = false
+                                views.tvUserDescription.isVisible = false
+                                views.tvOrgDescription.isVisible = false
                                 views.spinnerOrganization.isVisible = false
                                 views.tvSelectOrg.isVisible = false
                                 views.spinner.isVisible = false
@@ -89,6 +92,9 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
 //                                views.tvUserDescription.text = selectedUserType?.ut_cat_desc
                                 selectedUserType?.verifyMode?.let { verifyMode ->
                                     views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
+                                    if (verifyMode != NetworkConstants.NONE && selectedUserType?.regTitle != null) {
+                                        views.tvSupplierTil.hint = selectedUserType?.regTitle
+                                    }
                                     views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
                                         getString(R.string.check_code)
                                     else
@@ -136,16 +142,20 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                     org?.utCatID?.let { loginViewModel.getUserType(it) }
                     views.spinner.setText("")
                     views.spinnerOrganization.setText(org?.utCatName)
-//                    views.tvOrgDescription.isVisible = true
-//                    views.tvOrgDescription.text = org?.ut_cat_desc
+                    Log.e("@@", org?.utCatDesc.toString())
+                    views.tvOrgDescription.isVisible = true
+                    views.tvOrgDescription.text = org?.utCatDesc
                     views.spinner.isVisible = false
+                    views.tvUserDescription.isVisible = false
                     views.tvSelectUser.isVisible = false
                     selectedUserType = null
                     views.btnSubmit.isEnabled = false
 //                    views.tvUserDescription.text = null
                 }
             },
-                    organizations.map { org -> org.utCatName }.toMutableList(),
+                    organizations.map { org ->
+                        org.utCatName
+                    }.toMutableList(),
                     getString(R.string.search_organization)).show(parentFragmentManager, "")
         }
     }
@@ -167,9 +177,10 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                             selectedUserType = temp
                             break
                         }
-//                    views.tvUserDescription.text = selectedUserType?.ut_cat_desc
-//                    views.tvUserDescription.isVisible = true
+                    views.tvUserDescription.text = selectedUserType?.utypeDesc
+                    views.tvUserDescription.isVisible = true
                     views.spinner.setText(selectedUserType?.utCatName)
+                    //  Log.e("@@ utypeDesc ", selectedUserType?.utypeDesc.toString())
                     selectedUserType?.verifyMode?.let { verifyMode ->
                         views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
                         if (verifyMode != NetworkConstants.NONE && selectedUserType?.regTitle != null) {

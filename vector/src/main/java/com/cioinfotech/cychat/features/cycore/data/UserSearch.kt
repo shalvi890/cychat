@@ -29,5 +29,6 @@ data class UserSearchChild(
 data class SearchedUser(
         val firstName: String?,
         val lastName: String?,
-        val matrixUserID: String
+        val matrixUserID: String,
+        val email :String
 )

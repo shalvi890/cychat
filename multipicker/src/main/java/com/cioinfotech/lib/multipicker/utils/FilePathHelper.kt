@@ -38,7 +38,6 @@ object FilePathHelper {
     private fun getRealPathFromURIAPI19(context: Context, uri: Uri): Uri? {
         //val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // DocumentProvider
-        if (/*isKitKat && */DocumentsContract.isDocumentUri(context, uri)) {
 
             if ("content".equals(uri.scheme, ignoreCase = true)) {
                 // Return the remote address
@@ -107,7 +106,8 @@ object FilePathHelper {
 
                 }
             }
-        } else if ("content".equals(uri.scheme, ignoreCase = true)) {
+
+ /*       else if ("content".equals(uri.scheme, ignoreCase = true)) {
 
             return uri
 //            if (isGooglePhotosUri(uri)) uri.lastPathSegment else getDataColumn(
@@ -118,7 +118,7 @@ object FilePathHelper {
 //            )
         } else if ("file".equals(uri.scheme, ignoreCase = true)) {
             return uri //uri.path
-        }
+        }*/
         return null
     }
 
@@ -146,11 +146,11 @@ object FilePathHelper {
         return null
     }
 
-    private fun getFilePath(context: Context, uri: Uri?): String? {
+    fun getFilePath(context: Context?, uri: Uri?): String? {
         var cursor: Cursor? = null
         val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
         try {
-            cursor = context.contentResolver.query(uri!!, projection, null, null, null)
+            cursor = context?.contentResolver?.query(uri!!, projection, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
                 val index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
                 return cursor.getString(index)

@@ -85,6 +85,7 @@ class AttachmentTypeSelectorView(context: Context,
             views.llContact.isVisible = false
             views.llSticker.isVisible = false
             views.llFile.isInvisible = true
+
         }
         width = LinearLayout.LayoutParams.MATCH_PARENT
         height = LinearLayout.LayoutParams.WRAP_CONTENT

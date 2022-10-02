@@ -16,15 +16,18 @@
 
 package com.cioinfotech.cychat
 
+import android.app.Activity
 import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.StrictMode
+import android.util.Log
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
 import androidx.lifecycle.Lifecycle
@@ -71,7 +74,7 @@ class VectorApplication :
         Application(),
         HasVectorInjector,
         MatrixConfiguration.Provider,
-        WorkConfiguration.Provider {
+        WorkConfiguration.Provider ,Application.ActivityLifecycleCallbacks{
 
     lateinit var appContext: Context
     @Inject lateinit var legacySessionImporter: LegacySessionImporter
@@ -252,5 +255,34 @@ class VectorApplication :
         val handlerThread = HandlerThread("fonts")
         handlerThread.start()
         return Handler(handlerThread.looper)
+    }
+
+    override fun onActivityCreated(p0: Activity, p1: Bundle?) {
+        //Log.d("ActivityCreated", p0.localClassName);
+    }
+
+    override fun onActivityStarted(p0: Activity) {
+       
+    }
+
+    override fun onActivityResumed(p0: Activity) {
+       //// Log.d("ActivityCreated", p0.localClassName);
+
+    }
+
+    override fun onActivityPaused(p0: Activity) {
+       
+    }
+
+    override fun onActivityStopped(p0: Activity) {
+       
+    }
+
+    override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
+       
+    }
+
+    override fun onActivityDestroyed(p0: Activity) {
+       
     }
 }
