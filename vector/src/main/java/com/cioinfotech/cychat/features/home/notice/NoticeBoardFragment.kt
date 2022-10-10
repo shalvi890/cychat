@@ -22,11 +22,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME
 import android.provider.CalendarContract.EXTRA_EVENT_END_TIME
 import android.view.LayoutInflater
@@ -35,11 +33,10 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cioinfotech.cychat.R
 import com.cioinfotech.cychat.core.platform.VectorBaseFragment
-import com.cioinfotech.cychat.core.utils.PERMISSIONS_FOR_WRITING_FILES
-import com.cioinfotech.cychat.core.utils.checkPermissions
 import com.cioinfotech.cychat.core.utils.registerForPermissionsResult
 import com.cioinfotech.cychat.databinding.FragmentNoticeBoardBinding
 import com.cioinfotech.cychat.features.cycore.viewmodel.CyCoreViewModel
@@ -49,12 +46,12 @@ import com.cioinfotech.cychat.features.home.notice.model.NoticeListParent
 import com.cioinfotech.cychat.features.home.notice.pagination.PaginationScrollListener
 import com.cioinfotech.cychat.features.home.notice.widget.NoticeFabMenuView
 import com.cioinfotech.cychat.features.home.room.list.ProfileFullScreenFragment
+import com.cioinfotech.lib.attachmentviewer.DocumentViewer
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.io.File
 import java.util.Calendar
 
 class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), NoticeFabMenuView.Listener, NoticeBoardAdapter.ClickListener {
@@ -126,7 +123,12 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
 
             override fun onSuccess(t: NoticeListParent) {
                 noticesAdapter.removeLoadingFooter()
-                t.data.data?.let { it1 -> noticesAdapter.addAll(it1) }
+                t.data.data?.let { it1 -> noticesAdapter.addAll(it1)
+                }
+                if(t.data.data?.size!! ==0){
+                 views.tvNoticeBoard.isVisible =  true;
+                    views.tvNoticeBoard.text = getString(R.string.txt_notice_board)
+                }
                 lastPost = t.data.lastPost ?: -1
                 if (!t.data.data.isNullOrEmpty()) noticesAdapter.addLoadingFooter() else isLastPage = true
                 isLoading = false
@@ -203,28 +205,10 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
     private lateinit var downloadUrl: String
     override fun onAttachmentClicked(url: String) {
         downloadUrl = url
-        if (checkPermissions(PERMISSIONS_FOR_WRITING_FILES, requireActivity(), permissionActivityResultLauncher)) {
-            val fileName = if (url.contains("/")) url.substring(url.lastIndexOf("/") + 1, url.length) else url
-            if (!File(Environment.DIRECTORY_DOWNLOADS + "/$fileName").exists()) {
-                (requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager).apply {
-                    val request = DownloadManager.Request(Uri.parse(url))
-                    request.setTitle(fileName)
-                    request.setDescription("Downloading $fileName")
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                    enqueue = this.enqueue(request)
-                }
-                requireContext().registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-            } else {
-                try {
-                    startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
-                } catch (ex: Exception) {
 
-                } finally {
-                    Toast.makeText(context, "File downloaded in downloads folder", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
+        val intent = Intent(activity,DocumentViewer::class.java) ;
+        intent.putExtra("url",url)
+        startActivity(intent)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -289,4 +273,7 @@ class NoticeBoardFragment : VectorBaseFragment<FragmentNoticeBoardBinding>(), No
             }
         }
     }
+
+
 }
+

@@ -86,6 +86,8 @@
         </activity-alias>
 
         <activity android:name=".features.home.HomeActivity" />
+
+        <activity android:name="com.cioinfotech.lib.attachmentviewer.DocumentViewer"/>
         <activity
             android:name=".features.login.LoginActivity"
             android:exported="true"

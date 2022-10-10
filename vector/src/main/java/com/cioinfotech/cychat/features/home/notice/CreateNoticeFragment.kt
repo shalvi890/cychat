@@ -99,6 +99,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         cyCoreViewModel = (requireActivity() as NoticeBoardActivity).cyCoreViewModel
         views.tvAttachPhoto.isClickable = false
         views.tvAttachDocument.isClickable = false
+        views.tvAttachEvent.isClickable =false
         showLoading(null)
         cyCoreViewModel.selectedNotice.observe(viewLifecycleOwner) {
             it.let { notice ->
@@ -109,7 +110,10 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         cyCoreViewModel.getNoticeBoards()
         cyCoreViewModel.noticeBoardsLiveData.observe(viewLifecycleOwner) {
             listOfBoards = it.data.boards
+            dismissLoadingDialog()
             if (listOfBoards.isEmpty()) {
+                views.txtNoNoticeBoard.isVisible =true
+                views.mainLayout.isVisible = false
                 Snackbar.make(requireView(), getString(R.string.no_notice_boards_found), BaseTransientBottomBar.LENGTH_LONG).show()
                 views.btnNotice.isEnabled = false
                 views.etTitle.isEnabled = false
@@ -120,9 +124,12 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
                 views.tvAttachEvent.isClickable = false
                 views.tvAttachDocument.isClickable = false
                 views.spinner.error = getString(R.string.no_notice_boards_found)
+            }else {
+
+                views.mainLayout.isVisible = true
+                views.txtNoNoticeBoard.isVisible =false
+                setUpdateMode()
             }
-            dismissLoadingDialog()
-            setUpdateMode()
         }
 
         views.spinner.setOnClickListener {
@@ -136,6 +143,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
                     views.btnNotice.isEnabled = true
                     views.spinner.setText(selectedBoard?.bb_name)
                     views.tvAttachPhoto.isClickable = true
+                    views.tvAttachEvent.isClickable =true
                     views.tvAttachDocument.isClickable = true
 
                 }
@@ -187,9 +195,11 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         }
 
         views.btnNotice.setOnClickListener {
-            if (listOfBoards.isEmpty())
-                Snackbar.make(requireView(), getString(R.string.no_notice_boards_found), BaseTransientBottomBar.LENGTH_SHORT).show()
-            else {
+            if (views.etTitle.text.trim().isEmpty()||views.spinner.text.trim().isEmpty()) {
+                 views.spinner.error = getString(R.string.no_notice_boards_found)
+                views.etTitle.error = "please add title"
+                Snackbar.make(requireView(), getString(R.string.add_require_detail_for_noticeBoard), BaseTransientBottomBar.LENGTH_SHORT).show()
+            }else {
                 showLoading(null)
                 cyCoreViewModel.updatePostDetails(createRequestBody())
             }
@@ -224,8 +234,11 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
             views.ivRemoveAttachment.isVisible = false
         }
 
+
         views.tvAttachEvent.setOnClickListener {
-            addFragmentToBackstack(R.id.container, CreateEventFragment::class.java)
+            if(views.spinner.text.trim().isNotEmpty() && views.etTitle.text.trim().isNotEmpty()) {
+                addFragmentToBackstack(R.id.container, CreateEventFragment::class.java)
+            }
         }
 
         views.etEndDateAndTime.setOnClickListener {

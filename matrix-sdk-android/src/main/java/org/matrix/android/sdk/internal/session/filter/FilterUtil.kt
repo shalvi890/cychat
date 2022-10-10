@@ -18,6 +18,8 @@ package org.matrix.android.sdk.internal.session.filter
 
 internal object FilterUtil {
 
+
+
     /**
      * Patch the filterBody to enable or disable the data save mode
      *
