@@ -301,6 +301,7 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         partList[NetworkConstants.POST_ID] = postId.toRequestBody("text/plain".toMediaTypeOrNull())
         FilePathHelper.getRealPath(context, selectedAttachment.queryUri)?.let { fileUri ->
             val imgFile = File(fileUri.path!!)
+            imgFile.length()
             Log.e("path",imgFile.toString())
             val format = if (type == MEDIA_ATTACHMENT) "attachment/*" else "image/*"
             partList["media\"; filename=\"${selectedAttachment.name}"] = imgFile.asRequestBody(format.toMediaTypeOrNull())
@@ -369,19 +370,27 @@ class CreateNoticeFragment : VectorBaseFragment<FragmentCreateNoticeBinding>(), 
         if (attachments.isNotEmpty()) {
             if (isAttachmentsClicked) {
                 selectedAttachments = attachments[0]//.toMutableList()
-                views.tvPreviewAttachment.isVisible = true
-                views.ivRemoveAttachment.isVisible = true
-                views.tvPreviewAttachment.text = "Document Attached"
+                if( selectedAttachments?.size!!>=2097152){
+                    Snackbar.make(requireView(), "Document size should be less then 2 MB", BaseTransientBottomBar.LENGTH_SHORT).show()
+                }else {
+                    views.tvPreviewAttachment.isVisible = true
+                    views.ivRemoveAttachment.isVisible = true
+                    views.tvPreviewAttachment.text = "Document Attached"
+                }
             } else {
                 selectedImages = attachments[0]//.toMutableList()
-                selectedImages?.queryUri.let {
-                    Glide.with(requireContext())
-                            .asBitmap()
-                            .load(it)
-                            .into(views.ivPreview)
-                    views.ivPreview.isVisible = true
-                    views.ivRemove.isVisible = true
-                }
+             if( selectedImages?.size!!>=2097152){
+                 Snackbar.make(requireView(), "Image size should be less then 2 MB", BaseTransientBottomBar.LENGTH_SHORT).show()
+             }else {
+                 selectedImages?.queryUri.let {
+                     Glide.with(requireContext())
+                             .asBitmap()
+                             .load(it)
+                             .into(views.ivPreview)
+                     views.ivPreview.isVisible = true
+                     views.ivRemove.isVisible = true
+                 }
+             }
             }
         }
 //        Toast.makeText(requireContext(), "Attachments Ready" + attachments.size, Toast.LENGTH_SHORT).show()
