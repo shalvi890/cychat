@@ -50,6 +50,8 @@ import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActio
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedAction
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedActionViewModel
 import com.cioinfotech.cychat.features.notifications.NotificationDrawerManager
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.extensions.orTrue
 import org.matrix.android.sdk.api.session.room.model.RoomSummary
@@ -123,6 +125,8 @@ class RoomListFragment @Inject constructor(
                 .subscribe { handleQuickActions(it) }
                 .disposeOnDestroyView()
 
+        //showAddRoleDialog()
+
 //        roomListViewModel.selectSubscribe(viewLifecycleOwner, RoomListViewState::roomMembershipChanges) { ms ->
 //            // it's for invites local echo
 //            adapterInfosList.filter { it.section.notifyOfLocalEcho }
@@ -132,6 +136,17 @@ class RoomListFragment @Inject constructor(
 //        }
     }
 
+ /*   private  fun showAddRoleDialog(){
+
+        AlertDialog.Builder(requireContext())
+                .setTitle("Add user role")
+                .setMessage("now you can add using Add user role, also you can add role later from Settings-Manage Profile-Request for new role")
+                .setPositiveButton(R.string.add_new_role) { _, _ ->
+                   // roomListViewModel.handle(RoomListAction.LeaveRoom(roomId))
+                }
+                .setNegativeButton(R.string.not_now, null)
+                .show()
+    }*/
     private fun refreshCollapseStates() {
         var contentInsertIndex = 1
         roomListViewModel.sections.forEachIndexed { index, roomsSection ->
@@ -357,9 +372,12 @@ class RoomListFragment @Inject constructor(
             append(getString(R.string.room_participants_leave_prompt_msg))
             if (!isPublicRoom) {
                 append("\n\n")
-                append(getString(R.string.room_participants_leave_private_warning))
+              //  append(getString(R.string.room_participants_leave_private_warning))
             }
         }
+
+       // Snackbar.make(requireView(), "This functionality is coming soon", BaseTransientBottomBar.LENGTH_SHORT).show()
+
         AlertDialog.Builder(requireContext())
                 .setTitle(if (isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_participants_leave_prompt_title)
                 .setMessage(message)

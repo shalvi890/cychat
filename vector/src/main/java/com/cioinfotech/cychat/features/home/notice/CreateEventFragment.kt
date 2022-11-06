@@ -87,19 +87,18 @@ class CreateEventFragment : VectorBaseFragment<FragmentCreateEventBinding>() {
             val venue = if (views.rbLiveEvent.isChecked) views.etVenue.text.toString() else views.etEventLink.text.toString()
 //            val timeZone = views.etTimeZone.text.toString()
 
-            if (eventType == NetworkConstants.EVENT_LIVE && venue.isEmpty())
-                views.etVenue.error = "Please, enter Event Venue"
-
-            if (eventType == NetworkConstants.EVENT_ONLINE && venue.isEmpty())
-                views.etEventLink.error = "Please, enter Event Link"
-
-            if (startDate.isEmpty())
+             if (startDate.isEmpty()) {
                 views.etStartDateAndTime.error = "Please, select Start Date & Time"
-            else if (endDate.isEmpty())
+            }else if (endDate.isEmpty()) {
                 views.etEndDateAndTime.error = "Please, select End Date & Time"
 //            else if (timeZone.isEmpty())
 //                views.etTimeZone.error = "Please, select Timezone"
-            else {
+            }else if (eventType == NetworkConstants.EVENT_LIVE && venue.isEmpty()) {
+            views.etVenue.error = "Please, enter Event Venue"
+        }
+        else if (eventType == NetworkConstants.EVENT_ONLINE && venue.isEmpty()) {
+            views.etEventLink.error = "Please, enter Event Link"
+        } else {
                 cyCoreViewModel.eventLiveData.postValue(EventModel(startDate, endDate, venue, "Asia/Kolkata", eventType))
                 requireFragmentManager().popBackStack()
             }

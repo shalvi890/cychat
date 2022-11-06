@@ -358,6 +358,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="add_new_role">Add User Role</string>
     <string name="leave">Leave</string>
     <string name="stay">Stay</string>
     <string name="send">Send</string>
@@ -568,7 +569,7 @@
 
     <string name="option_send_files">Send files</string>
     <string name="option_send_sticker">Send sticker</string>
-    <string name="option_take_photo_video">Take photo or video</string>
+    <string name="option_take_photo_video">Take photo</string>
     <string name="option_take_photo">Take photo</string>
     <string name="option_take_video">Take video</string>
 
@@ -3394,7 +3395,8 @@
     <string name="individual_user_selection_hint">Register as individual user on this App</string>
     <string name="organization_user">Organization User</string>
     <string name="organization_user_selection_hint">Register as a user of the Participating Organization.\nClick this option only if your organization has purchased this App for Corporate use and have instructed you to register as user from your organization.</string>
-    <string name="now_you_can_add_roles_from_settings_profile">Now, you can add new role using Settings -> General -> Profile -> Add Role</string>
+    <string name="now_you_can_add_roles_from_settings_profile"> Now , you can add using Add user role, also you can add role later from Settings -> General -> Profile -> Add Role for new role
+        </string>
     <string name="you_are_signing_for">You are doing sign-in or sign-up for %s</string>
     <string name="select_organization">Select the type of your organization</string>
     <string name="search_organization">Search Organization Type</string>
@@ -3435,7 +3437,7 @@
     <string name="asia_kolkata">Asia/Kolkata</string>
     <string name="select_timezone">Select Timezone</string>
     <string name="add_to_calendar">Add to calendar</string>
-    <string name="plugins">Plugins</string>
+    <string name="plugins">Services</string>
     <string name="not_now">Not Now</string>
     <string name="next">Next</string>
     <string name="initials">Initials</string>

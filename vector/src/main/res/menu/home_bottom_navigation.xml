@@ -34,7 +34,7 @@
     <item
         android:id="@+id/bottom_action_notice_board"
         android:enabled="true"
-        android:icon="@drawable/ic_settings_root_notification"
+        android:icon="@drawable/ic_pin_26"
         android:title="@string/bottom_notice_board"
         android:visible="false" />
 

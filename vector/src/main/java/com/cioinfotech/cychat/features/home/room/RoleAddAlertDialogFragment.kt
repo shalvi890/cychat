@@ -24,7 +24,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import com.cioinfotech.cychat.core.di.DefaultSharedPreferences
 import com.cioinfotech.cychat.databinding.FragmentRoleAddAlertDialogBinding
+import org.matrix.android.sdk.internal.network.NetworkConstants
 
 class RoleAddAlertDialogFragment(private val itemClickListener: ItemClickListener) : DialogFragment() {
 
@@ -48,8 +50,14 @@ class RoleAddAlertDialogFragment(private val itemClickListener: ItemClickListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val pref = DefaultSharedPreferences.getInstance(requireContext().applicationContext)
+        pref.edit().apply {
+            putBoolean(NetworkConstants.SIGNING_MODE, false)
+            apply()
+        }
         binding.btnCancel.setOnClickListener { dismiss() }
         binding.btnAddRole.setOnClickListener {
+
             itemClickListener.onItemClicked()
             dismiss()
         }

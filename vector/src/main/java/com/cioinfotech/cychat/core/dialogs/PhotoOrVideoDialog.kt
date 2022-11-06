@@ -30,7 +30,7 @@ class PhotoOrVideoDialog(
 
     interface PhotoOrVideoDialogListener {
         fun takePhoto()
-        fun takeVideo()
+       // fun takeVideo()
     }
 
     interface PhotoOrVideoDialogSettingsListener {
@@ -40,7 +40,7 @@ class PhotoOrVideoDialog(
     fun show(listener: PhotoOrVideoDialogListener) {
         when (vectorPreferences.getTakePhotoVideoMode()) {
             VectorPreferences.TAKE_PHOTO_VIDEO_MODE_PHOTO -> listener.takePhoto()
-            VectorPreferences.TAKE_PHOTO_VIDEO_MODE_VIDEO -> listener.takeVideo()
+         //   VectorPreferences.TAKE_PHOTO_VIDEO_MODE_VIDEO -> listener.takeVideo()
             /* VectorPreferences.TAKE_PHOTO_VIDEO_MODE_ALWAYS_ASK */
             else                                          -> {
                 val dialogLayout = activity.layoutInflater.inflate(R.layout.dialog_photo_or_video, null)
@@ -78,7 +78,7 @@ class PhotoOrVideoDialog(
 
         when (mode) {
             VectorPreferences.TAKE_PHOTO_VIDEO_MODE_PHOTO -> listener.takePhoto()
-            VectorPreferences.TAKE_PHOTO_VIDEO_MODE_VIDEO -> listener.takeVideo()
+          //  VectorPreferences.TAKE_PHOTO_VIDEO_MODE_VIDEO -> listener.takeVideo()
         }
     }
 

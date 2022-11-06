@@ -127,7 +127,7 @@ object NetworkConstants {
     const val U_TYPE_NAME = "U_TYPE_NAME"
     const val U_TYPE_MODE = "U_TYPE_MODE"
     const val U_REG_TITLE = "U_REG_TITLE"
-    const val U_TYPE_MODE_INDIVIDUAL = "ind"
+    const val U_TYPE_MODE_INDIVIDUAL = "Common"
     const val USER_ID = "userID"
     const val POST_ID = "postID"
     const val EMAIL = "EMAIL"

@@ -17,8 +17,6 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
-
-
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
@@ -39,6 +37,7 @@ allprojects {
         // For olm library. This has to be declared first, to ensure that Olm library is not downloaded from another repo
         maven {
             url 'https://jitpack.io'
+            mavenCentral()
             content {
                 // Use this repo only for olm library
                 includeGroupByRegex "org\\.matrix\\.gitlab\\.matrix-org"

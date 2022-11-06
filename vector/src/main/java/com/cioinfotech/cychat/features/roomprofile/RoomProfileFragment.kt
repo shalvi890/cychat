@@ -49,6 +49,8 @@ import com.cioinfotech.cychat.features.home.room.list.actions.RoomListActionsArg
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsBottomSheet
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedAction
 import com.cioinfotech.cychat.features.home.room.list.actions.RoomListQuickActionsSharedActionViewModel
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.parcelize.Parcelize
 import org.matrix.android.sdk.api.session.room.notification.RoomNotificationState
 import org.matrix.android.sdk.api.util.toMatrixItem
@@ -267,9 +269,12 @@ class RoomProfileFragment @Inject constructor(
             append(getString(if (isOneToOneChatOpen) R.string.room_participants_delete_prompt_msg else R.string.room_participants_leave_prompt_msg))
             if (!isPublicRoom) {
                 append("\n\n")
-                append(getString(R.string.room_participants_leave_private_warning))
+                //append(getString(R.string.room_participants_leave_private_warning))
             }
         }
+
+       // Snackbar.make(requireView(), "This functionality is coming soon", BaseTransientBottomBar.LENGTH_SHORT).show()
+
         AlertDialog.Builder(requireContext())
                 .setTitle(if (isOneToOneChatOpen) R.string.direct_room_profile_section_more_leave else R.string.room_participants_leave_prompt_title)
                 .setMessage(message)

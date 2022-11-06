@@ -9,7 +9,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 buildscript {
     repositories {
         google()
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://jitpack.io'}
         jcenter()
     }
 }
@@ -21,7 +21,7 @@ kapt {
 // Note: 2 digits max for each value
 ext.versionMajor = 0
 ext.versionMinor = 0
-ext.versionPatch = 76
+ext.versionPatch = 81
 
 
 //static def getGitTimestamp() {
@@ -135,7 +135,7 @@ android {
 
         // `develop` branch will have version code from timestamp, to ensure each build from CI has a incremented versionCode.
         // Other branches (main, features, etc.) will have version code based on application version.
-        versionCode 112
+        versionCode 113
 
         // Required for sonar analysis
         versionName "$versionMajor.$versionMinor.$versionPatch"
@@ -333,6 +333,7 @@ dependencies {
     implementation project(":multipicker")
     implementation project(":attachment-viewer")
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'id.zelory:compressor:3.0.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
@@ -348,6 +349,8 @@ dependencies {
 
     implementation "org.threeten:threetenbp:1.4.0:no-tzdb"
     implementation "com.gabrielittner.threetenbp:lazythreetenbp:0.9.0"
+
+    implementation 'id.zelory:compressor:3.0.1'
 
     implementation "com.squareup.moshi:moshi-adapters:$moshi_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"

@@ -296,7 +296,9 @@ class HomeActivity :
             cyChatViewModel = viewModelProvider.get(CyCoreViewModel::class.java)
             cyChatViewModel.handleCyGetDetails()
         }
-        Log.e("@@",pref.getBoolean(SESSION_UPDATED, false).toString())
+        Log.e("@@ session",pref.getBoolean(SESSION_UPDATED, false).toString())
+        Log.e("@@ SIGNING_MODE",pref.getBoolean(SIGNING_MODE, false).toString())
+        Log.e("@@ U_TYPE_MODE",pref.getString(U_TYPE_MODE, null).toString())
         if (!pref.getBoolean(SESSION_UPDATED, false)) {
             GlobalScope.launch(Dispatchers.IO) {
                 activeSessionHolder.getActiveSession().sessionParams.deviceId?.let {

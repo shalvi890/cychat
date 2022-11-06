@@ -105,9 +105,9 @@ class AttachmentsHelper(val context: Context, val callback: Callback) : Restorab
                 captureUri = MultiPicker.get(MultiPicker.CAMERA).startWithExpectingFile(context, cameraActivityResultLauncher)
             }
 
-            override fun takeVideo() {
+           /* override fun takeVideo() {
                 captureUri = MultiPicker.get(MultiPicker.RECORDED_VIDEO).startWithExpectingFile(context, cameraVideoActivityResultLauncher)
-            }
+            }*/
         })
     }
 
