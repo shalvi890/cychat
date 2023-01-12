@@ -117,7 +117,7 @@
             android:paddingHorizontal="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:text="@string/roles"
+            android:text="@string/existing_role"
             android:textColor="?riot_primary_text_color"
             android:textSize="16sp"
             android:textStyle="bold"

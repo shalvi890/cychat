@@ -3378,6 +3378,7 @@
     <string name="my_profile">My Profile</string>
     <string name="visibility">Visibility</string>
     <string name="roles">Roles:</string>
+    <string name="existing_role">Existing Role:</string>
     <string name="pending_requests">Pending Request: %s</string>
     <string name="request_for_new_role">Request for new Role</string>
     <string name="enter_otp">Enter OTP</string>
@@ -3404,6 +3405,8 @@
     <string name="select_new_role">Select the name of your organization</string>
     <string name="search_your_organization">Search Your Organization</string>
     <string name="organization_type">Organization Type</string>
+    <string name="request_new_role">Request new role</string>
+    <string name="add_role_heading">Select the Role that you want to add</string>
     <string name="your_organization">Your Organization</string>
     <string name="selected_new_role">Selected New Role: %s</string>
     <string name="bottom_notice_board">Notice Board</string>

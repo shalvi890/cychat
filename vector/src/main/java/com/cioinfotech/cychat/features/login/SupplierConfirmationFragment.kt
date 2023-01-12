@@ -53,6 +53,7 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
         super.onViewCreated(view, savedInstanceState)
         loginViewModel.getIndividualType()
         loginViewModel.getOrganizations()
+        views.rbIndividual.isChecked = true
         views.btnSubmit.setOnClickListener { submit() }
 
         views.supplierField.setOnEditorActionListener { _, actionId, _ ->
@@ -77,33 +78,8 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
                     it.userTypeParent.data?.userTypes?.let { individualTypes ->
                         individualType = individualTypes[0]
                         views.rbIndividual.isVisible = true
-                        views.rbIndividual.setOnCheckedChangeListener { _, isChecked ->
-                            if (isChecked) {
-                                views.rbOrganization.isChecked = false
-                                views.tvUserDescription.isVisible = false
-                                views.tvOrgDescription.isVisible = false
-                                views.spinnerOrganization.isVisible = false
-                                views.tvSelectOrg.isVisible = false
-                                views.spinner.isVisible = false
-                                views.tvSelectUser.isVisible = false
-//                                views.tvOrgDescription.isVisible = false
-                                selectedUserType = individualType
-//                                views.tvUserDescription.isVisible = true
-//                                views.tvUserDescription.text = selectedUserType?.ut_cat_desc
-                                selectedUserType?.verifyMode?.let { verifyMode ->
-                                    views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
-                                    if (verifyMode != NetworkConstants.NONE && selectedUserType?.regTitle != null) {
-                                        views.tvSupplierTil.hint = selectedUserType?.regTitle
-                                    }
-                                    views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
-                                        getString(R.string.check_code)
-                                    else
-                                        getString(R.string.auth_submit)
-                                }
-                                views.btnSubmit.isEnabled = true
-                                views.btnSubmit.isVisible = true
-                            }
-                        }
+                        views.llRbOrganization.isVisible =false
+                        individualTypesSelection();
                     }
                 }
                 is LoginViewEvents.OnUserTypeConfirmed     -> {
@@ -122,6 +98,33 @@ class SupplierConfirmationFragment @Inject constructor() : AbstractSSOLoginFragm
             if (hiddenCount >= 4)
                 loginViewModel.getGroup()
         }
+    }
+
+    private fun individualTypesSelection() {
+            views.rbOrganization.isChecked = false
+            views.tvUserDescription.isVisible = false
+            views.tvOrgDescription.isVisible = false
+            views.spinnerOrganization.isVisible = false
+            views.tvSelectOrg.isVisible = false
+            views.spinner.isVisible = false
+            views.tvSelectUser.isVisible = false
+//                                views.tvOrgDescription.isVisible = false
+            selectedUserType = individualType
+//                                views.tvUserDescription.isVisible = true
+//                                views.tvUserDescription.text = selectedUserType?.ut_cat_desc
+            selectedUserType?.verifyMode?.let { verifyMode ->
+                views.tvSupplierTil.isVisible = verifyMode != NetworkConstants.NONE
+                if (verifyMode != NetworkConstants.NONE && selectedUserType?.regTitle != null) {
+                    views.tvSupplierTil.hint = selectedUserType?.regTitle
+                }
+                views.btnSubmit.text = if (verifyMode != NetworkConstants.NONE)
+                    getString(R.string.next)
+                else
+                    getString(R.string.next)
+            }
+            views.btnSubmit.isEnabled = true
+            views.btnSubmit.isVisible = true
+
     }
 
     private fun setOrganizationsView() {

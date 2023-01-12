@@ -42,7 +42,7 @@ import javax.inject.Inject
 
 class CyverseAddRoleFragment @Inject constructor(
 ) : CyverseSettingsBaseFragment(), AdapterView.OnItemSelectedListener {
-    override var titleRes = R.string.add_user_role
+    override var titleRes = R.string.request_new_role
 
     private var allTypes = mutableListOf<AvailableUtype>()
     private var selectedType: AvailableUtype? = null
@@ -85,7 +85,7 @@ class CyverseAddRoleFragment @Inject constructor(
                 val list = mutableListOf<String>()
                 it.data.availableUtypes.forEach { name -> list.add(name.utypeName) }
                 spinnerArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_spinner_country,
-                        mutableListOf(getString(R.string.select_new_role)) + list)
+                        mutableListOf(getString(R.string.add_role_heading)) + list)
                 binding.spinner.adapter = spinnerArrayAdapter
                 binding.spinner.onItemSelectedListener = this
                 binding.progressBar.isVisible = false
