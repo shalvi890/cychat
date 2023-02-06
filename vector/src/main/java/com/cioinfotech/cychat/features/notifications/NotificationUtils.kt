@@ -224,7 +224,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
         // build the pending intent go to the home screen if this is clicked.
         val i = HomeActivity.newIntent(context)
         i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val pi = PendingIntent.getActivity(context, 0, i, 0)
+        val pi = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_IMMUTABLE or 0)
 
         val accentColor = ContextCompat.getColor(context, R.color.notification_accent_color)
 
@@ -298,7 +298,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             data = Uri.parse("foobar://${mxCall.callId}")
         }
-        val contentPendingIntent = PendingIntent.getActivity(context, System.currentTimeMillis().toInt(), contentIntent, 0)
+        val contentPendingIntent = PendingIntent.getActivity(context, System.currentTimeMillis().toInt(), contentIntent, PendingIntent.FLAG_IMMUTABLE or 0)
 
         val answerCallPendingIntent = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(HomeActivity.newIntent(context))
@@ -307,7 +307,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                         mxCall = mxCall,
                         mode = VectorCallActivity.INCOMING_ACCEPT)
                 )
-                .getPendingIntent(System.currentTimeMillis().toInt(), PendingIntent.FLAG_UPDATE_CURRENT)
+                .getPendingIntent(System.currentTimeMillis().toInt(), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
         val rejectCallPendingIntent = buildRejectCallPendingIntent(mxCall.callId)
 
@@ -359,7 +359,9 @@ class NotificationUtils @Inject constructor(private val context: Context,
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             data = Uri.parse("foobar://$mxCall.callId")
         }
-        val contentPendingIntent = PendingIntent.getActivity(context, System.currentTimeMillis().toInt(), contentIntent, 0)
+
+
+        val contentPendingIntent = PendingIntent.getActivity(context, System.currentTimeMillis().toInt(), contentIntent, PendingIntent.FLAG_IMMUTABLE or 0)
 
         val rejectCallPendingIntent = buildRejectCallPendingIntent(mxCall.callId)
 
@@ -413,7 +415,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
         val contentPendingIntent = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(HomeActivity.newIntent(context))
                 .addNextIntent(VectorCallActivity.newIntent(context, mxCall, null))
-                .getPendingIntent(System.currentTimeMillis().toInt(), PendingIntent.FLAG_UPDATE_CURRENT)
+                .getPendingIntent(System.currentTimeMillis().toInt(), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         builder.setContentIntent(contentPendingIntent)
 
@@ -429,8 +431,8 @@ class NotificationUtils @Inject constructor(private val context: Context,
                 context,
                 System.currentTimeMillis().toInt(),
                 rejectCallActionReceiver,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
     }
 
     /**
@@ -465,7 +467,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                     }
                     PendingIntent.getActivity(
                             context, System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
-                    ).let {
+                                or PendingIntent.FLAG_IMMUTABLE).let {
                         setContentIntent(it)
                     }
                 }
@@ -535,7 +537,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                     markRoomReadIntent.data = Uri.parse("foobar://${roomInfo.roomId}")
                     markRoomReadIntent.putExtra(NotificationBroadcastReceiver.KEY_ROOM_ID, roomInfo.roomId)
                     val markRoomReadPendingIntent = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), markRoomReadIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT)
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
                     NotificationCompat.Action.Builder(R.drawable.ic_material_done_all_white,
                             stringProvider.getString(R.string.action_mark_room_read), markRoomReadPendingIntent)
@@ -572,7 +574,8 @@ class NotificationUtils @Inject constructor(private val context: Context,
                     intent.putExtra(NotificationBroadcastReceiver.KEY_ROOM_ID, roomInfo.roomId)
                     intent.action = DISMISS_ROOM_NOTIF_ACTION
                     val pendingIntent = PendingIntent.getBroadcast(context.applicationContext,
-                            System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                            System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+
                     setDeleteIntent(pendingIntent)
                 }
                 .setTicker(tickerText)
@@ -603,7 +606,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                     rejectIntent.data = Uri.parse("foobar://$roomId&$matrixId")
                     rejectIntent.putExtra(NotificationBroadcastReceiver.KEY_ROOM_ID, roomId)
                     val rejectIntentPendingIntent = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), rejectIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT)
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
                     addAction(
                             R.drawable.vector_notification_reject_invitation,
@@ -616,7 +619,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
                     joinIntent.data = Uri.parse("foobar://$roomId&$matrixId")
                     joinIntent.putExtra(NotificationBroadcastReceiver.KEY_ROOM_ID, roomId)
                     val joinIntentPendingIntent = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), joinIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT)
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     addAction(
                             R.drawable.vector_notification_accept_invitation,
                             stringProvider.getString(R.string.join),
@@ -692,14 +695,14 @@ class NotificationUtils @Inject constructor(private val context: Context,
         return TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(HomeActivity.newIntent(context))
                 .addNextIntent(roomIntentTap)
-                .getPendingIntent(System.currentTimeMillis().toInt(), PendingIntent.FLAG_UPDATE_CURRENT)
+                .getPendingIntent(System.currentTimeMillis().toInt(), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun buildOpenHomePendingIntentForSummary(): PendingIntent {
         val intent = HomeActivity.newIntent(context, clearNotification = true)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.data = Uri.parse("foobar://tapSummary")
-        return PendingIntent.getActivity(context, Random.nextInt(1000), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getActivity(context, Random.nextInt(1000), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     /*
@@ -717,7 +720,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
             intent.data = Uri.parse("foobar://$roomId")
             intent.putExtra(NotificationBroadcastReceiver.KEY_ROOM_ID, roomId)
             return PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
         } else {
             /*
             TODO
@@ -784,7 +787,7 @@ class NotificationUtils @Inject constructor(private val context: Context,
         intent.action = DISMISS_SUMMARY_ACTION
         intent.data = Uri.parse("foobar://deleteSummary")
         return PendingIntent.getBroadcast(context.applicationContext,
-                0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     fun showNotificationMessage(tag: String?, id: Int, notification: Notification) {
@@ -821,8 +824,8 @@ class NotificationUtils @Inject constructor(private val context: Context,
                 context,
                 0,
                 testActionIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
 
         notificationManager.notify(
                 "DIAGNOSTIC",

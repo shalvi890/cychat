@@ -28,7 +28,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.net.URISyntaxException
 
-class DocumentViewer : AppCompatActivity(), View.OnClickListener {
+class
+
+
+
+DocumentViewer : AppCompatActivity(), View.OnClickListener {
     lateinit var ivBack: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

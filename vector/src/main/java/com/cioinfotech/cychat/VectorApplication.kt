@@ -192,6 +192,17 @@ class VectorApplication :
             addAction(Intent.ACTION_SCREEN_ON)
         })
 
+//        RxJavaPlugins.setErrorHandler { e ->
+//            if (e is UndeliverableException) {
+//                // Merely log undeliverable exceptions
+//                log.error(e.message)
+//            } else {
+//                // Forward all others to current thread's uncaught exception handler
+//                Thread.currentThread().also { thread ->
+//                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
+//                }
+//            }
+
         EmojiManager.install(GoogleEmojiProvider())
     }
 

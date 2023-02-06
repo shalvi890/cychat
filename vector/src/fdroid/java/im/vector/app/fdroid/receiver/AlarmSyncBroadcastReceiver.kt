@@ -68,7 +68,7 @@ class AlarmSyncBroadcastReceiver : BroadcastReceiver() {
                 putExtra(SyncService.EXTRA_SESSION_ID, sessionId)
                 putExtra(SyncService.EXTRA_PERIODIC, true)
             }
-            val pIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val firstMillis = System.currentTimeMillis() + delayInSeconds * 1000L
             val alarmMgr = context.getSystemService<AlarmManager>()!!
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -81,13 +81,13 @@ class AlarmSyncBroadcastReceiver : BroadcastReceiver() {
         fun cancelAlarm(context: Context) {
             Timber.v("## Sync: Cancel alarm for background sync")
             val intent = Intent(context, AlarmSyncBroadcastReceiver::class.java)
-            val pIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val alarmMgr = context.getSystemService<AlarmManager>()!!
             alarmMgr.cancel(pIntent)
 
             // Stop current service to restart
             VectorSyncService.stopIntent(context).let {
-                try {
+                try {1
                     ContextCompat.startForegroundService(context, it)
                 } catch (ex: Throwable) {
                     Timber.i("## Sync: Cancel sync")
