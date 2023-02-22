@@ -14,10 +14,10 @@
      -->
 
     <!-- Note: pusher_http_url should have path '/_matrix/push/v1/notify' -->
-    <string name="pusher_http_url" translatable="false">https://cyverse-production-notifications.cioinfotech.com/_matrix/push/v1/notify</string>
-    <string name="pusher_http_url_debug" translatable="false">https://cyverse-production-notifications.cioinfotech.com/_matrix/push/v1/notify</string>
+    <string name="pusher_http_url" translatable="false">https://cychatapp-qa-notifications.cioinfotech.com/_matrix/push/v1/notify</string>
+    <string name="pusher_http_url_debug" translatable="false">https://cychatapp-qa-notifications.cioinfotech.com/_matrix/push/v1/notify</string>
     <!-- Note: pusher_app_id cannot exceed 64 chars -->
-    <string name="pusher_app_id" translatable="false">com.cioinfotech.cychat</string>
+    <string name="pusher_app_id" translatable="false">com.cioinfotech.cychat.qa</string>
 
     <!-- preferred jitsi domain -->
     <string name="preferred_jitsi_domain" translatable="false">https://cyverse-prod-jitsi.cioinfotech.com/</string>

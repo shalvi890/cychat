@@ -1,41 +1,49 @@
 {
   "project_info": {
-    "project_number": "446109509332",
-    "project_id": "cychat-b227c",
-    "storage_bucket": "cychat-b227c.appspot.com"
+    "project_number": "171529261746",
+    "project_id": "cychatqa",
+    "storage_bucket": "cychatqa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:446109509332:android:15b936ff2d73521dc5fd41",
+        "mobilesdk_app_id": "1:171529261746:android:fb838c37a7ffa9daf3afab",
         "android_client_info": {
-          "package_name": "com.cioinfotech.cychat"
+          "package_name": "com.cioinfotech.cychat.qa"
         }
       },
       "oauth_client": [
         {
-          "client_id": "446109509332-ne70rvlmipd7jo00n80ssnvk635v21v6.apps.googleusercontent.com",
+          "client_id": "171529261746-hqpb0eqrlsvqc30s1i5a0lgsm3cmv373.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.cioinfotech.cychat",
+            "package_name": "com.cioinfotech.cychat.qa",
             "certificate_hash": "daabb226f1e159f34096bc6817db10dee5283f32"
           }
         },
         {
-          "client_id": "446109509332-mf2fjvfd1hbeq8jba61ri4heemk94ojr.apps.googleusercontent.com",
+          "client_id": "171529261746-o2lcmo59l3av6m3ub5tevoqscu7barel.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cioinfotech.cychat.qa",
+            "certificate_hash": "760872de2764448410eadd63cc788a8b05ca2e65"
+          }
+        },
+        {
+          "client_id": "171529261746-t4a4q0r44d2k76tnnsfcp4fv1culjv8g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC_nh9akON7ecOjLkZ3eUSD5O3endY36kQ"
+          "current_key": "AIzaSyAip7gqsSIMsQwtoIAlRuFt_EeBwpW5kDs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "446109509332-mf2fjvfd1hbeq8jba61ri4heemk94ojr.apps.googleusercontent.com",
+              "client_id": "171529261746-t4a4q0r44d2k76tnnsfcp4fv1culjv8g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

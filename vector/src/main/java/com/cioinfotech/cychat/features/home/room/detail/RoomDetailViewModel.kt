@@ -17,6 +17,7 @@
 package com.cioinfotech.cychat.features.home.room.detail
 
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -713,8 +714,8 @@ class RoomDetailViewModel @AssistedInject constructor(
             R.id.timeline_setting -> true
             R.id.invite           -> state.canInvite && !HomeActivity.isOneToOneChatOpen
 //            R.id.open_matrix_apps -> true
-            R.id.voice_call,
-            R.id.video_call       -> callManager.getCallsByRoomId(state.roomId).isEmpty()
+            R.id.voice_call        -> HomeActivity.isOneToOneChatOpen
+            R.id.video_call       -> showVideoCall(state)
             R.id.hangup_call      -> callManager.getCallsByRoomId(state.roomId).isNotEmpty()
             R.id.search           -> true
             R.id.wallpaper        -> true
@@ -722,6 +723,13 @@ class RoomDetailViewModel @AssistedInject constructor(
 //            R.id.dev_tools        -> vectorPreferences.developerMode()
             else                  -> false
         }
+    }
+
+    private fun showVideoCall(state: RoomDetailViewState): Boolean {
+        if(HomeActivity.isOneToOneChatOpen && callManager.getCallsByRoomId(state.roomId).isEmpty()){
+          return  true
+        }
+        return  false
     }
 
 // PRIVATE METHODS *****************************************************************************
@@ -1179,10 +1187,15 @@ class RoomDetailViewModel @AssistedInject constructor(
 
     private fun handleOpenOrDownloadFile(action: RoomDetailAction.DownloadOrOpen) {
         val mxcUrl = action.messageFileContent.getFileUrl() ?: return
+        Log.d("@@",mxcUrl);
         val isLocalSendingFile = action.senderId == session.myUserId
                 && mxcUrl.startsWith("content://")
         val isDownloaded = session.fileService().isFileInCache(action.messageFileContent)
+
+        Log.e("@@",isDownloaded.toString())
+        Log.e("@@",isLocalSendingFile.toString())
         when {
+
             isLocalSendingFile -> {
                 tryOrNull { Uri.parse(mxcUrl) }?.let {
                     _viewEvents.post(RoomDetailViewEvents.OpenFile(
@@ -1195,6 +1208,11 @@ class RoomDetailViewModel @AssistedInject constructor(
             }
             isDownloaded       -> {
                 // we can open it
+                Log.e("@@","in if block")
+
+
+
+
                 session.fileService().getTemporarySharableURI(action.messageFileContent)?.let { uri ->
                     _viewEvents.post(RoomDetailViewEvents.OpenFile(
                             action.messageFileContent.mimeType,
@@ -1205,6 +1223,8 @@ class RoomDetailViewModel @AssistedInject constructor(
                 }
             }
             else               -> {
+                Log.e("@@","in else block")
+
                 viewModelScope.launch {
                     val result = runCatching {
                         session.fileService().downloadFile(messageContent = action.messageFileContent)

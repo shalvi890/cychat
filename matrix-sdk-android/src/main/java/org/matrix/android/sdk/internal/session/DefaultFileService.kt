@@ -17,6 +17,7 @@
 package org.matrix.android.sdk.internal.session
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
@@ -115,6 +116,7 @@ internal class DefaultFileService @Inject constructor(
                 // Also we need to add extension for the FileProvider, if not it lot's of app that it's
                 // shared with will not function well (even if mime type is passed in the intent)
                 val cachedFiles = getFiles(url, fileName, mimeType, elementToDecrypt != null)
+
 
                 if (!cachedFiles.file.exists()) {
                     val resolvedUrl = contentUrlResolver.resolveFullSize(url) ?: throw IllegalArgumentException("url is null")

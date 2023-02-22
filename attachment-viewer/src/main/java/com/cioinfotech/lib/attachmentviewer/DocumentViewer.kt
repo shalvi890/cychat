@@ -46,7 +46,10 @@ DocumentViewer : AppCompatActivity(), View.OnClickListener {
 
         var mediaURl = intent.getStringExtra("url")
         if (mediaURl.toString().contains(".pdf")) {
-            webview.loadUrl("https://drive.google.com/viewerng/viewer?embedded=true&url=$mediaURl")
+           // webview.loadUrl("https://drive.google.com/viewerng/viewer?embedded=true&url=$mediaURl")
+            if (mediaURl != null) {
+                webview.loadUrl(mediaURl)
+            }
         } else if (mediaURl.toString().contains(".png") || mediaURl.toString().contains(".jpg")) {
             Toast.makeText(this, "No application found which can open the file", Toast.LENGTH_SHORT).show()
         } else {

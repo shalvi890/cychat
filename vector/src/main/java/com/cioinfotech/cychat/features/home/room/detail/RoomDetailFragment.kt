@@ -31,6 +31,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Spannable
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -44,6 +45,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.toSpannable
@@ -177,6 +179,7 @@ import com.cioinfotech.cychat.features.widgets.WidgetActivity
 import com.cioinfotech.cychat.features.widgets.WidgetArgs
 import com.cioinfotech.cychat.features.widgets.WidgetKind
 import com.cioinfotech.cychat.features.widgets.permissions.RoomWidgetPermissionBottomSheet
+import com.cioinfotech.lib.attachmentviewer.DocumentViewer
 import com.cioinfotech.lib.multipicker.entity.MultiPickerAudioType
 import com.jakewharton.rxbinding3.view.focusChanges
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -222,6 +225,7 @@ import org.matrix.android.sdk.internal.crypto.model.event.WithHeldCode
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -730,7 +734,10 @@ class RoomDetailFragment @Inject constructor(
             if (intent.resolveActivity(requireActivity().packageManager) != null)
                 requireActivity().startActivity(intent)
             else
-                requireActivity().toast(R.string.error_no_external_application_found)
+            println("action.uri"+action.uri)
+            val file = File(action.uri.path)
+            intent.putExtra("url",file)
+            startActivity(intent)
         }
     }
 
@@ -1760,6 +1767,8 @@ class RoomDetailFragment @Inject constructor(
                 roomDetailViewModel.handle(RoomDetailAction.ResumeVerification(informationData.eventId, null))
             }
             is MessageWithAttachmentContent      -> {
+                Log.e("@@ shalvi",messageContent.toString())
+
                 val action = RoomDetailAction.DownloadOrOpen(informationData.eventId, informationData.senderId, messageContent)
                 roomDetailViewModel.handle(action)
             }
